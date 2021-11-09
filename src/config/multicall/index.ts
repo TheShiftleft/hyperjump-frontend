@@ -1,0 +1,11 @@
+import { ChainId } from '@hyperjump-defi/sdk'
+import MULTICALL_ABI from './abi.json'
+
+const SWAP_MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
+  [ChainId.BSC_MAINNET]: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
+  [ChainId.BSC_TESTNET]: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
+  [ChainId.FTM_MAINNET]: '0x6185A664e90754F4967B9962Fe7B1183b147fc48',
+  [ChainId.FTM_TESTNET]: '0x6185A664e90754F4967B9962Fe7B1183b147fc48', // doest exist
+}
+
+export { MULTICALL_ABI, SWAP_MULTICALL_NETWORKS }

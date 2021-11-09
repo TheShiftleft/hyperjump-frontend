@@ -1,0 +1,69 @@
+import React from 'react'
+import styled from 'styled-components'
+import { Heading, Card, CardBody, Button, Flex, } from 'uikit'
+import { useTranslation } from 'contexts/Localization'
+import { NavLink } from "react-router-dom";
+
+const StyledFarmStakingCard = styled(Card)`
+  background-color: rgba(2,5,11,0.7);
+  border-radius: ${({ theme }) => theme.radii.card};
+`
+
+const Block = styled.div`
+  background-color: ${({ theme }) => theme.colors.primaryDark};
+  border-radius: ${({ theme }) => theme.radii.card};
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  color: ${({ theme }) => theme.colors.primary};
+`
+
+const HeadingColor = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
+  font-family: Bebas neue, cursive;
+`
+
+const HeadingText = styled.p`
+  font-size: 28px;
+  font-family: Bebas neue, cursive;
+`
+
+const ButtonContainer = styled.div`
+  margin-left: 8px;
+`
+
+const ApplyButton = styled(Button)`
+  max-height: 30px;
+  width: 100px;
+  border-radius: 5px;
+  padding: 5px 3px !important;
+  color: black;
+`
+
+const CreatePoolCard = () => {
+  const { t } = useTranslation()
+
+  return (
+    <StyledFarmStakingCard>
+      <CardBody>
+        <Flex justifyContent="space-between" alignItems="flex-end">
+          <HeadingText>
+            WANT TO
+            <HeadingColor> CREATE A POOL </HeadingColor>
+            FOR YOUR TOKEN?
+          </HeadingText>
+          <ButtonContainer>
+            <NavLink to="/pool">
+              <ApplyButton>
+                APPLY NOW
+              </ApplyButton>
+            </NavLink>
+          </ButtonContainer>  
+        </Flex>
+      </CardBody>
+    </StyledFarmStakingCard>
+  )
+}
+
+export default CreatePoolCard

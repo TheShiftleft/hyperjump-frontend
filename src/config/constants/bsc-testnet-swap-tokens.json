@@ -1,0 +1,66 @@
+{
+  "name": "Testnet BEP20 Token List",
+  "timestamp": "2021-03-05T18:54:56.113Z",
+  "version": {
+    "major": 1,
+    "minor": 13,
+    "patch": 0
+  },
+  "tags": {},
+  "logoURI": "https://tokens.hyperswap.fi/images/0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c.png",
+  "keywords": ["thugsswap", "streetswap", "hyperswap", "hyperjump", "default"],
+  "tokens": [
+    {
+      "name": "HyperJump Credits",
+      "address": "0x2c9a2fA5d93c7A4CFfBB45e94f05Fd9eF58A5CE2",
+      "symbol": "JUMP",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x2c9a2fA5d93c7A4CFfBB45e94f05Fd9eF58A5CE2.png"
+    },
+    {
+      "name": "HyperBurn",
+      "address": "",
+      "symbol": "HYPR",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x03D6BD3d48F956D783456695698C407A46ecD54d.png"
+    },
+    {
+      "name": "HyperAlloy",
+      "address": "0xC5FD6F3eB1f63082Daee9e09E17D870005962309",
+      "symbol": "ALLOY",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd.png"
+    },
+    {
+      "name": "Cake",
+      "address": "0xa35062141Fa33BCA92Ce69FeD37D0E8908868AAe",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82.png"
+    },
+    {
+      "name": "wBNB",
+      "address": "0xae13d989dac2f0debff460ac112a837c89baa7cd",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c.png"
+    },
+    {
+      "name": "ADA",
+      "address": "0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x3ee2200efb3400fabb9aacf31297cbdd1d435d47.png"
+    },
+    {
+      "name": "USDT",
+      "address": "0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5",
+      "decimals": 18,
+      "chainId": 97,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x337610d27c682E347C9cD60BD4b3b107C9d34dDd.png"
+    }
+  ]
+}

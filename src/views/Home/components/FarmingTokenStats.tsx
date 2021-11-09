@@ -1,0 +1,140 @@
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import { Card, CardBody, Heading, Text, Button, Flex } from 'uikit'
+import styled from 'styled-components'
+import { getBalanceNumber } from 'utils/formatBalance'
+import { useTotalSupply, useBurnedBalance } from 'hooks/useTokenBalance'
+import { usePriceFarmingTokenUsd } from 'state/hooks'
+import { useTranslation } from 'contexts/Localization'
+import { getFarmingTokenAddress } from 'utils/addressHelpers'
+import { registerToken } from 'utils/wallet'
+import { NETWORK_URL } from 'config'
+import getNetwork from 'utils/getNetwork'
+import CardValue from './CardValue'
+import BurnCardValue from './BurnCardValue'
+
+const FarmingTokenStats = () => {
+  const { t } = useTranslation()
+  const totalSupply = useTotalSupply()
+
+  const burnedBalance = getBalanceNumber(useBurnedBalance(getFarmingTokenAddress()))
+  // change the calc of totalsupply as new token correctly deducts it from totalsupply - angry mech
+  const farmingTokenSupply = totalSupply ? getBalanceNumber(totalSupply) : 0 //  - burnedBalance : 0
+
+  const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
+  const farmingTokenPriceUsdString =
+    farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()
+      ? 'Loading...'
+      : farmingTokenPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 4 })
+  const farmingTokenMarketCap =
+    (farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()) && farmingTokenSupply !== 0
+      ? 0
+      : farmingTokenPriceUsd.toNumber() * farmingTokenSupply
+  const { config } = getNetwork()
+  const tokenAddress = getFarmingTokenAddress()
+  const imageSrc = `images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`
+
+  return (
+    <StyledFarmingTokenStats>
+      <CardBody>
+        <Flex justifyContent="space-between" mb="20px">
+          <Flex flexDirection="column">
+            <Heading scale="xl">
+              <HeadingColor>{t(`${config.farmingToken.symbol} STATS`)}</HeadingColor>
+            </Heading>
+            <Heading scale="lg">${config.farmingToken.symbol}</Heading>
+          </Flex>
+          <Flex flexDirection="column" alignItems="flex-end">
+            <Heading mt="5px" mb="5px">
+              $ {farmingTokenPriceUsdString}
+            </Heading>
+            <NavLink to="/swap?inputCurrency=BNB&outputCurrency=0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd">
+              <BuyButton>Buy Now</BuyButton>
+            </NavLink>
+          </Flex>
+        </Flex>
+
+        <Text color="primary">Market Cap</Text>
+        <Heading mb="10px">{farmingTokenMarketCap && <CardValue value={farmingTokenMarketCap} />}</Heading>
+
+        <Text color="primary">Total Supply</Text>
+        <Heading mb="10px">{farmingTokenSupply && <CardValue value={farmingTokenSupply} />}</Heading>
+
+        <Text color="primary">Total {config.farmingToken.symbol} Burned</Text>
+        <Heading mb="10px">
+          <BurnCardValue decimals={0} value={burnedBalance} supply={farmingTokenSupply + burnedBalance} />
+        </Heading>
+
+        <Text color="primary">Emission Rate</Text>
+        <Flex justifyContent="space-between">
+          <Heading mb="10px">
+            <CardValue decimals={2} value={3.141592653589793238} postfix="/ SECOND" />
+          </Heading>
+          <MetamaskButton
+            onClick={() =>
+              registerToken(tokenAddress, config.farmingToken.symbol, config.farmingToken.decimals, imageSrc)
+            }
+          />
+        </Flex>
+      </CardBody>
+    </StyledFarmingTokenStats>
+  )
+}
+
+export default FarmingTokenStats
+
+const StyledFarmingTokenStats = styled(Card)`
+  background-color: rgba(2, 5, 11, 0.7);
+  border-radius: ${({ theme }) => theme.radii.card};
+  border-radius: 50px;
+
+  &::after {
+    content: '';
+    background-image: url('jump.png');
+    background-repeat: no-repeat;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-position: 180px 180px;
+    background-position: right -50px bottom -50px;
+    position: absolute;
+    z-index: -1;
+  }
+`
+
+const HeadingColor = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
+  font-family: Bebas neue, cursive;
+`
+
+const BuyButton = styled(Button)`
+  max-height: 30px;
+  padding: 5px !important;
+  border-radius: 5px;
+  color: black;
+`
+
+const MetamaskButton = styled(Button)`
+  background-image: url('metamask.png');
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  background-position: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  transition: all 100ms ease;
+
+  &:hover {
+    width: 100px;
+    border-radius: 5px;
+    background-position: right 10px top 50%;
+  }
+
+  &:hover:before {
+    content: 'Add to';
+    padding-right: 30px;
+    color: black;
+  }
+`
