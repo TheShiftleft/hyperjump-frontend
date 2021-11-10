@@ -10,6 +10,7 @@ interface Props {
   isDark: boolean
   togglePush: () => void
   href: string
+  hideMenuButton?: boolean
 }
 
 const blink = keyframes`
@@ -52,7 +53,7 @@ const StyledLink = styled(Link)`
   }
 `
 
-const Logo: React.FC<Props> = ({ isPushed, togglePush, href }) => {
+const Logo: React.FC<Props> = ({ isPushed, togglePush, href, hideMenuButton }) => {
   const isAbsoluteUrl = href.startsWith('http')
   const innerLogo = (
     <>
@@ -63,13 +64,16 @@ const Logo: React.FC<Props> = ({ isPushed, togglePush, href }) => {
 
   return (
     <Flex>
-      <MenuButton aria-label="Toggle menu" onClick={togglePush}>
-        {isPushed ? (
-          <HamburgerCloseIcon width="24px" color="textSubtle" />
-        ) : (
-          <HamburgerIcon width="24px" color="textSubtle" />
-        )}
-      </MenuButton>
+      {!hideMenuButton ? (
+        <MenuButton aria-label="Toggle menu" onClick={togglePush}>
+          {isPushed ? (
+            <HamburgerCloseIcon width="24px" color="textSubtle" />
+          ) : (
+            <HamburgerIcon width="24px" color="textSubtle" />
+          )}
+        </MenuButton>
+      ) : (null)}
+      
       {isAbsoluteUrl ? (
         <StyledLink as={undefined} href={href} aria-label="HyperJump home page">
           {innerLogo}

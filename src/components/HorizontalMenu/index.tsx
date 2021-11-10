@@ -15,7 +15,7 @@ import { getFarmingTokenAddress } from 'utils/addressHelpers'
 import useAllEarnings from 'hooks/useAllEarnings'
 import BigNumber from 'bignumber.js'
 import Logo from 'uikit/widgets/Menu/components/Logo'
-import Panel from 'uikit/widgets/Menu/components/Panel'
+import HorizontalPanel from 'uikit/widgets/Menu/components/HorizontalPanel'
 import UserBlock from 'uikit/widgets/Menu/components/UserBlock'
 import { MENU_HEIGHT, SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from 'uikit/widgets/Menu/config'
 import TopBarOptions from 'uikit/widgets/Menu/TopBarOptions'
@@ -83,8 +83,8 @@ const Inner = styled.div<{ isPushed: boolean; showMenu: boolean }>`
   }
 
   ${({ theme }) => theme.mediaQueries.nav} {
-    margin-left: ${({ isPushed }) => `${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
-    max-width: ${({ isPushed }) => `calc(100% - ${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px)`};
+    //margin-left: ${({ isPushed }) => `${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
+    //max-width: ${({ isPushed }) => `calc(100% - ${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px)`};
   }
 `
 
@@ -97,7 +97,7 @@ const MobileOnlyOverlay = styled(Overlay)`
   }
 `
 
-const Menu: React.FC<MenuProps> = ({ children }) => {
+const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
@@ -109,6 +109,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   const isMobile = isXl === false
   const [isPushed, setIsPushed] = useState(!isMobile)
   const [showMenu] = useState(true)
+  const [hideMenuButton] = useState(true)
 
   // Find the home link if provided
   const homeLink = links.find((link) => link.label === 'Home')
@@ -149,6 +150,20 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
           togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
           isDark={isDark}
           href={homeLink?.href ?? '/'}
+          hideMenuButton={hideMenuButton} // enable when using horizontal menu
+        />
+        <HorizontalPanel
+          isPushed={isPushed}
+          isMobile={isMobile}
+          showMenu={showMenu}
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          langs={languageList}
+          setLang={setLanguage}
+          currentLang={currentLanguage.code}
+          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+          pushNav={setIsPushed}
+          links={links}
         />
         <Flex flexWrap="wrap">
           {/*  <TopBarOptions
@@ -169,6 +184,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
         </Flex>
       </StyledNav>
       <BodyWrapper>
+        
         <Inner isPushed={isPushed} showMenu={showMenu}>
           {children}
         </Inner>
@@ -178,4 +194,4 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   )
 }
 
-export default Menu
+export default HorizontalMenu
