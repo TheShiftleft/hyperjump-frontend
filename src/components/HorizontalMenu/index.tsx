@@ -36,7 +36,6 @@ const Wrapper = styled.div`
 
 const StyledNav = styled.nav<{ showMenu: boolean }>`
   position: fixed;
-  height: 10%;
   z-index: 20;
 
   top: ${({ showMenu }) => (showMenu ? 0 : `-${MENU_HEIGHT}px`)};
@@ -48,8 +47,7 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   padding-left: 8px;
   padding-right: 16px;
   width: 100%;
-  height: ${MENU_HEIGHT}px;
-  flex-wrap: wrap;
+  height: 56px;
   background-color: transparent;
   border: none;
   transform: translate3d(0, 0, 0);
@@ -57,6 +55,10 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   @media (max-width: 545px) {
     padding: 0 4px;
   }
+`
+
+const NavWrapper = styled.div`
+  display: flex;
 `
 
 const BodyWrapper = styled.div`
@@ -145,26 +147,28 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   return (
     <Wrapper>
       <StyledNav showMenu={showMenu}>
-        <Logo
-          isPushed={isPushed}
-          togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
-          isDark={isDark}
-          href={homeLink?.href ?? '/'}
-          hideMenuButton={hideMenuButton} // enable when using horizontal menu
-        />
-        <HorizontalPanel
-          isPushed={isPushed}
-          isMobile={isMobile}
-          showMenu={showMenu}
-          isDark={isDark}
-          toggleTheme={toggleTheme}
-          langs={languageList}
-          setLang={setLanguage}
-          currentLang={currentLanguage.code}
-          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
-          pushNav={setIsPushed}
-          links={links}
-        />
+        <NavWrapper>
+          <Logo
+            isPushed={isPushed}
+            togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
+            isDark={isDark}
+            href={homeLink?.href ?? '/'}
+            hideMenuButton={hideMenuButton} // enable when using horizontal menu
+          />
+          <HorizontalPanel
+            isPushed={isPushed}
+            isMobile={isMobile}
+            showMenu={showMenu}
+            isDark={isDark}
+            toggleTheme={toggleTheme}
+            langs={languageList}
+            setLang={setLanguage}
+            currentLang={currentLanguage.code}
+            farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+            pushNav={setIsPushed}
+            links={links}
+          />
+        </NavWrapper>
         <Flex flexWrap="wrap">
           {/*  <TopBarOptions
             account={account}
@@ -184,7 +188,6 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
         </Flex>
       </StyledNav>
       <BodyWrapper>
-        
         <Inner isPushed={isPushed} showMenu={showMenu}>
           {children}
         </Inner>
