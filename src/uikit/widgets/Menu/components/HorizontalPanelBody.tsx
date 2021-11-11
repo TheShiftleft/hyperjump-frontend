@@ -17,10 +17,9 @@ interface Props extends PanelProps, PushedProps {
 const Icons = IconModule as unknown as { [key: string]: React.FC<SvgProps> };
 
 const Container = styled.div`
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: auto;
 `;
 
 const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
@@ -68,7 +67,7 @@ const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, lin
                     </MenuEntry>
                   ))}
               </DropdownItem>
-            }>
+            } position={(isMobile ? "top" : "bottom")} >
               {entry.items.map((item) => (
                   <MenuEntry key={item.href} secondary isActive={item.href === location.pathname} onClick={handleClick}>
                     <MenuLink href={item.href}>

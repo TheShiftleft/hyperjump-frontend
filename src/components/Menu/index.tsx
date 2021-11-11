@@ -169,6 +169,19 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
         </Flex>
       </StyledNav>
       <BodyWrapper>
+        <Panel
+          isPushed={isPushed}
+          isMobile={isMobile}
+          showMenu={showMenu}
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          langs={languageList}
+          setLang={setLanguage}
+          currentLang={currentLanguage.code}
+          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+          pushNav={setIsPushed}
+          links={links}
+        />
         <Inner isPushed={isPushed} showMenu={showMenu}>
           {children}
         </Inner>

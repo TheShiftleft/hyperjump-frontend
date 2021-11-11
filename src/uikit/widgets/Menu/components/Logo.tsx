@@ -22,7 +22,8 @@ const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   .mobile-icon {
-    width: 32px;
+    width: 38px;
+    margin-left: 16px;
     margin-right: 32px;
     ${({ theme }) => theme.mediaQueries.nav} {
       display: none;
@@ -31,6 +32,8 @@ const StyledLink = styled(Link)`
   .desktop-icon {
     width: 160px;
     display: none;
+    margin-top: 10px;
+    margin-left: 10px;
     ${({ theme }) => theme.mediaQueries.nav} {
       display: block;
     }
@@ -48,7 +51,7 @@ const StyledLink = styled(Link)`
     }
   }
 
-  @media (max-width: 400px) {
+  @media (max-width: 359px) {
     display: none;
   }
 `

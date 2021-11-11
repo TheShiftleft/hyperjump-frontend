@@ -57,10 +57,6 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   }
 `
 
-const NavWrapper = styled.div`
-  display: flex;
-`
-
 const BodyWrapper = styled.div`
   top: ${MENU_HEIGHT}px;
   position: fixed;
@@ -147,28 +143,26 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   return (
     <Wrapper>
       <StyledNav showMenu={showMenu}>
-        <NavWrapper>
-          <Logo
-            isPushed={isPushed}
-            togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
-            isDark={isDark}
-            href={homeLink?.href ?? '/'}
-            hideMenuButton={hideMenuButton} // enable when using horizontal menu
-          />
-          <HorizontalPanel
-            isPushed={isPushed}
-            isMobile={isMobile}
-            showMenu={showMenu}
-            isDark={isDark}
-            toggleTheme={toggleTheme}
-            langs={languageList}
-            setLang={setLanguage}
-            currentLang={currentLanguage.code}
-            farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
-            pushNav={setIsPushed}
-            links={links}
-          />
-        </NavWrapper>
+        <Logo
+          isPushed={isPushed}
+          togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
+          isDark={isDark}
+          href={homeLink?.href ?? '/'}
+          hideMenuButton={hideMenuButton} // enable when using horizontal menu
+        />
+        {!isMobile && <HorizontalPanel
+          isPushed={isPushed}
+          isMobile={isMobile}
+          showMenu={showMenu}
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          langs={languageList}
+          setLang={setLanguage}
+          currentLang={currentLanguage.code}
+          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+          pushNav={setIsPushed}
+          links={links}
+        />}
         <Flex flexWrap="wrap">
           {/*  <TopBarOptions
             account={account}
@@ -187,7 +181,21 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
           <UserBlock account={account} login={login} logout={logout} />
         </Flex>
       </StyledNav>
+
       <BodyWrapper>
+        {isMobile && <HorizontalPanel // Duplicate of line #153 to cater mobile navigation menu in the footer
+          isPushed={isPushed}
+          isMobile={isMobile}
+          showMenu={showMenu}
+          isDark={isDark}
+          toggleTheme={toggleTheme}
+          langs={languageList}
+          setLang={setLanguage}
+          currentLang={currentLanguage.code}
+          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+          pushNav={setIsPushed}
+          links={links}
+        />}
         <Inner isPushed={isPushed} showMenu={showMenu}>
           {children}
         </Inner>

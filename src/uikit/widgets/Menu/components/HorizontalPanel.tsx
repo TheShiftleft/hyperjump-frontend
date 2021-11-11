@@ -11,10 +11,10 @@ interface Props extends PanelProps, PushedProps {
 }
 
 const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile: boolean }>`
-  position: relative;
+  position: fixed;
   padding-top: 0;
-  top: 10px;
-  left: 10%;
+  ${({ isMobile }) => (!isMobile ? 'top: 10px; left: 10%; ' : 'bottom: 0; background-color: rgba(13, 29, 54, 1)')};
+  
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -22,8 +22,7 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
   
   transition: padding-top 0.2s, width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border:none;
-  min-height: 500px;
-  z-index: 1100;
+  z-index: 11;
   overflow: ${({ isPushed }) => (isPushed ? 'initial' : 'hidden')};
   transform: translate3d(0, 0, 0);
   ${({ isPushed }) => !isPushed && 'white-space: nowrap;'};
@@ -36,7 +35,6 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
 
 const RootPanel = styled.div<{ isMobile: boolean }>`
   background-color: ${({ isMobile }) => (isMobile ? "rgba(13, 29, 54, 1)" : "rgba(13, 29, 54, 0.4)")};
-  width: 80%;
 `
 const Panel: React.FC<Props> = (props) => {
   const { isPushed, showMenu, isMobile } = props
