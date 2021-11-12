@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import { MENU_ENTRY_HEIGHT } from "../config";
 import { LinkLabel, LinkStatus as LinkStatusComponent, MenuEntry } from "./MenuEntry";
 import { LinkStatus, PushedProps } from "../types";
-import { ArrowDropDownIcon, ArrowDropUpIcon } from "../../../components/Svg";
 
 interface Props extends PushedProps {
   label: string;
@@ -15,6 +14,7 @@ interface Props extends PushedProps {
   children: ReactNode;
   isActive?: boolean;
   href?: string;
+  isMobile?: boolean;
 }
 
 const Container = styled.div`
@@ -22,6 +22,7 @@ const Container = styled.div`
   flex-direction: column;
   // Safari fix
   flex-shrink: 0;
+  width: 100%;
 `;
 
 
@@ -35,7 +36,8 @@ const DropdownItem: React.FC<Props> = ({
   children,
   className,
   isActive,
-  href
+  href,
+  isMobile
 }) => {
   const [isOpen, setIsOpen] = useState(initialOpenState);
   const history = useHistory();
@@ -51,7 +53,7 @@ const DropdownItem: React.FC<Props> = ({
 
   return (
     <Container>
-      <MenuEntry onClick={handleClick} className={className} isActive={isActive} role="button">
+      <MenuEntry onClick={handleClick} className={className} isActive={isActive} role="button" isMobile={isMobile}>
         {icon}
         <LinkLabel isPushed={isPushed}>{label}</LinkLabel>
         {status && (

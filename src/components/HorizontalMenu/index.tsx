@@ -15,6 +15,7 @@ import { getFarmingTokenAddress } from 'utils/addressHelpers'
 import useAllEarnings from 'hooks/useAllEarnings'
 import BigNumber from 'bignumber.js'
 import Logo from 'uikit/widgets/Menu/components/Logo'
+import FarmingTokenPrice from 'uikit/widgets/Menu/components/FarmingTokenPrice'
 import HorizontalPanel from 'uikit/widgets/Menu/components/HorizontalPanel'
 import UserBlock from 'uikit/widgets/Menu/components/UserBlock'
 import { MENU_HEIGHT, SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from 'uikit/widgets/Menu/config'
@@ -22,6 +23,7 @@ import TopBarOptions from 'uikit/widgets/Menu/TopBarOptions'
 import NetworkBlock from 'uikit/widgets/Menu/NetworkBlock'
 import useGovTokenBurnRate from 'hooks/useGovTokenBurnRate'
 import config from './config'
+
 
 interface MenuProps {
   children: any
@@ -95,6 +97,15 @@ const MobileOnlyOverlay = styled(Overlay)`
   }
 `
 
+const NavWrapper = styled.div`
+  display: flex;
+`
+
+const PriceWrapper = styled.div`
+  align-self: center;
+  margin-right: 10px;
+`
+
 const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
@@ -143,26 +154,28 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   return (
     <Wrapper>
       <StyledNav showMenu={showMenu}>
-        <Logo
-          isPushed={isPushed}
-          togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
-          isDark={isDark}
-          href={homeLink?.href ?? '/'}
-          hideMenuButton={hideMenuButton} // enable when using horizontal menu
-        />
-        {!isMobile && <HorizontalPanel
-          isPushed={isPushed}
-          isMobile={isMobile}
-          showMenu={showMenu}
-          isDark={isDark}
-          toggleTheme={toggleTheme}
-          langs={languageList}
-          setLang={setLanguage}
-          currentLang={currentLanguage.code}
-          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
-          pushNav={setIsPushed}
-          links={links}
-        />}
+        <NavWrapper>
+          <Logo
+            isPushed={isPushed}
+            togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
+            isDark={isDark}
+            href={homeLink?.href ?? '/'}
+            hideMenuButton={hideMenuButton} // enable when using horizontal menu
+          />
+          {!isMobile && <HorizontalPanel
+            isPushed={isPushed}
+            isMobile={isMobile}
+            showMenu={showMenu}
+            isDark={isDark}
+            toggleTheme={toggleTheme}
+            langs={languageList}
+            setLang={setLanguage}
+            currentLang={currentLanguage.code}
+            farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+            pushNav={setIsPushed}
+            links={links}
+          />}
+        </NavWrapper>
         <Flex flexWrap="wrap">
           {/*  <TopBarOptions
             account={account}
@@ -177,6 +190,11 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
             govTokenPrice={govTokenPriceString}
             govTokenBurnRate={getBalanceNumber(govTokenBurnRate, 18)}
           /> */}
+          {!isMobile &&
+            <PriceWrapper>
+              <FarmingTokenPrice farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()} />
+            </PriceWrapper>
+          }
           <NetworkBlock />
           <UserBlock account={account} login={login} logout={logout} />
         </Flex>

@@ -33,7 +33,6 @@ const StyledLink = styled(Link)`
     width: 160px;
     display: none;
     margin-top: 10px;
-    margin-left: 10px;
     ${({ theme }) => theme.mediaQueries.nav} {
       display: block;
     }

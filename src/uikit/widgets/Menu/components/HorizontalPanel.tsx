@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import HorizontalPanelBody from './HorizontalPanelBody'
-import PanelFooter from './PanelFooter'
 import { MENU_HEIGHT, SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from '../config'
 import { PanelProps, PushedProps } from '../types'
 
@@ -11,9 +10,9 @@ interface Props extends PanelProps, PushedProps {
 }
 
 const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile: boolean }>`
-  position: fixed;
+  position: ${({ isMobile }) => (!isMobile ? 'relative' : 'fixed')};
   padding-top: 0;
-  ${({ isMobile }) => (!isMobile ? 'top: 10px; left: 10%; ' : 'bottom: 0; background-color: rgba(13, 29, 54, 1)')};
+  ${({ isMobile }) => (!isMobile ? 'top: 12px; left: 20px; ' : 'bottom: 0; background-color: rgba(13, 29, 54, 1)')};
   
   display: flex;
   flex-direction: row;
@@ -24,6 +23,7 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
   border:none;
   z-index: 11;
   overflow: ${({ isPushed }) => (isPushed ? 'initial' : 'hidden')};
+  width: 100%;
   transform: translate3d(0, 0, 0);
   ${({ isPushed }) => !isPushed && 'white-space: nowrap;'};
 
@@ -34,7 +34,7 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
 `
 
 const RootPanel = styled.div<{ isMobile: boolean }>`
-  background-color: ${({ isMobile }) => (isMobile ? "rgba(13, 29, 54, 1)" : "rgba(13, 29, 54, 0.4)")};
+  
 `
 const Panel: React.FC<Props> = (props) => {
   const { isPushed, showMenu, isMobile } = props

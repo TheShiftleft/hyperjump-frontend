@@ -8,6 +8,7 @@ export interface Props {
   secondary?: boolean
   isActive?: boolean
   theme: DefaultTheme
+  isMobile?: boolean
 }
 
 const rainbowAnimation = keyframes`
@@ -20,19 +21,22 @@ const rainbowAnimation = keyframes`
   }
 `
 
-const LinkLabel = styled.div<{ isPushed: boolean }>`
-  color: ${({ isPushed, theme }) => (isPushed ? theme.colors.textSubtle : 'transparent')};
+const LinkLabel = styled.div<{ isPushed: boolean}>`
+  color: theme.colors.textSubtle;
   transition: color 0.4s;
   flex-grow: 1;
+  margin-right: 8px;
 `
 
 const MenuEntry = styled.div<Props>`
   cursor: pointer;
-  display: flex;
+  display: ${({ isMobile }) => (!isMobile ? 'flex' : 'grid')};
+  justify-items: center;
   align-items: center;
   height: ${MENU_ENTRY_HEIGHT}px;
+  text-align: center;
   padding: ${({ secondary }) => (secondary ? '0 32px' : '0 16px')};
-  font-size: ${({ secondary }) => (secondary ? '14px' : '16px')};
+  font-size: ${({ secondary, isMobile }) => (secondary ? '14px' : (isMobile ? '10px' : '16px') )};
   background-color: ${({ secondary, theme }) => (secondary ? theme.colors.background : 'transparent')};
   color: ${({ theme }) => theme.colors.textSubtle};
   //box-shadow: ${({ isActive, theme }) => (isActive ? `inset 4px 0px 0px ${theme.colors.primary}` : 'none')};

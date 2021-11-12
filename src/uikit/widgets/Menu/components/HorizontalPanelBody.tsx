@@ -20,6 +20,7 @@ const Container = styled.div`
   display: inline-flex;
   flex-direction: row;
   height: auto;
+  width: 100%;
 `;
 
 const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, links }) => {
@@ -52,6 +53,7 @@ const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, lin
                 className={calloutClass}
                 isActive={entry.items.some((item) => item.href === location.pathname)}
                 href={entry.items.length > 0 ? entry.items[0].href : undefined}
+                isMobile={isMobile}
               >
                 {isPushed &&
                   entry.items.map((item) => (
