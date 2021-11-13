@@ -32,6 +32,15 @@ const tokens: Record<string, Token> = {
     decimals: 18,
     projectLink: 'https://hyperjump.fi/',
   },
+  xjump: {
+    symbol: 'xJUMP',
+    address: {
+      56: '0x522650de53e79ead931e4eb3537b12d7fe06697d', // '0x4F19004b7012035D1DDD30795860e44D79a59beA',
+      250: '0x5621Ca989428CF105784164b84D500f4a6bEc889',
+    },
+    decimals: 18,
+    projectLink: 'https://hyperjump.fi/',
+  },
   alloy: {
     symbol: 'ALLOY',
     address: { 56: '0x5ef5994fa33ff4eb6c82d51ee1dc145c546065bd', 97: '0xC5FD6F3eB1f63082Daee9e09E17D870005962309' },

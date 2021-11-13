@@ -5,7 +5,6 @@ import Page from 'components/layout/Page'
 import getNetwork from 'utils/getNetwork'
 import Converter from './components/Converter'
 
-
 const { chainId } = getNetwork()
 const oldFarmingToken = chainId === 56 ? 'alloy' : 'ori'
 

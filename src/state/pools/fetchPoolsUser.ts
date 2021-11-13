@@ -55,7 +55,9 @@ export const fetchUserBalances = async (account: string, pools: Pool[]) => {
 }
 
 export const fetchUserStakeBalances = async (account: string, pools: Pool[]) => {
-  const nonMasterPools = pools.filter((p) => p.sousId !== 0)
+  const { config } = getNetwork()
+  const xjumpPid = config.wrappedFarmingTokenPid
+  const nonMasterPools = pools.filter((p) => p.sousId !== xjumpPid)
   const masterChefContract = getMasterchefContract()
   const calls = nonMasterPools.map((p) => ({
     address: getAddress(p.contractAddress),
@@ -65,8 +67,9 @@ export const fetchUserStakeBalances = async (account: string, pools: Pool[]) => 
   try {
     const [userInfo, masterPoolAmount] = await Promise.all([
       multicall(getPoolABI(), calls),
-      masterChefContract.methods.userInfo('0', account).call(),
+      masterChefContract.methods.userInfo(xjumpPid, account).call(),
     ])
+
     const stakedBalances = nonMasterPools.reduce(
       (acc, pool, index) => ({
         ...acc,
@@ -74,8 +77,7 @@ export const fetchUserStakeBalances = async (account: string, pools: Pool[]) => 
       }),
       {},
     )
-
-    return { ...stakedBalances, 0: new BigNumber(masterPoolAmount).toJSON() }
+    return { ...stakedBalances, [xjumpPid]: new BigNumber(masterPoolAmount[0]).toJSON() }
   } catch (e) {
     console.error(e)
     return {}
@@ -84,8 +86,10 @@ export const fetchUserStakeBalances = async (account: string, pools: Pool[]) => 
 
 export const fetchUserPendingRewards = async (account: string, pools: Pool[]) => {
   const { config } = getNetwork()
+  const xjumpPid = config.wrappedFarmingTokenPid
+  console.log('fetchUserPendingRewards', xjumpPid, config.wrappedFarmingTokenPid)
   const masterChefContract = getMasterchefContract()
-  const nonMasterPools = pools.filter((p) => p.sousId !== 0)
+  const nonMasterPools = pools.filter((p) => p.sousId !== xjumpPid) // we use xjump pool
   const calls = nonMasterPools.map((p) => ({
     address: getAddress(p.contractAddress),
     name: 'pendingReward',
@@ -94,7 +98,7 @@ export const fetchUserPendingRewards = async (account: string, pools: Pool[]) =>
   try {
     const [res, pendingReward] = await Promise.all([
       multicall(getPoolABI(), calls),
-      masterChefContract.methods.pendingReward('0', account).call(),
+      masterChefContract.methods.pendingReward(xjumpPid, account).call(), // for xjumps pool
     ])
     const pendingRewards = nonMasterPools.reduce(
       (acc, pool, index) => ({
@@ -103,8 +107,7 @@ export const fetchUserPendingRewards = async (account: string, pools: Pool[]) =>
       }),
       {},
     )
-
-    return { ...pendingRewards, 0: new BigNumber(pendingReward).toJSON() }
+    return { ...pendingRewards, [xjumpPid]: new BigNumber(pendingReward).toJSON() }
   } catch (e) {
     console.error(e)
     return {}

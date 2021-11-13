@@ -95,6 +95,15 @@ const priceHelperLps: Record<Network, FarmConfig[]> = {
       token: tokens.bake,
       quoteToken: tokens.wbnb,
     },
+    {
+      pid: 2,
+      lpSymbol: 'JUMP-BUSD',
+      lpAddresses: {
+        56: '0x2ed207F0f273A773A890F74Dc17DEf2E6E1f42e3',
+      },
+      token: tokens.busd,
+      quoteToken: tokens.jump,
+    },
   ],
 }
 

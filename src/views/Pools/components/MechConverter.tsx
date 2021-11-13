@@ -50,23 +50,19 @@ const MechConverter: React.FC<MechConverterProps> = ({ pool }) => {
     <Card>
       <StyledFlex justifyContent="space-between">
         <StyledInfoCard>
-          <StyledImage src={`/images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`} width={72} height={72} alt="alloy" />
+          <StyledImage
+            src={`/images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`}
+            width={72}
+            height={72}
+            alt="alloy"
+          />
           <Text color="primary" fontSize="10px" style={{ textAlign: 'center' }} bold>
             {`${config.farmingToken.symbol} Available`}
           </Text>
           <StyledText2 color="text" bold>
             <Balance fontSize="14px" value={getBalanceNumber(stakingTokenBalance)} />
           </StyledText2>
-        </StyledInfoCard>
-        <StyledInfoCard>
-          <StyledImage src="/images/tokens/mech.png" width={72} height={72} alt="mech" />
-          <Text color="primary" fontSize="10px" style={{ textAlign: 'center' }} bold>
-            MECHS Available
-          </Text>
-          <StyledText2 color="text" bold>
-            <Balance fontSize="14px" value={getBalanceNumber(mechBalance)} />
-          </StyledText2>
-        </StyledInfoCard>
+        </StyledInfoCard> 
       </StyledFlex>
       {!account && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>

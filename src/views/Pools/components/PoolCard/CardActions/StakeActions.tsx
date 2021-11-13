@@ -37,14 +37,14 @@ const StakeAction: React.FC<StakeActionsProps> = ({
   const [onPresentTokenRequired] = useModal(<NotEnoughTokensModal tokenSymbol={stakingToken.symbol} />)
 
   const [onPresentStake] = useModal(
-    <StakeModal pool={pool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice * 5} />,
+    <StakeModal pool={pool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
   )
 
   const [onPresentUnstake] = useModal(
     <StakeModal
       stakingTokenBalance={stakingTokenBalance}
       pool={pool}
-      stakingTokenPrice={stakingTokenPrice * 5}
+      stakingTokenPrice={stakingTokenPrice}
       isRemovingStake
     />,
   )

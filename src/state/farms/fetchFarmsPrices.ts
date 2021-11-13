@@ -10,9 +10,18 @@ const getFarmFromTokenSymbol = (farms: Farm[], tokenSymbol: string, preferredQuo
   return filteredFarm
 }
 
-const getFarmBaseTokenPrice = (farm: Farm, quoteTokenFarm: Farm, networkTokenUsdFarm: Farm, farmingTokenUsdFarm: Farm): BigNumber => {
-  const networkTokenPriceUsd = networkTokenUsdFarm.tokenPriceVsQuote ? BIG_ONE.div(networkTokenUsdFarm.tokenPriceVsQuote) : BIG_ZERO
-  const farmingTokenPriceUsd = farmingTokenUsdFarm.tokenPriceVsQuote ? BIG_ONE.div(farmingTokenUsdFarm.tokenPriceVsQuote) : BIG_ZERO
+const getFarmBaseTokenPrice = (
+  farm: Farm,
+  quoteTokenFarm: Farm,
+  networkTokenUsdFarm: Farm,
+  farmingTokenUsdFarm: Farm,
+): BigNumber => {
+  const networkTokenPriceUsd = networkTokenUsdFarm.tokenPriceVsQuote
+    ? BIG_ONE.div(networkTokenUsdFarm.tokenPriceVsQuote)
+    : BIG_ZERO
+  const farmingTokenPriceUsd = farmingTokenUsdFarm.tokenPriceVsQuote
+    ? BIG_ONE.div(farmingTokenUsdFarm.tokenPriceVsQuote)
+    : BIG_ZERO
   const hasTokenPriceVsQuote = Boolean(farm.tokenPriceVsQuote)
 
   if (farm.quoteToken.symbol === networkTokenUsdFarm.token.symbol) {
@@ -62,9 +71,18 @@ const getFarmBaseTokenPrice = (farm: Farm, quoteTokenFarm: Farm, networkTokenUsd
   return BIG_ZERO
 }
 
-const getFarmQuoteTokenPrice = (farm: Farm, quoteTokenFarm: Farm, networkTokenUsdFarm: Farm, farmingTokenUsdFarm: Farm): BigNumber => {
-  const networkTokenPriceUsd = networkTokenUsdFarm.tokenPriceVsQuote ? BIG_ONE.div(networkTokenUsdFarm.tokenPriceVsQuote) : BIG_ZERO
-  const farmingTokenPriceUsd = farmingTokenUsdFarm.tokenPriceVsQuote ? BIG_ONE.div(farmingTokenUsdFarm.tokenPriceVsQuote) : BIG_ZERO
+const getFarmQuoteTokenPrice = (
+  farm: Farm,
+  quoteTokenFarm: Farm,
+  networkTokenUsdFarm: Farm,
+  farmingTokenUsdFarm: Farm,
+): BigNumber => {
+  const networkTokenPriceUsd = networkTokenUsdFarm.tokenPriceVsQuote
+    ? BIG_ONE.div(networkTokenUsdFarm.tokenPriceVsQuote)
+    : BIG_ZERO
+  const farmingTokenPriceUsd = farmingTokenUsdFarm.tokenPriceVsQuote
+    ? BIG_ONE.div(farmingTokenUsdFarm.tokenPriceVsQuote)
+    : BIG_ZERO
   if (farm.quoteToken.symbol === networkTokenUsdFarm.token.symbol) {
     return BIG_ONE
   }

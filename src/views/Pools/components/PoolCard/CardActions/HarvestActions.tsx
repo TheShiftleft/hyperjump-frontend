@@ -33,7 +33,6 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
 
   const earningTokenBalance = getBalanceNumber(earnings, earningToken.decimals)
   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
-
   const hasEarnings = earnings.toNumber() > 0
 
   const handleCollect = async () => {
@@ -50,7 +49,6 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
       setIsPending(false)
     }
   }
-
 
   return (
     <Flex flexDirection="column" mb="16px">

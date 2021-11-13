@@ -9,6 +9,7 @@ import {
   getGovTokenContract,
   getMigratorContract,
   getOldFarmingTokenContract,
+  getXJumpContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
@@ -48,6 +49,11 @@ export const useMasterchef = () => {
   return useMemo(() => getMasterchefContract(web3), [web3])
 }
 
+export const useXJump = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getXJumpContract(web3), [web3])
+}
+
 export const useRewardMigrator = () => {
   const web3 = useWeb3()
   return useMemo(() => getMigratorContract(web3), [web3])
@@ -61,7 +67,7 @@ export const useOldFarmingToken = () => {
 export const usePoolContract = (id: number) => {
   const { chainId } = getNetwork()
   const web3 = useWeb3()
-  const pool = useSelector((state: State) => state.pools[chainId].data.find(p => p.sousId === id))
+  const pool = useSelector((state: State) => state.pools[chainId].data.find((p) => p.sousId === id))
   return useMemo(() => getPoolContract(pool, web3), [pool, web3])
 }
 

@@ -45,11 +45,6 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
     ],
   },
-  /*  {
-    label: t('Bridge'),
-    icon: 'BridgeIcon',
-    href: '/bridge',
-  }, */
   {
     label: 'Play',
     icon: 'TrophyIcon',

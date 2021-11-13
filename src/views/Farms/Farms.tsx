@@ -42,6 +42,7 @@ const Farms: React.FC = () => {
 
   usePollFarmsData()
 
+  console.log('chech farm pool data', farmingTokenPriceUsd.toString())
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
   const userDataReady = !account || (!!account && userDataLoaded)

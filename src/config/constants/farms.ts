@@ -47,70 +47,47 @@ const farms: Record<Network, FarmConfig[]> = {
      */
     {
       pid: 0,
-      lpSymbol: 'ALLOY',
+      lpSymbol: 'JUMP',
       lpAddresses: {
-        56: '0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd',
+        56: '0x130025eE738A66E691E6A7a62381CB33c6d9Ae83',
       },
-      token: tokens.alloy,
+      token: tokens.jump,
       quoteToken: tokens.wbnb,
     },
     {
       pid: 1,
-      lpSymbol: 'ALLOY-BNB',
+      lpSymbol: 'JUMP-BNB',
       lpAddresses: {
-        97: '0xd94966164b5247A202c98C64F0B929715D6c1916',
-        56: '0xf0696E201D20b553792ac2578429B791625308A0',
+        56: '0x13F5088D69b0c417C376747a75c57aABD75e9551',
       },
-      token: tokens.alloy,
-      quoteToken: tokens.wbnb,
-    },
-    {
-      pid: 3,
-      lpSymbol: 'BUSD-BNB',
-      lpAddresses: {
-        97: '0x81aCa0c535bb13e0cD2F10A3c6E4DC1b9Bbe6c0e',
-        56: '0xf2e4e3f9b58b3edac88ad11d689a23f3119a782d',
-      },
-      token: tokens.busd,
+      token: tokens.jump,
       quoteToken: tokens.wbnb,
     },
     {
       pid: 2,
+      lpSymbol: 'JUMP-BUSD',
+      lpAddresses: {
+        56: '0x2ed207F0f273A773A890F74Dc17DEf2E6E1f42e3',
+      },
+      token: tokens.jump,
+      quoteToken: tokens.busd,
+    },
+    {
+      pid: 3,
       lpSymbol: 'HYPR-BNB',
       lpAddresses: {
-        97: '0x2Ca6FC658b4ca5Ea03b488C77D00DD5a746B9A6a',
         56: '0x3701cfe08a3f0b629dbcaeceba773a8b4f0044e3',
       },
       token: tokens.hypr,
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 27,
-      lpSymbol: 'ALLOY-BUSD',
-      lpAddresses: {
-        56: '0x6e94fb9c08f7e651bf0ed732708e5f148db061c6',
-      },
-      quoteToken: tokens.alloy,
-      token: tokens.busd,
-    },
-    {
       pid: 4,
-      lpSymbol: 'ETH-BNB',
+      lpSymbol: 'BUSD-BNB',
       lpAddresses: {
-        97: '0x8963301c9e34d10c4f33f8930e0fae4473a7d3b2',
-        56: '0x75115c644f9661a761a333ba0a38e42b1649f143',
+        56: '0xf2e4e3f9b58b3edac88ad11d689a23f3119a782d',
       },
-      token: tokens.eth,
-      quoteToken: tokens.wbnb,
-    },
-    {
-      pid: 5,
-      lpSymbol: 'BTC-BNB',
-      lpAddresses: {
-        97: '0xdfb193940e1317f38e91568fdb05efe18ee4a3c7',
-        56: '0xdfb193940e1317f38e91568fdb05efe18ee4a3c7',
-      },
-      token: tokens.btcb,
+      token: tokens.busd,
       quoteToken: tokens.wbnb,
     },
   ],
@@ -160,6 +137,15 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.usdc,
       quoteToken: tokens.wftm,
     },
+    /* {
+      pid: 5,
+      lpSymbol: 'JUMP',
+      lpAddresses: {
+        250: '0x5621Ca989428CF105784164b84D500f4a6bEc889',
+      },
+      token: tokens.jump,
+      quoteToken: tokens.jump,
+    }, */
   ],
 }
 

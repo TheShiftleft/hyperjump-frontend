@@ -79,10 +79,10 @@ const Home: React.FC = () => {
           <HeadingFlex flexDirection="column" alignItems="center">
             <MainLogo src="/images/hyperjump-full-logo.png" />
             <MainHeading>
-              INTERGALACTIC{' '}
+              INTERGALACTIC
               <Heading color="primary" ml="5px" mr="5px">
                 DE-FI
-              </Heading>{' '}
+              </Heading>
               PROTOCOL
             </MainHeading>
           </HeadingFlex>

@@ -178,7 +178,6 @@ export const usePools = (account): { pools: Pool[]; userDataLoaded: boolean } =>
     }
   }, [account, dispatch, fastRefresh])
 
-
   const { pools, userDataLoaded } = useSelector((state: State) => ({
     pools: state.pools[state.application.chainId].data,
     userDataLoaded: state.pools[state.application.chainId].userDataLoaded,

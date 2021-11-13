@@ -13,6 +13,7 @@ import {
   getLotteryAddress,
   getRewardMigratorAddress,
   getOldFarmingTokenAddress,
+  getXJumpAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -29,6 +30,7 @@ import {
   getVaultABI,
   getLotteryABI,
   getRewardMigratorABI,
+  getXJumpABI,
 } from 'config/abi'
 import { Pool } from 'state/types'
 import getNetwork from './getNetwork'
@@ -51,6 +53,10 @@ const getContract = (abi: any, address: string, web3?: Web3, account?: string) =
   const _web3 = web3 ?? web3NoAccount
 
   return new _web3.eth.Contract(abi as unknown as AbiItem, address) // , {
+}
+
+export const getXJumpContract = (web3?: Web3) => {
+  return getContract(getXJumpABI(), getXJumpAddress(), web3)
 }
 
 export const getMigratorContract = (web3?: Web3) => {

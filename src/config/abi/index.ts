@@ -6,6 +6,7 @@ import ftmMulticallABI from './ftm-multicall.json'
 import bscPoolABI from './bsc-pool.json'
 import ftmPoolABI from './ftm-pool.json'
 import alloyABI from './alloy.json'
+import xjumpABI from './xjump.json'
 import jumpABI from './jump.json'
 import oriABI from './ori.json'
 import hyprABI from './hypr.json'
@@ -18,12 +19,6 @@ import bscVaultABI from './bsc-vault.json'
 import ftmVaultABI from './ftm-vault.json'
 import bscLotteryABI from './bsc-lottery.json'
 import rewardMigratorABI from './RewardMigrator.json'
-
-const masterChefABIs = {
-  [ChainId.BSC_MAINNET]: masterChefABI,
-  [ChainId.BSC_TESTNET]: masterChefABI,
-  [ChainId.FTM_MAINNET]: masterChefABI,
-}
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -77,9 +72,14 @@ export const getRewardMigratorABI = () => {
   return rewardMigratorABI
 }
 
+export const getXJumpABI = () => {
+  return xjumpABI
+}
+
 export const getMasterChefABI = () => {
-  const { chainId } = getNetwork()
-  return masterChefABIs[chainId]
+  /*   const { chainId } = getNetwork()
+   */
+  return masterChefABI
 }
 
 export const getMulticallABI = () => {

@@ -17,11 +17,6 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
           networkConfig.farmingToken.address,
         )}`,
       },
-      {
-        label: t('Convert'),
-        icon: 'SunIcon',
-        href: '/convert',
-      },
     ],
   },
   {
@@ -45,11 +40,6 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
     ],
   },
-  /*  {
-    label: t('Bridge'),
-    icon: 'BridgeIcon',
-    href: '/bridge',
-  }, */
   {
     label: 'Play',
     icon: 'TrophyIcon',
@@ -66,7 +56,16 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
     ],
   },
-
+  {
+    label: t('Convert'),
+    icon: 'ConvertIcon',
+    href: '/convert',
+  },
+  {
+    label: t('Bridge'),
+    icon: 'ConvertIcon',
+    href: '',
+  },
   {
     label: t('More'),
     icon: 'MoreIcon',

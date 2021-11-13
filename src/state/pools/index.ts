@@ -58,7 +58,7 @@ export const fetchPoolsPublicDataAsync = createAsyncThunk<IFetchPoolsPublicDataR
       const isPoolFinished = pool.isFinished || isPoolEndBlockExceeded
 
       let stakingTokenPrice = 0
-      if (pool.stakingToken.symbol === tokens.mech.symbol) {
+      if (pool.stakingToken.symbol === tokens.jump.symbol) {
         const stakingTokenAddress = farmingToken.address ? getAddress(farmingToken.address).toLowerCase() : null
         stakingTokenPrice = stakingTokenAddress ? prices[stakingTokenAddress] : 0
       } else {

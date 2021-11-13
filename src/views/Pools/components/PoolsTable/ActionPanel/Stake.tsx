@@ -58,14 +58,14 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
   const [onPresentTokenRequired] = useModal(<NotEnoughTokensModal tokenSymbol={stakingToken.symbol} />)
 
   const [onPresentStake] = useModal(
-    <StakeModal pool={pool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice * 5} />,
+    <StakeModal pool={pool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
   )
 
   const [onPresentUnstake] = useModal(
     <StakeModal
       stakingTokenBalance={stakingTokenBalance}
       pool={pool}
-      stakingTokenPrice={stakingTokenPrice * 5}
+      stakingTokenPrice={stakingTokenPrice}
       isRemovingStake
     />,
   )
@@ -151,7 +151,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
               bold
               fontSize="32px"
               decimals={3}
-              value={sousId !== 0 ? stakedTokenBalance : stakedTokenBalance / 5}
+              value={sousId !== 0 ? stakedTokenBalance : stakedTokenBalance}
             />
             <Balance
               fontSize="12px"

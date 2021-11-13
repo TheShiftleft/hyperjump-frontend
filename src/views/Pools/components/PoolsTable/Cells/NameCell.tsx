@@ -34,18 +34,18 @@ const NameCell: React.FC<NameCellProps> = ({ pool }) => {
 
   const stakedBalance = userData?.stakedBalance ? new BigNumber(userData.stakedBalance) : BIG_ZERO
   const isStaked = stakedBalance.gt(0)
-  const isMasterPool = sousId === 0
+  const isMasterPool = sousId === config.wrappedFarmingTokenPid // xjump pool
 
   const showStakedTag = isStaked
 
   const title = `${earningTokenSymbol}${t(' Pool')} `
-  let subtitle = `${t('Stake')} ${stakingTokenSymbol}S`
+  let subtitle = `${t('Stake')} ${stakingTokenSymbol}s`
   const showSubtitle = sousId !== 0 || (sousId === 0 && !isXs && !isSm)
 
   // FIXME DJ TJ use translation
   if (isMasterPool) {
-    iconFile = 'mech.png'
-    subtitle = `Build MECHs to earn ${config.farmingToken.symbol}`
+    iconFile = 'jump.png'
+    subtitle = `${t('Stake')} ${config.farmingToken.symbol}s`
   }
 
   return (

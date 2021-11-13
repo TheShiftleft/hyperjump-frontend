@@ -65,7 +65,6 @@ const WinCard = () => {
   const openAfterEndtime = status === LotteryStatus.OPEN && endTimeAsInt >= Date.now()
   const d = new Date(endTimeAsInt * 1000)
   const amountCollectedParsed = getBalanceNumber(amountCollectedInFarmingToken).toFixed(0)
-  console.log('amountCollectedParsedFixedNum', amountCollectedParsed)
   return (
     <StyledFarmStakingCard>
       <CardBody>

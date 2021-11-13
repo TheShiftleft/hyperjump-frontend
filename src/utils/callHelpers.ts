@@ -59,11 +59,13 @@ export const sousStakeBnb = async (sousChefContract, amount, account) => {
     })
 }
 
+// no longer in use
+/* 
 const leaveStakingMethod: Record<Network, string> = {
-  [Network.BSC]: 'leaveMechs',
-  [Network.BSC_TESTNET]: 'leaveStaking',
-  [Network.FANTOM]: 'leaveMechs',
-}
+  [Network.BSC]: 'withdraw',
+  [Network.BSC_TESTNET]: 'withdraw',
+  [Network.FANTOM]: 'withdraw',
+} */
 
 export const unstake = async (masterChefContract, pid, amount, account) => {
   /*  if (pid === 0) {

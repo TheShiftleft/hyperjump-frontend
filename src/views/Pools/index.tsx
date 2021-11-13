@@ -146,9 +146,7 @@ const Pools: React.FC = () => {
   const cardLayout = (
     <CardLayout>
       {poolsToShow().map((pool) =>
-        pool.sousId === 0 ? (
-          <MechPoolCard key={pool.sousId} pool={pool} account={account} />
-        ) : (
+        pool.sousId === 0 ? null : ( // <MechPoolCard key={pool.sousId} pool={pool} account={account} />
           <PoolCard key={pool.sousId} pool={pool} account={account} />
         ),
       )}
@@ -165,7 +163,7 @@ const Pools: React.FC = () => {
             <Image mx="auto" mt="12px" src="/images/staking-logo.png" alt="MECH WOKRSHOP" width={319} height={105} />
             <Text color="text" fontSize="13px" bold mt="16px">
               {t(
-                `Listen up, stardog! This is the HyperMECH workshop. Use your Hyper${config.farmingToken.symbol} to build HyperMECHS. It takes 5 Hyper${config.farmingToken.symbol} to build 1 HyperMECH. HyperMECHS will mine other tokens for you and collect more Hyper${config.farmingToken.symbol} along the way.`,
+                `Listen up, stardog! This is the HyperMECH workshop. Stake your Hyper${config.farmingToken.symbol} to earn more tokens for you and more Hyper${config.farmingToken.symbol}.`,
               )}
             </Text>
             <Text color="text" fontSize="13px" bold mt="10px">
@@ -173,7 +171,8 @@ const Pools: React.FC = () => {
             </Text>
           </Flex>
           <Flex flex="1" height="fit-content" justifyContent="center" alignItems="center" mt={['24px', null, '0']}>
-            <MechConverter pool={pools.find((p) => p.sousId === 0)} />
+            {/*             <MechConverter pool={pools.find((p) => p.sousId === 0)} />
+             */}{' '}
           </Flex>
         </Flex>
       </PageHeader>

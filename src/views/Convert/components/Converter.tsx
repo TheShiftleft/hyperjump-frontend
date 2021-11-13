@@ -29,11 +29,10 @@ const Converter = () => {
   const convertedOldFarmingTokenValue = getBalanceNumber(oldFarmingTokenBalance) / convertionRatio
   const balance = getBalanceNumber(oldFarmingTokenBalance)
   const { chainId } = getNetwork()
-  const oldFarmingTokenSymbol = chainId === 56 ? 'ALLOY' : 'ORI'
+  const oldFarmingTokenSymbol = 'JUMP'
   const { account } = useWeb3React()
   const imageSrc = 'https://tokens.hyperswap.fi/images/0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73.png'
   const { onMigrate } = useMigrate(account)
-  const handleMigrate = onMigrate
 
   return (
     <StyledFarmingTokenStats>

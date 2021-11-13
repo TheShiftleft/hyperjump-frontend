@@ -32,6 +32,10 @@ export const getOldFarmingTokenAddress = () => {
 export const getMasterChefAddress = () => {
   return getAddress(addresses.masterChef)
 }
+
+export const getXJumpAddress = () => {
+  return getAddress(addresses.xjump)
+}
 export const getMulticallAddress = () => {
   return getAddress(addresses.multiCall)
 }

@@ -61,7 +61,6 @@ const ShipLogo = styled.img`
   }
 `
 const { chainId } = getNetwork()
-const oldFarmingToken = chainId === 56 ? 'alloy' : 'ori'
 
 const Home: React.FC = () => {
   return (
@@ -72,7 +71,7 @@ const Home: React.FC = () => {
             <MainHeading>
               Send your
               <Heading color="primary" ml="5px" mr="5px">
-                ${oldFarmingToken}
+                $JUMP
               </Heading>
               to
               <Heading color="primary" ml="5px" mr="5px">
