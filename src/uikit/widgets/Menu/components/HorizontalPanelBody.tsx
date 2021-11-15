@@ -72,7 +72,7 @@ const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, lin
             } position={(isMobile ? "top" : "bottom")} >
               {entry.items.map((item) => (
                   <MenuEntry key={item.href} secondary isActive={item.href === location.pathname} onClick={handleClick}>
-                    <MenuLink href={item.href}>
+                    <MenuLink target={item.target} rel="noreferrer noopener" href={item.href}>
                       <LinkLabel isPushed={isPushed}>{item.label}</LinkLabel>
                       {item.status && (
                         <LinkStatus color={item.status.color} fontSize="14px">
