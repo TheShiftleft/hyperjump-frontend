@@ -34,11 +34,6 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
 `
 
 const RootPanel = styled.div<{ isMobile: boolean }>`
-  position: ${({ isMobile }) => (!isMobile ? 'relative' : 'fixed')};
-  display: flex;
-  overflow-x: scroll;
-  width: 250px;
-  z-index: 12;
 
 `
 const Panel: React.FC<Props> = (props) => {
