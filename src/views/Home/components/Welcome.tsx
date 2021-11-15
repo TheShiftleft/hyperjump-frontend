@@ -5,6 +5,8 @@ import { useTranslation } from 'contexts/Localization'
 import { useGetBscStats, useGetFtmStats } from 'hooks/api'
 import getNetwork from 'utils/getNetwork'
 
+// background-image: url('/images/dashboard/mech.png');
+
 const StyledTotalValueLockedCard = styled(Card)`
   background-color: rgba(2, 5, 11, 0.7);
   border-radius: 50px;
@@ -13,7 +15,6 @@ const StyledTotalValueLockedCard = styled(Card)`
 
   &::after {
     content: '';
-    background-image: url('/images/dashboard/mech.png');
     background-repeat: no-repeat;
     background-size: 120px 120px;
     top: 0;

@@ -187,7 +187,7 @@ const Vaults: React.FC = () => {
                 <p>StarVaults will automatically compound your treasure.</p>
                 <p>Just deposit, sit back and enjoy the voyage.</p>
                 <p style={{ fontSize: '12px' }}>
-                  Vaults are compounded every {config.vaultCompoundTime} and there is a 1% deposit fee on HyperJump Farm
+                  Vaults are compounded every {config.vaultCompoundTime} and there are NO fees on HyperJump Farm
                   deposits.
                 </p>
               </Heading>

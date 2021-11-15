@@ -130,7 +130,7 @@ const farms: Record<Network, FarmConfig[]> = {
     },
     {
       pid: 4,
-      lpSymbol: 'USDC-FTM',
+      lpSymbol: 'FTM-USDC',
       lpAddresses: {
         250: '0x50cc648e45b84d68405ba0707e94c507b08e593d',
       },

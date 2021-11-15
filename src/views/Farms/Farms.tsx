@@ -42,7 +42,6 @@ const Farms: React.FC = () => {
 
   usePollFarmsData()
 
-  console.log('chech farm pool data', farmingTokenPriceUsd.toString())
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
   const userDataReady = !account || (!!account && userDataLoaded)
@@ -279,9 +278,12 @@ const Farms: React.FC = () => {
           <Image src="/images/asteroid-logo.png" alt="Asteroid Logo" width={318} height={105} />
           <Flex flexDirection="column">
             <Text fontSize="14px" bold>
-              {t(
-                `Welcome to the Asteroid Field, scalawag! Deposit LP tokens to mine Hyper${config.farmingToken.symbol}. You can then use your Hyper${config.farmingToken.symbol} to construct and stake HyperMECHS to mine other tokens in the`,
-              )}
+              Welcome to the Asteroid Field, scalawag! Deposit LP tokens to mine Hyper{config.farmingToken.symbol}. You
+              can then use your{' '}
+              <Text color="primary" fontSize="14px" bold style={{ display: 'inline' }}>
+                Hyper{config.farmingToken.symbol}{' '}
+              </Text>
+              to stake in the
               <NavLink exact activeClassName="active" to="/pools" id="mech-pools">
                 <Text color="primary" fontSize="14px" bold style={{ display: 'inline' }}>
                   {' MECH Pools.'}
@@ -289,7 +291,7 @@ const Farms: React.FC = () => {
               </NavLink>
             </Text>
             <Text fontSize="14px" bold>
-              There is a 1% deposit fee on all LP farms.
+              There are NO deposit fees!
             </Text>
           </Flex>
         </FlexLayout>

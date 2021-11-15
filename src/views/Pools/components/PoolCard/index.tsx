@@ -19,7 +19,6 @@ const PoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account }) 
   const stakedBalance = userData?.stakedBalance ? new BigNumber(userData.stakedBalance) : BIG_ZERO
   const accountHasStakedBalance = stakedBalance.gt(0)
 
-  console.log('config.wrappedFarmingTokenPid) 3', config.wrappedFarmingTokenPid)
   return (
     <StyledCard
       isFinished={isFinished && sousId !== config.wrappedFarmingTokenPid} // dont hide xjump pool

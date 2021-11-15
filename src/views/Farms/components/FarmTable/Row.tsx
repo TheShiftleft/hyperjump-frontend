@@ -96,6 +96,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const isMobile = !isXl
   const tableSchema = isMobile ? MobileColumnSchema : DesktopColumnSchema
   const columnNames = tableSchema.map((column) => column.name)
+  // destructure caus vercel is a bitch!
+  const { apr, farm, earned } = { ...props }
 
   const handleRenderRow = () => {
     if (!isXs) {
@@ -106,7 +108,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
             if (columnIndex === -1) {
               return null
             }
-
+            const keyProp = { ...props[key] }
             switch (key) {
               case 'details':
                 return (
@@ -120,7 +122,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 return (
                   <CellInner key={key}>
                     <CellLayout label={t('APR')}>
-                      <Apr {...props.apr} hideButton={isMobile} />
+                      <Apr {...apr} hideButton={isMobile} />
                     </CellLayout>
                   </CellInner>
                 )
@@ -128,7 +130,8 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                 return (
                   <CellInner key={key}>
                     <CellLayout label={t(tableSchema[columnIndex].label)}>
-                      {React.createElement(cells[key], { ...props[key], userDataReady })}
+                      {/* eslint-disable */}
+                      {React.createElement(cells[key], { ...keyProp, userDataReady })}
                     </CellLayout>
                   </CellInner>
                 )
@@ -142,17 +145,17 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
       <StyledRow onClick={toggleActionPanel}>
         <FarmMobileCell>
           <CellLayout>
-            <Farm {...props.farm} />
+            <Farm {...farm} />
           </CellLayout>
         </FarmMobileCell>
         <EarnedMobileCell>
           <CellLayout label={t('Earned')}>
-            <Earned {...props.earned} userDataReady={userDataReady} />
+            <Earned {...earned} userDataReady={userDataReady} />
           </CellLayout>
         </EarnedMobileCell>
         <AprMobileCell>
           <CellLayout label={t('APR')}>
-            <Apr {...props.apr} hideButton />
+            <Apr {...apr} hideButton={isMobile} />
           </CellLayout>
         </AprMobileCell>
         <CellInner>

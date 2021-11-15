@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
-import { ethers, BigNumber } from 'ethers'
+// import { ethers, BigNumber } from 'ethers'
 import { Box, Flex, Heading, Skeleton } from 'uikit'
 import getNetwork from 'utils/getNetwork'
 import { LotteryStatus } from 'config/constants/types'
@@ -9,7 +9,7 @@ import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useLottery } from 'state/lottery/hooks'
 import { getBalanceNumber } from 'utils/formatBalance'
 import Balance from 'components/Balance'
-import { TicketPurchaseCard } from '../svgs'
+// import { TicketPurchaseCard } from '../svgs'
 import BuyTicketsButton from './BuyTicketsButton'
 
 const { config } = getNetwork()

@@ -27,7 +27,6 @@ export const useSousUnstake = (sousId, enableEmergencyWithdraw = false) => {
   const sousChefContract = usePoolContract(sousId)
   const xjumpContract = useXJump()
   const masterChefContract = useMasterchef()
-  console.log('sousUnstake', config.wrappedFarmingTokenPid, config.wrappedFarmingToken.address[chainId])
   // xjump needs withdraw from xjump conttract
   const handleUnstake = useCallback(
     async (amount: string, decimals: number) => {
@@ -37,7 +36,6 @@ export const useSousUnstake = (sousId, enableEmergencyWithdraw = false) => {
           .withdrawInitiator(config.wrappedFarmingToken.address[chainId], account)
           .call()
         // if not set
-        console.log('initiatorIsSet', initiatorIsSet)
         if (!initiatorIsSet) {
           await masterChefContract.methods
             .registerWithdrawInitiator(config.wrappedFarmingToken.address[chainId], true)

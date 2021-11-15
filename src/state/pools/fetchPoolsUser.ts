@@ -87,7 +87,6 @@ export const fetchUserStakeBalances = async (account: string, pools: Pool[]) => 
 export const fetchUserPendingRewards = async (account: string, pools: Pool[]) => {
   const { config } = getNetwork()
   const xjumpPid = config.wrappedFarmingTokenPid
-  console.log('fetchUserPendingRewards', xjumpPid, config.wrappedFarmingTokenPid)
   const masterChefContract = getMasterchefContract()
   const nonMasterPools = pools.filter((p) => p.sousId !== xjumpPid) // we use xjump pool
   const calls = nonMasterPools.map((p) => ({

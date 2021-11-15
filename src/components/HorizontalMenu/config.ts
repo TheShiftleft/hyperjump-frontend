@@ -12,10 +12,20 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     items: [
       {
         label: t('Trade'),
-        icon: 'TradeIcon',
+        //        icon: 'TradeIcon',
         href: `/swap?inputCurrency=${networkConfig.baseCurrency.symbol}&outputCurrency=${getAddress(
           networkConfig.farmingToken.address,
         )}`,
+      },
+      {
+        label: t('Liquidity'),
+        //        icon: 'ConvertIcon',
+        href: '/pool',
+      },
+      {
+        label: t('Convert'),
+        //        icon: 'ConvertIcon',
+        href: '/convert',
       },
     ],
   },
@@ -25,17 +35,17 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     items: [
       {
         label: t('Asteroid Farm'),
-        icon: 'FarmIcon',
+        //        icon: 'FarmIcon',
         href: '/farms',
       },
       {
         label: t('Mech Staking'),
-        icon: 'PoolIcon',
+        //        icon: 'PoolIcon',
         href: '/pools',
       },
       {
         label: t('Star Vaults'),
-        icon: 'VaultIcon',
+        //        icon: 'VaultIcon',
         href: '/vaults',
       },
     ],
@@ -46,26 +56,17 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     items: [
       {
         label: t('Galactic Lottery'),
-        icon: 'TrophyIcon',
+        //        icon: 'TrophyIcon',
         href: '/lottery',
       },
       {
         label: t('HyperHeist'),
-        icon: 'HomeIcon',
+        //        icon: 'HomeIcon',
         href: 'https://hyperjump.fi/hyperheist/',
       },
     ],
   },
-  {
-    label: t('Convert'),
-    icon: 'ConvertIcon',
-    href: '/convert',
-  },
-  {
-    label: t('Bridge'),
-    icon: 'ConvertIcon',
-    href: '',
-  },
+
   {
     label: t('More'),
     icon: 'MoreIcon',

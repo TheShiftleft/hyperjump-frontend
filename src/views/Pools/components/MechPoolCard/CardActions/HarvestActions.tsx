@@ -36,7 +36,6 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
 
   const fullBalance = getFullDisplayBalance(earnings, earningToken.decimals)
   const hasEarnings = earnings.toNumber() > 0
-  console.log('hasEarnings', hasEarnings, fullBalance)
   const handleCompound = async () => {
     setPendingTx(true)
     try {

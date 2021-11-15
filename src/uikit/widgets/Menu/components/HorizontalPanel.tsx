@@ -34,7 +34,7 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
 `
 
 const RootPanel = styled.div<{ isMobile: boolean }>`
-
+  
 `
 const Panel: React.FC<Props> = (props) => {
   const { isPushed, showMenu, isMobile } = props

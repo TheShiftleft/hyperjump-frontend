@@ -13,7 +13,7 @@ import FarmingTokenStakingCard from 'views/Home/components/FarmingTokenStakingCa
 import WinCard from 'views/Home/components/WinCard'
 import Convert0r from 'views/Convert/components/Converter'
 import Bridge from 'views/Bridge/components/Bridge'
-import Welcome from 'views/Home/components/Welcome'
+// import Welcome from 'views/Home/components/Welcome'
 
 const Container = styled(Flex)`
   grid-gap: 16px;
@@ -88,9 +88,7 @@ const Home: React.FC = () => {
           </HeadingFlex>
           <ShipLogo src="/images/plane.png" />
         </Flex>
-        <Column>
-          <Welcome />
-        </Column>
+        <Column />
         <Column>
           <Convert0r />
         </Column>

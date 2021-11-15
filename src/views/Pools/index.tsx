@@ -158,23 +158,26 @@ const Pools: React.FC = () => {
   return (
     <>
       <PageHeader>
-        <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
-          <Flex flex="1" flexDirection="column" mr={['8px', 0]}>
-            <Image mx="auto" mt="12px" src="/images/staking-logo.png" alt="MECH WOKRSHOP" width={319} height={105} />
-            <Text color="text" fontSize="13px" bold mt="16px">
-              {t(
-                `Listen up, stardog! This is the HyperMECH workshop. Stake your Hyper${config.farmingToken.symbol} to earn more tokens for you and more Hyper${config.farmingToken.symbol}.`,
-              )}
-            </Text>
-            <Text color="text" fontSize="13px" bold mt="10px">
-              {t('HIGH APR, LITTLE RISK!')}
-            </Text>
+        <FlexLayout>
+          <Image mx="auto" mt="12px" src="/images/staking-logo.png" alt="MECH WOKRSHOP" width={319} height={105} />
+          <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
+            <Flex flex="1" height="fit-content" justifyContent="center" alignItems="center" mt={['24px', null, '0']}>
+              <Text color="text" fontSize="13px" bold mt="16px">
+                Listen up, stardog! This is the{' '}
+                <Text color="primary" fontSize="14px" bold style={{ display: 'inline' }}>
+                  HyperMECH{' '}
+                </Text>
+                workshop. Stake your{' '}
+                <Text color="primary" fontSize="14px" bold style={{ display: 'inline' }}>
+                  Hyper{config.farmingToken.symbol}
+                </Text>{' '}
+                to earn more tokens.
+              </Text>
+              {/*             <MechConverter pool={pools.find((p) => p.sousId === 0)} />
+               */}{' '}
+            </Flex>
           </Flex>
-          <Flex flex="1" height="fit-content" justifyContent="center" alignItems="center" mt={['24px', null, '0']}>
-            {/*             <MechConverter pool={pools.find((p) => p.sousId === 0)} />
-             */}{' '}
-          </Flex>
-        </Flex>
+        </FlexLayout>
       </PageHeader>
       <Page>
         <PoolControls justifyContent="space-between">
