@@ -65,18 +65,22 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       {
         label: t('GitHub'),
         href: 'https://github.com/HyperJump-DeFi',
+        target: '_blank',
       },
       {
         label: t('Docs'),
         href: 'https://docs.hyperjump.fi/',
+        target: '_blank',
       },
       {
         label: t('Contracts'),
         href: networkConfig.contractsLink,
+        target: '_blank',
       },
       {
         label: t('UnRekt'),
         href: 'https://unrekt.hyperjump.fi/',
+        target: '_blank',
       },
     ],
   },
