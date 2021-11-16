@@ -33,6 +33,11 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     ],
   },
   {
+    label: t('Bridge'),
+    icon: 'BridgeIcon',
+    href: 'https://synapseprotocol.com/?inputCurrency=JUMP&outputCurrency=JUMP&outputChain=56',
+  },
+  {
     label: 'Earn',
     icon: 'FarmIcon',
     items: [
@@ -55,6 +60,11 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         target: '_self',
       },
     ],
+  },
+  {
+    label: t('Star Vaults'),
+    icon: 'VaultIcon',
+    href: '/vaults',
   },
   {
     label: 'Play',
@@ -81,13 +91,13 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     items: [
       {
         label: t('Voting'),
-        icon: 'ProposalIcon',
+        //   icon: 'ProposalIcon',
         href: networkConfig.votingLink,
         target: '_blank',
       },
       {
         label: t('Analytics'),
-        icon: 'InfoIcon',
+        //    icon: 'InfoIcon',
         href: `${networkConfig.infoLink}/overview`,
         target: '_blank',
       },
@@ -109,6 +119,16 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       {
         label: t('UnRekt'),
         href: 'https://unrekt.hyperjump.fi/',
+        target: '_blank',
+      },
+      {
+        label: t('BSC V1 APP'),
+        href: 'https://bscv1.hyperjump.app/',
+        target: '_blank',
+      },
+      {
+        label: t('FTM V1 APP'),
+        href: 'https://ftmv1.hyperjump.app/',
         target: '_blank',
       },
     ],

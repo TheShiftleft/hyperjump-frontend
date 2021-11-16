@@ -11,6 +11,7 @@ import { useSousApprove } from 'hooks/useApprove'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { getAddress } from 'utils/addressHelpers'
+import getNetwork from 'utils/getNetwork'
 import { useERC20 } from 'hooks/useContract'
 import { ActionContainer, ActionTitles, ActionContent } from './styles'
 import NotEnoughTokensModal from '../../PoolCard/Modals/NotEnoughTokensModal'
@@ -30,7 +31,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
     pool
   const { t } = useTranslation()
   const { account } = useWeb3React()
-
+  const { config } = getNetwork()
   const stakingTokenContract = useERC20(stakingToken.address ? getAddress(stakingToken.address) : '')
   const { handleApprove: handlePoolApprove, requestedApproval: requestedPoolApproval } = useSousApprove(
     stakingTokenContract,
@@ -49,7 +50,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
 
   const stakedTokenBalance = getBalanceNumber(stakedBalance, stakingToken.decimals)
   const stakedTokenDollarBalance = getBalanceNumber(
-    stakedBalance.multipliedBy(stakingTokenPrice).multipliedBy(5),
+    stakedBalance.multipliedBy(stakingTokenPrice),
     stakingToken.decimals,
   )
 
@@ -138,7 +139,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
       <ActionContainer>
         <ActionTitles>
           <Text fontSize="24px" bold color="primary" as="span" textTransform="uppercase">
-            {'MECHS '}
+            {config.farmingToken.symbol}
           </Text>
           <Text fontSize="24px" bold color="textSubtle" as="span" textTransform="uppercase">
             {t('Staked')}

@@ -1,11 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Heading, Card, CardBody, Button, Flex, } from 'uikit'
+import { Heading, Card, CardBody, Button, Flex, Link } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
-import { NavLink } from "react-router-dom";
 
 const StyledFarmStakingCard = styled(Card)`
-  background-color: rgba(2,5,11,0.7);
+  background-color: rgba(2, 5, 11, 0.7);
   border-radius: ${({ theme }) => theme.radii.card};
 `
 
@@ -54,12 +53,13 @@ const CreatePoolCard = () => {
             FOR YOUR TOKEN?
           </HeadingText>
           <ButtonContainer>
-            <NavLink to="/pool">
-              <ApplyButton>
-                APPLY NOW
-              </ApplyButton>
-            </NavLink>
-          </ButtonContainer>  
+            <Link
+              external
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdqRqH9chWa2cd6Hg3nmuVzvRixUohOVov26R70LoxOwomRbA/viewform?vc=0&c=0&w=1&flr=0"
+            >
+              <ApplyButton>APPLY NOW</ApplyButton>
+            </Link>
+          </ButtonContainer>
         </Flex>
       </CardBody>
     </StyledFarmStakingCard>

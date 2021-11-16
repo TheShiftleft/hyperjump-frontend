@@ -88,7 +88,7 @@ const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, lin
         return (
           <MenuEntry key={entry.label} isActive={entry.href === location.pathname} className={calloutClass} isMobile={isMobile}>
             <MenuLink href={entry.href} onClick={handleClick}>
-              {iconElement}
+              {(!isMobile ? iconElement : null)}
               <LinkLabel isPushed={isPushed}>{entry.label}</LinkLabel>
               {entry.status && (
                 <LinkStatus color={entry.status.color} fontSize="14px">

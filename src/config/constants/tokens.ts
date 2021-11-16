@@ -1802,6 +1802,18 @@ const tokens: Record<string, Token> = {
     decimals: 18,
     projectLink: 'https://www.scream.sh/',
   },
+  mim: {
+    symbol: 'MIM',
+    address: { 56: '', 97: '', 250: '0x82f0B8B456c1A451378467398982d4834b6829c1' },
+    decimals: 18,
+    projectLink: 'https://abracadabra.money',
+  },
+  avax: {
+    symbol: 'AVAX',
+    address: { 56: '', 97: '', 250: '0x1ce0c2827e2ef14d5c4f29a091d735a204794041' },
+    decimals: 18,
+    projectLink: '',
+  },
 }
 
 export default tokens

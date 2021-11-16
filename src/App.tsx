@@ -26,7 +26,7 @@ const Vaults = lazy(() => import('./views/Vaults'))
 const Pools = lazy(() => import('./views/Pools'))
 const NotFound = lazy(() => import('./views/NotFound'))
 const Analytics = lazy(() => import('./views/Analytics'))
-const Convert = lazy(() => import('./views/Convert'))
+const Convert = lazy(() => import('./views/Convert/Convert'))
 const Bridge = lazy(() => import('./views/Bridge'))
 
 // This config is required for number formatting
@@ -70,9 +70,6 @@ const App: React.FC = () => {
             </Route>
             <Route path="/farms">
               <Farms />
-            </Route>
-            <Route path="/convert">
-              <Convert />
             </Route>
             <Route path="/pools">
               <Pools />

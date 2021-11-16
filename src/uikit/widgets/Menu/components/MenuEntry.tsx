@@ -42,8 +42,7 @@ const MenuEntry = styled.div<Props>`
   //box-shadow: ${({ isActive, theme }) => (isActive ? `inset 4px 0px 0px ${theme.colors.primary}` : 'none')};
 
   a {
-    display: ${({ isMobile }) => (!isMobile ? 'flex' : 'grid')};
-    font-size: ${({ secondary, isMobile }) => (secondary ? '14px' : (isMobile ? '10px' : '16px') )};
+    display: flex;
     align-items: center;
     width: 100%;
     height: 100%;

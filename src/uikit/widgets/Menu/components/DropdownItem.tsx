@@ -54,7 +54,7 @@ const DropdownItem: React.FC<Props> = ({
   return (
     <Container>
       <MenuEntry onClick={handleClick} className={className} isActive={isActive} role="button" isMobile={isMobile}>
-        {icon}
+        {(!isMobile ? icon : null)}
         <LinkLabel isPushed={isPushed}>{label}</LinkLabel>
         {status && (
           <LinkStatusComponent color={status.color} fontSize="14px">

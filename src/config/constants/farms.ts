@@ -90,7 +90,56 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.busd,
       quoteToken: tokens.wbnb,
     },
+    // pid 6 is xjump, 5 is shit
+    {
+      pid: 7,
+      lpSymbol: 'BNB-ADA',
+      lpAddresses: {
+        56: '0x700693fbfb05ac9ee4928959591f38490711539c',
+      },
+      token: tokens.ada,
+      quoteToken: tokens.wbnb,
+    },
+    {
+      pid: 8,
+      lpSymbol: 'BNB-BTC',
+      lpAddresses: {
+        56: '0xdfb193940e1317f38e91568fdb05efe18ee4a3c7',
+      },
+      token: tokens.btc,
+      quoteToken: tokens.wbnb,
+    },
+    {
+      pid: 9,
+      lpSymbol: 'BUSD-BTCB',
+      lpAddresses: {
+        56: '0x10ee95172e77069Cf8B72bc9ae0eEa1661F6015D',
+      },
+      token: tokens.btcb,
+      quoteToken: tokens.busd,
+    },
+    {
+      pid: 10,
+      lpSymbol: 'BNB-ETH',
+      lpAddresses: {
+        56: '0x75115c644f9661a761a333ba0a38e42b1649f143',
+      },
+      token: tokens.eth,
+      quoteToken: tokens.wbnb,
+    },
+    {
+      pid: 11,
+      lpSymbol: 'BUSD-ETH',
+      lpAddresses: {
+        56: '0x6407f7a9b9e6c1e398c10a20da2fe17f89131cf0',
+      },
+      token: tokens.eth,
+      quoteToken: tokens.busd,
+    },
   ],
+
+  // 0x92265995F20747e55B8d6d6FBEcf5dF507447c83
+
   [Network.FANTOM]: [
     {
       pid: 0,
@@ -146,6 +195,88 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.jump,
       quoteToken: tokens.jump,
     }, */
+    {
+      pid: 6,
+      lpSymbol: 'USDC-DAI',
+      lpAddresses: {
+        250: '0xD7Ee3fd59a2d8082B56319f858fceaD9a902C0A1',
+      },
+      token: tokens.dai,
+      quoteToken: tokens.usdc,
+    },
+    {
+      pid: 7,
+      lpSymbol: 'FTM-CRV',
+      lpAddresses: {
+        250: '0x7785698f2aa354558c77a0186be0dfd2a9b2452d',
+      },
+      token: tokens.curve,
+      quoteToken: tokens.wftm,
+    },
+    {
+      pid: 8,
+      lpSymbol: 'FTM-BNB',
+      lpAddresses: {
+        250: '0x55c5B2868eae98f38C8c6b84435eD90B400466f9',
+      },
+      token: tokens.bnb,
+      quoteToken: tokens.wftm,
+    },
+    {
+      pid: 9,
+      lpSymbol: 'FTM-DAI',
+      lpAddresses: {
+        250: '0x6d898d98818e670c695e374ed77cd1753cf109dd',
+      },
+      token: tokens.dai,
+      quoteToken: tokens.wftm,
+    },
+    {
+      pid: 10,
+      lpSymbol: 'FTM-ICE',
+      lpAddresses: {
+        250: '0x3d7bc2ee79a21e56dc52b874de3ad5c341f6d888',
+      },
+      token: tokens.ice,
+      quoteToken: tokens.wftm,
+    },
+    // 11 is mim err
+    {
+      pid: 12,
+      lpSymbol: 'FTM-SUSHI',
+      lpAddresses: {
+        250: '0xf9f979b0283031c4afa4d668626779363b5fe510',
+      },
+      token: tokens.sushi,
+      quoteToken: tokens.wftm,
+    },
+    {
+      pid: 13,
+      lpSymbol: 'USDC-ICE',
+      lpAddresses: {
+        250: '0x2e037324b04043e80ca788e0c008bfc772b5ee32',
+      },
+      token: tokens.ice,
+      quoteToken: tokens.usdc,
+    },
+    {
+      pid: 14,
+      lpSymbol: 'JUMP-DAI',
+      lpAddresses: {
+        250: '0x60529abad498054eacaaca1b7ffed2ce4cfcb10b',
+      },
+      token: tokens.dai,
+      quoteToken: tokens.jump,
+    },
+    {
+      pid: 15,
+      lpSymbol: 'FTM-MIM',
+      lpAddresses: {
+        250: '0x90b28d674e53860ba1d560180cd7f561341ebc45',
+      },
+      token: tokens.mim,
+      quoteToken: tokens.wftm,
+    },
   ],
 }
 
