@@ -53,7 +53,6 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   background-color: transparent;
   border: none;
   transform: translate3d(0, 0, 0);
-  overflow-y:scroll;
 
   @media (max-width: 545px) {
     padding: 0 4px;
