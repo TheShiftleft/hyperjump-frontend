@@ -25,10 +25,9 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
   const { currentBlock } = useBlock()
   const { t } = useTranslation()
 
-  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
-    usePoolTimingInfo(pool)
+  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } = usePoolTimingInfo(pool)
 
-  const isMasterPool = sousId === 0
+  const isMasterPool = sousId === 6
 
   const renderBlocks = shouldShowCountdown ? (
     <Flex alignItems="center">

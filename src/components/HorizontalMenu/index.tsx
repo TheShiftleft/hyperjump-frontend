@@ -190,10 +190,11 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
             govTokenPrice={govTokenPriceString}
             govTokenBurnRate={getBalanceNumber(govTokenBurnRate, 18)}
           /> */}
-          <PriceWrapper>
-            <FarmingTokenPrice farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()} />
-          </PriceWrapper>
-          
+          {!isMobile &&
+            <PriceWrapper>
+              <FarmingTokenPrice farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()} />
+            </PriceWrapper>
+          }
           <NetworkBlock />
           <UserBlock account={account} login={login} logout={logout} />
         </Flex>

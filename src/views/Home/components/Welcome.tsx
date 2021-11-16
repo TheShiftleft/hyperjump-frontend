@@ -16,6 +16,7 @@ const StyledTotalValueLockedCard = styled(Card)`
   &::after {
     content: '';
     background-repeat: no-repeat;
+    background-image: url('/images/dashboard/mech.png');
     background-size: 120px 120px;
     top: 0;
     left: 0;

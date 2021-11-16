@@ -1,4 +1,5 @@
 export { default as ConvertIcon } from './Convert'
+export { default as BridgeIcon } from './Bridge'
 export { default as FarmIcon } from './Farm'
 export { default as GroupsIcon } from './Groups'
 export { default as HamburgerIcon } from './Hamburger'

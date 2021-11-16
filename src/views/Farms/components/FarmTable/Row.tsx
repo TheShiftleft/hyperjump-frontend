@@ -108,7 +108,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
             if (columnIndex === -1) {
               return null
             }
-            const keyProp = { ...props[key] }
             switch (key) {
               case 'details':
                 return (
@@ -131,7 +130,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
                   <CellInner key={key}>
                     <CellLayout label={t(tableSchema[columnIndex].label)}>
                       {/* eslint-disable */}
-                      {React.createElement(cells[key], { ...keyProp, userDataReady })}
+                      {React.createElement(cells[key], { ...props[key], userDataReady })}
                     </CellLayout>
                   </CellInner>
                 )

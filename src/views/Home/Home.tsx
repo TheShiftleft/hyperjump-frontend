@@ -12,8 +12,8 @@ import EarnAPRCard from 'views/Home/components/EarnAPRCard'
 import FarmingTokenStakingCard from 'views/Home/components/FarmingTokenStakingCard'
 import WinCard from 'views/Home/components/WinCard'
 import Convert0r from 'views/Convert/components/Converter'
-import Bridge from 'views/Bridge/components/Bridge'
-// import Welcome from 'views/Home/components/Welcome'
+import Welcome from 'views/Home/components/Welcome'
+import V1Links from 'views/Home/components/V1Links'
 
 const Container = styled(Flex)`
   grid-gap: 16px;
@@ -92,7 +92,9 @@ const Home: React.FC = () => {
         <Column>
           <Convert0r />
         </Column>
-        <Column />
+        <Column>
+          <V1Links />
+        </Column>
         <Column>
           <FarmingTokenStats />
           <GovTokenStats />
