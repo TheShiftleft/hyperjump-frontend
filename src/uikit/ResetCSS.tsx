@@ -111,7 +111,11 @@ const ResetCSS = createGlobalStyle`
     background: transparent; 
     border-color: transparent;
     color: transparent;
-  }  
+  } 
+
+  ::-webkit-scrollbar{
+    height:5px;
+  } 
 `;
 
 export default ResetCSS;
