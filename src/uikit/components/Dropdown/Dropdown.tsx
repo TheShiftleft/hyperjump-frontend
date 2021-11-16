@@ -6,7 +6,7 @@ const getLeft = ({ position }: PositionProps) => {
   if (position === "top-right") {
     return "100%";
   }
-  return "50%";
+  return "auto";
 };
 
 const getBottom = ({ position }: PositionProps) => {
