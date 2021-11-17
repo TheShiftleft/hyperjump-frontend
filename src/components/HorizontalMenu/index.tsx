@@ -193,6 +193,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
           <PriceWrapper>
             <FarmingTokenPrice farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()} />
           </PriceWrapper>
+          
           <NetworkBlock />
           <UserBlock account={account} login={login} logout={logout} />
         </Flex>

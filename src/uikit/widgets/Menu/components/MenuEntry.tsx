@@ -35,7 +35,7 @@ const MenuEntry = styled.div<Props>`
   align-items: center;
   height: ${MENU_ENTRY_HEIGHT}px;
   text-align: center;
-  padding: ${({ secondary }) => (secondary ? '0 32px' : '0 16px')};
+  padding: ${({ secondary }) => (secondary ? '0 32px' : '0 13px')};
   font-size: ${({ secondary, isMobile }) => (secondary ? '14px' : (isMobile ? '10px' : '16px') )};
   background-color: ${({ secondary, theme }) => (secondary ? theme.colors.background : 'transparent')};
   color: ${({ theme }) => theme.colors.textSubtle};
