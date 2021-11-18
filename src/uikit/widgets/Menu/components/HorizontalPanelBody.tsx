@@ -43,6 +43,7 @@ const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, lin
           return (
             <Dropdown 
             key={entry.label}
+            isMobile={isMobile}
             target={
               <DropdownItem
                 key={entry.label}
