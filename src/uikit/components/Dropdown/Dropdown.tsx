@@ -6,7 +6,12 @@ const getLeft = ({ position, isMobile }: PositionProps) => {
   if (position === "top-right") {
     return "100%";
   }
-  return "auto";
+
+  if( isMobile ) {
+    return "100%";
+  }
+
+  return "50%";
 };
 
 const getBottom = ({ position }: PositionProps) => {
