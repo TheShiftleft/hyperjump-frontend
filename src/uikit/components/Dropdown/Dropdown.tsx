@@ -4,10 +4,16 @@ import { DropdownProps, PositionProps, Position } from "./types";
 
 const getLeft = ({ position, isMobile }: PositionProps) => {
   console.log(isMobile)
+  
   if (position === "top-right") {
     return "100%";
   }
-  return "auto";
+
+  if( isMobile ) {
+    return "100%";
+  }
+
+  return "50%";
 };
 
 const getBottom = ({ position }: PositionProps) => {
