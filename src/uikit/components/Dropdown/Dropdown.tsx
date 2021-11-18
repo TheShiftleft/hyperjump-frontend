@@ -9,6 +9,13 @@ const getLeft = ({ position }: PositionProps) => {
   return "auto";
 };
 
+const getLeftMobile = ({ position }: PositionProps) => {
+  if (position === "top-right") {
+    return "100%";
+  }
+  return "auto";
+};
+
 const getBottom = ({ position }: PositionProps) => {
   if (position === "top" || position === "top-right") {
     return "100%";
@@ -16,13 +23,13 @@ const getBottom = ({ position }: PositionProps) => {
   return "auto";
 };
 
-const DropdownContent = styled.div<{ position: Position }>`
+const DropdownContent = styled.div<{ position: Position, isMobile }>`
   width: max-content;
   display: none;
   flex-direction: column;
   position: absolute;
   transform: translate(-50%, 0);
-  left: ${getLeft};
+  left: ${({ isMobile }) => (!isMobile ? getLeft : getLeftMobile)};
   bottom: ${getBottom};
   background-color: ${({ theme }) => theme.nav.background};
   box-shadow: ${({ theme }) => theme.shadows.level1};
@@ -41,11 +48,11 @@ const Container = styled.div`
   }
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({ target, position = "bottom", children }) => {
+const Dropdown: React.FC<DropdownProps> = ({ target, position = "bottom", children, isMobile }) => {
   return (
     <Container>
       {target}
-      <DropdownContent position={position}>{children}</DropdownContent>
+      <DropdownContent isMobile={isMobile} position={position}>{children}</DropdownContent>
     </Container>
   );
 };
