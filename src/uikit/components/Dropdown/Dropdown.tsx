@@ -22,7 +22,7 @@ const DropdownContent = styled.div<{ position: Position, isMobile, targetKey}>`
   display: none;
   flex-direction: column;
   position: absolute;
-  ${({ isMobile, targetKey }) => (!isMobile ? '' : (targetKey==='More' ? `transform: translate(-70%, 0)` : '') )};
+  ${({ isMobile, targetKey }) => (!isMobile ? '' : (targetKey==='More' ? `transform: translate(-68%, 0)` : '') )};
   left: ${getLeft};
   bottom: ${getBottom};
   background-color: ${({ theme }) => theme.nav.background};
