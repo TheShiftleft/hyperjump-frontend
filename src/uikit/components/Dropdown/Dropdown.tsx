@@ -1,15 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import { DropdownProps, PositionProps, Position } from "./types";
 
-const getLeft = ({ position, isMobile }: PositionProps) => {
+const getLeft = ({ position }: PositionProps) => {
   if (position === "top-right") {
     return "100%";
   }
-  if( position === "top" ){
-    return "70%";
-  } 
-    return "60%";
+  return "auto";
 };
 
 const getLeftMobile = ({ position }: PositionProps) => {
