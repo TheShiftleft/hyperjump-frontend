@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { DropdownProps, PositionProps, Position } from "./types";
 
 const getLeft = ({ position, isMobile }: PositionProps) => {
-  console.log(isMobile)
   if (position === "top-right") {
     return "100%";
   }
@@ -17,12 +16,12 @@ const getBottom = ({ position }: PositionProps) => {
   return "auto";
 };
 
-const DropdownContent = styled.div<{ position: Position, isMobile }>`
+const DropdownContent = styled.div<{ position: Position, isMobile, targetKey}>`
   width: max-content;
   display: none;
   flex-direction: column;
   position: absolute;
-  transform: translate(-50%, 0);
+  ${({ isMobile, targetKey }) => (!isMobile ? '' : (targetKey==='More' ? `transform: translate(-70%, 0)` : '') )};
   left: ${getLeft};
   bottom: ${getBottom};
   background-color: ${({ theme }) => theme.nav.background};
@@ -43,10 +42,11 @@ const Container = styled.div`
 `;
 
 const Dropdown: React.FC<DropdownProps> = ({ target, position = "bottom", children, isMobile }) => {
+
   return (
     <Container>
       {target}
-      <DropdownContent isMobile={isMobile} position={position}>{children}</DropdownContent>
+      <DropdownContent targetKey={target.key} isMobile={isMobile} position={position}>{children}</DropdownContent>
     </Container>
   );
 };
