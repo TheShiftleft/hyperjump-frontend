@@ -7,11 +7,7 @@ const getLeft = ({ position, isMobile }: PositionProps) => {
     return "100%";
   }
 
-  if( isMobile ) {
-    return "100%";
-  }
-
-  return "50%";
+  return "auto";
 };
 
 const getBottom = ({ position }: PositionProps) => {
