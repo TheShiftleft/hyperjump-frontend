@@ -2,14 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { DropdownProps, PositionProps, Position } from "./types";
 
-const getLeft = ({ position }: PositionProps) => {
-  if (position === "top-right") {
-    return "100%";
-  }
-  return "auto";
-};
-
-const getLeftMobile = ({ position }: PositionProps) => {
+const getLeft = ({ position, isMobile }: PositionProps) => {
+  console.log(isMobile)
   if (position === "top-right") {
     return "100%";
   }
@@ -29,7 +23,7 @@ const DropdownContent = styled.div<{ position: Position, isMobile }>`
   flex-direction: column;
   position: absolute;
   transform: translate(-50%, 0);
-  left: ${({ isMobile }) => (!isMobile ? getLeft : getLeftMobile)};
+  left: ${getLeft};
   bottom: ${getBottom};
   background-color: ${({ theme }) => theme.nav.background};
   box-shadow: ${({ theme }) => theme.shadows.level1};
