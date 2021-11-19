@@ -41,7 +41,10 @@ const HorizontalPanelBody: React.FC<Props> = ({ isPushed, pushNav, isMobile, lin
           const initialOpenState = entry.initialOpenState === true ? entry.initialOpenState : itemsMatchIndex >= 0;
 
           return (
-            <Dropdown target={
+            <Dropdown 
+            key={entry.label}
+            isMobile={isMobile}
+            target={
               <DropdownItem
                 key={entry.label}
                 isPushed={isPushed}

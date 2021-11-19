@@ -2,11 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { DropdownProps, PositionProps, Position } from "./types";
 
-const getLeft = ({ position }: PositionProps) => {
+const getLeft = ({ position, isMobile }: PositionProps) => {
   if (position === "top-right") {
     return "100%";
   }
-  return "50%";
+
+  return "auto";
 };
 
 const getBottom = ({ position }: PositionProps) => {
@@ -16,12 +17,12 @@ const getBottom = ({ position }: PositionProps) => {
   return "auto";
 };
 
-const DropdownContent = styled.div<{ position: Position }>`
+const DropdownContent = styled.div<{ position: Position, isMobile, targetKey}>`
   width: max-content;
   display: none;
   flex-direction: column;
   position: absolute;
-  transform: translate(-50%, 0);
+  ${({ isMobile, targetKey }) => (!isMobile ? '' : (targetKey==='More' ? `transform: translate(-68%, 0)` : '') )};
   left: ${getLeft};
   bottom: ${getBottom};
   background-color: ${({ theme }) => theme.nav.background};
@@ -41,11 +42,12 @@ const Container = styled.div`
   }
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({ target, position = "bottom", children }) => {
+const Dropdown: React.FC<DropdownProps> = ({ target, position = "bottom", children, isMobile }) => {
+
   return (
     <Container>
       {target}
-      <DropdownContent position={position}>{children}</DropdownContent>
+      <DropdownContent targetKey={target.key} isMobile={isMobile} position={position}>{children}</DropdownContent>
     </Container>
   );
 };
