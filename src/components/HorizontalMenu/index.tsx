@@ -156,6 +156,10 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
 
   const [opacity, setOpacity] = useState(true);
 
+  const handleMouseEnter = (e) => {
+    setOpacity(true);
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       const currentOffset = window.pageYOffset;
@@ -189,7 +193,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
 
   return (
     <Wrapper>
-      <StyledNav showMenu={showMenu} className={ opacity ? "show" : "hide"}>
+      <StyledNav showMenu={showMenu} onMouseEnter={handleMouseEnter} className={ opacity ? "show" : "hide"}>
         <NavWrapper>
           <Logo
             isPushed={isPushed}
