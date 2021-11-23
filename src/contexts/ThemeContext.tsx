@@ -20,7 +20,7 @@ const theme: DefaultTheme = {
     textSubtle: '#c7f2f9',
   },
   nav: {
-    background: 'rgba(13,29,54,0.8)'
+    background: 'rgba(13,29,54,1)'
   },
   card: {
     ...dark.card,
