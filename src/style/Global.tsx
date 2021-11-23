@@ -87,7 +87,7 @@ const GlobalStyle = createGlobalStyle`
 @keyframes fadeinout {
   0% { opacity: 0.6; }
   50% { opacity: 0.2; }
-  100% { opacity: 0; }
+  100% { opacity: 0.3; }
 }
 
 .show {
