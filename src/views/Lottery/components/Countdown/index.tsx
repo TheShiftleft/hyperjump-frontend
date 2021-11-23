@@ -7,8 +7,10 @@ import useNextEventCountdown from '../../hooks/useNextEventCountdown'
 
 const StyledFlex = styled(Flex)`
   white-space: nowrap;
+  display:block;
+  height:64px;
   > * {
-    display: inline-block;
+    display: block;
   }
 `
 

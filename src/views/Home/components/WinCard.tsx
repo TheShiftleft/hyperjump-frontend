@@ -68,10 +68,26 @@ const WinCard = () => {
   return (
     <StyledFarmStakingCard>
       <CardBody>
-        <Heading fontFamily="Bebas neue" color="primary" scale="xl">
-          {t('LOTTERY')}
-        </Heading>
-        <Heading>GOT YOUR TICKETS YET?</Heading>
+        <Flex justifyContent="space-between" alignItems="flex-end">
+          <Flex flexDirection="column">
+            <Heading fontFamily="Bebas neue" color="primary" scale="xl">
+              {t('LOTTERY')}
+            </Heading>
+            <Heading>GOT YOUR TICKETS YET?</Heading>
+          </Flex>
+
+          {status === LotteryStatus.OPEN && (
+              <>
+                <Flex flexDirection="column">
+                  <Countdown
+                      nextEventTime={nextEventTime}
+                      postCountdownText={postCountdownText}
+                      preCountdownText={preCountdownText}
+                    />
+                </Flex>
+              </>
+            )}
+        </Flex>
 
         <Flex justifyContent="space-between" alignItems="flex-end">
           {status === LotteryStatus.PENDING && (
@@ -105,13 +121,6 @@ const WinCard = () => {
                 <Heading scale="lg">
                   {amountCollectedParsed} {rewardToken}
                 </Heading>
-                <Flex>
-                  <Countdown
-                    nextEventTime={nextEventTime}
-                    postCountdownText={postCountdownText}
-                    preCountdownText={preCountdownText}
-                  />
-                </Flex>
               </Flex>
               <NavLink to="/lottery">
                 <EarningsButton>

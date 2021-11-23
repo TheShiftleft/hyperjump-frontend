@@ -24,7 +24,7 @@ const StyledTimerText = styled(Heading)`
 
 const HeadingContainer = styled.div`
   white-space: nowrap;
-  margin: 0 5px;
+  margin: 0 0px;
   > * {
     display: inline-block;
   }
