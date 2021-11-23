@@ -154,6 +154,12 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
           maximumFractionDigits: 4,
         })
 
+  const [opacity, setOpacity] = useState(true);
+
+  const handleMouseEnter = (e) => {
+    setOpacity(true);
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       const currentOffset = window.pageYOffset;
@@ -161,16 +167,18 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
       const isTopOfPage = currentOffset === 0;
       // Always show the menu when user reach the top
       if (isTopOfPage) {        
-        // setShowMenu(true);
+        setShowMenu(true);
       }      
       // Avoid triggering anything at the bottom because of layout shift
       else if (!isBottomOfPage) {
         if (currentOffset < refPrevOffset.current) {
           // Has scroll up
           // setShowMenu(true);
+          setOpacity(true);
         } else {
           // Has scroll down
           // setShowMenu(false);
+          setOpacity(false);
         }
       }
       refPrevOffset.current = currentOffset;
@@ -185,7 +193,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
 
   return (
     <Wrapper>
-      <StyledNav showMenu={showMenu}>
+      <StyledNav showMenu={showMenu} onMouseEnter={handleMouseEnter} className={ opacity ? "show" : "hide"}>
         <NavWrapper>
           <Logo
             isPushed={isPushed}
