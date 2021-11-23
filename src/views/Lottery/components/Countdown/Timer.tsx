@@ -47,26 +47,26 @@ const Wrapper: React.FC<TimerProps> = ({ minutes, hours, days }) => {
     <HeadingContainer >
       {Boolean(days) && (
         <>
-          <Heading color="#49ceeb" mb="-4px" scale="lg">
+          <Heading color="#49ceeb" mb="-4px" scale="md">
             {days}
           </Heading>
-          <Heading color="#49ceeb" mr="12px" scale="lg">{t('d')}</Heading>
+          <Heading color="#49ceeb" mr="8px" scale="md">{t('d')}</Heading>
         </>
       )}
       {Boolean(hours) && (
         <>
-          <Heading color="#49ceeb" mb="-4px" scale="lg">
+          <Heading color="#49ceeb" mb="-4px" scale="md">
             {hours}
           </Heading>
-          <Heading color="#49ceeb" mr="12px" scale="lg">{t('h')}</Heading>
+          <Heading color="#49ceeb" mr="8px" scale="md">{t('h')}</Heading>
         </>
       )}
       {Boolean(minutes) && (
         <>
-          <Heading color="#49ceeb" mb="-4px" scale="lg">
+          <Heading color="#49ceeb" mb="-4px" scale="md">
             {minutes}
           </Heading>
-          <Heading color="#49ceeb" mr="12px" scale="lg">{t('m')}</Heading>
+          <Heading color="#49ceeb" mr="8px" scale="md">{t('m')}</Heading>
         </>
       )}
     </HeadingContainer>
