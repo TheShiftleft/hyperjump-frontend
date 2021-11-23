@@ -154,7 +154,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
           maximumFractionDigits: 4,
         })
 
-  const [opacity, setOpacity] = useState(false);
+  const [opacity, setOpacity] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
