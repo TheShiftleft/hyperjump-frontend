@@ -154,6 +154,8 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
           maximumFractionDigits: 4,
         })
 
+  const [opacity, setOpacity] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentOffset = window.pageYOffset;
@@ -167,10 +169,12 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
       else if (!isBottomOfPage) {
         if (currentOffset < refPrevOffset.current) {
           // Has scroll up
-          setShowMenu(true);
+          // setShowMenu(true);
+          setOpacity(true);
         } else {
           // Has scroll down
-          setShowMenu(false);
+          // setShowMenu(false);
+          setOpacity(false);
         }
       }
       refPrevOffset.current = currentOffset;
@@ -185,7 +189,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
 
   return (
     <Wrapper>
-      <StyledNav showMenu={showMenu}>
+      <StyledNav showMenu={showMenu} className={ opacity ? "show" : "hide"}>
         <NavWrapper>
           <Logo
             isPushed={isPushed}
