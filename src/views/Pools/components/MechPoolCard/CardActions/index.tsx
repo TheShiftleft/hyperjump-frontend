@@ -55,7 +55,7 @@ const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
         )}
         <Box display="inline">
           <InlineText color="primary" textTransform="uppercase" bold fontSize="12px">
-            {isStaked ? 'MECHS ' : t('Stake')}
+            {isStaked ? 'JUMP ' : t('Stake')}
           </InlineText>
           <InlineText color={isStaked ? 'textSubtle' : 'secondary'} textTransform="uppercase" bold fontSize="12px">
             {isStaked ? t('Working') : `${stakingToken.symbol}`}

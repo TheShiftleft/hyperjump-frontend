@@ -12,8 +12,10 @@ import {
   getMulticallAddress,
   getLotteryAddress,
   getRewardMigratorAddress,
+  getMechMigratorAddress,
   getOldFarmingTokenAddress,
   getXJumpAddress,
+  getMechAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -30,7 +32,9 @@ import {
   getVaultABI,
   getLotteryABI,
   getRewardMigratorABI,
+  getMechMigratorABI,
   getXJumpABI,
+  getMechABI,
 } from 'config/abi'
 import { Pool } from 'state/types'
 import getNetwork from './getNetwork'
@@ -63,6 +67,10 @@ export const getMigratorContract = (web3?: Web3) => {
   return getContract(getRewardMigratorABI(), getRewardMigratorAddress(), web3)
 }
 
+export const getMechMigratorContract = (web3?: Web3) => {
+  return getContract(getMechMigratorABI(), getMechMigratorAddress(), web3)
+}
+
 export const getBep20Contract = (address: string, web3?: Web3) => {
   return getContract(bep20Abi, address, web3)
 }
@@ -80,6 +88,9 @@ export const getFarmingTokenContract = (web3?: Web3) => {
 }
 export const getOldFarmingTokenContract = (web3?: Web3) => {
   return getContract(getFarmingTokenABI(), getOldFarmingTokenAddress(), web3)
+}
+export const getMechContract = (web3?: Web3) => {
+  return getContract(getMechABI(), getMechAddress(), web3)
 }
 export const getMasterchefContract = (web3?: Web3) => {
   return getContract(getMasterChefABI(), getMasterChefAddress(), web3)

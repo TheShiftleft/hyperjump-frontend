@@ -6,7 +6,7 @@ import { useAppDispatch } from 'state'
 import { updateUserAllowance } from 'state/actions'
 import { approve } from 'utils/callHelpers'
 import { useTranslation } from 'contexts/Localization'
-import { useMasterchef, usePoolContract, useERC20, useRewardMigrator } from './useContract'
+import { useMasterchef, usePoolContract, useERC20, useRewardMigrator, useMechMigrator } from './useContract'
 import useToast from './useToast'
 
 // Approve migrator
@@ -22,6 +22,18 @@ export const useRewardMigratorApprove = (rewardTokencontract: Contract) => {
   return { onApprove: handleApprove }
 }
 
+// Approve  mech migrator
+export const useMechMigratorApprove = (mechTokencontract: Contract) => {
+  const { account } = useWeb3React()
+  const mechMigratorContract = useMechMigrator()
+
+  const handleApprove = useCallback(async () => {
+    const tx = await approve(mechTokencontract, mechMigratorContract, account)
+    return tx
+  }, [account, mechTokencontract, mechMigratorContract])
+
+  return { onApprove: handleApprove }
+}
 // Approve a Farm
 export const useApprove = (lpContract: Contract) => {
   const { account } = useWeb3React()

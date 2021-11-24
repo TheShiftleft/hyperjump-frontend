@@ -8,8 +8,10 @@ import {
   getVaultContract,
   getGovTokenContract,
   getMigratorContract,
+  getMechMigratorContract,
   getOldFarmingTokenContract,
   getXJumpContract,
+  getMechContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
@@ -59,9 +61,19 @@ export const useRewardMigrator = () => {
   return useMemo(() => getMigratorContract(web3), [web3])
 }
 
+export const useMechMigrator = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getMechMigratorContract(web3), [web3])
+}
+
 export const useOldFarmingToken = () => {
   const web3 = useWeb3()
   return useMemo(() => getOldFarmingTokenContract(web3), [web3])
+}
+
+export const useMechToken = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getMechContract(web3), [web3])
 }
 
 export const usePoolContract = (id: number) => {

@@ -110,7 +110,7 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
   const { t } = useTranslation()
   const { config } = getNetwork()
   const { isXs, isSm, isMd } = breakpoints
-  const isMechPool = sousId === 0
+  const isMechPool = sousId === 0 
 
   const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
     usePoolTimingInfo(pool)

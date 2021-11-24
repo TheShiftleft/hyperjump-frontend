@@ -8,6 +8,7 @@ export const getLotteryAddress = () => {
   const { config } = getNetwork()
   return getAddress(addresses.lottery)
 }
+
 export const getAddress = (address: Address): string => {
   const { chainId } = getNetwork()
   return address[chainId] ? address[chainId] : address[ChainId.BSC_MAINNET]
@@ -15,6 +16,10 @@ export const getAddress = (address: Address): string => {
 
 export const getRewardMigratorAddress = () => {
   return getAddress(addresses.migrator)
+}
+
+export const getMechMigratorAddress = () => {
+  return getAddress(addresses.mechmigrator)
 }
 
 export const getMechAddress = () => {

@@ -102,11 +102,11 @@ const farms: Record<Network, FarmConfig[]> = {
     },
     {
       pid: 8,
-      lpSymbol: 'BNB-BTC',
+      lpSymbol: 'BNB-BTCB',
       lpAddresses: {
         56: '0xdfb193940e1317f38e91568fdb05efe18ee4a3c7',
       },
-      token: tokens.btc,
+      token: tokens.btcb,
       quoteToken: tokens.wbnb,
     },
     {

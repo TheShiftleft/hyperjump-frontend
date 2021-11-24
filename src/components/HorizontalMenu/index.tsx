@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { languageList } from 'config/localization/languages'
 import { useTranslation } from 'contexts/Localization'
-import throttle from "lodash/throttle";
 import useTheme from 'hooks/useTheme'
 import useAuth from 'hooks/useAuth'
 import Overlay from 'uikit/components/Overlay/Overlay'
@@ -40,6 +39,7 @@ const Wrapper = styled.div`
 const StyledNav = styled.nav<{ showMenu: boolean }>`
   position: fixed;
   z-index: 20;
+
   top: ${({ showMenu }) => (showMenu ? 0 : `-${MENU_HEIGHT}px`)};
   left: 0;
   transition: top 0.2s;
@@ -49,8 +49,8 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
   padding-left: 8px;
   padding-right: 16px;
   width: 100%;
-  height: ${MENU_HEIGHT}px;
-  background-color: ${({ theme }) => theme.nav.background};
+  height: 56px;
+  background-color: transparent;
   border: none;
   transform: translate3d(0, 0, 0);
 
@@ -61,7 +61,7 @@ const StyledNav = styled.nav<{ showMenu: boolean }>`
 
 const BodyWrapper = styled.div`
   top: ${MENU_HEIGHT}px;
-  position: relative;
+  position: fixed;
   height: calc(100% - ${MENU_HEIGHT}px);
   width: 100%;
   display: flex;
@@ -105,6 +105,7 @@ const PriceWrapper = styled.div`
   align-self: center;
   margin-right: 10px;
 `
+
 const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
@@ -113,13 +114,10 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const { currentLanguage, setLanguage, t } = useTranslation()
   const links = config(t)
 
-  const [showMenu, setShowMenu] = useState(true);
-  const refPrevOffset = useRef(window.pageYOffset);
-
   const { isXl } = useMatchBreakpoints()
   const isMobile = isXl === false
   const [isPushed, setIsPushed] = useState(!isMobile)
-  // const [showMenu] = useState(true)
+  const [showMenu] = useState(true)
   const [hideMenuButton] = useState(true)
 
   // Find the home link if provided
@@ -153,36 +151,6 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
       : (getBalanceNumber(farmingTokenBalance.balance) * farmingTokenPriceUsd.toNumber()).toLocaleString(undefined, {
           maximumFractionDigits: 4,
         })
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentOffset = window.pageYOffset;
-      const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight;
-      const isTopOfPage = currentOffset === 0;
-      // Always show the menu when user reach the top
-      if (isTopOfPage) {        
-        setShowMenu(true);
-      }      
-      // Avoid triggering anything at the bottom because of layout shift
-      else if (!isBottomOfPage) {
-        if (currentOffset < refPrevOffset.current) {
-          // Has scroll up
-          setShowMenu(true);
-        } else {
-          // Has scroll down
-          setShowMenu(false);
-        }
-      }
-      refPrevOffset.current = currentOffset;
-    };
-    const throttledHandleScroll = throttle(handleScroll, 200);
-
-    window.addEventListener("scroll", throttledHandleScroll);
-    return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
-    };
-  }, []);
-
   return (
     <Wrapper>
       <StyledNav showMenu={showMenu}>

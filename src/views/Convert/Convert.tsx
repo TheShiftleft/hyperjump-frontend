@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { Flex, Heading } from 'uikit'
 import Page from 'components/layout/Page'
 import getNetwork from 'utils/getNetwork'
-import Converter from './components/Converter'
+import JumpConverter from './components/JumpConverter'
+import MechConverter from './components/MechConverter'
 
 const { chainId } = getNetwork()
 const oldFarmingToken = chainId === 56 ? 'alloy' : 'ori'
@@ -19,6 +20,10 @@ const Convert: React.FC = () => {
               <Heading color="primary" ml="5px" mr="5px">
                 ${oldFarmingToken}
               </Heading>
+              and
+              <Heading color="primary" ml="5px" mr="5px">
+                $MECHs
+              </Heading>
               to
               <Heading color="primary" ml="5px" mr="5px">
                 $JUMP
@@ -29,7 +34,10 @@ const Convert: React.FC = () => {
         </Flex>
 
         <Column>
-          <Converter />
+          <JumpConverter />
+        </Column>
+        <Column>
+          <MechConverter />
         </Column>
       </Container>
     </Page>

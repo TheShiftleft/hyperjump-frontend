@@ -21,14 +21,14 @@ export const approve = async (lpContract, masterChefContract, account) => {
 } */
 
 export const stake = async (masterChefContract, pid, amount, account) => {
-  if (pid === 0) {
+  /*  if (pid === 0) {
     return masterChefContract.methods
       .deposit(0, new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
       .send({ from: account })
       .on('transactionHash', (tx) => {
         return tx.transactionHash
       })
-  }
+  } */
 
   return masterChefContract.methods
     .deposit(pid, new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
@@ -103,14 +103,14 @@ export const sousEmergencyUnstake = async (sousChefContract, account) => {
 }
 
 export const harvest = async (masterChefContract, pid, account) => {
-  if (pid === 0) {
+  /*   if (pid === 0) {
     return masterChefContract.methods
       .withdraw('0', '0')
       .send({ from: account })
       .on('transactionHash', (tx) => {
         return tx.transactionHash
       })
-  }
+  } */
 
   return masterChefContract.methods
     .deposit(pid, '0')

@@ -54,7 +54,7 @@ const TwitterFeedCard = () => {
           data-theme="dark"
           dataSource={{
             sourceType: 'profile',
-            screenName: 'HyperJumpBSC',
+            screenName: 'HyperJump_fi',
           }}
           options={{
             width: '450',

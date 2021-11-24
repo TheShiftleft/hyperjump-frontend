@@ -85,7 +85,7 @@ const MechConverter: React.FC<MechConverterProps> = ({ pool }) => {
           <StyledFlex2 justifyContent="space-between">
             <StyledButton color="primary" onClick={onPresentDeposit}>
               <StyledText color="white" fontSize="11px" bold>
-                Build MECHS
+                Build X
               </StyledText>
             </StyledButton>
             <Spacer size="sm" />

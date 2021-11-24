@@ -57,7 +57,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
       await onStake(fullBalance, earningToken.decimals)
       toastSuccess(
         `${t('Compounded')}!`,
-        t('Your %symbol% earnings have been assembled into MECHS!', { symbol: earningToken.symbol }),
+        t('Your %symbol% earnings have been assembled into !', { symbol: earningToken.symbol }),
       )
       setPendingTx(false)
     } catch (e) {

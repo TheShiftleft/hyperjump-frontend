@@ -53,23 +53,24 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         href: '/pools',
         target: '_self',
       },
-      {
-        label: t('Star Vaults'),
-        //        icon: 'VaultIcon',
-        href: '/vaults',
-        target: '_self',
-      },
     ],
   },
   {
     label: t('Star Vaults'),
     icon: 'VaultIcon',
     href: '/vaults',
+    target: '_self',
   },
   {
     label: 'Play',
     icon: 'TrophyIcon',
     items: [
+      {
+        label: t('Moonbet Casino'),
+        //        icon: 'TrophyIcon',
+        href: 'https://play.hyperjump.app/',
+        target: '_blank',
+      },
       {
         label: t('Galactic Lottery'),
         //        icon: 'TrophyIcon',

@@ -9,15 +9,15 @@ import { getFarmingTokenABI, getPoolABI } from 'config/abi'
 const limitMethods: Record<Network, any> = {
   [Network.BSC]: {
     start: 'startTime',
-    end: 'endTime',
+    end: '_bonusEndBlock',
   },
   [Network.BSC_TESTNET]: {
     start: 'startTime',
-    end: 'endTime',
+    end: 'bonusEndTime',
   },
   [Network.FANTOM]: {
     start: 'startTime',
-    end: 'endTime',
+    end: 'bonusEndTime',
   },
 }
 

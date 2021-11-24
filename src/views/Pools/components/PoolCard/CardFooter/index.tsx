@@ -49,7 +49,7 @@ const Footer: React.FC<FooterProps> = ({ pool }) => {
       )}
       <StyledDetails>
         <Text fontSize="12px" bold color="primary">
-          {t('TOTAL MECHS')}:
+          {t('TOTAL JUMPS')}:
         </Text>
         <Balance fontSize="12px" isDisabled={isFinished} value={getBalanceNumber(totalStaked)} />
       </StyledDetails>

@@ -40,7 +40,7 @@ const EarnAlloy = () => {
             Earn
           </Heading>
           <Heading color="primary">Alloy</Heading>
-          <Text fontSize="12px">(Used to Build Mechs)</Text>
+          <Text fontSize="12px">(Used to Build )</Text>
           <Flex flexDirection="column" marginTop="5px">
             <Text fontSize="12px">
               Deposit LP tokens in

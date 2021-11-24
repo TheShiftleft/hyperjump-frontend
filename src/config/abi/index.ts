@@ -19,6 +19,8 @@ import bscVaultABI from './bsc-vault.json'
 import ftmVaultABI from './ftm-vault.json'
 import bscLotteryABI from './bsc-lottery.json'
 import rewardMigratorABI from './RewardMigrator.json'
+import mechABI from './mechs.json'
+import mechMigratorABI from './mechMigrator.json'
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -72,6 +74,11 @@ export const getRewardMigratorABI = () => {
   return rewardMigratorABI
 }
 
+
+export const getMechMigratorABI = () => {
+  return mechMigratorABI
+}
+
 export const getXJumpABI = () => {
   return xjumpABI
 }
@@ -100,6 +107,11 @@ export const getFarmingTokenABI = () => {
 export const getGovTokenABI = () => {
   const { chainId } = getNetwork()
   return govTokenABIs[chainId]
+}
+
+export const getMechABI = () => {
+  const { chainId } = getNetwork()
+  return mechABI
 }
 
 export const getRouterABI = () => {

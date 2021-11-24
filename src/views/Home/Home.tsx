@@ -11,7 +11,8 @@ import EarnAssetCard from 'views/Home/components/EarnAssetCard'
 import EarnAPRCard from 'views/Home/components/EarnAPRCard'
 import FarmingTokenStakingCard from 'views/Home/components/FarmingTokenStakingCard'
 import WinCard from 'views/Home/components/WinCard'
-import Convert0r from 'views/Convert/components/Converter'
+import JumpConverter from 'views/Convert/components/JumpConverter'
+import MechConverter from 'views/Convert/components/MechConverter'
 import Welcome from 'views/Home/components/Welcome'
 import V1Links from 'views/Home/components/V1Links'
 
@@ -88,9 +89,11 @@ const Home: React.FC = () => {
           </HeadingFlex>
           <ShipLogo src="/images/plane.png" />
         </Flex>
-        <Column />
         <Column>
-          <Convert0r />
+          <JumpConverter />
+        </Column>
+        <Column>
+          <MechConverter />
         </Column>
         <Column>
           <V1Links />

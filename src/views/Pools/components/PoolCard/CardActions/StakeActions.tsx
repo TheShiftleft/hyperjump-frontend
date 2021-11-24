@@ -30,7 +30,7 @@ const StakeAction: React.FC<StakeActionsProps> = ({
   const { t } = useTranslation()
   const stakedTokenBalance = getBalanceNumber(stakedBalance, stakingToken.decimals)
   const stakedTokenDollarBalance = getBalanceNumber(
-    stakedBalance.multipliedBy(stakingTokenPrice).multipliedBy(5),
+    stakedBalance.multipliedBy(stakingTokenPrice),
     stakingToken.decimals,
   )
 

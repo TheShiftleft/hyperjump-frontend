@@ -20,9 +20,9 @@ const NotEnoughTokensModal: React.FC<NotEnoughTokensModalProps> = ({ tokenSymbol
       <Text color="failure" bold>
         {t('Insufficient %symbol% balance', { symbol: tokenSymbol })}
       </Text>
-      <Text mt="24px">{t('You need to assemble some MECHs to stake in this pool!', { symbol: tokenSymbol })}</Text>
+      <Text mt="24px">{t('You need more tokens to stake in this pool!', { symbol: tokenSymbol })}</Text>
       <Text>
-        {t(`Buy some ${config.farmingToken.symbol} and assemble MECHs, or make sure your MECHSs aren't in another pool or LP.`, {
+        {t(`Buy some ${config.farmingToken.symbol}.`, {
           symbol: tokenSymbol,
         })}
       </Text>
