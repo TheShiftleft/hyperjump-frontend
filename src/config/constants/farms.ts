@@ -64,7 +64,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 2,
+      pid: 6,
       lpSymbol: 'JUMP-BUSD',
       lpAddresses: {
         56: '0x2ed207F0f273A773A890F74Dc17DEf2E6E1f42e3',
