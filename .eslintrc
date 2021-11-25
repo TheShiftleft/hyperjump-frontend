@@ -26,12 +26,6 @@
     "camelcase": "off",
     "allowElseIf": 0,
     "prefer-const": 0,
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [".js", ".jsx"]
-      }
-    ],
     "no-underscore-dangle": 0,
     // Start temporary rules
     // These rules are here just to keep the lint error to 0 during the migration to the new rule set
@@ -43,16 +37,8 @@
     "radix": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-cycle": 0,
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
+    "react/jsx-filename-extension": [0],
+        "import/extensions": "off",
     // End temporary rules
     "react/default-props-match-prop-types": 0,
     "react/no-unused-prop-types": 0,
