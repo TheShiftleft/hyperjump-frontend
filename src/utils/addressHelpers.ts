@@ -22,6 +22,10 @@ export const getMechMigratorAddress = () => {
   return getAddress(addresses.mechmigrator)
 }
 
+export const getClaimLpRewardsMigratorAddress = () => {
+  return getAddress(addresses.hyperJumpClaimLpRewards)
+}
+
 export const getMechAddress = () => {
   return getAddress(tokens.mech.address)
 }

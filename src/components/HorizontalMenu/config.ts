@@ -25,7 +25,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         target: '_self',
       },
       {
-        label: t('Convert'),
+        label: t('Convert & Claim'),
         //        icon: 'ConvertIcon',
         href: '/convert',
         target: '_self',

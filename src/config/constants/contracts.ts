@@ -74,4 +74,7 @@ export default {
     56: '0x9A493874B5E1fa9EC900A48D46C2791d894be454',
     250: '0x4E81dba135Eb3E541c65EE811EC071EAecB531A5',
   },
+  hyperJumpClaimLpRewards: {
+    56: '0xF153911d912de1f4FE576FbE4Ab29C075d656B58',
+  },
 }

@@ -10,6 +10,7 @@ const tokens: Record<string, Token> = {
     symbol: 'WFTM',
     address: {
       250: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
+      56: '0xad29abb318791d579433d831ed122afeaf29dcfe',
     },
     decimals: 18,
     projectLink: 'https://www.fantom.foundation/',
@@ -74,6 +75,15 @@ const tokens: Record<string, Token> = {
     },
     decimals: 18,
     projectLink: 'https://hyperjump.fi/',
+  },
+  glch: {
+    symbol: 'GLCH',
+    address: {
+      56: '0xf0902eb0049a4003793bab33f3566a22d2834442',
+      250: '',
+    },
+    decimals: 18,
+    projectLink: 'https://glitch.finance',
   },
   supra: {
     symbol: 'supra',

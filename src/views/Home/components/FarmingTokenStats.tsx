@@ -30,9 +30,13 @@ const FarmingTokenStats = () => {
     (farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()) && farmingTokenSupply !== 0
       ? 0
       : farmingTokenPriceUsd.toNumber() * farmingTokenSupply
-  const { config } = getNetwork()
+  const { config, chainId } = getNetwork()
   const tokenAddress = getFarmingTokenAddress()
   const imageSrc = `images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`
+  const buyLink =
+    chainId === 56
+      ? '/swap?inputCurrency=BNB&outputCurrency=0x130025eE738A66E691E6A7a62381CB33c6d9Ae83'
+      : 'swap?inputCurrency=BNB&outputCurrency=0x78de9326792ce1d6eca0c978753c6953cdeedd73'
 
   return (
     <StyledFarmingTokenStats>
@@ -48,7 +52,7 @@ const FarmingTokenStats = () => {
             <Heading mt="5px" mb="5px">
               $ {farmingTokenPriceUsdString}
             </Heading>
-            <NavLink to="/swap?inputCurrency=BNB&outputCurrency=0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd">
+            <NavLink to={buyLink}>
               <BuyButton>Buy Now</BuyButton>
             </NavLink>
           </Flex>

@@ -64,7 +64,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 6,
+      pid: 2,
       lpSymbol: 'JUMP-BUSD',
       lpAddresses: {
         56: '0x2ed207F0f273A773A890F74Dc17DEf2E6E1f42e3',
@@ -135,6 +135,24 @@ const farms: Record<Network, FarmConfig[]> = {
       },
       token: tokens.eth,
       quoteToken: tokens.busd,
+    },
+    {
+      pid: 12,
+      lpSymbol: 'BNB-FTM',
+      lpAddresses: {
+        56: '0xC6CA7790B1fB1f2d8097dC429c31Ca150A2762d8',
+      },
+      token: tokens.wftm,
+      quoteToken: tokens.wbnb,
+    },
+    {
+      pid: 13,
+      lpSymbol: 'BNB-GLCH',
+      lpAddresses: {
+        56: '0xBe9F5945606fae18D64348E64435D4CC49d3eBCe',
+      },
+      token: tokens.glch,
+      quoteToken: tokens.wbnb,
     },
   ],
 

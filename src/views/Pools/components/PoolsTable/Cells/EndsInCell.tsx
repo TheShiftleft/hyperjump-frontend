@@ -27,7 +27,7 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
 
   const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } = usePoolTimingInfo(pool)
 
-  const isMasterPool = sousId === 6
+  const isMasterPool = sousId === config.wrappedFarmingTokenPid
 
   const renderBlocks = shouldShowCountdown ? (
     <Flex alignItems="center">

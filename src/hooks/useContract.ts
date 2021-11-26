@@ -12,6 +12,7 @@ import {
   getOldFarmingTokenContract,
   getXJumpContract,
   getMechContract,
+  getClaimLpRewardsMigratorContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
@@ -59,6 +60,11 @@ export const useXJump = () => {
 export const useRewardMigrator = () => {
   const web3 = useWeb3()
   return useMemo(() => getMigratorContract(web3), [web3])
+}
+
+export const useClaimLpRewardsMigrator = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getClaimLpRewardsMigratorContract(web3), [web3])
 }
 
 export const useMechMigrator = () => {

@@ -5,9 +5,12 @@ import Page from 'components/layout/Page'
 import getNetwork from 'utils/getNetwork'
 import JumpConverter from './components/JumpConverter'
 import MechConverter from './components/MechConverter'
+import LpRewardsClaimer from './components/LpRewardsClaimer'
 
 const { chainId } = getNetwork()
 const oldFarmingToken = chainId === 56 ? 'alloy' : 'ori'
+
+console.log('test chain', chainId === 56)
 
 const Convert: React.FC = () => {
   return (
@@ -39,6 +42,13 @@ const Convert: React.FC = () => {
         <Column>
           <MechConverter />
         </Column>
+        {chainId === 56 ? (
+          <Column>
+            <LpRewardsClaimer />
+          </Column>
+        ) : (
+          <Column />
+        )}
       </Container>
     </Page>
   )

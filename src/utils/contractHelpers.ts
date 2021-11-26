@@ -16,6 +16,7 @@ import {
   getOldFarmingTokenAddress,
   getXJumpAddress,
   getMechAddress,
+  getClaimLpRewardsMigratorAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -32,6 +33,7 @@ import {
   getVaultABI,
   getLotteryABI,
   getRewardMigratorABI,
+  getClaimLpRewardsMigratorABI,
   getMechMigratorABI,
   getXJumpABI,
   getMechABI,
@@ -45,6 +47,16 @@ export const getAllowance = async (contract: Contract, owner: string, spender: s
     return allowance
   } catch (e) {
     return '0'
+  }
+}
+
+export const getClaim = async (owner: string): Promise<string> => {
+  const contract = getClaimLpRewardsMigratorContract()
+  try {
+    const claim: string = await contract.methods.canClaim().call({ from: owner })
+    return claim
+  } catch (e) {
+    return 'false'
   }
 }
 
@@ -65,6 +77,10 @@ export const getXJumpContract = (web3?: Web3) => {
 
 export const getMigratorContract = (web3?: Web3) => {
   return getContract(getRewardMigratorABI(), getRewardMigratorAddress(), web3)
+}
+
+export const getClaimLpRewardsMigratorContract = (web3?: Web3) => {
+  return getContract(getClaimLpRewardsMigratorABI(), getClaimLpRewardsMigratorAddress(), web3)
 }
 
 export const getMechMigratorContract = (web3?: Web3) => {

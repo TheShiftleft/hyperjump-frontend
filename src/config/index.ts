@@ -13,8 +13,8 @@ BigNumber.config({
 
 const { chainId, config } = getNetwork()
 
-export const FARM_TOKEN_PER_BLOCK = new BigNumber(3.141592653589793238)
-export const FARM_TOKEN_POOL_PID = 1
+export const FARM_TOKEN_PER_BLOCK = new BigNumber(config.localEmissionRate)
+// NOT IN USE ?? export const FARM_TOKEN_POOL_PID = 1
 
 export const BSC_BLOCK_TIME = 3
 export const BSC_BLOCKS_PER_YEAR = new BigNumber((60 / BSC_BLOCK_TIME) * 60 * 24 * 365) // 10512000
@@ -22,7 +22,7 @@ export const FTM_BLOCKS_PER_YEAR = new BigNumber(60 * 60 * 24 * 365)
 
 // TODO: move these into helper functions?
 export const FARM_TOKEN_PER_YEAR: Record<Network, BigNumber> = {
-  [Network.BSC]: FARM_TOKEN_PER_BLOCK.times(BSC_BLOCKS_PER_YEAR),
+  [Network.BSC]: FARM_TOKEN_PER_BLOCK.times(FTM_BLOCKS_PER_YEAR),
   [Network.BSC_TESTNET]: FARM_TOKEN_PER_BLOCK.times(BSC_BLOCKS_PER_YEAR),
   [Network.FANTOM]: FARM_TOKEN_PER_BLOCK.times(FTM_BLOCKS_PER_YEAR),
 }

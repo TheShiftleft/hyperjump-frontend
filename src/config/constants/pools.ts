@@ -37,7 +37,7 @@ const pools: Record<Network, PoolConfig[]> = {
       stakingToken: tokens.jump,
       earningToken: tokens.jump,
       contractAddress: {
-        56: '0x522650de53e79ead931e4eb3537b12d7fe06697d', // '0x4F19004b7012035D1DDD30795860e44D79a59beA', // xjump contract
+        56: '0x522650de53e79ead931e4eb3537b12d7fe06697d', // xjump contract
       },
       poolCategory: PoolCategory.CORE,
       harvest: true,

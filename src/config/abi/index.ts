@@ -21,6 +21,7 @@ import bscLotteryABI from './bsc-lottery.json'
 import rewardMigratorABI from './RewardMigrator.json'
 import mechABI from './mechs.json'
 import mechMigratorABI from './mechMigrator.json'
+import claimLpRewardMigratorABI from './claimLpRewards.json'
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -74,6 +75,9 @@ export const getRewardMigratorABI = () => {
   return rewardMigratorABI
 }
 
+export const getClaimLpRewardsMigratorABI = () => {
+  return claimLpRewardMigratorABI
+}
 
 export const getMechMigratorABI = () => {
   return mechMigratorABI
