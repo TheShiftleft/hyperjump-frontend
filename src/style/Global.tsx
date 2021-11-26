@@ -101,7 +101,7 @@ const GlobalStyle = createGlobalStyle`
 }
 
 .show {
-  opacity:0.9;
+  opacity:1;
   /*-webkit-animation: display .5s linear forwards;
   animation: display .5s linear forwards;*/
 }
@@ -113,11 +113,11 @@ const GlobalStyle = createGlobalStyle`
   -webkit-filter: blur(7px);
   background-size: cover;
   position: absolute;
-  top: 0px;
+  top: -20px;
   right: 0px;
   bottom: 0px;
   left: 0px;
-  opacity: 0.75;
+  opacity: 1;
 }
 
 
