@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from "react"
+import { animated, useSpring } from "react-spring"
 import styled from 'styled-components'
 import { Flex, Heading } from 'uikit'
 import Page from 'components/layout/Page'
@@ -73,9 +74,26 @@ const ShipLogo = styled.img`
 `
 
 const Home: React.FC = () => {
+  const ref = useRef(null);
+  const [{ offset }, set] = useSpring(() => ({ offset: 0 }));
+  const handleScroll = () => {
+    const posY = ref.current.getBoundingClientRect().top;    
+    const offset = window.pageYOffset - posY;
+    set({ offset });
+    console.log(offset)
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
+  
   return (
     <Page>
-      <Container>
+      <Container ref={ref}>
         <Flex justifyContent="center" width="100%">
           <HeadingFlex flexDirection="column" alignItems="center">
             <MainLogo src="/images/hyperjump-full-logo.png" />
