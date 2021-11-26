@@ -178,7 +178,7 @@ const TradingViewChart = ({
       setLastBarText()
 
       // update the title when hovering on the chart
-      chart.subscribeCrosshairMove(function(param) {
+      chart.subscribeCrosshairMove(({ param }) => {
         if (
           param === undefined ||
           param.time === undefined ||
