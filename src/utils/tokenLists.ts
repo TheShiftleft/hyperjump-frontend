@@ -13,7 +13,7 @@ function uriToHttp(uri: string): string[] {
       return [uri]
     case 'http':
       return [`https${uri.substr(4)}`, uri]
-    case 'ipfs':{
+    case 'ipfs': {
       let hash = uri.match(/^ipfs:(\/\/)?(.*)$/i)?.[2]
       return [`https://cloudflare-ipfs.com/ipfs/${hash}/`, `https://ipfs.io/ipfs/${hash}/`]
     }
@@ -44,7 +44,7 @@ export default async function getTokenList(listUrl: string): Promise<TokenList> 
     try {
       response = await fetch(url)
     } catch (error) {
-      console.debug('Failed to fetch list', listUrl, error)
+      // console.debug('Failed to fetch list', listUrl, error)
       if (isLast) throw new Error(`Failed to download list ${listUrl}`)
       continue
     }

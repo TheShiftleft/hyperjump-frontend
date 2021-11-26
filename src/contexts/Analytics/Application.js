@@ -178,7 +178,7 @@ export function useLatestBlock() {
           updateLatestBlock(block)
         }
       } catch (e) {
-        console.log(e)
+        // console.log(e)
       }
     }
     if (!latestBlock) {
