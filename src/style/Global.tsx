@@ -71,6 +71,12 @@ const GlobalStyle = createGlobalStyle`
   .three-line-legend {
     display: none !important;
   }
+
+  .s-nav::before {    
+    filter: blur(11px) !important;
+    -webkit-filter: blur(11px) !important;
+    top:-34px !important;
+  }
 }
 
 .tv-lightweight-charts{
@@ -109,7 +115,7 @@ const GlobalStyle = createGlobalStyle`
 .s-nav::before {    
   content: "";
   background-image: url(/bg2.jpg);
-  filter: blur(8px);
+  filter: blur(7px);
   -webkit-filter: blur(7px);
   background-size: cover;
   position: absolute;
