@@ -126,7 +126,7 @@ function AccountPage({ account }) {
 
   const dynamicPositions = activePosition ? [activePosition] : positions
 
-  const aggregateFees = dynamicPositions?.reduce(function(total, position) {
+  const aggregateFees = dynamicPositions?.reduce(({ total, position }) => {
     return total + position.fees.sum
   }, 0)
 

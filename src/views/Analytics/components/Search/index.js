@@ -207,7 +207,7 @@ export const Search = ({ small = false }) => {
           setSearchedTokens(foundTokens)
         }
       } catch (e) {
-        console.log(e)
+        // console.log(e)
       }
     }
     fetchData()
