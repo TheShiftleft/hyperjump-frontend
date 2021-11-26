@@ -22,7 +22,7 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
   transition: padding-top 0.2s, width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border:none;
   z-index: 11;
-  overflow: ${({ isPushed }) => (isPushed ? 'initial' : 'scroll')};
+  overflow: ${({ isPushed }) => (isPushed ? 'initial' : 'hidden')};
   width: 100%;
   transform: translate3d(0, 0, 0);
   ${({ isPushed }) => !isPushed && 'white-space: nowrap;'};
