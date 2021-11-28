@@ -64,7 +64,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 6,
+      pid: 2,
       lpSymbol: 'JUMP-BUSD',
       lpAddresses: {
         56: '0x2ed207F0f273A773A890F74Dc17DEf2E6E1f42e3',
@@ -178,7 +178,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wftm,
     },
     {
-      pid: 5,
+      pid: 2,
       lpSymbol: 'JUMP-USDC',
       lpAddresses: {
         250: '0x33685A26B47a1778B412Df224e99964Ca87C59BD',
