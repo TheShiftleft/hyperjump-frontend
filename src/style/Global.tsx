@@ -71,11 +71,27 @@ const GlobalStyle = createGlobalStyle`
   .three-line-legend {
     display: none !important;
   }
+
+  .s-nav::before {    
+    filter: blur(11px) !important;
+    -webkit-filter: blur(11px) !important;
+    top:-34px !important;
+  }
 }
 
-.hide {
-  -webkit-animation: fadeinout .3s linear forwards;
-  animation: fadeinout .3s linear forwards;
+.tv-lightweight-charts{
+  width: 100% !important;
+
+
+  & > * {
+    width: 100% !important;
+  }
+}
+
+.faded {
+  /*opacity:0.9;*/
+  /*-webkit-animation: fadeinout .3s linear forwards;
+  animation: fadeinout .3s linear forwards;*/
 }
 
 @-webkit-keyframes fadeinout {
@@ -91,8 +107,23 @@ const GlobalStyle = createGlobalStyle`
 }
 
 .show {
-  -webkit-animation: display .5s linear forwards;
-  animation: display .5s linear forwards;
+  opacity:1;
+  /*-webkit-animation: display .5s linear forwards;
+  animation: display .5s linear forwards;*/
+}
+
+.s-nav::before {    
+  content: "";
+  background-image: url(/bg2.jpg);
+  filter: blur(7px);
+  -webkit-filter: blur(7px);
+  background-size: cover;
+  position: absolute;
+  top: -20px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  opacity: 1;
 }
 
 
@@ -107,15 +138,10 @@ const GlobalStyle = createGlobalStyle`
   50% { opacity: 0.6; }
   100% { opacity: 1; }
 }
-
-.tv-lightweight-charts{
-  width: 100% !important;
-
-
-  & > * {
-    width: 100% !important;
-  }
+.s-nav div{
+  z-index:99;
 }
+
 `
 
 export default GlobalStyle
