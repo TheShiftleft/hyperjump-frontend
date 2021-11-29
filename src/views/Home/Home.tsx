@@ -15,57 +15,6 @@ import JumpConverter from 'views/Convert/components/JumpConverter'
 import MechConverter from 'views/Convert/components/MechConverter'
 import Welcome from 'views/Home/components/Welcome'
 import V1Links from 'views/Home/components/V1Links'
-import LpRewardsClaimer from 'views/Convert/components/LpRewardsClaimer'
-
-const Home: React.FC = () => {
-  return (
-    <Page>
-      <Container>
-        <Flex justifyContent="center" width="100%">
-          <HeadingFlex flexDirection="column" alignItems="center">
-            <MainLogo src="/images/hyperjump-full-logo.png" />
-            <MainHeading>
-              INTERGALACTIC
-              <Heading color="primary" ml="5px" mr="5px">
-                DE-FI
-              </Heading>
-              PROTOCOL
-            </MainHeading>
-          </HeadingFlex>
-          <ShipLogo src="/images/plane.png" />
-        </Flex>
-        <Column>
-          <JumpConverter />
-        </Column>
-        <Column>
-          <MechConverter />
-        </Column>
-        <Column>
-          <LpRewardsClaimer />
-        </Column>
-        <Column>
-          <FarmingTokenStats />
-          <GovTokenStats />
-        </Column>
-        <Column>
-          <FarmingTokenStakingCard />
-          <EarnFlex>
-            <EarnAssetCard />
-            <EarnAPRCard />
-          </EarnFlex>
-          <CreatePoolCard />
-          <WinCard />
-        </Column>
-        <Column>
-          <CrossChainTVLCard />
-          <TwitterFeedCard />
-        </Column>
-      </Container>
-    </Page>
-  )
-}
-
-export default Home
 
 const Container = styled(Flex)`
   grid-gap: 16px;
@@ -122,3 +71,53 @@ const ShipLogo = styled.img`
     display: block;
   }
 `
+
+const Home: React.FC = () => {
+  return (
+    <Page>
+      <Container>
+        <Flex justifyContent="center" width="100%">
+          <HeadingFlex flexDirection="column" alignItems="center">
+            <MainLogo src="/images/hyperjump-full-logo.png" />
+            <MainHeading>
+              INTERGALACTIC
+              <Heading color="primary" ml="5px" mr="5px">
+                DE-FI
+              </Heading>
+              PROTOCOL
+            </MainHeading>
+          </HeadingFlex>
+          <ShipLogo src="/images/plane.png" />
+        </Flex>
+        <Column>
+          <JumpConverter />
+        </Column>
+        <Column>
+          <MechConverter />
+        </Column>
+        <Column>
+          <V1Links />
+        </Column>
+        <Column>
+          <FarmingTokenStats />
+          <GovTokenStats />
+        </Column>
+        <Column>
+          <FarmingTokenStakingCard />
+          <EarnFlex>
+            <EarnAssetCard />
+            <EarnAPRCard />
+          </EarnFlex>
+          <CreatePoolCard />
+          <WinCard />
+        </Column>
+        <Column>
+          <CrossChainTVLCard />
+          <TwitterFeedCard />
+        </Column>
+      </Container>
+    </Page>
+  )
+}
+
+export default Home

@@ -68,7 +68,7 @@ export default {
   },
   synapse: {
     56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
-    250: '',
+    250: '0xE910dfaa50094C6BC1bF68E3CD7B244E9eC09D57',
   },
   mechmigrator: {
     56: '0x9A493874B5E1fa9EC900A48D46C2791d894be454',
@@ -76,5 +76,6 @@ export default {
   },
   hyperJumpClaimLpRewards: {
     56: '0xF153911d912de1f4FE576FbE4Ab29C075d656B58',
+    250: '0x2B4618996faD3eE7Bc9Ba8c98969A8eaf01B5E20',
   },
 }

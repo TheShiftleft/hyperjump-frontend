@@ -10,8 +10,6 @@ import LpRewardsClaimer from './components/LpRewardsClaimer'
 const { chainId } = getNetwork()
 const oldFarmingToken = chainId === 56 ? 'alloy' : 'ori'
 
-console.log('test chain', chainId === 56)
-
 const Convert: React.FC = () => {
   return (
     <Page>

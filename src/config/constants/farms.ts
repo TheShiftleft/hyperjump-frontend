@@ -90,7 +90,7 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.busd,
       quoteToken: tokens.wbnb,
     },
-    // pid 6 is xjump, 5 is shit
+    // pid 6 is xjump, 5 is wrong deployment
     {
       pid: 7,
       lpSymbol: 'BNB-ADA',
@@ -156,7 +156,6 @@ const farms: Record<Network, FarmConfig[]> = {
     },
   ],
 
-  // 0x92265995F20747e55B8d6d6FBEcf5dF507447c83
 
   [Network.FANTOM]: [
     {
@@ -205,6 +204,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wftm,
     },
     /* {
+      jump staking pool using xjump
       pid: 5,
       lpSymbol: 'JUMP',
       lpAddresses: {
@@ -258,7 +258,7 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.ice,
       quoteToken: tokens.wftm,
     },
-    // 11 is mim err
+    // 11 is mim error
     {
       pid: 12,
       lpSymbol: 'FTM-SUSHI',

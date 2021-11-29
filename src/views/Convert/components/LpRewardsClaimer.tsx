@@ -13,23 +13,21 @@ const LpRewardsClaimer = () => {
   const canClaim = useClaimLpRewardsCanClaim()
 
   return (
-    chainId === 56 && (
-      <StyledFarmingTokenStats>
-        <CardBody>
-          <Flex justifyContent="space-between" mb="20px">
-            <Flex flexDirection="column">
-              <Heading scale="xl">
-                <HeadingColor>V1 LP REWARD CLAIMER</HeadingColor>
-              </Heading>
-            </Flex>
-            <Flex flexDirection="column" alignItems="flex-end">
-              {account && canClaim && <BuyButton onClick="onClaim">Claim</BuyButton>}
-            </Flex>
+    <StyledFarmingTokenStats>
+      <CardBody>
+        <Flex justifyContent="space-between" mb="20px">
+          <Flex flexDirection="column">
+            <Heading scale="xl">
+              <HeadingColor>V1 LP REWARD CLAIMER</HeadingColor>
+            </Heading>
           </Flex>
-          {account && !canClaim && <Text>No claim available!</Text>}
-        </CardBody>
-      </StyledFarmingTokenStats>
-    )
+          <Flex flexDirection="column" alignItems="flex-end">
+            {account && canClaim && <BuyButton onClick={onClaim}>Claim</BuyButton>}
+          </Flex>
+        </Flex>
+        {account && !canClaim && <Text>Nothing for you to claim, sorry.</Text>}
+      </CardBody>
+    </StyledFarmingTokenStats>
   )
 }
 

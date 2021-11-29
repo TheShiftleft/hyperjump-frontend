@@ -20,6 +20,7 @@ const pools: Record<Network, PoolConfig[]> = {
   ],
   [Network.BSC]: [
     /*  {
+      // we dont use pid 0, instead use pid 6 for xjump
       sousId: 0,
       stakingToken: tokens.jump,
       earningToken: tokens.jump,
