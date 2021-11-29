@@ -53,8 +53,8 @@ const App: React.FC = () => {
             </Route>
 
             <Route exact strict path="/swap" component={Swap} />
-            <Route exact strict path="/bridge" component={VoltexBridge} />
             <Route exact strict path="/find" component={PoolFinder} />
+            <Route exact path="/bridge" component={VoltexBridge} />
             <Route exact path="/pool" component={Pool} />
             <Route exact path="/add" component={AddLiquidity} />
             <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
