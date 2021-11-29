@@ -13,6 +13,7 @@ import Home from './views/Home'
 import Missions from './views/Missions'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './views/Swap/AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './views/Swap/RemoveLiquidity/redirects'
+import VoltexBridge from './views/Swap/VoltexBridge'
 import AddLiquidity from './views/Swap/AddLiquidity'
 import Pool from './views/Swap/Pool'
 import PoolFinder from './views/Swap/PoolFinder'
@@ -52,6 +53,7 @@ const App: React.FC = () => {
             </Route>
 
             <Route exact strict path="/swap" component={Swap} />
+            <Route exact strict path="/bridge" component={VoltexBridge} />
             <Route exact strict path="/find" component={PoolFinder} />
             <Route exact path="/pool" component={Pool} />
             <Route exact path="/add" component={AddLiquidity} />
