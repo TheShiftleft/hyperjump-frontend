@@ -46,7 +46,7 @@ const PageHeader = ({ title, description, children }: PageHeaderProps) => {
           )}
         </Details>
         {
-          title !== "HyperRift" &&
+          title !== "Vortex Bridge" &&
           <><IconButton variant="text" onClick={onPresentSettings} title={TranslateString(1200, 'Settings')}>
             <TuneIcon width="24px" color="currentColor" />
           </IconButton>

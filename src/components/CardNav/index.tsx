@@ -30,7 +30,7 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
           {TranslateString(262, 'Liquidity')}
         </ButtonMenuItem>
         <ButtonMenuItem id="bridge-nav-link" to="/bridge" as={Link}>
-          {TranslateString(262, 'Vortex Bridge')}
+          {TranslateString(262, 'Bridge')}
         </ButtonMenuItem>
       </ButtonMenu>
     </StyledNav>
