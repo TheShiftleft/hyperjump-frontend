@@ -97,6 +97,11 @@ const connectors: Record<Network, Config[]> = {
       icon: Coin98Icon,
       connectorId: ConnectorNames.Injected,
     },
+    {
+      title: 'SafePal Wallet',
+      icon: SafePalWallet,
+      connectorId: ConnectorNames.Injected,
+    },    
   ],
 }
 
