@@ -21,7 +21,7 @@ const FarmingTokenHarvestBalance = () => {
   }, 0)
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const earningsBusd = new BigNumber(earningsSum).multipliedBy(farmingTokenPriceUsd).toNumber()
-
+  
   if (!account) {
     return (
       <Text color="textDisabled" style={{ lineHeight: '16px' }}>
