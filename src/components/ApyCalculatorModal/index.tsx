@@ -45,7 +45,8 @@ const ApyCalculatorModal: React.FC<ApyCalculatorModalProps> = ({
   const oneThousandDollarsWorthOfToken = 1000 / tokenPrice
   const { config } = getNetwork()
   earningTokenSymbol = earningTokenSymbol ?? config.farmingToken.symbol
-
+  console.log('Token Price', tokenPrice)
+  console.log('1000 / Token Price', oneThousandDollarsWorthOfToken)
   const tokenEarnedPerThousand1D = tokenEarnedPerThousandDollarsCompounding({
     numberOfDays: 1,
     farmApr: apr,
