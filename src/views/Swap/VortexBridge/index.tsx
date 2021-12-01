@@ -78,6 +78,7 @@ const Bridge = () => {
     const loadedUrlParams = useDefaultsFromURLSearch()
     const TranslateString = useI18n()
     const [modalOpen, setModalOpen] = useState(false)
+    const [input, setInput] = useState(false)
     const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
     const [disableSwap, setDisableSwap] = useState(false)
     const [hasPoppedModal, setHasPoppedModal] = useState(false)
@@ -258,118 +259,135 @@ const Bridge = () => {
         [onCurrencySelection],
     )
 
-    const BridgeSelect = ({ currency, otherCurrency, onCurrencySelect }) => (
+    return (
         <>
-            <CurrencySelect
-                selected={!!currency}
-                className="open-currency-select-button"
-                onClick={() => { setModalOpen(true) }}
-            >
-                <AutoColumn justify="start">
-                    <Aligner>
-                        {currency && (
-                            <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
-                        )}
-                        <Text id="pair">
-                            {(currency && currency.symbol && currency.symbol.length > 20
-                                ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
-                                    currency.symbol.length - 5,
-                                    currency.symbol.length
-                                )}`
-                                : currency?.symbol) || TranslateString(1196, 'Select a currency')}
-                        </Text>
+            <Container>
+                <CardNav activeIndex={2} />
+                <AppBody>
+                    <Wrapper id="swap-page" color="transparent">
+                        <PageHeaderSwap
+                            title={TranslateString(8, 'Vortex Bridge')}
+                            description={TranslateString(1192, 'Move BCS Hyper Jump tokens to Fantom Opera Chain')}
 
-                        <ChevronDownIcon />
-                    </Aligner>
-                </AutoColumn>
-            </CurrencySelect>
+                        />
+                        <CardBody p="12px">
+                            <AutoColumn gap="md">
+                                <CurrencySelect
+                                    selected={!!currencies[Field.INPUT]}
+                                    className="open-currency-select-button"
+                                    onClick={() => {
+                                        setModalOpen(true);
+                                        setInput(true)
+                                    }}
+                                >
+                                    <AutoColumn justify="start">
+                                        <Aligner>
+                                            {currencies[Field.INPUT] && (
+                                                <CurrencyLogo currency={currencies[Field.INPUT]} size="24px" style={{ marginRight: '8px' }} />
+                                            )}
+                                            <Text id="pair">
+                                                {(currencies[Field.INPUT] && currencies[Field.INPUT].symbol && currencies[Field.INPUT].symbol.length > 20
+                                                    ? `${currencies[Field.INPUT].symbol.slice(0, 4)}...${currencies[Field.INPUT].symbol.slice(
+                                                        currencies[Field.INPUT].symbol.length - 5,
+                                                        currencies[Field.INPUT].symbol.length
+                                                    )}`
+                                                    : currencies[Field.INPUT]?.symbol) || TranslateString(1196, 'Select a currency')}
+                                            </Text>
+
+                                            <ChevronDownIcon />
+                                        </Aligner>
+                                    </AutoColumn>
+                                </CurrencySelect>
+                                <CurrencyInputPanel
+                                    label={
+                                        independentField === Field.OUTPUT && !showWrap && trade
+                                            ? TranslateString(194, 'Amount (estimated)')
+                                            : TranslateString(76, 'Amount')
+                                    }
+                                    value={formattedAmounts[Field.INPUT]}
+                                    showMaxButton={!atMaxAmountInput}
+                                    currency={currencies[Field.INPUT]}
+                                    onUserInput={handleTypeInput}
+                                    onMax={handleMaxInput}
+                                    onCurrencySelect={handleInputSelect}
+                                    otherCurrency={currencies[Field.OUTPUT]}
+                                    id="swap-currency-input"
+                                />
+                                <AutoColumn justify="start">
+                                    <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
+                                        <ArrowWrapper clickable>
+                                            <IconButton
+                                                variant="tertiary"
+                                                onClick={() => {
+                                                    setApprovalSubmitted(false) // reset 2 step UI for approvals
+                                                    onSwitchTokens()
+                                                }}
+                                                style={{ borderRadius: '50%' }}
+                                                scale="sm"
+                                            >
+                                                <ArrowDownIcon color="primary" width="24px" />
+                                            </IconButton>
+                                        </ArrowWrapper>
+                                    </AutoRow>
+                                    <CurrencySelect
+                                        selected={!!currencies[Field.OUTPUT]}
+                                        className="open-currency-select-button"
+                                        onClick={() => {
+                                            setModalOpen(true);
+                                            setInput(false)
+                                        }}
+                                    >
+                                        <AutoColumn justify="start">
+                                            <Aligner>
+                                                {currencies[Field.OUTPUT] && (
+                                                    <CurrencyLogo currency={currencies[Field.OUTPUT]} size="24px" style={{ marginRight: '8px' }} />
+                                                )}
+                                                <Text id="pair">
+                                                    {(currencies[Field.OUTPUT] && currencies[Field.OUTPUT].symbol && currencies[Field.OUTPUT].symbol.length > 20
+                                                        ? `${currencies[Field.OUTPUT].symbol.slice(0, 4)}...${currencies[Field.OUTPUT].symbol.slice(
+                                                            currencies[Field.OUTPUT].symbol.length - 5,
+                                                            currencies[Field.OUTPUT].symbol.length
+                                                        )}`
+                                                        : currencies[Field.OUTPUT]?.symbol) || TranslateString(1196, 'Select a currency')}
+                                                </Text>
+
+                                                <ChevronDownIcon />
+                                            </Aligner>
+                                        </AutoColumn>
+                                    </CurrencySelect>
+                                </AutoColumn>
+                                <CurrencyInputPanel
+                                    value={formattedAmounts[Field.OUTPUT]}
+                                    onUserInput={handleTypeOutput}
+                                    label={
+                                        independentField === Field.INPUT && !showWrap && trade
+                                            ? TranslateString(196, 'Destination (estimated)')
+                                            : TranslateString(80, 'Destination')
+                                    }
+                                    showMaxButton={false}
+                                    currency={currencies[Field.OUTPUT]}
+                                    onCurrencySelect={handleOutputSelect}
+                                    otherCurrency={currencies[Field.INPUT]}
+                                    id="swap-currency-output"
+                                />
+                            </AutoColumn>
+                            <BottomGrouping>
+                                <ConnectWalletButton width="100%" label={TranslateString(80, 'Bridge to Fantom')} />
+                            </BottomGrouping>
+                        </CardBody>
+                    </Wrapper>
+                </AppBody>
+                <AdvancedSwapDetailsDropdown trade={trade} />
+            </Container>
+
             <CurrencySearchModal
                 isOpen={modalOpen}
                 onDismiss={handleDismissSearch}
-                onCurrencySelect={handleInputSelect}
-                selectedCurrency={currency}
-                otherSelectedCurrency={otherCurrency}
+                onCurrencySelect={input ? handleInputSelect : handleOutputSelect}
+                selectedCurrency={input ? currencies[Field.INPUT] : currencies[Field.OUTPUT]}
+                otherSelectedCurrency={input ? currencies[Field.OUTPUT] : currencies[Field.INPUT]}
             />
         </>
-    )
-
-    return (
-        <Container>
-            <CardNav activeIndex={2} />
-            <AppBody>
-                <Wrapper id="swap-page" color="transparent">
-                    <PageHeaderSwap
-                        title={TranslateString(8, 'Vortex Bridge')}
-                        description={TranslateString(1192, 'Move BCS Hyper Jump tokens to Fantom Opera Chain')}
-
-                    />
-                    <CardBody p="12px">
-                        <AutoColumn gap="md">
-                            <BridgeSelect
-                                currency={currencies[Field.INPUT]}
-                                otherCurrency={currencies[Field.OUTPUT]}
-                                onCurrencySelect={handleInputSelect}
-                            />
-                            <CurrencyInputPanel
-                                label={
-                                    independentField === Field.OUTPUT && !showWrap && trade
-                                        ? TranslateString(194, 'Amount (estimated)')
-                                        : TranslateString(76, 'Amount')
-                                }
-                                value={formattedAmounts[Field.INPUT]}
-                                showMaxButton={!atMaxAmountInput}
-                                currency={currencies[Field.INPUT]}
-                                onUserInput={handleTypeInput}
-                                onMax={handleMaxInput}
-                                onCurrencySelect={handleInputSelect}
-                                otherCurrency={currencies[Field.OUTPUT]}
-                                id="swap-currency-input"
-                            />
-                            <AutoColumn justify="start">
-                                <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
-                                    <ArrowWrapper clickable>
-                                        <IconButton
-                                            variant="tertiary"
-                                            onClick={() => {
-                                                setApprovalSubmitted(false) // reset 2 step UI for approvals
-                                                onSwitchTokens()
-                                            }}
-                                            style={{ borderRadius: '50%' }}
-                                            scale="sm"
-                                        >
-                                            <ArrowDownIcon color="primary" width="24px" />
-                                        </IconButton>
-                                    </ArrowWrapper>
-                                </AutoRow>
-                                <BridgeSelect
-                                    currency={currencies[Field.OUTPUT]}
-                                    otherCurrency={currencies[Field.INPUT]}
-                                    onCurrencySelect={handleOutputSelect}
-                                />
-                            </AutoColumn>
-                            <CurrencyInputPanel
-                                value={formattedAmounts[Field.OUTPUT]}
-                                onUserInput={handleTypeOutput}
-                                label={
-                                    independentField === Field.INPUT && !showWrap && trade
-                                        ? TranslateString(196, 'Destination (estimated)')
-                                        : TranslateString(80, 'Destination')
-                                }
-                                showMaxButton={false}
-                                currency={currencies[Field.OUTPUT]}
-                                onCurrencySelect={handleOutputSelect}
-                                otherCurrency={currencies[Field.INPUT]}
-                                id="swap-currency-output"
-                            />
-                        </AutoColumn>
-                        <BottomGrouping>
-                            <ConnectWalletButton width="100%" label={TranslateString(80, 'Bridge to Fantom')} />
-                        </BottomGrouping>
-                    </CardBody>
-                </Wrapper>
-            </AppBody>
-            <AdvancedSwapDetailsDropdown trade={trade} />
-        </Container>
     )
 }
 
