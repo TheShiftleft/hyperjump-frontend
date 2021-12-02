@@ -258,7 +258,6 @@ const Bridge = () => {
         },
         [onCurrencySelection],
     )
-
     return (
         <>
             <Container>
@@ -291,7 +290,7 @@ const Bridge = () => {
                                                         currencies[Field.INPUT].symbol.length - 5,
                                                         currencies[Field.INPUT].symbol.length
                                                     )}`
-                                                    : currencies[Field.INPUT]?.symbol) || TranslateString(1196, 'Select a currency')}
+                                                    : currencies[Field.INPUT]?.symbol) || TranslateString(1196, 'From Chain')}
                                             </Text>
 
                                             <ChevronDownIcon />
@@ -348,7 +347,7 @@ const Bridge = () => {
                                                             currencies[Field.OUTPUT].symbol.length - 5,
                                                             currencies[Field.OUTPUT].symbol.length
                                                         )}`
-                                                        : currencies[Field.OUTPUT]?.symbol) || TranslateString(1196, 'Select a currency')}
+                                                        : currencies[Field.OUTPUT]?.symbol) || TranslateString(1196, 'To Chain')}
                                                 </Text>
 
                                                 <ChevronDownIcon />
