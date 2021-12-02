@@ -78,11 +78,6 @@ const connectors: Record<Network, Config[]> = {
       connectorId: ConnectorNames.Injected,
     },
     {
-      title: 'OntoWallet',
-      icon: OntoWallet,
-      connectorId: ConnectorNames.Injected,
-    },
-    {
       title: 'WalletConnect',
       icon: WalletConnect,
       connectorId: ConnectorNames.WalletConnect,
