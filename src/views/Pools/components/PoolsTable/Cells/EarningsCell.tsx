@@ -37,7 +37,7 @@ const EarningsCell: React.FC<EarningsCellProps> = ({ pool, account, userDataLoad
   const earningsDollarValue = formatNumber(earningTokenDollarBalance)
 
   const labelText = t('%asset% Earned', { asset: earningToken.symbol })
- 
+
   const [onPresentCollect] = useModal(
     <CollectModal
       formattedBalance={formattedBalance}
