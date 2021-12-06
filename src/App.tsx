@@ -20,6 +20,8 @@ import RemoveLiquidity from './views/Swap/RemoveLiquidity'
 import Swap from './views/Swap/Swap'
 import Lottery from './views/Lottery'
 
+import DefaultNetwork from './utils/getNetwork'
+
 // Route-based code splitting
 const Farms = lazy(() => import('./views/Farms'))
 const Vaults = lazy(() => import('./views/Vaults'))
@@ -40,6 +42,10 @@ const App: React.FC = () => {
   useEagerConnect()
   usePollCoreFarmData()
 
+  const configDefault = DefaultNetwork()
+  const defaultInputCurr = configDefault.config.networkToken.symbol
+  const defaultOutputCurr = configDefault.config.networkToken.symbol === 'FTM' ? configDefault.config.farmingToken.address[250] : configDefault.config.farmingToken.address[56]
+
   return (
     <Router>
       <ResetCSS />
@@ -51,7 +57,10 @@ const App: React.FC = () => {
               <Home />
             </Route>
 
-            <Route exact strict path="/swap" component={Swap} />
+            <Route exact strict path="/swap" component={Swap} render={() => (
+              <Redirect to={`/swap?inputCurrency=${defaultInputCurr}&outputCurrency=${defaultOutputCurr}`}/>
+            )}/>
+
             <Route exact strict path="/find" component={PoolFinder} />
             <Route exact path="/pool" component={Pool} />
             <Route exact path="/add" component={AddLiquidity} />

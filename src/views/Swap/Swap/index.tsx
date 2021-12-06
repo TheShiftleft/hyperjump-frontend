@@ -299,6 +299,20 @@ const Swap = () => {
     [onCurrencySelection],
   )
 
+  const defaultFromCurrency = {
+    decimals: config.baseCurrency.decimals,
+    symbol: config.baseCurrency.symbol,
+    name: config.baseCurrency.symbol,
+  }
+
+  const defaultToCurrency = {
+    decimals: 18,
+    symbol: "JUMP",
+    name: "HyperJump",
+    chainId: "250",
+    address: "0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73"
+  }
+
   const slippageIsTooLow = currencies[Field.INPUT]?.symbol === config.govToken.symbol
     && (allowedSlippage / 100) < getBalanceNumber(govTokenBurnRate)
 
@@ -339,7 +353,7 @@ const Swap = () => {
                 }
                 value={formattedAmounts[Field.INPUT]}
                 showMaxButton={!atMaxAmountInput}
-                currency={currencies[Field.INPUT]}
+                currency={currencies[Field.INPUT] == null ? defaultFromCurrency : currencies[Field.INPUT]}
                 onUserInput={handleTypeInput}
                 onMax={handleMaxInput}
                 onCurrencySelect={handleInputSelect}
@@ -377,7 +391,7 @@ const Swap = () => {
                     : TranslateString(80, 'To')
                 }
                 showMaxButton={false}
-                currency={currencies[Field.OUTPUT]}
+                currency={currencies[Field.OUTPUT] == null ? defaultToCurrency : currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT]}
                 id="swap-currency-output"
