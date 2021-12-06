@@ -306,11 +306,11 @@ const Swap = () => {
   }
 
   const defaultToCurrency = {
-    decimals: 18,
-    symbol: "JUMP",
+    decimals: config.farmingToken.decimals,
+    symbol: config.farmingToken.symbol,
     name: "HyperJump",
-    chainId: "250",
-    address: "0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73"
+    chainId: config.baseCurrency.symbol === 'FTM' ? 250 : 56,
+    address: config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[250]
   }
 
   const slippageIsTooLow = currencies[Field.INPUT]?.symbol === config.govToken.symbol
@@ -357,7 +357,7 @@ const Swap = () => {
                 onUserInput={handleTypeInput}
                 onMax={handleMaxInput}
                 onCurrencySelect={handleInputSelect}
-                otherCurrency={currencies[Field.OUTPUT]}
+                otherCurrency={currencies[Field.OUTPUT] == null ? defaultToCurrency : currencies[Field.OUTPUT]}
                 id="swap-currency-input"
               />
               <AutoColumn justify="space-between">
@@ -393,7 +393,7 @@ const Swap = () => {
                 showMaxButton={false}
                 currency={currencies[Field.OUTPUT] == null ? defaultToCurrency : currencies[Field.OUTPUT]}
                 onCurrencySelect={handleOutputSelect}
-                otherCurrency={currencies[Field.INPUT]}
+                otherCurrency={currencies[Field.INPUT] == null ? defaultFromCurrency : currencies[Field.INPUT]}
                 id="swap-currency-output"
               />
 
