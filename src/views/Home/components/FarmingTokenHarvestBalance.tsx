@@ -90,6 +90,7 @@ const FarmingTokenHarvestBalance = () => {
   const earningTokenBalance = getBalanceNumber(earnings, 18)
   const hasEarnings = earnings.gt(0)
   const displayBalance = hasEarnings ? earningTokenBalance : 0
+  const totalEarningsDisplayBalance = earningsSum + displayBalance
   
   if (!account) {
     return (
@@ -100,7 +101,7 @@ const FarmingTokenHarvestBalance = () => {
   }
   return (
     <>
-      <CardValue fontSize="16px" value={displayBalance} usdval={farmingTokenPriceUsd.gt(0) && earningsBusd} />
+      <CardValue fontSize="16px" value={totalEarningsDisplayBalance} usdval={farmingTokenPriceUsd.gt(0) && earningsBusd} />
     </>
   )
 }
