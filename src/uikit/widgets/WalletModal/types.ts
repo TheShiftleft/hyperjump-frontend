@@ -7,6 +7,7 @@ export enum ConnectorNames {
   BSC = 'bsc',
   WalletLink = 'walletlink',
   Coin98 = 'injected',
+  OntoWallet = 'injected'
 }
 
 export type Login = (connectorId: ConnectorNames) => void

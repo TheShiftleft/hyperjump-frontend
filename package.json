@@ -30,6 +30,7 @@
     "@crowdin/crowdin-api-client": "1.8.16",
     "@ethersproject/abi": "^5.1.2",
     "@hyperjump-defi/sdk": "^0.1.8",
+    "@ont-dev/ontology-dapi": "^0.6.2",
     "@popperjs/core": "^2.9.2",
     "@reach/dialog": "^0.15.0",
     "@reach/portal": "^0.10.3",
