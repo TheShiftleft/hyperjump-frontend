@@ -25,7 +25,7 @@ const FarmingTokenHarvestBalance = () => {
   const [stakedOnly, setStakedOnly] = usePersistState(false, { localStorageKey: 'hyper_pool_staked' })
   const showFinishedPools = location.pathname.includes('history')
   const earningsSum = allEarnings.reduce((accum, earning) => {
-    const earningNumber = new BigNumber(earning)
+  const earningNumber = new BigNumber(earning)
     if (earningNumber.eq(0)) {
       return accum
     }
@@ -34,11 +34,6 @@ const FarmingTokenHarvestBalance = () => {
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const earningsBusd = new BigNumber(earningsSum).multipliedBy(farmingTokenPriceUsd).toNumber()
 
-  const NUMBER_OF_POOLS_VISIBLE = 12
-
-  const [numberOfPoolsVisible, setNumberOfPoolsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
-  const [sortOption, setSortOption] = useState('hot')
-  const [searchQuery, setSearchQuery] = useState('')
   const [finishedPools, openPools] = partition(pools, (pool) => pool.isFinished)
   const stakedOnlyFinishedPools = finishedPools.filter((pool) => {
     return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
@@ -46,26 +41,6 @@ const FarmingTokenHarvestBalance = () => {
   const stakedOnlyOpenPools = openPools.filter((pool) => {
     return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
   })
-
-  const sortPools = (poolsToSort: Pool[]) => {
-    switch (sortOption) {
-      case 'earned':
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => {
-            if (!pool.userData || !pool.earningTokenPrice) {
-              return 0
-            }
-            return pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
-          },
-          'desc',
-        )
-      case 'totalStaked':
-        return orderBy(poolsToSort, (pool: Pool) => pool.totalStaked.toNumber(), 'desc')
-      default:
-        return poolsToSort
-    }
-  }
 
   const poolsToShow = () => {
     let chosenPools = []
@@ -75,14 +50,7 @@ const FarmingTokenHarvestBalance = () => {
       chosenPools = stakedOnly ? stakedOnlyOpenPools : openPools
     }
 
-    if (searchQuery) {
-      const lowercaseQuery = latinise(searchQuery.toLowerCase())
-      chosenPools = chosenPools.filter((pool) =>
-        latinise(pool.earningToken.symbol.toLowerCase()).includes(lowercaseQuery),
-      )
-    }
-
-    return sortPools(chosenPools).slice(0, numberOfPoolsVisible)
+    return chosenPools
   }
 
   const poolsData = poolsToShow()
