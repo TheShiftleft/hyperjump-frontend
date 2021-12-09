@@ -29,9 +29,9 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
         <ButtonMenuItem id="pool-nav-link" to="/pool" as={Link}>
           {TranslateString(262, 'Liquidity')}
         </ButtonMenuItem>
-       {/*  <ButtonMenuItem id="bridge-nav-link" to="/bridge" as={Link}>
+        <ButtonMenuItem id="bridge-nav-link" to="/bridge" as={Link}>
           {TranslateString(262, 'Bridge')}
-        </ButtonMenuItem> */}
+        </ButtonMenuItem>
       </ButtonMenu>
     </StyledNav>
   )
