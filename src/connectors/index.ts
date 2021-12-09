@@ -51,5 +51,4 @@ export const connectorsByName: { [connectorName in ConnectorNames]: any } = {
   [ConnectorNames.BSC]: bscConnector,
   [ConnectorNames.WalletLink]: walletlink,
   [ConnectorNames.Coin98]: injected,
-  [ConnectorNames.OntoWallet]: injected,
 }
