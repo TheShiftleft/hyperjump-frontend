@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import BigNumber from 'bignumber.js'
-import { Network } from '@hyperjump-defi/sdk'
 import { useWeb3React } from '@web3-react/core'
 import { FarmConfig } from 'config/constants/types'
 import { State } from 'state/types'
@@ -15,22 +14,12 @@ export interface PoolWithBalance extends FarmConfig {
   balance: BigNumber
 }
 
-/* const pendingRewardsMethod: Record<Network, string> = {
-  [Network.BSC]: 'pendingReward',
-  [Network.BSC_TESTNET]: 'pendingReward',
-  [Network.FANTOM]: 'pendingReward',
-} */
-
 const usePoolsWithBalance = () => {
   useFetchPublicPoolsData()
 
   const [poolsWithBalances, setPoolsWithBalances] = useState<PoolWithBalance[]>([])
-  const { config } = getNetwork()
   const { account } = useWeb3React()
-  const { fastRefresh } = useRefresh()
-  const farmsConfig = useSelector((state: State) => state.farms[state.application.chainId].data)
-  const farmsToFetch = farmsConfig.filter((farmConfig) => farmConfig.pid !== null)
-
+  
   const poolsConfig = useSelector((state: State) => state.pools[state.application.chainId].data)
   const poolsToFetch = poolsConfig.filter((poolConfig) => poolConfig.sousId !== null)  
 
