@@ -62,11 +62,8 @@ const FarmingTokenHarvestBalance = () => {
   const earningToken = poolsData[0]?.earningToken ? poolsData[0]?.earningToken : BIG_ZERO
   const earningTokenPrice = poolsData[0]?.earningTokenPrice ? poolsData[0]?.earningTokenPrice : BIG_ZERO
 
-  console.log('Token',poolsData)
-
    const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
    const earningsDollarValue = new BigNumber(formatNumber(earningTokenDollarBalance)).toNumber()
-   console.log('Dollar Value', earningTokenDollarBalance)   
 
   const earningTokenBalance = getBalanceNumber(earnings, 18)
   const hasEarnings = earnings.gt(0)
