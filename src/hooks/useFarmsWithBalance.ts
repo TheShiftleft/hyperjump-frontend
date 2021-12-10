@@ -9,6 +9,7 @@ import { State } from 'state/types'
 import { useSelector } from 'react-redux'
 import { getMasterChefABI } from 'config/abi'
 import getNetwork from 'utils/getNetwork'
+import { usePriceFarmingTokenUsd, useFetchPublicPoolsData, usePools } from 'state/hooks'
 import useRefresh from './useRefresh'
 
 export interface FarmWithBalance extends FarmConfig {
@@ -22,12 +23,17 @@ export interface FarmWithBalance extends FarmConfig {
 } */
 
 const useFarmsWithBalance = () => {
+  useFetchPublicPoolsData()
+
   const [farmsWithBalances, setFarmsWithBalances] = useState<FarmWithBalance[]>([])
   const { config } = getNetwork()
   const { account } = useWeb3React()
   const { fastRefresh } = useRefresh()
   const farmsConfig = useSelector((state: State) => state.farms[state.application.chainId].data)
   const farmsToFetch = farmsConfig.filter((farmConfig) => farmConfig.pid !== null)
+
+  const poolsConfig = useSelector((state: State) => state.pools[state.application.chainId].data)
+  const poolsToFetch = poolsConfig.filter((poolConfig) => poolConfig.sousId !== null)
 
   useEffect(() => {
     const fetchBalances = async () => {
