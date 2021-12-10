@@ -9,8 +9,8 @@ export interface FarmProps {
 }
 
 const IconImage = styled(Image)`
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
 
   ${({ theme }) => theme.mediaQueries.sm} {
     width: 40px;
@@ -47,10 +47,11 @@ const Farm: React.FunctionComponent<FarmProps> = ({ image, label }) => {
     <Container>
       {img_split.length > 0 ? 
         (
+          !(isXs || isSm) && (
           <>
           <IconImage src={`/images/tokens/${primaryImg}.png`} alt="icon" width={40} height={40} mr="8px" />
           <div style={{ position:'absolute', margin:'0 0 -22px 20px', borderRadius:'10px' }} ><IconImage src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={20} height={20} mr="8px" /></div>
-          </>
+          </> )
         ) : !(isXs || isSm) && (<IconImage src={`/images/farms/${image}.svg`} alt="icon" width={40} height={40} mr="8px" />)
       }     
       <div>

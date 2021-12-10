@@ -26,8 +26,8 @@ const StyledHeading = styled(Heading)`
   margin: 16px 0px;
 `
 const IconImageSm = styled(Image)`
-  width: 15px;
-  height: 15px;
+  width: 35px;
+  height: 35px;
 
   ${({ theme }) => theme.mediaQueries.sm} {
     width: 40px;
