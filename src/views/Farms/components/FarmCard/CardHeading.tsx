@@ -49,8 +49,8 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({
       {img_split.length > 0 ? 
         (
           <>
-            <Image src={`/images/farms/tokens/${primaryImg}.png`} alt={tokenSymbol} width={64} height={64} mb="6px" />
-            <div style={{ position:'absolute', margin:'31px 0 0 35px', borderRadius:'10px' }}><IconImageSm src={`/images/farms/tokens/${secondaryImg}.png`} alt="icon" width={32} height={32} mr="3px" /></div>
+            <Image src={`/images/tokens/${primaryImg}.png`} alt={tokenSymbol} width={64} height={64} mb="6px" />
+            <div style={{ position:'absolute', margin:'31px 0 0 35px', borderRadius:'10px' }}><IconImageSm src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={32} height={32} mr="3px" /></div>
           </>
         ) : <Image src={`/images/farms/${farmImage}.svg`} alt={tokenSymbol} width={64} height={64} mb="6px" />
       } 
