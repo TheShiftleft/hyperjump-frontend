@@ -8,7 +8,7 @@ import { usePriceFarmingTokenUsd, usePools } from 'state/hooks'
 import { DEFAULT_TOKEN_DECIMAL } from 'config'
 import { useLocation } from 'react-router-dom'
 import orderBy from 'lodash/orderBy'
-import { getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
+import { formatNumber, getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
 import { Pool } from 'state/types'
 import partition from 'lodash/partition'
 import { latinise } from 'utils/latinise'
@@ -55,11 +55,20 @@ const FarmingTokenHarvestBalance = () => {
 
   const poolsData = poolsToShow()
   const earnings  = poolsData[0]?.userData ? new BigNumber(poolsData[0].userData.pendingReward) : BIG_ZERO
+  const earningToken = poolsData[0]?.earningToken
+  const earningTokenPrice = new BigNumber(0.023566906292696064)
+
+  const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
+  const earningsDollarValue = formatNumber(earningTokenDollarBalance)
+
+  console.log(earningsDollarValue)
+
   const earningTokenBalance = getBalanceNumber(earnings, 18)
   const hasEarnings = earnings.gt(0)
   const displayBalance = hasEarnings ? earningTokenBalance : 0
   const totalEarningsDisplayBalance = earningsSum + displayBalance
-  
+
+
   if (!account) {
     return (
       <Text color="textDisabled" style={{ lineHeight: '16px' }}>
