@@ -6,6 +6,7 @@ import { harvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
+import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
 import { useMasterchef } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
@@ -52,10 +53,10 @@ const FarmingTokenStakingCard = () => {
   const { account } = useWeb3React()
   const { t } = useTranslation()
   const farmsWithBalance = useFarmsWithBalance()
+  const poolsWithBalance = usePoolsWithBalance()
   const masterChefContract = useMasterchef()
   const { config } = getNetwork()
-  const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)
-
+  const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() + poolsWithBalance > 0)  
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
     // eslint-disable-next-line no-restricted-syntax
