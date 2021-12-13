@@ -2,12 +2,12 @@ import React, { useState, useCallback } from 'react'
 import { NavLink } from "react-router-dom";
 import styled from 'styled-components'
 import { Heading, Card, CardBody, Button, Text, Flex } from 'uikit'
-import { harvest } from 'utils/callHelpers'
+import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
 import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
-import { useMasterchef } from 'hooks/useContract'
+import { useMasterchef, useXJump } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
 import FarmingTokenHarvestBalance from './FarmingTokenHarvestBalance'
@@ -54,9 +54,12 @@ const FarmingTokenStakingCard = () => {
   const { t } = useTranslation()
   const farmsWithBalance = useFarmsWithBalance()
   const poolsWithBalance = usePoolsWithBalance()
+  console.log('farms', farmsWithBalance)
+  console.log('pools', poolsWithBalance)
   const masterChefContract = useMasterchef()
+  const xjumpContract = useXJump()
   const { config } = getNetwork()
-  const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() + poolsWithBalance > 0)  
+  const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() + 1 > 0)  
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
     // eslint-disable-next-line no-restricted-syntax
@@ -68,8 +71,17 @@ const FarmingTokenStakingCard = () => {
         // TODO: find a way to handle when the user rejects transaction or it fails
       }
     }
+
+    for (const poolWithBalance of balancesWithValue) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await soushHarvest(xjumpContract, poolWithBalance.sousId, account)
+      } catch (error) {
+        // TODO: find a way to handle when the user rejects transaction or it fails
+      }
+    }
     setPendingTx(false)
-  }, [account, balancesWithValue, masterChefContract])
+  }, [account, balancesWithValue, masterChefContract, xjumpContract])
 
   return (
     <StyledFarmingTokenStakingCard>
