@@ -32,9 +32,6 @@ const useFarmsWithBalance = () => {
   const farmsConfig = useSelector((state: State) => state.farms[state.application.chainId].data)
   const farmsToFetch = farmsConfig.filter((farmConfig) => farmConfig.pid !== null)
 
-  const poolsConfig = useSelector((state: State) => state.pools[state.application.chainId].data)
-  const poolsToFetch = poolsConfig.filter((poolConfig) => poolConfig.sousId !== null)
-
   useEffect(() => {
     const fetchBalances = async () => {
       const calls = farmsToFetch.map((farm) => ({
