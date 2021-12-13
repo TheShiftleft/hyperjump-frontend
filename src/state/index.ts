@@ -12,6 +12,7 @@ import { updateVersion } from './global/actions'
 import user from './user/reducer'
 import transactions from './transactions/reducer'
 import swap from './swap/reducer'
+import bridge from './bridge/reducer'
 import mint from './mint/reducer'
 import lists from './lists/reducer'
 import burn from './burn/reducer'
@@ -45,6 +46,7 @@ const store = configureStore({
     transactions,
     user,
     swap,
+    bridge,
     mint,
     burn,
     multicall,

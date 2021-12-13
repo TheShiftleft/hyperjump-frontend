@@ -108,3 +108,11 @@ export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) 
   )
   return useApproveCallback(amountToApprove, getRouterAddress())
 }
+
+export function useApproveCallbackFromBridge(parsedAmount?: CurrencyAmount | undefined, allowedSlippage = 0) {
+  const amountToApprove = useMemo(
+    () => (parsedAmount ?? undefined ? parsedAmount : undefined),
+    [parsedAmount],
+  )
+  return useApproveCallback(amountToApprove, getRouterAddress())
+}
