@@ -4,15 +4,16 @@ import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'contexts/Localization'
 import useAllEarnings from 'hooks/useAllEarnings'
-import { usePriceFarmingTokenUsd, usePools } from 'state/hooks'
+import { usePriceFarmingTokenUsd, useFetchPublicPoolsData, usePools } from 'state/hooks'
 import { DEFAULT_TOKEN_DECIMAL } from 'config'
 import { useLocation } from 'react-router-dom'
 import orderBy from 'lodash/orderBy'
-import { getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
+import { formatNumber, getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
 import { Pool } from 'state/types'
 import partition from 'lodash/partition'
 import { latinise } from 'utils/latinise'
 import { BIG_ZERO } from 'utils/bigNumber'
+import getNetwork from 'utils/getNetwork'
 import usePersistState from 'hooks/usePersistState'
 import CardValue from './CardValue'
 
@@ -25,7 +26,8 @@ const FarmingTokenHarvestBalance = () => {
   const [stakedOnly, setStakedOnly] = usePersistState(false, { localStorageKey: 'hyper_pool_staked' })
   const showFinishedPools = location.pathname.includes('history')
   const earningsSum = allEarnings.reduce((accum, earning) => {
-    const earningNumber = new BigNumber(earning)
+  const earningNumber = new BigNumber(earning)
+  const { config } = getNetwork()
     if (earningNumber.eq(0)) {
       return accum
     }
@@ -34,11 +36,6 @@ const FarmingTokenHarvestBalance = () => {
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const earningsBusd = new BigNumber(earningsSum).multipliedBy(farmingTokenPriceUsd).toNumber()
 
-  const NUMBER_OF_POOLS_VISIBLE = 12
-
-  const [numberOfPoolsVisible, setNumberOfPoolsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
-  const [sortOption, setSortOption] = useState('hot')
-  const [searchQuery, setSearchQuery] = useState('')
   const [finishedPools, openPools] = partition(pools, (pool) => pool.isFinished)
   const stakedOnlyFinishedPools = finishedPools.filter((pool) => {
     return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
@@ -47,25 +44,7 @@ const FarmingTokenHarvestBalance = () => {
     return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
   })
 
-  const sortPools = (poolsToSort: Pool[]) => {
-    switch (sortOption) {
-      case 'earned':
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => {
-            if (!pool.userData || !pool.earningTokenPrice) {
-              return 0
-            }
-            return pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
-          },
-          'desc',
-        )
-      case 'totalStaked':
-        return orderBy(poolsToSort, (pool: Pool) => pool.totalStaked.toNumber(), 'desc')
-      default:
-        return poolsToSort
-    }
-  }
+  useFetchPublicPoolsData()
 
   const poolsToShow = () => {
     let chosenPools = []
@@ -75,23 +54,22 @@ const FarmingTokenHarvestBalance = () => {
       chosenPools = stakedOnly ? stakedOnlyOpenPools : openPools
     }
 
-    if (searchQuery) {
-      const lowercaseQuery = latinise(searchQuery.toLowerCase())
-      chosenPools = chosenPools.filter((pool) =>
-        latinise(pool.earningToken.symbol.toLowerCase()).includes(lowercaseQuery),
-      )
-    }
-
-    return sortPools(chosenPools).slice(0, numberOfPoolsVisible)
+    return chosenPools
   }
 
   const poolsData = poolsToShow()
   const earnings  = poolsData[0]?.userData ? new BigNumber(poolsData[0].userData.pendingReward) : BIG_ZERO
+  const earningToken = poolsData[0]?.earningToken ? poolsData[0]?.earningToken : BIG_ZERO
+  const earningTokenPrice = poolsData[0]?.earningTokenPrice ? poolsData[0]?.earningTokenPrice : BIG_ZERO
+
+   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
+   const earningsDollarValue = new BigNumber(formatNumber(earningTokenDollarBalance)).toNumber()
+
   const earningTokenBalance = getBalanceNumber(earnings, 18)
   const hasEarnings = earnings.gt(0)
   const displayBalance = hasEarnings ? earningTokenBalance : 0
   const totalEarningsDisplayBalance = earningsSum + displayBalance
-  
+
   if (!account) {
     return (
       <Text color="textDisabled" style={{ lineHeight: '16px' }}>
@@ -101,7 +79,7 @@ const FarmingTokenHarvestBalance = () => {
   }
   return (
     <>
-      <CardValue fontSize="16px" value={totalEarningsDisplayBalance} usdval={farmingTokenPriceUsd.gt(0) && earningsBusd} />
+      <CardValue fontSize="16px" value={totalEarningsDisplayBalance} usdval={earningsDollarValue + earningsBusd} />
     </>
   )
 }

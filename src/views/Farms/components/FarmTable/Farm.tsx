@@ -9,8 +9,17 @@ export interface FarmProps {
 }
 
 const IconImage = styled(Image)`
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    width: 40px;
+    height: 40px;
+  }
+`
+const IconImageSm = styled(Image)`
+  width: 15px;
+  height: 15px;
 
   ${({ theme }) => theme.mediaQueries.sm} {
     width: 40px;
@@ -29,11 +38,22 @@ const Container = styled.div`
 
 const Farm: React.FunctionComponent<FarmProps> = ({ image, label }) => {
   const { isXs, isSm } = useMatchBreakpoints()
+
+  const img_split    = image.split('-')
+  const primaryImg   = img_split[0]
+  const secondaryImg = img_split[1]
+
   return (
     <Container>
-      {!(isXs || isSm) && (
-        <IconImage src={`/images/farms/${image}.svg`} alt="icon" width={40} height={40} mr="8px" />
-      )}
+      {img_split.length > 0 ? 
+        (
+          !(isXs || isSm) && (
+          <>
+          <IconImage src={`/images/tokens/${primaryImg}.png`} alt="icon" width={40} height={40} mr="8px" />
+          <div style={{ position:'absolute', margin:'0 0 -22px 20px', borderRadius:'10px' }} ><IconImage src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={20} height={20} mr="8px" /></div>
+          </> )
+        ) : !(isXs || isSm) && (<IconImage src={`/images/farms/${image}.svg`} alt="icon" width={40} height={40} mr="8px" />)
+      }     
       <div>
         <Text bold>{label}</Text>
       </div>
