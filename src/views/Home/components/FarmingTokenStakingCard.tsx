@@ -4,12 +4,12 @@ import React, { useState, useCallback } from 'react'
 import { NavLink } from "react-router-dom";
 import styled from 'styled-components'
 import { Heading, Card, CardBody, Button, Text, Flex } from 'uikit'
-import { harvest } from 'utils/callHelpers'
+import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
 import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
-import { useMasterchef } from 'hooks/useContract'
+import { useMasterchef, usePoolContract } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
 import { BIG_ZERO } from 'utils/bigNumber'
@@ -61,14 +61,14 @@ const FarmingTokenStakingCard = () => {
   const farmsWithBalance = useFarmsWithBalance()
   const poolsWithBalance = usePoolsWithBalance()
 
-  console.log('farmsWithBalance', farmsWithBalance)
-  console.log('poolsWithBalance', poolsWithBalance)
-
   const masterChefContract = useMasterchef()
   const { config } = getNetwork()
+  const poolContract = usePoolContract(config.wrappedFarmingTokenPid)
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
-  const poolsWithValue    = poolsWithBalance.filter((balanceType) => balanceType.harvest === true)  
-  console.log('poolsWithValue1', poolsWithValue)
+  const poolsWithValue    = poolsWithBalance.filter((balanceType) => console.log(balanceType) )
+ 
+ 
+  
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
     // eslint-disable-next-line no-restricted-syntax
@@ -80,10 +80,18 @@ const FarmingTokenStakingCard = () => {
         // TODO: find a way to handle when the user rejects transaction or it fails
       }
     }
-    // setPendingTx(false)
-  }, [account, balancesWithValue, masterChefContract])
+
+
+      await soushHarvest(poolContract, account)
+
+
+    setPendingTx(false)
+  }, [account, balancesWithValue, poolContract, masterChefContract])
 
   const poolHarvestBalanceLength = balancesWithValue.length + poolsWithValue.length
+
+  console.log(poolsWithValue)
+
   const { onReward } = useSousHarvest(6, false)
   const harvestAllPools = async () => {
     setPendingTx(true)
@@ -114,10 +122,6 @@ const FarmingTokenStakingCard = () => {
 
           <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={poolHarvestBalanceLength <= 0 || pendingTx}>
             HARVEST ALL
-          </CardButton>
-          
-          <CardButton onClick={harvestAllPools}>
-            POOL
           </CardButton>
           
         </Flex>
