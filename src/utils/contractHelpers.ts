@@ -127,6 +127,5 @@ export const getLotteryContract = (web3?: Web3) => {
 }
 
 export const getSynapseBridgeContract = (web3?: Web3) => {
-  console.log("SYNAPSE_BRIDGE_ABI.abi", SYNAPSE_BRIDGE_ABI.abi)
   return getContract(SYNAPSE_BRIDGE_ABI.abi, getSynapseBridgeAddress(), web3)
 }

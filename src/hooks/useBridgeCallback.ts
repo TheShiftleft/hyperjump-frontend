@@ -57,7 +57,6 @@ export function useBridgeCallback(
       const bFee = new BigNumber((bf ?? undefined ? bf.toString() : "0"))
       const inputAmount = (currencyAmountFrom ?? undefined ? new BigNumber(currencyAmountFrom.toExact()).multipliedBy(BIG_TEN.pow(18)) : new BigNumber("0") ) 
       const amountWithFee = inputAmount.minus(bFee).dividedBy(BIG_TEN.pow((fromToken instanceof Token ? fromToken.decimals : 18)));
-      console.log("wooot",amountWithFee.toString());
       return amountWithFee.toString()
     })
 
