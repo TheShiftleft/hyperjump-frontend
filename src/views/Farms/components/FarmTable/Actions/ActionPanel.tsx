@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
-import { Link, Text, useMatchBreakpoints } from 'uikit'
+import { Link, Text, useMatchBreakpoints, Flex } from 'uikit'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import { getScannerAddressUrl } from 'utils/bscscan'
@@ -66,7 +66,15 @@ const Container = styled.div<{ expanded }>`
 const StyledLinkExternal = styled(Link)`
   font-weight: 400;
 `
+const TimeContainer = styled.text`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 0.8rem;
+`
 
+const TimeTitle = styled.text`
+  color: ${({ theme }) => theme.colors.blue};
+  font-size: 0.9rem;
+`
 const StakeContainer = styled.div`
   color: ${({ theme }) => theme.colors.text};
   align-items: center;
@@ -182,19 +190,33 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     <Container expanded={expanded}>
       <DetailsContainer>
         <InfoContainer>
-          {isActive && (
-            <StakeContainer>
-              <StyledLinkExternal
-                href={`${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${
-                  getAddress(token.address)
-                }`}
-              >
-                {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
-              </StyledLinkExternal>
-            </StakeContainer>
-          )}
-          <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
-          <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal>
+          <Flex flexDirection="row" width="100%">
+            <Flex flexDirection="column" flex="1">
+              {isActive && (
+                <StakeContainer>
+                  <StyledLinkExternal
+                    href={`${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${
+                      getAddress(token.address)
+                    }`}
+                  >
+                    {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
+                  </StyledLinkExternal>
+                </StakeContainer>
+              )}
+              <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
+              <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal> 
+            </Flex>
+            <Flex flexDirection="column" flex="1" justifyContent="space-between">
+              <Flex flexDirection="column">
+                <TimeTitle >{t('Start time')}</TimeTitle>
+                <TimeContainer >--</TimeContainer>
+              </Flex>
+              <Flex flexDirection="column">
+                <TimeTitle >{t('End time')}</TimeTitle>
+                <TimeContainer >--</TimeContainer>
+              </Flex>
+            </Flex>
+          </Flex>
         </InfoContainer>
         {(isXs || isSm || isMd) && (
           <ValueContainer>
