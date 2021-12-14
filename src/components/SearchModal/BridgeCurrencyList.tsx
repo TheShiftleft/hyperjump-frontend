@@ -98,15 +98,8 @@ function CurrencyRow({
 }) {
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
-  const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
-  const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
-  const removeToken = useRemoveUserAddedToken()
-  const addToken = useAddUserToken()
-
-  // only show add or remove buttons if not on selected list
   return (
     <MenuItem
       style={style}

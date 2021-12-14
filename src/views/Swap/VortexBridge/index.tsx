@@ -2,30 +2,22 @@ import { Currency, CurrencyAmount, JSBI, Token, Trade, ChainId } from '@hyperjum
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
 import  { Redirect, Route } from 'react-router'
 import { useWeb3React } from '@web3-react/core'
-import { ArrowDown } from 'react-feather'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal, ChevronDownIcon } from 'uikit'
 import styled, { ThemeContext } from 'styled-components'
 import { darken } from 'polished'
-import AddressInputPanel from 'components/AddressInputPanel'
-import Card, { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import NetworkBridgeInputPanel from 'components/NetworkBridgeInputPanel'
 import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
-import TradePrice from 'components/swap/TradePrice'
-import TokenWarningModal from 'components/TokenWarningModal'
+
 import ProgressSteps from 'components/ProgressSteps'
 import Container from 'components/Container'
-import CurrencyLogo from 'components/CurrencyLogo'
 import NetworkLogo from 'components/NetworkLogo'
 import bridgeNetworks from 'config/constants/bridgeNetworks'
 
 import { BASE_EXCHANGE_URL, INITIAL_ALLOWED_SLIPPAGE } from 'config/index'
-import { useCurrency, useCurrencyOnOtherChain } from 'hooks/Tokens'
 import { useFarms } from 'state/hooks'
 import { ApprovalState, useApproveCallbackFromBridge } from 'hooks/useApproveCallback'
 import { useBridgeCallback } from 'hooks/useBridgeCallback'
@@ -105,8 +97,8 @@ const Bridge = () => {
     const [input, setInput] = useState(false)
     const [bridgeTokensOnly] = useState(true)
     const [toRedirect, setRedirect] = useState(false)
-    const [fromBridgeNetworkKey, setFromBridgeNetworkKey] = useState("0") // Default 0 index = BSC ... see bridgeNetworks.ts
-    const [toBridgeNetworkKey, setToBridgeNetworkKey] = useState("1") // Default 1 index = FTM ... see bridgeNetworks.ts
+    const [fromBridgeNetworkKey, setFromBridgeNetworkKey] = useState("0") 
+    const [toBridgeNetworkKey, setToBridgeNetworkKey] = useState("1")
     const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
     const [disableSwap, setDisableSwap] = useState(false)
     const [hasPoppedModal, setHasPoppedModal] = useState(false)
@@ -115,45 +107,28 @@ const Bridge = () => {
         <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
     )
     const onPresentV2ExchangeRedirectModalRef = useRef(onPresentV2ExchangeRedirectModal)
-    // token warning stuff
 
-    const outputChainId = useMemo(() => {
-        let otherOutputChainId = loadedUrlParams?.outputChainId
+    useMemo(() => {
         if(loadedUrlParams?.outputChainId === ''){
+            Object.keys(bridgeNetworks)
+            .forEach(function eachKey(key) { 
+              if(bridgeNetworks[key].chainId === config.id)
+                  setFromBridgeNetworkKey(key)
+              
+            });
             setRedirect(true);
-            otherOutputChainId = (config.id.toString() === '56' ? '250' : '56')
+            
         }
-        return otherOutputChainId;
     }, [loadedUrlParams, config]) 
-
-    const [loadedInputCurrency, loadedOutputCurrency] = [
-        useCurrency(loadedUrlParams?.inputCurrencyId),
-        useCurrencyOnOtherChain(loadedUrlParams?.outputCurrencyId, loadedUrlParams?.outputChainId),
-    ]
-
-    const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(true)
-    const urlLoadedTokens: Token[] = useMemo(
-        () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c instanceof Token) ?? [],
-        [loadedInputCurrency, loadedOutputCurrency],
-    )
-    const handleConfirmTokenWarning = useCallback(() => {
-        setDismissTokenWarning(true)
-    }, [])
 
     const handleDismissSearch = useCallback(() => {
         setModalOpen(false)
     }, [setModalOpen])
 
     const { account } = useWeb3React()
-    const theme = useContext(ThemeContext)
-
     const [isExpertMode] = useExpertModeManager()
 
-    // get custom setting values for user
-    const [deadline] = useUserDeadline()
-    const [allowedSlippage, setSlippage] = useUserSlippageTolerance()
-
-    // swap state
+    // bridge state
     const { independentField, typedValue, recipient } = useBridgeState()
 
     const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedBridgeInfo()
@@ -164,9 +139,6 @@ const Bridge = () => {
     } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
     const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
     const trade = showWrap ? undefined : v2Trade
-
-    // gov token burn
-    const govTokenBurnRate = useGovTokenBurnRate()
 
     // Manage disabled trading pairs that should redirect users to V2
     useEffect(() => {
@@ -263,14 +235,8 @@ const Bridge = () => {
             : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
     }
 
-    const route = trade?.route
-    const userHasSpecifiedInputOutput = Boolean(
-        currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0)),
-    )
-    const noRoute = !route
-
     // check whether the user has approved the router on the input token
-    const [approval, approveCallback] = useApproveCallbackFromBridge((independentField === Field.INPUT ? parsedAmount : undefined), allowedSlippage)
+    const [approval, approveCallback] = useApproveCallbackFromBridge((independentField === Field.INPUT ? parsedAmount : undefined))
 
     // check if user has gone through approval process, used to show two step buttons, reset on token change
     const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -285,8 +251,8 @@ const Bridge = () => {
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
-    // the callback to execute the swap
-    const { callback: swapCallback, error: swapCallbackError } = useBridgeCallback(
+    // the callback to execute the bridge
+    const { callback: bridgeCallback, error: bridgeCallbackError } = useBridgeCallback(
         (independentField === Field.INPUT ? parsedAmount : undefined),
         bridgeNetworks[toBridgeNetworkKey],
         currencies[Field.INPUT],
@@ -295,11 +261,11 @@ const Bridge = () => {
     )
 
     const handleBridge = useCallback(() => {
-      if (!swapCallback) {
+      if (!bridgeCallback) {
         return
       }
       setBridgeState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
-      swapCallback()
+      bridgeCallback()
         .then((hash) => {
           setBridgeState((prevState) => ({
             ...prevState,
@@ -316,14 +282,22 @@ const Bridge = () => {
             txHash: undefined,
           }))
         })
-    }, [swapCallback, setBridgeState])
+    }, [bridgeCallback, setBridgeState])
 
     useEffect(() => {
         // Override Default TO Bridge Network based on config
+        // TO-DO need this to update if we add more chain
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
-            if(bridgeNetworks[key].chainId === config.id)
-                setFromBridgeNetworkKey(key)
+            if(bridgeNetworks[key].chainId === config.id){
+              setFromBridgeNetworkKey(key);
+              console.log("ASASA", bridgeNetworks[key])
+              
+            }else{
+              setToBridgeNetworkKey(key);
+            }
+            
+                
             
           });
     },[config])
@@ -349,7 +323,7 @@ const Bridge = () => {
             
           });
 
-        // TO DO - switch wallet network 
+        setRedirect(true);
       },
       [onNetworkSelection],
     )
@@ -366,6 +340,7 @@ const Bridge = () => {
                 setToBridgeNetworkKey(key)
             
           });
+
       },
       [onNetworkSelection],
     )
@@ -394,10 +369,14 @@ const Bridge = () => {
         },
         [onCurrencySelection],
     )
+
     return (
         <>
             <Container>
-                {(toRedirect ? <Redirect to={`/bridge/?outputChainId=${outputChainId}`} /> : '')}
+                {(toRedirect ? <Route path='/bridge' component={() => { 
+                      window.location.href = `${bridgeNetworks[fromBridgeNetworkKey].redirect_url}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`; 
+                      return null;
+                  }} /> : '')}
                 <CardNav activeIndex={2} />
                 <AppBody>
                     <Wrapper id="swap-page" color="transparent">
@@ -412,7 +391,7 @@ const Bridge = () => {
                                     selected={!!currencies[Field.INPUT]}
                                     className="open-currency-select-button"
                                     onClick={() => {
-                                        setModalOpen(true);
+                                        setModalOpen(true)
                                         setInput(true)
                                     }}
                                 >
@@ -450,11 +429,10 @@ const Bridge = () => {
                                 />
                                 <AutoColumn justify="start">
                                     
-                                    <CurrencySelect
+                                    <NetworkSelect
                                         selected={!!currencies[Field.OUTPUT]}
                                         className="open-currency-select-button"
                                         onClick={() => {
-                                            setModalOpen(true);
                                             setInput(false)
                                         }}
                                     >
@@ -468,11 +446,10 @@ const Bridge = () => {
                                                         ? bridgeNetworks[toBridgeNetworkKey].name
                                                         : bridgeNetworks[toBridgeNetworkKey].name) || TranslateString(1196, 'To Chain')}
                                                 </Text>
-
-                                                <ChevronDownIcon />
+                                                
                                             </Aligner>
                                         </AutoColumn>
-                                    </CurrencySelect>
+                                    </NetworkSelect>
                                 </AutoColumn>
                                 <NetworkBridgeInputPanel
                                     value={formattedAmounts[Field.OUTPUT]}
@@ -545,7 +522,7 @@ const Bridge = () => {
                                     }}
                                     id="bridge-button"
                                     disabled={
-                                      disableSwap || !isValid || !!swapCallbackError
+                                      disableSwap || !isValid || !!bridgeCallbackError
                                     }
                                     variant={isValid ? 'danger' : 'primary'}
                                     width="100%"

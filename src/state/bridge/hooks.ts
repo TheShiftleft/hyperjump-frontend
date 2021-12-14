@@ -8,7 +8,6 @@ import { BridgeNetwork } from 'components/NetworkSelectionModal/types'
 import useENS from '../../hooks/useENS'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency, useCurrencyOnOtherChain } from '../../hooks/Tokens'
-import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
@@ -214,10 +213,6 @@ export function useDerivedBridgeInfo(): {
     inputError = inputError ?? 'Enter a recipient'
   } 
 
-  const [allowedSlippage] = useUserSlippageTolerance()
-
-  const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
-
   // compare input balance to max input based on version
   const [balanceIn, amountIn] = [
     currencyBalances[Field.INPUT],
@@ -311,8 +306,6 @@ export function useDefaultsFromURLSearch():
   const [result, setResult] = useState<
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined; outputChainId: string | undefined  } | undefined
   >()
-
-
 
   useEffect(() => {
     if (!chainId) return
