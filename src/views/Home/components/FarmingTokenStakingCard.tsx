@@ -12,6 +12,7 @@ import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
 import { useMasterchef } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
+import { BIG_ZERO } from 'utils/bigNumber'
 
 import { useSousHarvest } from 'hooks/useHarvest'
 
@@ -66,7 +67,8 @@ const FarmingTokenStakingCard = () => {
   const masterChefContract = useMasterchef()
   const { config } = getNetwork()
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
-
+  const poolsWithValue    = poolsWithBalance.filter((balanceType) => balanceType.harvest === true)  
+  console.log('poolsWithValue1', poolsWithValue)
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
     // eslint-disable-next-line no-restricted-syntax
@@ -78,9 +80,10 @@ const FarmingTokenStakingCard = () => {
         // TODO: find a way to handle when the user rejects transaction or it fails
       }
     }
-    setPendingTx(false)
+    // setPendingTx(false)
   }, [account, balancesWithValue, masterChefContract])
 
+  const poolHarvestBalanceLength = balancesWithValue.length + poolsWithValue.length
   const { onReward } = useSousHarvest(6, false)
   const harvestAllPools = async () => {
     setPendingTx(true)
@@ -109,7 +112,7 @@ const FarmingTokenStakingCard = () => {
             <Text color="primary">{config.farmingToken.symbol} to Harvest</Text>
           </Flex>
 
-          <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={balancesWithValue.length <= 0 || pendingTx}>
+          <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={poolHarvestBalanceLength <= 0 || pendingTx}>
             HARVEST ALL
           </CardButton>
           
