@@ -1,9 +1,13 @@
 import { Currency, CurrencyAmount, JSBI, Token, Trade, ChainId } from '@hyperjump-defi/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
+import { BigNumber as EthBigNumber} from '@ethersproject/bignumber'
+import { BIG_TEN } from 'utils/bigNumber'
 import  { Redirect, Route } from 'react-router'
 import { useWeb3React } from '@web3-react/core'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal, ChevronDownIcon } from 'uikit'
+import Modal from 'components/Modal'
 import styled, { ThemeContext } from 'styled-components'
+import Card, { GreyCard } from 'components/Card'
 import { darken } from 'polished'
 import { AutoColumn } from 'components/Column'
 import NetworkBridgeInputPanel from 'components/NetworkBridgeInputPanel'
@@ -11,6 +15,7 @@ import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
+import TransactionSubmittedContent from 'components/TransactionConfirmationModal/TransactionSubmittedContent'
 
 import ProgressSteps from 'components/ProgressSteps'
 import Container from 'components/Container'
@@ -37,9 +42,8 @@ import { getBalanceNumber } from 'utils/formatBalance'
 import useGovTokenBurnRate from 'hooks/useGovTokenBurnRate'
 import getNetwork from 'utils/getNetwork'
 import NetworkSelectionModal from 'components/NetworkSelectionModal/NetworkSelectionModal'
+import BigNumber from 'bignumber.js'
 import AppBody from '../AppBody'
-
-
 
 const NetworkSelect = styled.button<{ selected: boolean }>`
   align-items: center;
@@ -96,9 +100,13 @@ const Bridge = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [input, setInput] = useState(false)
     const [bridgeTokensOnly] = useState(true)
+    const [isOpen, setModalSubmitted] = useState(false)
     const [toRedirect, setRedirect] = useState(false)
+    const [isInvalidAmountWithFee, setInvalidAmountWithFee] = useState(false)
+    const [transactionHash, setTransactionHash] = useState("") 
     const [fromBridgeNetworkKey, setFromBridgeNetworkKey] = useState("0") 
     const [toBridgeNetworkKey, setToBridgeNetworkKey] = useState("1")
+    const [bridgingFee, setBridgeFee] = useState("0.0")
     const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
     const [disableSwap, setDisableSwap] = useState(false)
     const [hasPoppedModal, setHasPoppedModal] = useState(false)
@@ -131,14 +139,13 @@ const Bridge = () => {
     // bridge state
     const { independentField, typedValue, recipient } = useBridgeState()
 
-    const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedBridgeInfo()
+    const { currencyBalances, parsedAmount, currencies, inputError: bridgeInputError } = useDerivedBridgeInfo()
+        
     const {
         wrapType,
         execute: onWrap,
         inputError: wrapInputError,
     } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-    const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-    const trade = showWrap ? undefined : v2Trade
 
     // Manage disabled trading pairs that should redirect users to V2
     useEffect(() => {
@@ -190,14 +197,14 @@ const Bridge = () => {
     ])
 
     const parsedAmounts =  {
-            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-        }
+      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : undefined,
+      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : undefined,
+    }
 
     const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useBridgeActionHandlers()
     const { onSwitchNetworks, onNetworkSelection } = useBridgeNetworkActionHandlers()
 
-    const isValid = !swapInputError
+    const isValid = !bridgeInputError
     const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
     const handleTypeInput = useCallback(
@@ -212,27 +219,23 @@ const Bridge = () => {
         },
         [onUserInput],
     )
-
+    
     // modal and loading
-    const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setBridgeState] = useState<{
+    const [{ showConfirm,  bridgeErrorMessage, attemptingTxn, txHash }, setBridgeState] = useState<{
         showConfirm: boolean
-        tradeToConfirm: Trade | undefined
         attemptingTxn: boolean
-        swapErrorMessage: string | undefined
+        bridgeErrorMessage: string | undefined
         txHash: string | undefined
     }>({
         showConfirm: false,
-        tradeToConfirm: undefined,
         attemptingTxn: false,
-        swapErrorMessage: undefined,
+        bridgeErrorMessage: undefined,
         txHash: undefined,
     })
 
     const formattedAmounts = {
         [independentField]: typedValue,
-        [dependentField]: showWrap
-            ? parsedAmounts[independentField]?.toExact() ?? ''
-            : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+        [dependentField]: parsedAmounts[dependentField]?.toSignificant(6)
     }
 
     // check whether the user has approved the router on the input token
@@ -252,7 +255,7 @@ const Bridge = () => {
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
     // the callback to execute the bridge
-    const { callback: bridgeCallback, error: bridgeCallbackError } = useBridgeCallback(
+    const { callback: bridgeCallback, error: bridgeCallbackError, calculatedBridgeFee: calcFee } = useBridgeCallback(
         (independentField === Field.INPUT ? parsedAmount : undefined),
         bridgeNetworks[toBridgeNetworkKey],
         currencies[Field.INPUT],
@@ -260,29 +263,60 @@ const Bridge = () => {
         recipient,
     )
 
+    if(calcFee){
+      calcFee.then((_amountWithFee) => {
+        const amountWithFee = new BigNumber(_amountWithFee)
+        setInvalidAmountWithFee(amountWithFee.isLessThan(0))
+        setBridgeFee((amountWithFee.isGreaterThan(0) ? amountWithFee.toString() : new BigNumber("0.0").toString()))
+      })
+    }
+
+    const handleConfirmDismiss = useCallback(() => {
+      setBridgeState((prevState) => ({ ...prevState, showConfirm: false }))
+  
+      // if there was a tx hash, we want to clear the input
+      setModalSubmitted(false)
+      if (txHash) {
+        onUserInput(Field.INPUT, '')
+        onUserInput(Field.OUTPUT, '')
+        setBridgeState((prevState) => ({
+          ...prevState,
+          attemptingTxn: false,
+          bridgeErrorMessage: undefined,
+          txHash: undefined,
+        }))
+      }
+    }, [onUserInput, txHash, setBridgeState])
+    
     const handleBridge = useCallback(() => {
       if (!bridgeCallback) {
         return
       }
-      setBridgeState((prevState) => ({ ...prevState, attemptingTxn: true, swapErrorMessage: undefined, txHash: undefined }))
+      setBridgeState((prevState) => ({ ...prevState, attemptingTxn: true, bridgeErrorMessage: undefined, txHash: undefined }))
       bridgeCallback()
         .then((hash) => {
           setBridgeState((prevState) => ({
             ...prevState,
             attemptingTxn: false,
-            swapErrorMessage: undefined,
+            bridgeErrorMessage: undefined,
             txHash: hash,
           }))
+          if(hash){
+            setTransactionHash(hash.transactionHash)
+            setModalSubmitted(true)
+            onUserInput(Field.INPUT, '')
+            setBridgeFee("0")
+          }
         })
         .catch((error) => {
           setBridgeState((prevState) => ({
             ...prevState,
             attemptingTxn: false,
-            swapErrorMessage: error.message,
+            bridgeErrorMessage: error.message,
             txHash: undefined,
           }))
         })
-    }, [bridgeCallback, setBridgeState])
+    }, [bridgeCallback, setBridgeState, onUserInput, setBridgeFee])
 
     useEffect(() => {
         // Override Default TO Bridge Network based on config
@@ -291,7 +325,6 @@ const Bridge = () => {
           .forEach(function eachKey(key) { 
             if(bridgeNetworks[key].chainId === config.id){
               setFromBridgeNetworkKey(key);
-              console.log("ASASA", bridgeNetworks[key])
               
             }else{
               setToBridgeNetworkKey(key);
@@ -305,7 +338,7 @@ const Bridge = () => {
     // show approve flow when: no error on inputs, not approved or pending, or approved in current session
     // never show if price impact is above threshold in non expert mode
     const showApproveFlow =
-      !swapInputError &&
+      !bridgeInputError &&
       (approval === ApprovalState.NOT_APPROVED ||
         approval === ApprovalState.PENDING ||
         (approvalSubmitted && approval === ApprovalState.APPROVED)) 
@@ -412,7 +445,7 @@ const Bridge = () => {
                                 </NetworkSelect>
                                 <NetworkBridgeInputPanel
                                     label={
-                                        independentField === Field.OUTPUT && !showWrap && trade
+                                        independentField === Field.OUTPUT 
                                             ? TranslateString(194, 'Amount (estimated)')
                                             : TranslateString(76, 'Amount')
                                     }
@@ -452,10 +485,10 @@ const Bridge = () => {
                                     </NetworkSelect>
                                 </AutoColumn>
                                 <NetworkBridgeInputPanel
-                                    value={formattedAmounts[Field.OUTPUT]}
+                                    value={bridgingFee}
                                     onUserInput={handleTypeOutput}
                                     label={
-                                        independentField === Field.INPUT && !showWrap && trade
+                                        independentField === Field.INPUT
                                             ? TranslateString(196, 'Destination (estimated)')
                                             : TranslateString(80, 'Destination')
                                     }
@@ -471,7 +504,11 @@ const Bridge = () => {
                             <BottomGrouping>
                               {!account ? (
                                   <ConnectWalletButton width="100%" />
-                                )  : showApproveFlow ? (
+                                ) : isInvalidAmountWithFee ? (
+                                  <GreyCard style={{ textAlign: 'center' }}>
+                                    <Text mb="4px">{TranslateString(1194, 'Amount must be greater than fee')}</Text>
+                                  </GreyCard>
+                                ) : showApproveFlow ? (
                                   <RowBetween>
                                     <Button
                                       onClick={approveCallback}
@@ -491,28 +528,19 @@ const Bridge = () => {
                                     </Button>
                                     <Button
                                       onClick={() => {
-                                        if (isExpertMode) {
-                                          handleBridge()
-                                        } else {
-                                          setBridgeState({
-                                            tradeToConfirm: trade,
-                                            attemptingTxn: false,
-                                            swapErrorMessage: undefined,
-                                            showConfirm: true,
-                                            txHash: undefined,
-                                          })
-                                        }
+                                        handleBridge()
                                       }}
                                       style={{ width: '48%' }}
                                       id="swap-button"
                                       disabled={
                                         disableSwap ||
                                         !isValid ||
-                                        approval !== ApprovalState.APPROVED 
+                                        approval !== ApprovalState.APPROVED ||
+                                        attemptingTxn
                                       }
                                       variant={isValid ? 'danger' : 'primary'}
                                     >
-                                      {(swapInputError ?? undefined ? swapInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
+                                      {(bridgeInputError ?? undefined ? bridgeInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
                                     </Button>
                                   </RowBetween>
                                 ) : (
@@ -522,23 +550,29 @@ const Bridge = () => {
                                     }}
                                     id="bridge-button"
                                     disabled={
-                                      disableSwap || !isValid || !!bridgeCallbackError
+                                      disableSwap || !isValid || !!bridgeCallbackError || attemptingTxn
                                     }
                                     variant={isValid ? 'danger' : 'primary'}
                                     width="100%"
                                   >
-                                    {(swapInputError ?? undefined ? swapInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
+                                    {(bridgeInputError ?? undefined ? bridgeInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
+
                                   </Button>
                                 )}
                                 {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
-                                {swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
+                                {bridgeErrorMessage ? <SwapCallbackError error={bridgeErrorMessage} /> : null}
+                                
                             </BottomGrouping>
                         </CardBody>
                     </Wrapper>
                 </AppBody>
-                <AdvancedSwapDetailsDropdown trade={trade} />
+                
             </Container>
-
+            
+            <Modal isOpen={isOpen} onDismiss={handleConfirmDismiss} maxHeight={90}>
+              <TransactionSubmittedContent chainId={bridgeNetworks[fromBridgeNetworkKey].chainId} hash={transactionHash} onDismiss={handleConfirmDismiss} />
+            </Modal>
+            
             <NetworkSelectionModal
                 isOpen={modalOpen}
                 onDismiss={handleDismissSearch}

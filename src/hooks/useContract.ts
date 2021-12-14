@@ -16,6 +16,7 @@ import {
   getSynapseBridgeContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
+import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
 import { Contract } from '@ethersproject/contracts'
 import { WRAPPED } from '@hyperjump-defi/sdk'
@@ -93,6 +94,11 @@ export const usePoolContract = (id: number) => {
 export const useSynapseBridgeContract = () => {
   const web3 = useWeb3()
   return useMemo(() => getSynapseBridgeContract(web3), [web3])
+}
+
+export const useBridgeConfigInstance = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getBridgeConfigFactory(web3), [web3])
 }
 
 // returns null on errors

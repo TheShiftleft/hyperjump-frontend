@@ -1,8 +1,10 @@
+import BigNumber from 'bignumber.js'
+import { BIG_TEN } from 'utils/bigNumber'
 import { BigNumber as EthBigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, Currency, Token, ChainId } from '@hyperjump-defi/sdk'
 import { useMemo } from 'react'
 import { BridgeNetwork } from 'components/NetworkSelectionModal/types'
-import { useSynapseBridgeContract } from './useContract'
+import { useSynapseBridgeContract, useBridgeConfigInstance } from './useContract'
 import { isAddress  } from '../utils'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
@@ -21,7 +23,7 @@ export function useBridgeCallback(
   fromToken: Currency | undefined,
   toToken: Currency | undefined,
   recipientAddressOrName: string | null,
-): { state: BridgeCallbackState; callback: null | (() => Promise<string>); error: string | null } {
+): { state: BridgeCallbackState; callback: null | (() => Promise<any>); error: string | null, calculatedBridgeFee?: Promise<string> } {
   const { account, chainId: fromChainId } = useActiveWeb3React()
 
   const toChainId = (toBridgeNetwork ?? undefined ? toBridgeNetwork.chainId : undefined)
@@ -30,6 +32,7 @@ export function useBridgeCallback(
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
   const synapseBridgeContract = useSynapseBridgeContract()
+  const bridgeConfigContract = useBridgeConfigInstance()
 
   return useMemo(() => {
     if (!currencyAmountFrom || !fromToken || !toToken || !account || !fromChainId || !toChainId) {
@@ -42,42 +45,48 @@ export function useBridgeCallback(
       return { state: BridgeCallbackState.LOADING, callback: null, error: null }
     }
 
-    return {
-      state: BridgeCallbackState.VALID,
-      callback: async function onBridge(): Promise<string> {
-        const validFromToken = isAddress(fromToken instanceof Token
-            ? fromToken.address
-            : undefined)
-        const validToToken = isAddress(toToken instanceof Token
-            ? toToken.address
-            : undefined)
+    const validFromToken = isAddress(fromToken instanceof Token
+      ? fromToken.address
+      : undefined)
+    const validToToken = isAddress(toToken instanceof Token
+      ? toToken.address
+      : undefined)
 
-        console.log("DDBUG1", account)
-        console.log("DDBUG2", toChainId)
-        console.log("DDBUG3", validFromToken)
-        console.log("DDBUG4", validToToken)
-        console.log("DDBUG5", EthBigNumber.from(currencyAmountFrom.raw.toString()))
-        
-        
+    const bridgeFeeRequest = bridgeConfigContract.calculateSwapFee(validToToken, toChainId, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+    const bridgeFee = bridgeFeeRequest.then((bf) => {
+      const bFee = new BigNumber((bf ?? undefined ? bf.toString() : "0"))
+      const inputAmount = (currencyAmountFrom ?? undefined ? new BigNumber(currencyAmountFrom.toExact()).multipliedBy(BIG_TEN.pow(18)) : new BigNumber("0") ) 
+      const amountWithFee = inputAmount.minus(bFee).dividedBy(BIG_TEN.pow((fromToken instanceof Token ? fromToken.decimals : 18)));
+      console.log("wooot",amountWithFee.toString());
+      return amountWithFee.toString()
+    })
+
+    
+    return {
+      calculatedBridgeFee: bridgeFee,
+      state: BridgeCallbackState.VALID,
+      callback: async function onBridge(): Promise<any> {      
         const txhash = (toChainId === ChainId.FTM_MAINNET ? synapseBridgeContract.methods
-          .redeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+          .redeem(account, toChainId, validFromToken, new BigNumber(currencyAmountFrom.raw.toString()))
           .send({ from: account })
           .on('transactionHash', (tx) => {
             return tx.transactionHash
           }) : toChainId === ChainId.BSC_MAINNET ? synapseBridgeContract.methods
-          .deposit(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+          .deposit(account, toChainId, validFromToken, new BigNumber(currencyAmountFrom.raw.toString()))
           .send({ from: account })
           .on('transactionHash', (tx) => {
             return tx.transactionHash
           }) : undefined) 
+
+        return txhash.then((hash) => {
+          return hash;
+        })
         
-        console.log("DDBUG6", txhash)
-        return txhash;
       },
       error: null
     }
 
-  }, [synapseBridgeContract,  currencyAmountFrom, account, fromChainId, toChainId, fromToken, toToken, recipient, recipientAddressOrName])
+  }, [bridgeConfigContract, synapseBridgeContract, currencyAmountFrom, account, fromChainId, toChainId, fromToken, toToken, recipient, recipientAddressOrName])
 }
 
 
