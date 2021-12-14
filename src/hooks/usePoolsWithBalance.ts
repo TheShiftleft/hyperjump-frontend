@@ -27,8 +27,6 @@ const usePoolsWithBalance = () => {
   const poolsConfig = useSelector((state: State) => state.pools[state.application.chainId].data)
   const poolsToFetch = poolsConfig.filter((poolConfig) => poolConfig.sousId !== null) 
   
-  console.log(poolsToFetch)
-  
   return poolsToFetch
 }
 
