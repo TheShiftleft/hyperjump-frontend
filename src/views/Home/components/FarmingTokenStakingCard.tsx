@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react'
 import { NavLink } from "react-router-dom";
 import styled from 'styled-components'
@@ -10,6 +11,9 @@ import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
 import { useMasterchef } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
+
+import { useSousHarvest } from 'hooks/useHarvest'
+
 import FarmingTokenHarvestBalance from './FarmingTokenHarvestBalance'
 import FarmingTokenWalletBalance from './FarmingTokenWalletBalance'
 
@@ -54,6 +58,10 @@ const FarmingTokenStakingCard = () => {
   const { t } = useTranslation()
   const farmsWithBalance = useFarmsWithBalance()
   const poolsWithBalance = usePoolsWithBalance()
+
+  console.log('farmsWithBalance', farmsWithBalance)
+  console.log('poolsWithBalance', poolsWithBalance)
+
   const masterChefContract = useMasterchef()
   const { config } = getNetwork()
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
@@ -71,6 +79,18 @@ const FarmingTokenStakingCard = () => {
     }
     setPendingTx(false)
   }, [account, balancesWithValue, masterChefContract])
+
+  const { onReward } = useSousHarvest(6, false)
+  const harvestAllPools = async () => {
+    setPendingTx(true)
+    try {
+      await onReward()
+      setPendingTx(false)
+    } catch (e) {
+      setPendingTx(false)
+    }
+  }
+
 
   return (
     <StyledFarmingTokenStakingCard>
@@ -92,6 +112,11 @@ const FarmingTokenStakingCard = () => {
           <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={balancesWithValue.length <= 0 || pendingTx}>
             HARVEST ALL
           </CardButton>
+          
+          <CardButton onClick={harvestAllPools}>
+            POOL
+          </CardButton>
+          
         </Flex>
 
         <Flex justifyContent="space-between" alignItems="flex-end">
