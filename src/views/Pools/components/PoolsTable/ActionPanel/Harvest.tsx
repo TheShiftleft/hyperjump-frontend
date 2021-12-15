@@ -160,16 +160,6 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
           >
             {t('Compound')}
           </ActionButton>
-        {/* {isCompoundPool && (
-          <ActionButton
-            ml={direction === 'column' ? '' : '8px'}
-            disabled={!hasEarnings}
-            isLoading={pendingTx}
-            onClick={handleCompound}
-          >
-            {t('Compound')}
-          </ActionButton>
-        )} */}
       </Flex>
     </HarvestContainer>
   )
