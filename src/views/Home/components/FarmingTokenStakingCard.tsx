@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react'
 import { NavLink } from "react-router-dom";
 import styled from 'styled-components'
+import BigNumber from 'bignumber.js'
 import { Heading, Card, CardBody, Button, Text, Flex } from 'uikit'
 import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
@@ -65,10 +66,8 @@ const FarmingTokenStakingCard = () => {
   const { config } = getNetwork()
   const poolContract = usePoolContract(config.wrappedFarmingTokenPid)
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
-  const poolsWithValue    = poolsWithBalance.filter((balanceType) => console.log(balanceType) )
- 
- 
-  
+  const poolsWithValue    = poolsWithBalance.filter((balanceType) => (balanceType.userData?.pendingReward ?? undefined ? new BigNumber(balanceType.userData?.pendingReward.toString()).isGreaterThan(0) : undefined))
+
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
     // eslint-disable-next-line no-restricted-syntax
@@ -81,9 +80,7 @@ const FarmingTokenStakingCard = () => {
       }
     }
 
-
-      await soushHarvest(poolContract, account)
-
+    await soushHarvest(poolContract, account)
 
     setPendingTx(false)
   }, [account, balancesWithValue, poolContract, masterChefContract])
