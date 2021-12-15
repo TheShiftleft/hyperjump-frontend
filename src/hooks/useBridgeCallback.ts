@@ -66,12 +66,12 @@ export function useBridgeCallback(
       state: BridgeCallbackState.VALID,
       callback: async function onBridge(): Promise<any> {      
         const txhash = (toChainId === ChainId.FTM_MAINNET ? synapseBridgeContract.methods
-          .redeem(account, toChainId, validFromToken, new BigNumber(currencyAmountFrom.raw.toString()))
+          .redeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
           .send({ from: account })
           .on('transactionHash', (tx) => {
             return tx.transactionHash
           }) : toChainId === ChainId.BSC_MAINNET ? synapseBridgeContract.methods
-          .deposit(account, toChainId, validFromToken, new BigNumber(currencyAmountFrom.raw.toString()))
+          .deposit(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
           .send({ from: account })
           .on('transactionHash', (tx) => {
             return tx.transactionHash
