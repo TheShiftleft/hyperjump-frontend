@@ -85,16 +85,6 @@ const FarmingTokenStakingCard = () => {
 
     setPendingTx(false)
   }, [account, balancesWithValue, poolsWithValue, poolContract, masterChefContract])
-  const { onReward } = useSousHarvest(config.wrappedFarmingTokenPid, false)
-  const harvestAllPools = async () => {
-    setPendingTx(true)
-    try {
-      await onReward()
-      setPendingTx(false)
-    } catch (e) {
-      setPendingTx(false)
-    }
-  }
 
   return (
     <StyledFarmingTokenStakingCard>
