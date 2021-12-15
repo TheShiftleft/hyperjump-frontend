@@ -68,6 +68,8 @@ const FarmingTokenStakingCard = () => {
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
   const poolsWithValue    = poolsWithBalance.filter((balanceType) => (balanceType.userData?.pendingReward ?? undefined ? new BigNumber(balanceType.userData?.pendingReward.toString()).isGreaterThan(0) : undefined))
 
+  console.log('poolsWithBalance', poolsWithBalance)
+  console.log('poolsWithValue', poolsWithValue)
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
     // eslint-disable-next-line no-restricted-syntax
@@ -80,10 +82,16 @@ const FarmingTokenStakingCard = () => {
       }
     }
 
-    await soushHarvest(poolContract, account)
+    // if( BigNumber(poolsWithValue[0].userData?.pendingReward.toString()).isGreaterThan(0) ){   
+    // await soushHarvest(poolContract, account)
+    // }  
+
+    if( poolsWithValue ){
+     await soushHarvest(poolContract, account) 
+    }
 
     setPendingTx(false)
-  }, [account, balancesWithValue, poolContract, masterChefContract])
+  }, [account, balancesWithValue, poolsWithValue, poolContract, masterChefContract])
 
   const poolHarvestBalanceLength = balancesWithValue.length + poolsWithValue.length
 
@@ -117,7 +125,7 @@ const FarmingTokenStakingCard = () => {
             <Text color="primary">{config.farmingToken.symbol} to Harvest</Text>
           </Flex>
 
-          <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={poolHarvestBalanceLength <= 0 || pendingTx}>
+          <CardButton id="harvest-all" onClick={harvestAllFarms}>
             HARVEST ALL
           </CardButton>
           
