@@ -140,8 +140,10 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
           </Flex>
         </ActionContent>
       </Flex>
-      <Flex flexGrow={1} justifyContent="center" alignItems="center" flexDirection={direction}>
+      {/* <Flex flexGrow={1} justifyContent="center" alignItems="center" flexDirection={direction}> */}
+      <Flex flexGrow={1} justifyContent="center" alignItems="center" flexDirection="column">
         <ActionButton
+          className="staked-btn"
           disabled={!hasEarnings}
           isLoading={pendingTx}
           onClick={handleCollect}
@@ -149,7 +151,16 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
         >
           {t('Collect')}
         </ActionButton>
-        {isCompoundPool && (
+        <ActionButton
+            className="staked-btn"
+            ml={direction === 'column' ? '' : '8px'}
+            disabled={!hasEarnings}
+            isLoading={pendingTx}
+            onClick={handleCompound}
+          >
+            {t('Compound')}
+          </ActionButton>
+        {/* {isCompoundPool && (
           <ActionButton
             ml={direction === 'column' ? '' : '8px'}
             disabled={!hasEarnings}
@@ -158,7 +169,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
           >
             {t('Compound')}
           </ActionButton>
-        )}
+        )} */}
       </Flex>
     </HarvestContainer>
   )

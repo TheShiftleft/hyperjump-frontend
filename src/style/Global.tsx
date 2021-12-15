@@ -142,6 +142,11 @@ const GlobalStyle = createGlobalStyle`
   z-index:99;
 }
 
+.staked-btn{
+  display:inline-block;
+  margin:5px;
+}
+
 `
 
 export default GlobalStyle
