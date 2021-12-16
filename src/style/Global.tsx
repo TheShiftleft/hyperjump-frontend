@@ -142,16 +142,6 @@ const GlobalStyle = createGlobalStyle`
   z-index:99;
 }
 
-.staked-btn{
-  display:inline-block;
-  margin:5px;
-}
-
-.col-staked-btn{
-  width: 93px;
-  margin: 2px;
-}
-
 `
 
 export default GlobalStyle

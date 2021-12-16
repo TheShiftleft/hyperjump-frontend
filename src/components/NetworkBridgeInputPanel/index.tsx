@@ -4,8 +4,9 @@ import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
 import useI18n from 'hooks/useI18n'
+import { BridgeNetwork } from 'components/NetworkSelectionModal/types'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
+import BridgeCurrencySearchModal from '../SearchModal/BridgeCurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
@@ -67,7 +68,7 @@ const Container = styled.div<{ hideInput: boolean }>`
   border-radius: 16px;
   box-shadow: ${({ theme }) => theme.shadows.inset};
 `
-interface CurrencyInputPanelProps {
+interface NetworkBridgeInputPanelProps {
   value: string
   onUserInput: (value: string) => void
   onMax?: () => void
@@ -82,8 +83,10 @@ interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
+  bridgeTokensOnly?: boolean
+  selectedBridgeNetwork?: BridgeNetwork
 }
-export default function CurrencyInputPanel({
+export default function NetworkBridgeInputPanel({
   value,
   onUserInput,
   onMax,
@@ -98,7 +101,10 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
-}: CurrencyInputPanelProps) {
+  bridgeTokensOnly,
+  selectedBridgeNetwork,
+}: NetworkBridgeInputPanelProps) {
+
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -118,7 +124,7 @@ export default function CurrencyInputPanel({
                 <Text onClick={onMax} fontSize="14px" style={{ display: 'inline', cursor: 'pointer' }}>
                   {!hideBalance && !!currency && selectedCurrencyBalance
                     ? `Balance: ${selectedCurrencyBalance?.toSignificant(6)}`
-                    : ' -'}
+                    : ' '}
                 </Text>
               )}
             </RowBetween>
@@ -167,7 +173,7 @@ export default function CurrencyInputPanel({
                       currency.symbol.length - 5,
                       currency.symbol.length
                     )}`
-                    : currency?.symbol) || TranslateString(1196, 'Select a currency')}
+                    : currency?.symbol) || (bridgeTokensOnly ? TranslateString(1196, 'Select a Token') : TranslateString(1196, 'Select a currency'))}
                 </Text>
               )}
               {!disableCurrencySelect && <ChevronDownIcon />}
@@ -176,13 +182,15 @@ export default function CurrencyInputPanel({
         </InputRow>
       </Container>
       {!disableCurrencySelect && onCurrencySelect && (
-        <CurrencySearchModal
+        <BridgeCurrencySearchModal
           isOpen={modalOpen}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          bridgeTokensOnly={bridgeTokensOnly}
+          selectedBridgeNetwork={selectedBridgeNetwork}
         />
       )}
     </InputPanel>

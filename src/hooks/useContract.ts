@@ -13,8 +13,10 @@ import {
   getXJumpContract,
   getMechContract,
   getClaimLpRewardsMigratorContract,
+  getSynapseBridgeContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
+import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
 import { Contract } from '@ethersproject/contracts'
 import { WRAPPED } from '@hyperjump-defi/sdk'
@@ -87,6 +89,16 @@ export const usePoolContract = (id: number) => {
   const web3 = useWeb3()
   const pool = useSelector((state: State) => state.pools[chainId].data.find((p) => p.sousId === id))
   return useMemo(() => getPoolContract(pool, web3), [pool, web3])
+}
+
+export const useSynapseBridgeContract = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getSynapseBridgeContract(web3), [web3])
+}
+
+export const useBridgeConfigInstance = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getBridgeConfigFactory(web3), [web3])
 }
 
 // returns null on errors

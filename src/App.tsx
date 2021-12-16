@@ -13,14 +13,13 @@ import Home from './views/Home'
 import Missions from './views/Missions'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './views/Swap/AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './views/Swap/RemoveLiquidity/redirects'
+import VortexBridge from './views/Swap/VortexBridge'
 import AddLiquidity from './views/Swap/AddLiquidity'
 import Pool from './views/Swap/Pool'
 import PoolFinder from './views/Swap/PoolFinder'
 import RemoveLiquidity from './views/Swap/RemoveLiquidity'
 import Swap from './views/Swap/Swap'
 import Lottery from './views/Lottery'
-
-import DefaultNetwork from './utils/getNetwork'
 
 // Route-based code splitting
 const Farms = lazy(() => import('./views/Farms'))
@@ -42,10 +41,6 @@ const App: React.FC = () => {
   useEagerConnect()
   usePollCoreFarmData()
 
-  const configDefault = DefaultNetwork()
-  const defaultInputCurr = configDefault.config.networkToken.symbol
-  const defaultOutputCurr = configDefault.config.networkToken.symbol === 'FTM' ? configDefault.config.farmingToken.address[250] : configDefault.config.farmingToken.address[56]
-
   return (
     <Router>
       <ResetCSS />
@@ -57,11 +52,9 @@ const App: React.FC = () => {
               <Home />
             </Route>
 
-            <Route exact strict path="/swap" component={Swap} render={() => (
-              <Redirect to={`/swap?inputCurrency=${defaultInputCurr}&outputCurrency=${defaultOutputCurr}`}/>
-            )}/>
-
+            <Route exact strict path="/swap" component={Swap} />
             <Route exact strict path="/find" component={PoolFinder} />
+            <Route exact path="/bridge" component={VortexBridge} />
             <Route exact path="/pool" component={Pool} />
             <Route exact path="/add" component={AddLiquidity} />
             <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />

@@ -1,34 +1,34 @@
-import { Currency, CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
+import { Currency, CurrencyAmount, JSBI, Token, Trade, ChainId } from '@hyperjump-defi/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
+import { BigNumber as EthBigNumber} from '@ethersproject/bignumber'
+import { BIG_TEN } from 'utils/bigNumber'
+import  { Redirect, Route } from 'react-router'
 import { useWeb3React } from '@web3-react/core'
-import { ArrowDown } from 'react-feather'
-import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal, ChevronDownIcon } from 'uikit'
+import { CardBody, ArrowDownIcon, Button, IconButton, AutoRenewIcon, Text, useModal, ChevronDownIcon } from 'uikit'
+import Modal from 'components/Modal'
 import styled, { ThemeContext } from 'styled-components'
-import { darken } from 'polished'
-import AddressInputPanel from 'components/AddressInputPanel'
 import Card, { GreyCard } from 'components/Card'
+import { darken } from 'polished'
 import { AutoColumn } from 'components/Column'
-import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
-import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import NetworkBridgeInputPanel from 'components/NetworkBridgeInputPanel'
 import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
-import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
-import TradePrice from 'components/swap/TradePrice'
-import TokenWarningModal from 'components/TokenWarningModal'
+import TransactionSubmittedContent from 'components/TransactionConfirmationModal/TransactionSubmittedContent'
+
 import ProgressSteps from 'components/ProgressSteps'
 import Container from 'components/Container'
-import CurrencyLogo from 'components/CurrencyLogo'
+import NetworkLogo from 'components/NetworkLogo'
+import bridgeNetworks from 'config/constants/bridgeNetworks'
 
 import { BASE_EXCHANGE_URL, INITIAL_ALLOWED_SLIPPAGE } from 'config/index'
-import { useCurrency } from 'hooks/Tokens'
 import { useFarms } from 'state/hooks'
-import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
-import { useSwapCallback } from 'hooks/useSwapCallback'
+import { ApprovalState, useApproveCallbackFromBridge } from 'hooks/useApproveCallback'
+import { useBridgeCallback } from 'hooks/useBridgeCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { Field } from 'state/swap/actions'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { useDefaultsFromURLSearch, useDerivedBridgeInfo, useBridgeActionHandlers, useBridgeState, useBridgeNetworkActionHandlers } from 'state/bridge/hooks'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { LinkStyledButton } from 'components/Shared'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -41,9 +41,29 @@ import V2ExchangeRedirectModal from 'components/V2ExchangeRedirectModal'
 import { getBalanceNumber } from 'utils/formatBalance'
 import useGovTokenBurnRate from 'hooks/useGovTokenBurnRate'
 import getNetwork from 'utils/getNetwork'
-import CurrencySearchModal from 'components/SearchModal/CurrencySearchModal'
+import NetworkSelectionModal from 'components/NetworkSelectionModal/NetworkSelectionModal'
+import BigNumber from 'bignumber.js'
 import AppBody from '../AppBody'
 
+const NetworkSelect = styled.button<{ selected: boolean }>`
+  align-items: center;
+  height: 34px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: transparent;
+  color: ${({ selected, theme }) => (selected ? theme.colors.text : '#FFFFFF')};
+  border-radius: 12px;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+  margin-bottom: 10px;
+  padding: 0 0.5rem;
+  :focus,
+  :hover {
+    background-color: ${({ theme }) => darken(0.05, theme.colors.input)};
+  }
+`
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 34px;
@@ -79,6 +99,14 @@ const Bridge = () => {
     const TranslateString = useI18n()
     const [modalOpen, setModalOpen] = useState(false)
     const [input, setInput] = useState(false)
+    const [bridgeTokensOnly] = useState(true)
+    const [isOpen, setModalSubmitted] = useState(false)
+    const [toRedirect, setRedirect] = useState(false)
+    const [isInvalidAmountWithFee, setInvalidAmountWithFee] = useState(false)
+    const [transactionHash, setTransactionHash] = useState("") 
+    const [fromBridgeNetworkKey, setFromBridgeNetworkKey] = useState("0") 
+    const [toBridgeNetworkKey, setToBridgeNetworkKey] = useState("1")
+    const [bridgingFee, setBridgeFee] = useState("0.0")
     const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
     const [disableSwap, setDisableSwap] = useState(false)
     const [hasPoppedModal, setHasPoppedModal] = useState(false)
@@ -87,46 +115,37 @@ const Bridge = () => {
         <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
     )
     const onPresentV2ExchangeRedirectModalRef = useRef(onPresentV2ExchangeRedirectModal)
-    // token warning stuff
-    const [loadedInputCurrency, loadedOutputCurrency] = [
-        useCurrency(loadedUrlParams?.inputCurrencyId),
-        useCurrency(loadedUrlParams?.outputCurrencyId),
-    ]
-    const [dismissTokenWarning, setDismissTokenWarning] = useState<boolean>(true)
-    const urlLoadedTokens: Token[] = useMemo(
-        () => [loadedInputCurrency, loadedOutputCurrency]?.filter((c): c is Token => c instanceof Token) ?? [],
-        [loadedInputCurrency, loadedOutputCurrency],
-    )
-    const handleConfirmTokenWarning = useCallback(() => {
-        setDismissTokenWarning(true)
-    }, [])
+
+    useMemo(() => {
+      // make sure that outputChain is not blank OR not equal to the current network otherwise redirect to the correct network
+      if(loadedUrlParams?.outputChainId === '' || loadedUrlParams?.outputChainId === config.id.toString()){ 
+          Object.keys(bridgeNetworks)
+          .forEach(function eachKey(key) { 
+            if(bridgeNetworks[key].chainId === config.id)
+                setFromBridgeNetworkKey(key)
+            
+          });
+          setRedirect(true);
+      }
+    }, [loadedUrlParams, config]) 
 
     const handleDismissSearch = useCallback(() => {
         setModalOpen(false)
     }, [setModalOpen])
 
     const { account } = useWeb3React()
-    const theme = useContext(ThemeContext)
-
     const [isExpertMode] = useExpertModeManager()
 
-    // get custom setting values for user
-    const [deadline] = useUserDeadline()
-    const [allowedSlippage, setSlippage] = useUserSlippageTolerance()
+    // bridge state
+    const { independentField, typedValue, recipient } = useBridgeState()
 
-    // swap state
-    const { independentField, typedValue, recipient } = useSwapState()
-    const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+    const { currencyBalances, parsedAmount, currencies, inputError: bridgeInputError } = useDerivedBridgeInfo()
+        
     const {
         wrapType,
         execute: onWrap,
         inputError: wrapInputError,
     } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-    const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-    const trade = showWrap ? undefined : v2Trade
-
-    // gov token burn
-    const govTokenBurnRate = useGovTokenBurnRate()
 
     // Manage disabled trading pairs that should redirect users to V2
     useEffect(() => {
@@ -135,7 +154,7 @@ const Bridge = () => {
         const outputCurrencySymbol = currencies[Field.OUTPUT]?.symbol || ''
         const doesInputMatch = disabledSwaps.includes(inputCurrencySymbol)
         const doesOutputMatch = disabledSwaps.includes(outputCurrencySymbol)
-
+        
         if (doesInputMatch && doesOutputMatch) {
             // Prevent infinite re-render of modal with this condition
             if (!hasPoppedModal) {
@@ -177,18 +196,15 @@ const Bridge = () => {
         interruptRedirectCountdown,
     ])
 
-    const parsedAmounts = showWrap
-        ? {
-            [Field.INPUT]: parsedAmount,
-            [Field.OUTPUT]: parsedAmount,
-        }
-        : {
-            [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
-            [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
-        }
+    const parsedAmounts =  {
+      [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : undefined,
+      [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : undefined,
+    }
 
-    const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
-    const isValid = !swapInputError
+    const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useBridgeActionHandlers()
+    const { onSwitchNetworks, onNetworkSelection } = useBridgeNetworkActionHandlers()
+
+    const isValid = !bridgeInputError
     const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
     const handleTypeInput = useCallback(
@@ -203,23 +219,27 @@ const Bridge = () => {
         },
         [onUserInput],
     )
-
+    
+    // modal and loading
+    const [{ showConfirm,  bridgeErrorMessage, attemptingTxn, txHash }, setBridgeState] = useState<{
+        showConfirm: boolean
+        attemptingTxn: boolean
+        bridgeErrorMessage: string | undefined
+        txHash: string | undefined
+    }>({
+        showConfirm: false,
+        attemptingTxn: false,
+        bridgeErrorMessage: undefined,
+        txHash: undefined,
+    })
 
     const formattedAmounts = {
         [independentField]: typedValue,
-        [dependentField]: showWrap
-            ? parsedAmounts[independentField]?.toExact() ?? ''
-            : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+        [dependentField]: parsedAmounts[dependentField]?.toSignificant(6)
     }
 
-    const route = trade?.route
-    const userHasSpecifiedInputOutput = Boolean(
-        currencies[Field.INPUT] && currencies[Field.OUTPUT] && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0)),
-    )
-    const noRoute = !route
-
     // check whether the user has approved the router on the input token
-    const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage)
+    const [approval, approveCallback] = useApproveCallbackFromBridge((independentField === Field.INPUT ? parsedAmount : undefined))
 
     // check if user has gone through approval process, used to show two step buttons, reset on token change
     const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -231,8 +251,135 @@ const Bridge = () => {
         }
     }, [approval, approvalSubmitted])
 
+    // show approve flow when: no error on inputs, not approved or pending, or approved in current session
+    // never show if price impact is above threshold in non expert mode
+    const showApproveFlow = useMemo(() => {
+      return !bridgeInputError &&
+        (approval === ApprovalState.NOT_APPROVED ||
+        approval === ApprovalState.PENDING ||
+        (approvalSubmitted && approval === ApprovalState.APPROVED)) 
+    }, [bridgeInputError, approval, approvalSubmitted])
+      
+
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
+
+    // the callback to execute the bridge
+    const { callback: bridgeCallback, error: bridgeCallbackError, calculatedBridgeFee: calcFee } = useBridgeCallback(
+        (independentField === Field.INPUT ? parsedAmount : undefined),
+        bridgeNetworks[toBridgeNetworkKey],
+        currencies[Field.INPUT],
+        currencies[Field.OUTPUT],
+        recipient,
+    )
+
+    if(calcFee){
+      calcFee.then((_amountWithFee) => {
+        const amountWithFee = new BigNumber(_amountWithFee)
+        setInvalidAmountWithFee(amountWithFee.isLessThan(0))
+        setBridgeFee((amountWithFee.isGreaterThan(0) ? amountWithFee.toString() : new BigNumber("0.0").toString()))
+      })
+    }
+
+    const handleConfirmDismiss = useCallback(() => {
+      setBridgeState((prevState) => ({ ...prevState, showConfirm: false }))
+  
+      // if there was a tx hash, we want to clear the input
+      setModalSubmitted(false)
+      if (txHash) {
+        onUserInput(Field.INPUT, '')
+        onUserInput(Field.OUTPUT, '')
+        setBridgeState((prevState) => ({
+          ...prevState,
+          attemptingTxn: false,
+          bridgeErrorMessage: undefined,
+          txHash: undefined,
+        }))
+      }
+    }, [onUserInput, txHash, setBridgeState])
+    
+    const handleBridge = useCallback(() => {
+      setBridgeState((prevState) => ({ ...prevState, attemptingTxn: true, bridgeErrorMessage: undefined, txHash: undefined }))
+      if (!bridgeCallback) {
+        return
+      }
+      
+      bridgeCallback()
+        .then((hash) => {
+          setBridgeState((prevState) => ({
+            ...prevState,
+            attemptingTxn: false,
+            bridgeErrorMessage: undefined,
+            txHash: hash,
+          }))
+          if(hash){
+            setTransactionHash(hash.transactionHash)
+            setModalSubmitted(true)
+            onUserInput(Field.INPUT, '')
+            setBridgeFee("0")
+          }
+        })
+        .catch((error) => {
+          setBridgeState((prevState) => ({
+            ...prevState,
+            attemptingTxn: false,
+            bridgeErrorMessage: error.message,
+            txHash: undefined,
+          }))
+        })
+    }, [bridgeCallback, setBridgeState, onUserInput, setBridgeFee])
+
+    useEffect(() => {
+        // Override Default TO Bridge Network based on config
+        // TO-DO need this to update if we add more chain
+        Object.keys(bridgeNetworks)
+          .forEach(function eachKey(key) { 
+            if(bridgeNetworks[key].chainId === config.id){
+              setFromBridgeNetworkKey(key);
+              
+            }else{
+              setToBridgeNetworkKey(key);
+            }
+            
+                
+            
+          });
+    },[config])
+
+    const handleFromNetworkSelect = useCallback(
+      (fromNetwork) => {
+        setHasPoppedModal(false)
+        setInterruptRedirectCountdown(false)
+        setApprovalSubmitted(false) // reset 2 step UI for approvals
+        onNetworkSelection(Field.INPUT, fromNetwork)
+        Object.keys(bridgeNetworks)
+          .forEach(function eachKey(key) { 
+            if(bridgeNetworks[key].chainId === fromNetwork.chainId)
+                setFromBridgeNetworkKey(key)
+            
+          });
+
+        setRedirect(true);
+      },
+      [onNetworkSelection],
+    )
+
+    const handleToNetworkSelect = useCallback(
+      (toNetwork) => {
+        setHasPoppedModal(false)
+        setInterruptRedirectCountdown(false)
+        setApprovalSubmitted(false) // reset 2 step UI for approvals
+        onNetworkSelection(Field.OUTPUT, toNetwork)
+        Object.keys(bridgeNetworks)
+          .forEach(function eachKey(key) { 
+            if(bridgeNetworks[key].chainId === toNetwork.chainId)
+                setToBridgeNetworkKey(key)
+            
+          });
+
+      },
+      [onNetworkSelection],
+    )
 
     const handleInputSelect = useCallback(
         (inputCurrency) => {
@@ -262,45 +409,46 @@ const Bridge = () => {
     return (
         <>
             <Container>
+                {(toRedirect ? <Route path='/bridge' component={() => { 
+                      window.location.href = `${bridgeNetworks[fromBridgeNetworkKey].redirect_url}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`; 
+                      return null;
+                  }} /> : '')}
                 <CardNav activeIndex={2} />
                 <AppBody>
                     <Wrapper id="swap-page" color="transparent">
                         <PageHeaderSwap
                             title={TranslateString(8, 'Vortex Bridge')}
-                            description={TranslateString(1192, 'Move BCS Hyper Jump tokens to Fantom Opera Chain')}
+                            description={TranslateString(1192, `Move ${bridgeNetworks[fromBridgeNetworkKey].name} tokens to ${bridgeNetworks[toBridgeNetworkKey].name}`)}
 
                         />
                         <CardBody p="12px">
                             <AutoColumn gap="md">
-                                <CurrencySelect
+                                <NetworkSelect
                                     selected={!!currencies[Field.INPUT]}
                                     className="open-currency-select-button"
                                     onClick={() => {
-                                        setModalOpen(true);
+                                        setModalOpen(true)
                                         setInput(true)
                                     }}
                                 >
                                     <AutoColumn justify="start">
                                         <Aligner>
-                                            {currencies[Field.INPUT] && (
-                                                <CurrencyLogo currency={currencies[Field.INPUT]} size="24px" style={{ marginRight: '8px' }} />
+                                            {bridgeNetworks[fromBridgeNetworkKey] && (
+                                                <NetworkLogo bridgeNetwork={bridgeNetworks[fromBridgeNetworkKey]} size="24px" style={{ marginRight: '8px' }} />
                                             )}
                                             <Text id="pair">
-                                                {(currencies[Field.INPUT] && currencies[Field.INPUT].symbol && currencies[Field.INPUT].symbol.length > 20
-                                                    ? `${currencies[Field.INPUT].symbol.slice(0, 4)}...${currencies[Field.INPUT].symbol.slice(
-                                                        currencies[Field.INPUT].symbol.length - 5,
-                                                        currencies[Field.INPUT].symbol.length
-                                                    )}`
-                                                    : currencies[Field.INPUT]?.symbol) || TranslateString(1196, 'Select a currency')}
+                                                {(bridgeNetworks[fromBridgeNetworkKey] && bridgeNetworks[fromBridgeNetworkKey].name 
+                                                    ? bridgeNetworks[fromBridgeNetworkKey].name
+                                                    : bridgeNetworks[fromBridgeNetworkKey].name) || TranslateString(1196, 'From Chain')}
                                             </Text>
 
                                             <ChevronDownIcon />
                                         </Aligner>
                                     </AutoColumn>
-                                </CurrencySelect>
-                                <CurrencyInputPanel
+                                </NetworkSelect>
+                                <NetworkBridgeInputPanel
                                     label={
-                                        independentField === Field.OUTPUT && !showWrap && trade
+                                        independentField === Field.OUTPUT 
                                             ? TranslateString(194, 'Amount (estimated)')
                                             : TranslateString(76, 'Amount')
                                     }
@@ -311,56 +459,39 @@ const Bridge = () => {
                                     onMax={handleMaxInput}
                                     onCurrencySelect={handleInputSelect}
                                     otherCurrency={currencies[Field.OUTPUT]}
-                                    id="swap-currency-input"
+                                    bridgeTokensOnly={bridgeTokensOnly}
+                                    selectedBridgeNetwork={bridgeNetworks[fromBridgeNetworkKey]}
+                                    id="bridge-currency-input"
                                 />
                                 <AutoColumn justify="start">
-                                    <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
-                                        <ArrowWrapper clickable>
-                                            <IconButton
-                                                variant="tertiary"
-                                                onClick={() => {
-                                                    setApprovalSubmitted(false) // reset 2 step UI for approvals
-                                                    onSwitchTokens()
-                                                }}
-                                                style={{ borderRadius: '50%' }}
-                                                scale="sm"
-                                            >
-                                                <ArrowDownIcon color="primary" width="24px" />
-                                            </IconButton>
-                                        </ArrowWrapper>
-                                    </AutoRow>
-                                    <CurrencySelect
+                                    
+                                    <NetworkSelect
                                         selected={!!currencies[Field.OUTPUT]}
                                         className="open-currency-select-button"
                                         onClick={() => {
-                                            setModalOpen(true);
                                             setInput(false)
                                         }}
                                     >
                                         <AutoColumn justify="start">
                                             <Aligner>
-                                                {currencies[Field.OUTPUT] && (
-                                                    <CurrencyLogo currency={currencies[Field.OUTPUT]} size="24px" style={{ marginRight: '8px' }} />
+                                                {bridgeNetworks[toBridgeNetworkKey] && (
+                                                    <NetworkLogo bridgeNetwork={bridgeNetworks[toBridgeNetworkKey]} size="24px" style={{ marginRight: '8px' }} />
                                                 )}
                                                 <Text id="pair">
-                                                    {(currencies[Field.OUTPUT] && currencies[Field.OUTPUT].symbol && currencies[Field.OUTPUT].symbol.length > 20
-                                                        ? `${currencies[Field.OUTPUT].symbol.slice(0, 4)}...${currencies[Field.OUTPUT].symbol.slice(
-                                                            currencies[Field.OUTPUT].symbol.length - 5,
-                                                            currencies[Field.OUTPUT].symbol.length
-                                                        )}`
-                                                        : currencies[Field.OUTPUT]?.symbol) || TranslateString(1196, 'Select a currency')}
+                                                    {(bridgeNetworks[toBridgeNetworkKey] && bridgeNetworks[toBridgeNetworkKey].name 
+                                                        ? bridgeNetworks[toBridgeNetworkKey].name
+                                                        : bridgeNetworks[toBridgeNetworkKey].name) || TranslateString(1196, 'To Chain')}
                                                 </Text>
-
-                                                <ChevronDownIcon />
+                                                
                                             </Aligner>
                                         </AutoColumn>
-                                    </CurrencySelect>
+                                    </NetworkSelect>
                                 </AutoColumn>
-                                <CurrencyInputPanel
-                                    value={formattedAmounts[Field.OUTPUT]}
+                                <NetworkBridgeInputPanel
+                                    value={bridgingFee}
                                     onUserInput={handleTypeOutput}
                                     label={
-                                        independentField === Field.INPUT && !showWrap && trade
+                                        independentField === Field.INPUT
                                             ? TranslateString(196, 'Destination (estimated)')
                                             : TranslateString(80, 'Destination')
                                     }
@@ -368,24 +499,90 @@ const Bridge = () => {
                                     currency={currencies[Field.OUTPUT]}
                                     onCurrencySelect={handleOutputSelect}
                                     otherCurrency={currencies[Field.INPUT]}
-                                    id="swap-currency-output"
+                                    bridgeTokensOnly={bridgeTokensOnly}
+                                    selectedBridgeNetwork={bridgeNetworks[toBridgeNetworkKey]}
+                                    id="bridge-currency-output"
                                 />
                             </AutoColumn>
                             <BottomGrouping>
-                                <ConnectWalletButton width="100%" label={TranslateString(80, 'Bridge to Fantom')} />
+                              {!account ? (
+                                  <ConnectWalletButton width="100%" />
+                                ) : isInvalidAmountWithFee ? (
+                                  <GreyCard style={{ textAlign: 'center' }}>
+                                    <Text mb="4px">{TranslateString(1194, 'Amount must be greater than fee')}</Text>
+                                  </GreyCard>
+                                ) : showApproveFlow ? (
+                                  <RowBetween>
+                                    {approval === ApprovalState.APPROVED ? 
+                                      (<Button
+                                        endIcon={attemptingTxn ? <AutoRenewIcon spin color="currentColor" /> : null}
+                                        onClick={() => {
+                                          handleBridge()
+                                        }}
+                                        style={{ width: '100%' }}
+                                        id="swap-button"
+                                        disabled={
+                                          !isValid ||
+                                          approval !== ApprovalState.APPROVED ||
+                                          attemptingTxn
+                                        }
+                                        variant={isValid ? 'danger' : 'primary'}
+                                      >
+                                        {(bridgeInputError ?? undefined ? bridgeInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
+                                      </Button>)
+                                    : 
+                                      (<Button
+                                        onClick={approveCallback}
+                                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                                        style={{ width: '100%' }}
+                                        variant='primary'
+                                      >
+                                        {approval === ApprovalState.PENDING ? (
+                                          <AutoRow gap="6px" justify="center">
+                                            Approving <Loader stroke="white" />
+                                          </AutoRow>
+                                        ) : (
+                                          `Approve ${currencies[Field.INPUT]?.symbol}`
+                                        )}
+                                      </Button> )
+                                    }
+                                  </RowBetween>
+                                ) : (
+                                  <Button
+                                    endIcon={attemptingTxn ? <AutoRenewIcon spin color="currentColor" /> : null}
+                                    onClick={() => {
+                                      handleBridge()
+                                    }}
+                                    id="bridge-button"
+                                    disabled={
+                                      !isValid || !!bridgeCallbackError || attemptingTxn
+                                    }
+                                    variant={isValid ? 'danger' : 'primary'}
+                                    width="100%"
+                                  >
+                                    {(bridgeInputError ?? undefined ? bridgeInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
+
+                                  </Button>
+                                )}
+                                {bridgeErrorMessage ? <SwapCallbackError error={bridgeErrorMessage} /> : null}
+                                
                             </BottomGrouping>
                         </CardBody>
                     </Wrapper>
                 </AppBody>
-                <AdvancedSwapDetailsDropdown trade={trade} />
+                
             </Container>
-
-            <CurrencySearchModal
+            
+            <Modal isOpen={isOpen} onDismiss={handleConfirmDismiss} maxHeight={90}>
+              <TransactionSubmittedContent chainId={bridgeNetworks[fromBridgeNetworkKey].chainId} hash={transactionHash} onDismiss={handleConfirmDismiss} />
+            </Modal>
+            
+            <NetworkSelectionModal
                 isOpen={modalOpen}
                 onDismiss={handleDismissSearch}
-                onCurrencySelect={input ? handleInputSelect : handleOutputSelect}
-                selectedCurrency={input ? currencies[Field.INPUT] : currencies[Field.OUTPUT]}
-                otherSelectedCurrency={input ? currencies[Field.OUTPUT] : currencies[Field.INPUT]}
+                isOrigin={input}
+                onNetworkSelect={input ? handleFromNetworkSelect : handleToNetworkSelect}
+                selectedNetwork={input ? bridgeNetworks[fromBridgeNetworkKey] : bridgeNetworks[toBridgeNetworkKey]}
             />
         </>
     )

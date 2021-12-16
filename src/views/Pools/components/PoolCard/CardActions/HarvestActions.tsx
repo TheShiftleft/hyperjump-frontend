@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Flex, Text, Button, Heading, Skeleton } from 'uikit'
 import BigNumber from 'bignumber.js'
 import { Token } from 'config/constants/types'
 import { useTranslation } from 'contexts/Localization'
-import { getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
+import { getBalanceNumber } from 'utils/formatBalance'
 import Balance from 'components/Balance'
 import useToast from 'hooks/useToast'
-import { useSousStake } from 'hooks/useStake'
 import { useSousHarvest } from 'hooks/useHarvest'
 
 interface HarvestActionsProps {
@@ -32,28 +31,9 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
   const { onReward } = useSousHarvest(sousId, false)
   const { toastSuccess, toastError } = useToast()
 
-  const fullBalance = getFullDisplayBalance(earnings, earningToken.decimals)
-
-  const { onStake } = useSousStake(sousId, false)
   const earningTokenBalance = getBalanceNumber(earnings, earningToken.decimals)
   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
   const hasEarnings = earnings.toNumber() > 0
-  const [pendingTx, setPendingTx] = useState(false)
-
-  const handleCompound = async () => {
-    setIsPending(true)
-    try {
-      await onStake(fullBalance, earningToken.decimals)
-      toastSuccess(
-        `${t('Compounded')}!`,
-        t('Your %symbol% earnings have been assembled into !', { symbol: earningToken.symbol }),
-      )
-      setIsPending(false)
-    } catch (e) {
-      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
-      setIsPending(false)
-    }
-  }
 
   const handleCollect = async () => {
     setIsPending(true)
@@ -103,12 +83,9 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
             </>
           )}
         </Flex>
-        <Flex flexDirection="column">
-          <Button disabled={!hasEarnings} className="col-staked-btn" isLoading={isPending} onClick={handleCollect}>
+        <Flex>
+          <Button disabled={!hasEarnings} isLoading={isPending} onClick={handleCollect}>
             {t('Collect')}
-          </Button>
-          <Button className="col-staked-btn" disabled={!hasEarnings} isLoading={isPending} onClick={handleCompound}>
-            {t('Compound')}
           </Button>
         </Flex>
       </Flex>
