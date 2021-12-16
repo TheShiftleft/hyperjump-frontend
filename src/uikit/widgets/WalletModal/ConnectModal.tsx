@@ -34,7 +34,7 @@ const ConnectModal: React.FC<Props> = ({ login, onDismiss = () => null }) => {
           mb={index < config[networkConfig.network].length - 1 ? '8px' : '0'}
         />
       ))}
-      <HelpLink href="https://docs.hyperjump.fi/get-started/connection-guide" external>
+      <HelpLink href="https://docs.hyperjump.app/get-started/connection-guide" external>
         <HelpIcon color="primary" mr="6px" />
         Learn how to connect
       </HelpLink>

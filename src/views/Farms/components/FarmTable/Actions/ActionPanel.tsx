@@ -177,6 +177,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const lpAddress = getAddress(farm.lpAddresses)
   const bsc = getScannerAddressUrl(lpAddress)
   const info = `${BASE_INFO_PAIR_URL}/${lpAddress}`
+  const ADD_LIQ_URL = `${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${getAddress(token.address)}`
 
   return (
     <Container expanded={expanded}>
@@ -184,11 +185,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <InfoContainer>
           {isActive && (
             <StakeContainer>
-              <StyledLinkExternal
-                href={`${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${
-                  getAddress(token.address)
-                }`}
-              >
+              <StyledLinkExternal href={ADD_LIQ_URL}>
                 {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
               </StyledLinkExternal>
             </StakeContainer>

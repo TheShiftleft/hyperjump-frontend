@@ -13,6 +13,7 @@ import FarmingTokenStakingCard from 'views/Home/components/FarmingTokenStakingCa
 import WinCard from 'views/Home/components/WinCard'
 import JumpConverter from 'views/Convert/components/JumpConverter'
 import MechConverter from 'views/Convert/components/MechConverter'
+import LpRewardsClaimer from 'views/Convert/components/LpRewardsClaimer'
 import Welcome from 'views/Home/components/Welcome'
 import V1Links from 'views/Home/components/V1Links'
 
@@ -90,13 +91,13 @@ const Home: React.FC = () => {
           <ShipLogo src="/images/plane.png" />
         </Flex>
         <Column>
+          <Welcome />
+        </Column>
+        <Column>
           <JumpConverter />
         </Column>
         <Column>
-          <MechConverter />
-        </Column>
-        <Column>
-          <V1Links />
+          <LpRewardsClaimer />
         </Column>
         <Column>
           <FarmingTokenStats />

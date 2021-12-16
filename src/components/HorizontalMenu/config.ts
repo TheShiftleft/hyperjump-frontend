@@ -109,7 +109,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('Docs'),
-        href: 'https://docs.hyperjump.fi/',
+        href: 'https://docs.hyperjump.app/',
         target: '_blank',
       },
       {

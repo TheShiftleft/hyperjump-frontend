@@ -35,25 +35,22 @@ const IconImageSm = styled(Image)`
   }
 `
 
-const CardHeading: React.FC<ExpandableSectionProps> = ({
-  lpLabel,
-  farmImage,
-  tokenSymbol,
-}) => {
-  const img_split    = farmImage.split('-')
-  const primaryImg   = img_split[0]
-  const secondaryImg = img_split[1]  
+const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, farmImage, tokenSymbol }) => {
+  const img_split = farmImage.split('-')
+  const primaryImg = img_split[0]
+  const secondaryImg = img_split[1]
   return (
     <Wrapper flexDirection="column" justifyContent="space-between" alignItems="center" mb="12px">
-
-      {img_split.length > 0 ? 
-        (
-          <>
-            <Image src={`/images/tokens/${primaryImg}.png`} alt={tokenSymbol} width={64} height={64} mb="6px" />
-            <div style={{ position:'absolute', margin:'31px 0 0 35px', borderRadius:'10px' }}><IconImageSm src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={32} height={32} mr="3px" /></div>
-          </>
-        ) : <Image src={`/images/farms/${farmImage}.svg`} alt={tokenSymbol} width={64} height={64} mb="6px" />
-      } 
+      {img_split.length > 0 ? (
+        <>
+          <Image src={`/images/tokens/${secondaryImg}.png`} alt={tokenSymbol} width={64} height={64} mb="6px" />
+          <div style={{ position: 'absolute', margin: '31px 0 0 35px', borderRadius: '10px' }}>
+            <IconImageSm src={`/images/tokens/${primaryImg}.png`} alt="icon" width={32} height={32} mr="3px" />
+          </div>
+        </>
+      ) : (
+        <Image src={`/images/farms/${farmImage}.svg`} alt={tokenSymbol} width={64} height={64} mb="6px" />
+      )}
 
       <Flex justifyContent="center">
         <StyledHeading size="lg" color="primary" fontFamily="Oswald">

@@ -40,13 +40,9 @@ const Convert: React.FC = () => {
         <Column>
           <MechConverter />
         </Column>
-        {chainId === 56 ? (
-          <Column>
-            <LpRewardsClaimer />
-          </Column>
-        ) : (
-          <Column />
-        )}
+        <Column>
+          <LpRewardsClaimer />
+        </Column>
       </Container>
     </Page>
   )
