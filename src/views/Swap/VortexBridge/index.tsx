@@ -4,7 +4,7 @@ import { BigNumber as EthBigNumber} from '@ethersproject/bignumber'
 import { BIG_TEN } from 'utils/bigNumber'
 import  { Redirect, Route } from 'react-router'
 import { useWeb3React } from '@web3-react/core'
-import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal, ChevronDownIcon } from 'uikit'
+import { CardBody, ArrowDownIcon, Button, IconButton, AutoRenewIcon, Text, useModal, ChevronDownIcon } from 'uikit'
 import Modal from 'components/Modal'
 import styled, { ThemeContext } from 'styled-components'
 import Card, { GreyCard } from 'components/Card'
@@ -117,16 +117,16 @@ const Bridge = () => {
     const onPresentV2ExchangeRedirectModalRef = useRef(onPresentV2ExchangeRedirectModal)
 
     useMemo(() => {
-        if(loadedUrlParams?.outputChainId === ''){
-            Object.keys(bridgeNetworks)
-            .forEach(function eachKey(key) { 
-              if(bridgeNetworks[key].chainId === config.id)
-                  setFromBridgeNetworkKey(key)
-              
-            });
-            setRedirect(true);
+      // make sure that outputChain is not blank OR not equal to the current network otherwise redirect to the correct network
+      if(loadedUrlParams?.outputChainId === '' || loadedUrlParams?.outputChainId === config.id.toString()){ 
+          Object.keys(bridgeNetworks)
+          .forEach(function eachKey(key) { 
+            if(bridgeNetworks[key].chainId === config.id)
+                setFromBridgeNetworkKey(key)
             
-        }
+          });
+          setRedirect(true);
+      }
     }, [loadedUrlParams, config]) 
 
     const handleDismissSearch = useCallback(() => {
@@ -251,6 +251,16 @@ const Bridge = () => {
         }
     }, [approval, approvalSubmitted])
 
+    // show approve flow when: no error on inputs, not approved or pending, or approved in current session
+    // never show if price impact is above threshold in non expert mode
+    const showApproveFlow = useMemo(() => {
+      return !bridgeInputError &&
+        (approval === ApprovalState.NOT_APPROVED ||
+        approval === ApprovalState.PENDING ||
+        (approvalSubmitted && approval === ApprovalState.APPROVED)) 
+    }, [bridgeInputError, approval, approvalSubmitted])
+      
+
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
@@ -289,10 +299,11 @@ const Bridge = () => {
     }, [onUserInput, txHash, setBridgeState])
     
     const handleBridge = useCallback(() => {
+      setBridgeState((prevState) => ({ ...prevState, attemptingTxn: true, bridgeErrorMessage: undefined, txHash: undefined }))
       if (!bridgeCallback) {
         return
       }
-      setBridgeState((prevState) => ({ ...prevState, attemptingTxn: true, bridgeErrorMessage: undefined, txHash: undefined }))
+      
       bridgeCallback()
         .then((hash) => {
           setBridgeState((prevState) => ({
@@ -334,14 +345,6 @@ const Bridge = () => {
             
           });
     },[config])
-
-    // show approve flow when: no error on inputs, not approved or pending, or approved in current session
-    // never show if price impact is above threshold in non expert mode
-    const showApproveFlow =
-      !bridgeInputError &&
-      (approval === ApprovalState.NOT_APPROVED ||
-        approval === ApprovalState.PENDING ||
-        (approvalSubmitted && approval === ApprovalState.APPROVED)) 
 
     const handleFromNetworkSelect = useCallback(
       (fromNetwork) => {
@@ -510,47 +513,49 @@ const Bridge = () => {
                                   </GreyCard>
                                 ) : showApproveFlow ? (
                                   <RowBetween>
-                                    <Button
-                                      onClick={approveCallback}
-                                      disabled={disableSwap || approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-                                      style={{ width: '48%' }}
-                                      variant={approval === ApprovalState.APPROVED ? 'success' : 'primary'}
-                                    >
-                                      {approval === ApprovalState.PENDING ? (
-                                        <AutoRow gap="6px" justify="center">
-                                          Approving <Loader stroke="white" />
-                                        </AutoRow>
-                                      ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                                        'Approved'
-                                      ) : (
-                                        `Approve ${currencies[Field.INPUT]?.symbol}`
-                                      )}
-                                    </Button>
-                                    <Button
-                                      onClick={() => {
-                                        handleBridge()
-                                      }}
-                                      style={{ width: '48%' }}
-                                      id="swap-button"
-                                      disabled={
-                                        disableSwap ||
-                                        !isValid ||
-                                        approval !== ApprovalState.APPROVED ||
-                                        attemptingTxn
-                                      }
-                                      variant={isValid ? 'danger' : 'primary'}
-                                    >
-                                      {(bridgeInputError ?? undefined ? bridgeInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
-                                    </Button>
+                                    {approval === ApprovalState.APPROVED ? 
+                                      (<Button
+                                        endIcon={attemptingTxn ? <AutoRenewIcon spin color="currentColor" /> : null}
+                                        onClick={() => {
+                                          handleBridge()
+                                        }}
+                                        style={{ width: '100%' }}
+                                        id="swap-button"
+                                        disabled={
+                                          !isValid ||
+                                          approval !== ApprovalState.APPROVED ||
+                                          attemptingTxn
+                                        }
+                                        variant={isValid ? 'danger' : 'primary'}
+                                      >
+                                        {(bridgeInputError ?? undefined ? bridgeInputError : TranslateString(292, `Bridge to ${bridgeNetworks[toBridgeNetworkKey].name}`))}
+                                      </Button>)
+                                    : 
+                                      (<Button
+                                        onClick={approveCallback}
+                                        disabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+                                        style={{ width: '100%' }}
+                                        variant='primary'
+                                      >
+                                        {approval === ApprovalState.PENDING ? (
+                                          <AutoRow gap="6px" justify="center">
+                                            Approving <Loader stroke="white" />
+                                          </AutoRow>
+                                        ) : (
+                                          `Approve ${currencies[Field.INPUT]?.symbol}`
+                                        )}
+                                      </Button> )
+                                    }
                                   </RowBetween>
                                 ) : (
                                   <Button
+                                    endIcon={attemptingTxn ? <AutoRenewIcon spin color="currentColor" /> : null}
                                     onClick={() => {
                                       handleBridge()
                                     }}
                                     id="bridge-button"
                                     disabled={
-                                      disableSwap || !isValid || !!bridgeCallbackError || attemptingTxn
+                                      !isValid || !!bridgeCallbackError || attemptingTxn
                                     }
                                     variant={isValid ? 'danger' : 'primary'}
                                     width="100%"
@@ -559,7 +564,6 @@ const Bridge = () => {
 
                                   </Button>
                                 )}
-                                {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
                                 {bridgeErrorMessage ? <SwapCallbackError error={bridgeErrorMessage} /> : null}
                                 
                             </BottomGrouping>
