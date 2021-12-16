@@ -177,7 +177,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const lpAddress = getAddress(farm.lpAddresses)
   const bsc = getScannerAddressUrl(lpAddress)
   const info = `${BASE_INFO_PAIR_URL}/${lpAddress}`
-  const ADD_LIQ_URL = `${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${getAddress(token.address)}`
+  // const ADD_LIQ_URL = `${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${getAddress(token.address)}`
+  const liquidityUrlPathParts = getLiquidityUrlPathParts({
+    quoteTokenAddress: farm.quoteToken.address,
+    tokenAddress: farm.token.address,
+  })
+  const ADD_LIQ_URL = `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
 
   return (
     <Container expanded={expanded}>
