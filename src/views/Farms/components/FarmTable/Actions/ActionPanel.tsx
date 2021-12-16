@@ -8,6 +8,7 @@ import { getScannerAddressUrl } from 'utils/bscscan'
 
 import { BASE_ADD_LIQUIDITY_URL, BASE_INFO_PAIR_URL } from 'config'
 import { getAddress } from 'utils/addressHelpers'
+import useFarmTimingInfo from 'hooks/useFarmTimingInfo'
 import HarvestAction from './HarvestAction'
 import StakedAction from './StakedAction'
 import Apr, { AprProps } from '../Apr'
@@ -185,6 +186,14 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const lpAddress = getAddress(farm.lpAddresses)
   const bsc = getScannerAddressUrl(lpAddress)
   const info = `${BASE_INFO_PAIR_URL}/${lpAddress}`
+  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
+    useFarmTimingInfo(farm)
+  console.log('farm',farm);
+  console.log('shouldShowCountdown',shouldShowCountdown);
+  console.log('untilStart',untilStart);
+  console.log('remaining',remaining);
+  console.log('hasPoolStarted',hasPoolStarted);
+  console.log('toDisplay',toDisplay);
 
   return (
     <Container expanded={expanded}>
