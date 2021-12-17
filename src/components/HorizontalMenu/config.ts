@@ -7,20 +7,20 @@ import { getAddress } from 'utils/addressHelpers'
 
 const { config: networkConfig } = getNetwork()
 
-  let outputChainId
-  let inputCurrency
-  let outputCurrency
-  Object.keys(bridgeNetworks)
-    .forEach(function eachKey(key) { 
-      if(bridgeNetworks[key].chainId !== networkConfig.id){
-        outputChainId = bridgeNetworks[key].chainId
-        outputCurrency = bridgeNetworks[key].tokens[0].address
-      }else{
-        inputCurrency = bridgeNetworks[key].tokens[0].address
-      }
-          
-      
-    });
+let outputChainId
+let inputCurrency
+let outputCurrency
+Object.keys(bridgeNetworks)
+  .forEach(function eachKey(key) { 
+    if(bridgeNetworks[key].chainId !== networkConfig.id){
+      outputChainId = bridgeNetworks[key].chainId
+      outputCurrency = bridgeNetworks[key].tokens[0].address
+    }else{
+      inputCurrency = bridgeNetworks[key].tokens[0].address
+    }
+        
+    
+  });
 
 
 
