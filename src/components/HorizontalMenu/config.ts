@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { MenuEntry } from 'uikit'
 import { ContextApi } from 'contexts/Localization/types'
 import bridgeNetworks from 'config/constants/bridgeNetworks'
