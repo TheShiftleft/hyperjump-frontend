@@ -58,10 +58,6 @@ export const getGovTokenAddress = () => {
   return getAddress(config.govToken.address)
 }
 
-export const getSynapseBridgeAddress = () => {
-  return getAddress(addresses.synapse)
-}
-
 const routerAddresses: Record<Network, string> = {
   [Network.BSC]: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',
   [Network.BSC_TESTNET]: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',

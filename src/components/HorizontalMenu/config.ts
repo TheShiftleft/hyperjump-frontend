@@ -35,7 +35,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
   {
     label: t('Bridge'),
     icon: 'BridgeIcon',
-    href: "/bridge" ,
+    href: 'https://synapseprotocol.com/?inputCurrency=JUMP&outputCurrency=JUMP&outputChain=56',
   },
   {
     label: 'Earn',

@@ -134,7 +134,7 @@ export default function CurrencyInputPanel({
                   onUserInput(val)
                 }}
               />
-              {account && currency && showMaxButton && label !== 'Destination' && (
+              {account && currency && showMaxButton && label !== 'To' && (
                 <Button onClick={onMax} scale="sm" variant="text">
                   MAX
                 </Button>
@@ -164,9 +164,9 @@ export default function CurrencyInputPanel({
                 <Text id="pair">
                   {(currency && currency.symbol && currency.symbol.length > 20
                     ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
-                      currency.symbol.length - 5,
-                      currency.symbol.length
-                    )}`
+                        currency.symbol.length - 5,
+                        currency.symbol.length
+                      )}`
                     : currency?.symbol) || TranslateString(1196, 'Select a currency')}
                 </Text>
               )}

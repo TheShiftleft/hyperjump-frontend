@@ -1,21 +1,14 @@
-
-
 import React, { useState, useCallback } from 'react'
 import { NavLink } from "react-router-dom";
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { Heading, Card, CardBody, Button, Text, Flex } from 'uikit'
-import { harvest, soushHarvest } from 'utils/callHelpers'
+import { harvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
-import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
-import { useMasterchef, usePoolContract } from 'hooks/useContract'
+import { useMasterchef } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
-
-import { useSousHarvest } from 'hooks/useHarvest'
-
 import FarmingTokenHarvestBalance from './FarmingTokenHarvestBalance'
 import FarmingTokenWalletBalance from './FarmingTokenWalletBalance'
 
@@ -59,13 +52,9 @@ const FarmingTokenStakingCard = () => {
   const { account } = useWeb3React()
   const { t } = useTranslation()
   const farmsWithBalance = useFarmsWithBalance()
-  const poolsWithBalance = usePoolsWithBalance()
-
   const masterChefContract = useMasterchef()
   const { config } = getNetwork()
-  const poolContract = usePoolContract(config.wrappedFarmingTokenPid)
-  const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
-  const poolsWithValue    = poolsWithBalance.filter((balanceType) => (balanceType.userData?.pendingReward ?? undefined ? new BigNumber(balanceType.userData?.pendingReward.toString()).isGreaterThan(0) : undefined))
+  const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)
 
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
@@ -78,13 +67,8 @@ const FarmingTokenStakingCard = () => {
         // TODO: find a way to handle when the user rejects transaction or it fails
       }
     }
-
-    if( poolsWithValue.length > 0 ){
-     await soushHarvest(poolContract, account) 
-    }
-
     setPendingTx(false)
-  }, [account, balancesWithValue, poolsWithValue, poolContract, masterChefContract])
+  }, [account, balancesWithValue, masterChefContract])
 
   return (
     <StyledFarmingTokenStakingCard>
@@ -103,10 +87,9 @@ const FarmingTokenStakingCard = () => {
             <Text color="primary">{config.farmingToken.symbol} to Harvest</Text>
           </Flex>
 
-          <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={(balancesWithValue.length <= 0 && poolsWithValue.length <= 0) || pendingTx }>
+          <CardButton id="harvest-all" onClick={harvestAllFarms} disabled={balancesWithValue.length <= 0 || pendingTx}>
             HARVEST ALL
           </CardButton>
-          
         </Flex>
 
         <Flex justifyContent="space-between" alignItems="flex-end">
