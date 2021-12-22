@@ -5,10 +5,8 @@ import { Link, Text, useMatchBreakpoints, Flex } from 'uikit'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import { getScannerAddressUrl } from 'utils/bscscan'
-
 import { BASE_ADD_LIQUIDITY_URL, BASE_INFO_PAIR_URL } from 'config'
 import { getAddress } from 'utils/addressHelpers'
-import useFarmTimingInfo from 'hooks/useFarmTimingInfo'
 import HarvestAction from './HarvestAction'
 import StakedAction from './StakedAction'
 import Apr, { AprProps } from '../Apr'
@@ -182,18 +180,30 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { isXs, isSm, isMd } = useMatchBreakpoints()
   const { t } = useTranslation()
   const isActive = farm.multiplier !== '0X'
-  const { quoteToken, token } = farm
+  const { quoteToken, token, startTime, endTime } = farm
   const lpAddress = getAddress(farm.lpAddresses)
   const bsc = getScannerAddressUrl(lpAddress)
   const info = `${BASE_INFO_PAIR_URL}/${lpAddress}`
-  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
-    useFarmTimingInfo(farm)
-  console.log('farm',farm);
-  console.log('shouldShowCountdown',shouldShowCountdown);
-  console.log('untilStart',untilStart);
-  console.log('remaining',remaining);
-  console.log('hasPoolStarted',hasPoolStarted);
-  console.log('toDisplay',toDisplay);
+
+  // startTime multiplied by 1000 to convert in to microseconds
+  const startDate = new Date(startTime*1000).toLocaleString('en-GB', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
+
+  // endTime multiplied by 1000 to convert in to microseconds
+  const endDate = new Date(endTime*1000).toLocaleString('en-GB', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
 
   return (
     <Container expanded={expanded}>
@@ -218,11 +228,11 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <Flex flexDirection="column" flex="1" justifyContent="space-between">
               <Flex flexDirection="column">
                 <TimeTitle >{t('Start time')}</TimeTitle>
-                <TimeContainer >--</TimeContainer>
+                <TimeContainer >{startDate}</TimeContainer>
               </Flex>
               <Flex flexDirection="column">
                 <TimeTitle >{t('End time')}</TimeTitle>
-                <TimeContainer >--</TimeContainer>
+                <TimeContainer >{endDate}</TimeContainer>
               </Flex>
             </Flex>
           </Flex>

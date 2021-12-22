@@ -16,6 +16,8 @@ type PublicFarmData = {
   lpTotalSupply: SerializedBigNumber
   tokenPriceVsQuote: SerializedBigNumber
   poolWeight: SerializedBigNumber
+  startTime: number,
+  endTime: number,
   multiplier: string
 }
 
@@ -94,7 +96,8 @@ const fetchFarm = async (farm: Farm): Promise<PublicFarmData> => {
 
   const allocPoint = info ? new BigNumber(info.allocPoint?._hex) : BIG_ZERO
   const poolWeight = totalAllocPoint ? allocPoint.div(new BigNumber(totalAllocPoint)) : BIG_ZERO
-
+  const startTime = info ? info.startTime : BIG_ZERO
+  const endTime = info ? info.endTime : BIG_ZERO
   return {
     tokenAmountMc: tokenAmountMc.toJSON(),
     quoteTokenAmountMc: quoteTokenAmountMc.toJSON(),
@@ -104,6 +107,8 @@ const fetchFarm = async (farm: Farm): Promise<PublicFarmData> => {
     lpTotalInQuoteToken: lpTotalInQuoteToken.toJSON(),
     tokenPriceVsQuote: quoteTokenAmountTotal.div(tokenAmountTotal).toJSON(),
     poolWeight: poolWeight.toJSON(),
+    startTime: startTime.toNumber(),
+    endTime: endTime.toNumber(),
     multiplier: `${allocPoint.div(config.farmMultiplierScale).toString()}X`,
   }
 }
