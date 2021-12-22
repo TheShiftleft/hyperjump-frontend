@@ -20,7 +20,7 @@ const OnRamper: React.FC = () => {
           }}
         >
           <OnramperWidget
-            API_KEY="pk_prod_tLSMxIcGeg6DUet7M_NEIdSWkshE6ibAspxgKFksPI40"
+            API_KEY={process.env.REACT_APP_ONRAMP_API_KEY}
             color={baseColors.primary}
             fontFamily="Babas Neue"
             defaultCrypto="BNB_BEP20"
