@@ -68,6 +68,7 @@ const StyledLinkExternal = styled(Link)`
 const TimeContainer = styled.text`
   color: ${({ theme }) => theme.colors.text};
   font-size: 0.8rem;
+  font-family: 'Roboto Condensed', sans-serif;
 `
 
 const TimeTitle = styled.text`
