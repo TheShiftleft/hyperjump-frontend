@@ -38,7 +38,7 @@ export const VAULTS_API_BASE: Record<Network, string> = {
   [Network.BSC]: 'https://vaults.hyperswap.info',
   [Network.FANTOM]: 'https://ftmvaults.hyperswap.info',
 }
-export const VAULTS_API_URL = VAULTS_API_BASE[config.network]
+export const VAULTS_API_URL = 'https://vaults.hyperswap.info' // VAULTS_API_BASE[config.network]
 
 const BSC_NETWORK_URL = process.env.REACT_APP_BSC_NETWORK_URL
 const BSC_TESTNET_NETWORK_URL = process.env.REACT_APP_BSC_TESTNET_NETWORK_URL
