@@ -1,11 +1,10 @@
 import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
-import { Link, Text, useMatchBreakpoints } from 'uikit'
+import { Link, Text, useMatchBreakpoints, Flex } from 'uikit'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import { getScannerAddressUrl } from 'utils/bscscan'
-
 import { BASE_ADD_LIQUIDITY_URL, BASE_INFO_PAIR_URL } from 'config'
 import { getAddress } from 'utils/addressHelpers'
 import HarvestAction from './HarvestAction'
@@ -66,7 +65,16 @@ const Container = styled.div<{ expanded }>`
 const StyledLinkExternal = styled(Link)`
   font-weight: 400;
 `
+const TimeContainer = styled.text`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 0.8rem;
+  font-family: 'Oswald';
+`
 
+const TimeTitle = styled.text`
+  color: ${({ theme }) => theme.colors.blue};
+  font-size: 0.9rem;
+`
 const StakeContainer = styled.div`
   color: ${({ theme }) => theme.colors.text};
   align-items: center;
@@ -173,29 +181,62 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const { isXs, isSm, isMd } = useMatchBreakpoints()
   const { t } = useTranslation()
   const isActive = farm.multiplier !== '0X'
-  const { quoteToken, token } = farm
+  const { quoteToken, token, startTime, endTime } = farm
   const lpAddress = getAddress(farm.lpAddresses)
   const bsc = getScannerAddressUrl(lpAddress)
   const info = `${BASE_INFO_PAIR_URL}/${lpAddress}`
-  const liquidityUrlPathParts = getLiquidityUrlPathParts({
-    quoteTokenAddress: farm.quoteToken.address,
-    tokenAddress: farm.token.address,
+
+  // startTime multiplied by 1000 to convert in to microseconds
+  const startDate = new Date(startTime*1000).toLocaleString('en-GB', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
   })
-  const ADD_LIQ_URL = `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
+
+  // endTime multiplied by 1000 to convert in to microseconds
+  const endDate = new Date(endTime*1000).toLocaleString('en-GB', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
 
   return (
     <Container expanded={expanded}>
       <DetailsContainer>
         <InfoContainer>
-          {isActive && (
-            <StakeContainer>
-              <StyledLinkExternal href={ADD_LIQ_URL}>
-                {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
-              </StyledLinkExternal>
-            </StakeContainer>
-          )}
-          <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
-          <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal>
+          <Flex flexDirection="row" width="100%">
+            <Flex flexDirection="column" flex="1">
+              {isActive && (
+                <StakeContainer>
+                  <StyledLinkExternal
+                    href={`${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${
+                      getAddress(token.address)
+                    }`}
+                  >
+                    {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
+                  </StyledLinkExternal>
+                </StakeContainer>
+              )}
+              <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
+              <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal> 
+            </Flex>
+            <Flex flexDirection="column" flex="1" justifyContent="space-between">
+              <Flex flexDirection="column">
+                <TimeTitle >{t('Start time')}</TimeTitle>
+                <TimeContainer >{startDate}</TimeContainer>
+              </Flex>
+              <Flex flexDirection="column">
+                <TimeTitle >{t('End time')}</TimeTitle>
+                <TimeContainer >{endDate}</TimeContainer>
+              </Flex>
+            </Flex>
+          </Flex>
         </InfoContainer>
         {(isXs || isSm || isMd) && (
           <ValueContainer>
