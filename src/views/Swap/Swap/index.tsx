@@ -9,6 +9,7 @@ import Card, { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import OrderLimitPanel from 'components/OrderLimitPanel'
 import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
@@ -48,6 +49,8 @@ const Swap = () => {
   const [disableSwap, setDisableSwap] = useState(false)
   const [hasPoppedModal, setHasPoppedModal] = useState(false)
   const [interruptRedirectCountdown, setInterruptRedirectCountdown] = useState(false)
+  const [marketSelect, setMarketSelected] = useState(true)
+  const [limitPrice, setLimitPrice] = useState("")
   const [onPresentV2ExchangeRedirectModal] = useModal(
     <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
   )
@@ -340,6 +343,11 @@ const Swap = () => {
             onDismiss={handleConfirmDismiss}
           />
           <PageHeaderSwap
+            type="Swap"
+            marketSelect={marketSelect}
+            setMarketSelected={(val) => {
+              setMarketSelected(val)
+            }}
             title={TranslateString(8, 'Exchange')}
             description={TranslateString(1192, 'Trade tokens in an instant')}
           />
@@ -396,7 +404,13 @@ const Swap = () => {
                 otherCurrency={currencies[Field.INPUT] == null ? defaultFromCurrency : currencies[Field.INPUT]}
                 id="swap-currency-output"
               />
-
+              {!marketSelect &&
+                <OrderLimitPanel 
+                  trade={trade}
+                  limitPrice={limitPrice} 
+                  setLimitPrice={setLimitPrice}
+                />
+              }
               {recipient !== null && !showWrap ? (
                 <>
                   <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
