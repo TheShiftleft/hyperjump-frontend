@@ -29,6 +29,7 @@ const NotFound = lazy(() => import('./views/NotFound'))
 const Analytics = lazy(() => import('./views/Analytics'))
 const Convert = lazy(() => import('./views/Convert/Convert'))
 const Bridge = lazy(() => import('./views/Bridge'))
+const OnRamp = lazy(() => import('./views/OnRamp'))
 
 // This config is required for number formatting
 BigNumber.config({
@@ -64,6 +65,9 @@ const App: React.FC = () => {
             <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
             <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
 
+            <Route path="/onramp">
+              <OnRamp />
+            </Route>
             <Route path="/lottery">
               <Lottery />
             </Route>
