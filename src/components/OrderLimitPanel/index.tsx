@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, JSBI, Token, Price } from '@hyperjump-defi/sdk'
 import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
@@ -7,9 +7,11 @@ import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
 
 interface OrderLimitPanelProps {
-  trade?: Trade,
+  price?: Price,
   limitPrice?: string,
+  showInverted?: boolean,
   setLimitPrice: React.Dispatch<React.SetStateAction<any>>,
+  handleLimitInput: (limit: string) => void,
 }
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
@@ -48,13 +50,14 @@ const InputRow = styled.div<{ selected: boolean }>`
 
 
 
-export default function OrderLimitPanel({trade, limitPrice, setLimitPrice}:OrderLimitPanelProps){
-    console.log('trade',trade?.executionPrice?.toSignificant(6))
+export default function OrderLimitPanel({price, limitPrice, showInverted, setLimitPrice, handleLimitInput}:OrderLimitPanelProps){
+    const token = showInverted ? `${price?.quoteCurrency?.symbol ? `(${price?.quoteCurrency?.symbol})` : ''}` : `${price?.baseCurrency?.symbol ? `(${price?.baseCurrency?.symbol})` : ''}`
+    
     return(
         <InputPanel>
           <Container>
             <LabelRow>
-              <Text bold>Limit Price</Text>
+              <Text bold>Limit Price {token}</Text>
             </LabelRow>
             <InputRow selected >
               <NumericalInput 
@@ -62,6 +65,7 @@ export default function OrderLimitPanel({trade, limitPrice, setLimitPrice}:Order
                 value={limitPrice}
                 onUserInput={(val) => {
                   setLimitPrice(val);
+                  handleLimitInput(val)
                 }} />
             </InputRow>
           </Container>

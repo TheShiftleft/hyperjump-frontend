@@ -19,6 +19,7 @@ import TradePrice from 'components/swap/TradePrice'
 import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
 import Container from 'components/Container'
+import { toNumber, round } from 'lodash'
 
 import { BASE_EXCHANGE_URL, INITIAL_ALLOWED_SLIPPAGE } from 'config/index'
 import { useCurrency } from 'hooks/Tokens'
@@ -50,6 +51,7 @@ const Swap = () => {
   const [hasPoppedModal, setHasPoppedModal] = useState(false)
   const [interruptRedirectCountdown, setInterruptRedirectCountdown] = useState(false)
   const [marketSelect, setMarketSelected] = useState(true)
+  const [limitValidity, setLimitValidity] = useState({valid: true, error: ""})
   const [limitPrice, setLimitPrice] = useState("")
   const [onPresentV2ExchangeRedirectModal] = useModal(
     <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
@@ -316,6 +318,33 @@ const Swap = () => {
     address: config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[250]
   }
 
+  const handleLimitInput = (limit: string) => {
+    const limitValue = toNumber(limit);
+    const quotePrice = toNumber(trade?.executionPrice?.toSignificant())
+    const basePrice = toNumber(trade?.executionPrice?.invert()?.toSignificant())
+    setLimitValidity({
+      valid: true,
+      error: ``
+    })
+    if(quotePrice && basePrice && limitValue){
+      if(showInverted) {
+        if(limitValue < quotePrice){
+          const percentage = round(((quotePrice - limitValue) / quotePrice) * 100, 2 )
+          setLimitValidity({
+            valid: false,
+            error: `Entered limit rate ${percentage}% below market`
+          })
+        }
+      }else if(basePrice < limitValue){
+          const percentage = round(((limitValue - basePrice) / ((limitValue + basePrice) / 2)) * 100, 2);
+          setLimitValidity({
+            valid: false,
+            error: `Entered limit rate ${percentage}% above market`
+          })
+      }
+    }
+  }
+
   const slippageIsTooLow = currencies[Field.INPUT]?.symbol === config.govToken.symbol
     && (allowedSlippage / 100) < getBalanceNumber(govTokenBurnRate)
 
@@ -403,12 +432,15 @@ const Swap = () => {
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT] == null ? defaultFromCurrency : currencies[Field.INPUT]}
                 id="swap-currency-output"
+                disabledNumericalInput={!marketSelect}
               />
               {!marketSelect &&
                 <OrderLimitPanel 
-                  trade={trade}
+                  price={trade?.executionPrice}
                   limitPrice={limitPrice} 
                   setLimitPrice={setLimitPrice}
+                  showInverted={showInverted}
+                  handleLimitInput={handleLimitInput}
                 />
               }
               {recipient !== null && !showWrap ? (
@@ -433,8 +465,11 @@ const Swap = () => {
                         <Text fontSize="14px">{TranslateString(1182, 'Price')}</Text>
                         <TradePrice
                           price={trade?.executionPrice}
+                          limit={limitPrice}
                           showInverted={showInverted}
                           setShowInverted={setShowInverted}
+                          setLimitPrice={setLimitPrice}
+                          setLimitValidity={setLimitValidity}
                         />
                       </RowBetween>
                     )}
@@ -516,7 +551,7 @@ const Swap = () => {
                       : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
                   </Button>
                 </RowBetween>
-              ) : (
+              ) : marketSelect ? (
                 <Button
                   onClick={() => {
                     if (isExpertMode) {
@@ -545,6 +580,18 @@ const Swap = () => {
                       ? 'Increase Slippage'
                       : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
                 </Button>
+              ): limitValidity.valid ? (
+                <Button 
+                  width="100%" 
+                  disabled={(toNumber(limitPrice) === 0)} 
+                  variant={!limitPrice ? 'danger' : 'primary'}
+                >
+                  {toNumber(limitPrice) === 0 ? 'Enter a valid limit price' : 'Place Order'}
+                </Button>
+              ): (
+                <GreyCard style={{ textAlign: 'center' }}>
+                  <Text mb="4px">{TranslateString(1194, `${limitValidity.error}`)}</Text>
+                </GreyCard>
               )}
               {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
               {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
