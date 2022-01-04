@@ -3,6 +3,7 @@ import { CurrencyAmount, JSBI, Token, Price } from '@hyperjump-defi/sdk'
 import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
+import { toNumber } from 'lodash'
 import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
 
@@ -12,6 +13,8 @@ interface OrderLimitPanelProps {
   showInverted?: boolean,
   setLimitPrice: React.Dispatch<React.SetStateAction<any>>,
   handleLimitInput: (limit: string) => void,
+  setLimitOutput: React.Dispatch<React.SetStateAction<any>>,
+  inputValue: string
 }
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
@@ -50,7 +53,7 @@ const InputRow = styled.div<{ selected: boolean }>`
 
 
 
-export default function OrderLimitPanel({price, limitPrice, showInverted, setLimitPrice, handleLimitInput}:OrderLimitPanelProps){
+export default function OrderLimitPanel({price, limitPrice, showInverted, setLimitPrice, handleLimitInput, setLimitOutput, inputValue}:OrderLimitPanelProps){
     const token = showInverted ? `${price?.quoteCurrency?.symbol ? `(${price?.quoteCurrency?.symbol})` : ''}` : `${price?.baseCurrency?.symbol ? `(${price?.baseCurrency?.symbol})` : ''}`
     
     return(
@@ -66,6 +69,8 @@ export default function OrderLimitPanel({price, limitPrice, showInverted, setLim
                 onUserInput={(val) => {
                   setLimitPrice(val);
                   handleLimitInput(val)
+                  const output = showInverted ? toNumber(val) * toNumber(inputValue) : toNumber(inputValue) / toNumber(val)
+                  setLimitOutput(output.toString())
                 }} />
             </InputRow>
           </Container>
