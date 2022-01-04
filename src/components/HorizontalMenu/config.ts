@@ -1,9 +1,26 @@
 import { MenuEntry } from 'uikit'
 import { ContextApi } from 'contexts/Localization/types'
+import bridgeNetworks from 'config/constants/bridgeNetworks'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
 
+
 const { config: networkConfig } = getNetwork()
+
+let outputChainId
+let inputCurrency
+let outputCurrency
+Object.keys(bridgeNetworks)
+.forEach(function eachKey(key) {
+  if(bridgeNetworks[key].chainId !== networkConfig.id){
+    outputChainId = bridgeNetworks[key].chainId
+    outputCurrency = bridgeNetworks[key].tokens[0].address
+  }else{
+    inputCurrency = bridgeNetworks[key].tokens[0].address
+  }
+});
+
+
 
 const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
   {
@@ -39,7 +56,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       {
         label: t('Vortex Bridge'),
         // icon: 'BridgeIcon',
-        href: '/bridge',
+        href: `/bridge?outputChainId=${outputChainId}&inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`  ,
         target: '_self',
       },
     ],
