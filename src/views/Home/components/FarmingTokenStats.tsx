@@ -72,7 +72,10 @@ const FarmingTokenStats = () => {
           </>
         ) :
         (
-          <></>
+          <>
+          <Text color="primary">{config.name} Circulating Supply</Text>
+          <Heading mb="10px">0.00</Heading>
+          </>
         )
         }
 
