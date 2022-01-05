@@ -14,7 +14,7 @@ import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import OrderList from 'components/swap/OrderList'
-import LimitOrdersApi from 'utils/orderlimit'
+import OrderLimit from 'utils/orderlimit'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
@@ -352,15 +352,15 @@ const Swap = () => {
     && (allowedSlippage / 100) < getBalanceNumber(govTokenBurnRate)
 
   const orderListRequest = {
-    account,
-    chainId: config.id,
-    includeCancelled: true,
-    includeExecuted: true,
+    account: '0xe9F7B6F81883F321EFb8beed766e873C4E01EC4b',
+    chainId: 137,
+    includeCancelled: false,
+    includeExecuted: false
   }
   
   if(account){
     // console.log('orderListRequest', orderListRequest)
-    LimitOrdersApi.listOrders(orderListRequest).then((response) => {
+    OrderLimit.listOrders(orderListRequest).then((response) => {
       console.log('orderList', response)
     })
   }
@@ -374,7 +374,7 @@ const Swap = () => {
         buyAmount: limitOutput
     }
     // console.log('orderRequest', orderRequest)
-    const order = await LimitOrdersApi.placeOrder(orderRequest);
+    const order = await OrderLimit.placeOrder(orderRequest);
     // console.log('order',order)
   }
 
