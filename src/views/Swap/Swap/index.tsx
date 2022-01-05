@@ -14,7 +14,7 @@ import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import OrderList from 'components/swap/OrderList'
-import OrderLimit from 'utils/orderlimit'
+import LimitOrdersApi from 'utils/orderlimit'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
@@ -357,10 +357,13 @@ const Swap = () => {
     includeCancelled: true,
     includeExecuted: true,
   }
-  // console.log('orderListRequest', orderListRequest)
-  // OrderLimit.listOrder(orderListRequest).then((response) => {
-  //   console.log('orderList', response)
-  // })
+  
+  if(account){
+    // console.log('orderListRequest', orderListRequest)
+    LimitOrdersApi.listOrders(orderListRequest).then((response) => {
+      console.log('orderList', response)
+    })
+  }
   const placeLimitOrder = async () => {
     const orderRequest = {
         chainId: config.id,
@@ -371,9 +374,8 @@ const Swap = () => {
         buyAmount: limitOutput
     }
     // console.log('orderRequest', orderRequest)
-    const order = await OrderLimit.placeOrder(orderRequest);
+    const order = await LimitOrdersApi.placeOrder(orderRequest);
     // console.log('order',order)
-
   }
 
   return (
