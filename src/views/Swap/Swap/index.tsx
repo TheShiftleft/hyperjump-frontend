@@ -13,6 +13,8 @@ import OrderLimitPanel from 'components/OrderLimitPanel'
 import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
+import OrderList from 'components/swap/OrderList'
+import OrderLimit from 'utils/orderlimit'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
@@ -53,6 +55,7 @@ const Swap = () => {
   const [marketSelect, setMarketSelected] = useState(true)
   const [limitValidity, setLimitValidity] = useState({valid: true, error: ""})
   const [limitPrice, setLimitPrice] = useState("")
+  const [limitOutput, setLimitOutput] = useState("")
   const [onPresentV2ExchangeRedirectModal] = useModal(
     <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
   )
@@ -348,6 +351,31 @@ const Swap = () => {
   const slippageIsTooLow = currencies[Field.INPUT]?.symbol === config.govToken.symbol
     && (allowedSlippage / 100) < getBalanceNumber(govTokenBurnRate)
 
+  const orderListRequest = {
+    account,
+    chainId: config.id,
+    includeCancelled: true,
+    includeExecuted: true,
+  }
+  // console.log('orderListRequest', orderListRequest)
+  // OrderLimit.listOrder(orderListRequest).then((response) => {
+  //   console.log('orderList', response)
+  // })
+  const placeLimitOrder = async () => {
+    const orderRequest = {
+        chainId: config.id,
+        account,
+        sellToken: trade?.route.path[0].address,
+        sellAmount: formattedAmounts[Field.INPUT],
+        buyToken: trade?.route.path[1].address,
+        buyAmount: limitOutput
+    }
+    // console.log('orderRequest', orderRequest)
+    const order = await OrderLimit.placeOrder(orderRequest);
+    // console.log('order',order)
+
+  }
+
   return (
     <Container>
       <TokenWarningModal
@@ -420,7 +448,7 @@ const Swap = () => {
                 </AutoRow>
               </AutoColumn>
               <CurrencyInputPanel
-                value={formattedAmounts[Field.OUTPUT]}
+                value={toNumber(limitOutput) === 0 ? formattedAmounts[Field.OUTPUT] : limitOutput}
                 onUserInput={handleTypeOutput}
                 label={
                   independentField === Field.INPUT && !showWrap && trade
@@ -441,6 +469,8 @@ const Swap = () => {
                   setLimitPrice={setLimitPrice}
                   showInverted={showInverted}
                   handleLimitInput={handleLimitInput}
+                  setLimitOutput={setLimitOutput}
+                  inputValue={formattedAmounts[Field.INPUT]}
                 />
               }
               {recipient !== null && !showWrap ? (
@@ -585,6 +615,9 @@ const Swap = () => {
                   width="100%" 
                   disabled={(toNumber(limitPrice) === 0)} 
                   variant={!limitPrice ? 'danger' : 'primary'}
+                  onClick={() => {
+                    placeLimitOrder()
+                  }}
                 >
                   {toNumber(limitPrice) === 0 ? 'Enter a valid limit price' : 'Place Order'}
                 </Button>
@@ -600,6 +633,7 @@ const Swap = () => {
         </Wrapper>
       </AppBody>
       <AdvancedSwapDetailsDropdown trade={trade} />
+      <OrderList show={Boolean(account) && !marketSelect} />
     </Container>
   )
 }
