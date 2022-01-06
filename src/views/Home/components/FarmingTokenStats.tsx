@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Card, CardBody, Heading, Text, Button, Flex } from 'uikit'
 import styled from 'styled-components'
 import { getBalanceNumber } from 'utils/formatBalance'
-import { useTotalSupply, useBurnedBalance } from 'hooks/useTokenBalance'
+import { useTotalSupply, useBurnedBalance, useCirculatingSupplyBalance } from 'hooks/useTokenBalance'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useTranslation } from 'contexts/Localization'
 import { getFarmingTokenAddress } from 'utils/addressHelpers'
@@ -16,6 +16,7 @@ import BurnCardValue from './BurnCardValue'
 const FarmingTokenStats = () => {
   const { t } = useTranslation()
   const totalSupply = useTotalSupply()
+  const circulatingSupply = useCirculatingSupplyBalance("0x130025eE738A66E691E6A7a62381CB33c6d9Ae83");
 
   const burnedBalance = getBalanceNumber(useBurnedBalance(getFarmingTokenAddress()))
   // change the calc of totalsupply as new token correctly deducts it from totalsupply - angry mech
@@ -68,7 +69,7 @@ const FarmingTokenStats = () => {
         {config.name === 'BSC' ? (
           <>
           <Text color="primary">{config.name} Circulating Supply</Text>
-          <Heading mb="10px">{farmingCirculatingSupply && <CardValue value={farmingCirculatingSupply} />} ( 10% )</Heading>
+          <Heading mb="10px">{circulatingSupply.balance && <CardValue value={getBalanceNumber(circulatingSupply.balance)} />} ( {circulatingSupply.balance.div(totalSupply).multipliedBy(100).toFixed(2)}% )</Heading>
           </>
         ) :
         (
