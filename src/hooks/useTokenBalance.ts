@@ -75,6 +75,36 @@ export const useTotalSupply = () => {
   return totalSupply
 }
 
+export const useCirculatingSupplyBalance = (tokenAddress: string) => {
+  const { NOT_FETCHED, SUCCESS, FAILED } = FetchStatus
+  const [balanceState, setBalanceState] = useState<UseTokenBalanceState>({
+    balance: BIG_ZERO,
+    fetchStatus: NOT_FETCHED,
+  })
+  const web3 = useWeb3()
+
+  const { fastRefresh } = useRefresh()
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const contract = getBep20Contract(tokenAddress, web3)
+      try {
+        const res = await contract.methods.balanceOf("0x7F0a733B03EC455cb340E0f6af736A13d8fBB851").call()
+        setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
+      } catch (e) {
+        console.error(e)
+        setBalanceState((prev) => ({
+          ...prev,
+          fetchStatus: FAILED,
+        }))
+      }
+    }
+    fetchBalance()
+  }, [ tokenAddress, web3, fastRefresh, SUCCESS, FAILED])
+
+  return balanceState
+}
+
 export const useGovTokenTotalSupply = () => {
   const { slowRefresh } = useRefresh()
   const [totalSupply, setTotalSupply] = useState<BigNumber>()
