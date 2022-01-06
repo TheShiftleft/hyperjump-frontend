@@ -3,6 +3,7 @@ import { Network } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { getBep20Contract, getFarmingTokenContract, getGovTokenContract } from 'utils/contractHelpers'
+import { getJumpAddress, getMainDistributorAddress, getBridgeDistributorAddress } from 'utils/addressHelpers'
 import { BIG_ZERO } from 'utils/bigNumber'
 import getNetwork from 'utils/getNetwork'
 import addresses from 'config/constants/contracts'
@@ -75,7 +76,38 @@ export const useTotalSupply = () => {
   return totalSupply
 }
 
-export const useCirculatingSupplyBalance = (tokenAddress: string) => {
+export const useBridgeDistributorBalance = (chainId: number) => {
+  const { NOT_FETCHED, SUCCESS, FAILED } = FetchStatus
+  const [balanceState, setBalanceState] = useState<UseTokenBalanceState>({
+    balance: BIG_ZERO,
+    fetchStatus: NOT_FETCHED,
+  })
+  
+  const web3 = useWeb3()
+
+  const { fastRefresh } = useRefresh()
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const contract = getBep20Contract(getJumpAddress(chainId), web3)
+      try {
+        const res = await contract.methods.balanceOf(getBridgeDistributorAddress(chainId)).call()
+        setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
+      } catch (e) {
+        console.error("e", e)
+        setBalanceState((prev) => ({
+          ...prev,
+          fetchStatus: FAILED,
+        }))
+      }
+    }
+    fetchBalance()
+  }, [ chainId, web3, fastRefresh, SUCCESS, FAILED])
+
+  return balanceState
+}
+
+export const useMainDistributorBalance = (chainId: number) => {
   const { NOT_FETCHED, SUCCESS, FAILED } = FetchStatus
   const [balanceState, setBalanceState] = useState<UseTokenBalanceState>({
     balance: BIG_ZERO,
@@ -87,9 +119,9 @@ export const useCirculatingSupplyBalance = (tokenAddress: string) => {
 
   useEffect(() => {
     const fetchBalance = async () => {
-      const contract = getBep20Contract(tokenAddress, web3)
+      const contract = getBep20Contract(getJumpAddress(chainId), web3)
       try {
-        const res = await contract.methods.balanceOf("0x7F0a733B03EC455cb340E0f6af736A13d8fBB851").call()
+        const res = await contract.methods.balanceOf(getMainDistributorAddress(chainId)).call()
         setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
       } catch (e) {
         console.error(e)
@@ -100,7 +132,7 @@ export const useCirculatingSupplyBalance = (tokenAddress: string) => {
       }
     }
     fetchBalance()
-  }, [ tokenAddress, web3, fastRefresh, SUCCESS, FAILED])
+  }, [ chainId, web3, fastRefresh, SUCCESS, FAILED])
 
   return balanceState
 }
