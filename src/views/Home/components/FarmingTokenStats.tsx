@@ -1,10 +1,11 @@
 import React, {useMemo} from 'react'
 import { NavLink } from 'react-router-dom'
 import { ChainId } from '@hyperjump-defi/sdk'
+import BigNumber from 'bignumber.js'
 import { Card, CardBody, Heading, Text, Button, Flex } from 'uikit'
 import styled from 'styled-components'
 import { getBalanceNumber } from 'utils/formatBalance'
-import { useTotalSupply, useBurnedBalance, useMainDistributorBalance, useBridgeDistributorBalance } from 'hooks/useTokenBalance'
+import { useTotalSupply, useBurnedBalance, useMainDistributorBalance, useBridgeDistributorBalance, useTotalSupplyMultiChain } from 'hooks/useTokenBalance'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useTranslation } from 'contexts/Localization'
 import { getFarmingTokenAddress } from 'utils/addressHelpers'
@@ -13,6 +14,7 @@ import { NETWORK_URL } from 'config'
 import getNetwork from 'utils/getNetwork'
 import CardValue from './CardValue'
 import BurnCardValue from './BurnCardValue'
+
 
 const FarmingTokenStats = () => {
   const { t } = useTranslation()
@@ -36,13 +38,15 @@ const FarmingTokenStats = () => {
 
   const mainDistBalance = useMainDistributorBalance(chainId)
   const bridgeDistBalance = useBridgeDistributorBalance(ChainId.BSC_MAINNET)
+  const totalSupplyMultiChain = useTotalSupplyMultiChain(ChainId.BSC_MAINNET)
   const circulatingSupply = useMemo(() => {
     if(chainId === ChainId.BSC_MAINNET){
       return (totalSupply && bridgeDistBalance.balance ? getBalanceNumber(totalSupply.minus(bridgeDistBalance.balance)) : 0 ) 
     }
-    console.log("bridgeDistBalance.balance", bridgeDistBalance)
-    return (totalSupply && mainDistBalance.balance && bridgeDistBalance.balance ? getBalanceNumber(totalSupply.minus(mainDistBalance.balance)) : 0 ) 
-  }, [chainId, mainDistBalance, bridgeDistBalance, totalSupply])
+    
+    const bscCircSupply = (totalSupplyMultiChain && bridgeDistBalance.balance ? totalSupplyMultiChain.minus(bridgeDistBalance.balance) : 0 ) 
+    return (totalSupply && mainDistBalance.balance && bridgeDistBalance.balance ? getBalanceNumber(totalSupply.minus(mainDistBalance.balance).minus(bscCircSupply)) : 0 ) 
+  }, [chainId, mainDistBalance, bridgeDistBalance, totalSupply, totalSupplyMultiChain])
 
   const tokenAddress = getFarmingTokenAddress()
   const imageSrc = `images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`
@@ -79,7 +83,7 @@ const FarmingTokenStats = () => {
       
         <>
           <Text color="primary">{config.name} Circulating Supply</Text>
-          <Heading mb="10px">{circulatingSupply && <CardValue value={circulatingSupply} />} ( % )</Heading>
+          <Heading mb="10px">{circulatingSupply && <CardValue value={circulatingSupply} />} ( {(circulatingSupply && totalSupply ? new BigNumber(circulatingSupply).div(getBalanceNumber(totalSupply)).multipliedBy(100).toFixed(2) : 0 )}% )</Heading>
         </>
 
         <Text color="primary">Total {config.farmingToken.symbol} Burned</Text>
