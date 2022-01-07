@@ -41,22 +41,19 @@ const PageHeader = ({type = "", marketSelect, setMarketSelected, title, descript
   const TranslateString = useI18n()
   const [onPresentSettings] = useModal(<SettingsModal translateString={TranslateString} />)
   const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal translateString={TranslateString} />)
-  const tabClicked = (val:boolean) => {
-    setMarketSelected(val)
-  }
   return (
     <StyledPageHeader>
       {type.toLowerCase() === "swap" && 
         <Flex>
-          <TextContainer style={ marketSelect ? {} : {border: "none"}} onClick={(val) => {
-            tabClicked(true)
+          <TextContainer style={ marketSelect ? {} : {border: "none"}} onClick={() => {
+            setMarketSelected(true)
           }}>
             <Text color="primary" bold>
                 Market
             </Text>
           </TextContainer>
-          <TextContainer style={ marketSelect ? {border: "none"} : {}} onClick={(val) => {
-            tabClicked(false)
+          <TextContainer style={ marketSelect ? {border: "none"} : {}} onClick={() => {
+            setMarketSelected(false)
           }}>
             <Text color="primary" bold>
                 Limit

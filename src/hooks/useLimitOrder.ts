@@ -1,4 +1,6 @@
 import LimitOrdersApi from '@unidexexchange/sdk'
+import { getLimitOrderContract } from 'utils/contractHelpers'
+import useWeb3 from './useWeb3'
 
 export interface PlaceLimitOrderTxRequest {
     chainId: number;
@@ -53,20 +55,25 @@ export interface OpenLimitOrder {
     updatedAt: string;
 }
 
-const orderLimit = {
-    listOrders : async (request: FetchLimitOrdersTxRequest) => {
-    
-        // Fetch list of orders using unidex api function
-        const order = await LimitOrdersApi.listOrders(request)
-        return order
-    },
-    cancelOrder : async (request: CancelLimitOrderTxRequest) => {
 
-        // Cancel Order using unidex api
-        const order = await LimitOrdersApi.cancelOrder(request)
-    
-        return order
+export const usePlaceOrder = async (request: PlaceLimitOrderTxRequest) => {
+    const web3 = useWeb3()
+
+    const limitOrdersContract = getLimitOrderContract(web3)
+    // Place order using unidex api function
+    try{
+        const order = await LimitOrdersApi.placeOrder(request)
+        const deposit = {
+            payableAmount: request.sellAmount,
+            _data: order.data
+        }
+        const orderResponse = await limitOrdersContract.methods.depositEth(deposit).call()
+        console.log(orderResponse)
+        return orderResponse
+    }catch(e){
+        console.log('error', e)
+        return e
     }
+
 }
 
-export default orderLimit

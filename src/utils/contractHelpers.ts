@@ -18,6 +18,7 @@ import {
   getMechAddress,
   getClaimLpRewardsMigratorAddress,
   getSynapseBridgeAddress,
+  getLimitOrderAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -39,6 +40,7 @@ import {
   getMechMigratorABI,
   getXJumpABI,
   getMechABI,
+  getLimitOrderABI
 } from 'config/abi'
 import { Pool } from 'state/types'
 import getNetwork from './getNetwork'
@@ -128,4 +130,8 @@ export const getLotteryContract = (web3?: Web3) => {
 
 export const getSynapseBridgeContract = (web3?: Web3) => {
   return getContract(SYNAPSE_BRIDGE_ABI.abi, getSynapseBridgeAddress(), web3)
+}
+
+export const getLimitOrderContract = (web3?: Web3) => {
+  return getContract(getLimitOrderABI(), getLimitOrderAddress(), web3)
 }

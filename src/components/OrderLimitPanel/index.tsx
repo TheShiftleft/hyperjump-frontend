@@ -1,10 +1,9 @@
-import React, { useState, useCallback } from 'react'
-import { CurrencyAmount, JSBI, Token, Price } from '@hyperjump-defi/sdk'
-import { Button, ChevronDownIcon, Text } from 'uikit'
+import React from 'react'
+import { Price } from '@hyperjump-defi/sdk'
+import { Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
 import { toNumber } from 'lodash'
-import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
 
 interface OrderLimitPanelProps {
@@ -70,7 +69,7 @@ export default function OrderLimitPanel({price, limitPrice, showInverted, setLim
                   setLimitPrice(val);
                   handleLimitInput(val)
                   const output = showInverted ? toNumber(val) * toNumber(inputValue) : toNumber(inputValue) / toNumber(val)
-                  setLimitOutput(output.toString())
+                  setLimitOutput(output === Infinity ? "0" : output.toString())
                 }} />
             </InputRow>
           </Container>

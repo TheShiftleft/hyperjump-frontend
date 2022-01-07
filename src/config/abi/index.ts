@@ -22,6 +22,7 @@ import rewardMigratorABI from './RewardMigrator.json'
 import mechABI from './mechs.json'
 import mechMigratorABI from './mechMigrator.json'
 import claimLpRewardMigratorABI from './claimLpRewards.json'
+import ftmLimitOrderABI from './ftm-limit-order.json'
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -69,6 +70,10 @@ const lotteryABIs = {
   [ChainId.BSC_MAINNET]: bscLotteryABI,
   [ChainId.BSC_TESTNET]: bscLotteryABI,
   [ChainId.FTM_MAINNET]: bscLotteryABI,
+}
+
+const limitOrderABIs = {
+  [ChainId.FTM_MAINNET]: ftmLimitOrderABI
 }
 
 export const getRewardMigratorABI = () => {
@@ -136,4 +141,9 @@ export const getVaultABI = () => {
 export const getLotteryABI = () => {
   const { chainId } = getNetwork()
   return lotteryABIs[chainId]
+}
+
+export const getLimitOrderABI = () => {
+  const { chainId } = getNetwork()
+  return limitOrderABIs[chainId]
 }
