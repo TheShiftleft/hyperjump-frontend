@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import { NavLink } from 'react-router-dom'
+import { ChainId } from '@hyperjump-defi/sdk'
 import { Card, CardBody, Heading, Text, Button, Flex } from 'uikit'
 import styled from 'styled-components'
 import { getBalanceNumber } from 'utils/formatBalance'
-import { useTotalSupply, useBurnedBalance, useCirculatingSupplyBalance } from 'hooks/useTokenBalance'
+import { useTotalSupply, useBurnedBalance, useMainDistributorBalance, useBridgeDistributorBalance } from 'hooks/useTokenBalance'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useTranslation } from 'contexts/Localization'
 import { getFarmingTokenAddress } from 'utils/addressHelpers'
@@ -16,7 +17,6 @@ import BurnCardValue from './BurnCardValue'
 const FarmingTokenStats = () => {
   const { t } = useTranslation()
   const totalSupply = useTotalSupply()
-  const circulatingSupply = useCirculatingSupplyBalance("0x130025eE738A66E691E6A7a62381CB33c6d9Ae83");
 
   const burnedBalance = getBalanceNumber(useBurnedBalance(getFarmingTokenAddress()))
   // change the calc of totalsupply as new token correctly deducts it from totalsupply - angry mech
@@ -33,6 +33,17 @@ const FarmingTokenStats = () => {
       ? 0
       : farmingTokenPriceUsd.toNumber() * farmingTokenSupply
   const { config, chainId } = getNetwork()
+
+  const mainDistBalance = useMainDistributorBalance(chainId)
+  const bridgeDistBalance = useBridgeDistributorBalance(ChainId.BSC_MAINNET)
+  const circulatingSupply = useMemo(() => {
+    if(chainId === ChainId.BSC_MAINNET){
+      return (totalSupply && bridgeDistBalance.balance ? getBalanceNumber(totalSupply.minus(bridgeDistBalance.balance)) : 0 ) 
+    }
+    console.log("bridgeDistBalance.balance", bridgeDistBalance)
+    return (totalSupply && mainDistBalance.balance && bridgeDistBalance.balance ? getBalanceNumber(totalSupply.minus(mainDistBalance.balance)) : 0 ) 
+  }, [chainId, mainDistBalance, bridgeDistBalance, totalSupply])
+
   const tokenAddress = getFarmingTokenAddress()
   const imageSrc = `images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`
   const buyLink =
@@ -66,19 +77,10 @@ const FarmingTokenStats = () => {
         <Text color="primary">Total Supply</Text>
         <Heading mb="10px">{farmingTokenSupply && <CardValue value={farmingTokenSupply} />}</Heading>
       
-        {config.name === 'BSC' ? (
-          <>
+        <>
           <Text color="primary">{config.name} Circulating Supply</Text>
-          <Heading mb="10px">{circulatingSupply.balance && <CardValue value={getBalanceNumber(circulatingSupply.balance)} />} ( {circulatingSupply.balance.div(totalSupply).multipliedBy(100).toFixed(2)}% )</Heading>
-          </>
-        ) :
-        (
-          <>
-          <Text color="primary">{config.name} Circulating Supply</Text>
-          <Heading mb="10px">0.00</Heading>
-          </>
-        )
-        }
+          <Heading mb="10px">{circulatingSupply && <CardValue value={circulatingSupply} />} ( % )</Heading>
+        </>
 
         <Text color="primary">Total {config.farmingToken.symbol} Burned</Text>
         <Heading mb="10px">
