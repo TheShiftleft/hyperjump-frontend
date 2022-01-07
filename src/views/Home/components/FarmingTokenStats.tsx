@@ -23,7 +23,6 @@ const FarmingTokenStats = () => {
   const burnedBalance = getBalanceNumber(useBurnedBalance(getFarmingTokenAddress()))
   // change the calc of totalsupply as new token correctly deducts it from totalsupply - angry mech
   const farmingTokenSupply = totalSupply ? getBalanceNumber(totalSupply) : 0 //  - burnedBalance : 0
-  const farmingCirculatingSupply = farmingTokenSupply * 0.10
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
 
   const farmingTokenPriceUsdString =
