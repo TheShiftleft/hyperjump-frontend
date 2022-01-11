@@ -72,7 +72,3 @@ export const getRouterAddress = () => {
   const { config } = getNetwork()
   return routerAddresses[config.network]
 }
-
-export const getLimitOrderAddress = () => {
-  return getAddress(addresses.limitOrder)
-}

@@ -1,10 +1,9 @@
 import { toNumber } from "lodash"
-import React, { useState, useEffect, useRef } from "react"
+import React from "react"
 import { Button } from 'uikit'
-import { usePlaceOrder} from 'hooks/useLimitOrder'
 import useWeb3 from "hooks/useWeb3"
-import { getLimitOrderContract } from 'utils/contractHelpers'
 import LimitOrdersApi from '@unidexexchange/sdk'
+import { Price } from '@hyperjump-defi/sdk'
 
 interface PlaceOrderButtonProps {
     chainId: number
@@ -14,23 +13,28 @@ interface PlaceOrderButtonProps {
     buyToken: string
     buyAmount: string
     limitPrice: string
+    price?: Price
 }
 
-const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({chainId, account, sellToken, sellAmount, buyToken, buyAmount, limitPrice}: PlaceOrderButtonProps) => {
+const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({chainId, account, sellToken, sellAmount, buyToken, buyAmount, limitPrice, price}: PlaceOrderButtonProps) => {
     const web3 = useWeb3()
-    const limitOrdersContract = getLimitOrderContract(web3)
+    const sAmount = toNumber(sellAmount) * 10 ** price?.baseCurrency?.decimals
+    const bAmount = toNumber(buyAmount) * 10 ** price?.quoteCurrency?.decimals
     const handlePlaceOrder = async () => {
         try{
             const request = {
                 chainId,
                 account,
                 sellToken,
-                sellAmount,
+                sellAmount: sAmount,
                 buyToken,
-                buyAmount
+                buyAmount: bAmount
             }
             const order = await LimitOrdersApi.placeOrder(request)
-            const placedOrder = await limitOrdersContract.methods.depositEth(order.data).call()
+            console.log('order',order)
+            web3.eth.sendTransaction(order).then(function(receipt){
+                console.log('receipt',receipt)
+            });
         }catch(e){
             console.log('error', e)
         }

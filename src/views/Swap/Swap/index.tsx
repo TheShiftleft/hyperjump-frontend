@@ -610,6 +610,7 @@ const Swap = () => {
                    buyToken={trade?.route.path[1].address}
                    buyAmount={limitOutput}
                    limitPrice={limitPrice}
+                   price={trade?.executionPrice}
                 >
                   {toNumber(limitPrice) === 0 ? 'Enter a valid limit price' : 'Place Order'}
                 </PlaceOrderButton>
