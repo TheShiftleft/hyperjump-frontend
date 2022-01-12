@@ -1,7 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import {Text, Button, ChevronDownIcon} from 'uikit'
-import {OpenLimitOrder, CancelLimitOrderTxRequest} from '@unidexexchange/sdk'
+import {Text, Button, ChevronDownIcon, ArrowForwardIcon, Link} from 'uikit'
+import LimitOrdersApi, {OpenLimitOrder, CancelLimitOrderTxRequest} from '@unidexexchange/sdk'
+import {useToken} from 'hooks/Tokens'
+import { toNumber } from 'lodash'
+import BigNumber from 'bignumber.js'
+import getNetwork from 'utils/getNetwork'
+import { BASE_FTM_SCAN_URL, BASE_BSC_SCAN_URL } from 'config'
+import useWeb3 from "hooks/useWeb3"
 
 interface OrderRowProps {
  order: OpenLimitOrder,
@@ -20,8 +26,13 @@ const RowContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   flex: 1;
   margin: 0 20px;
+`
+
+const StyledLinkExternal = styled(Link)`
+  font-weight: 400;
 `
 
 const ButtonContainer = styled.div`
@@ -45,44 +56,87 @@ const DetailContainer = styled.div`
 
 const DetailsText = styled.div`
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.textSubtle}
+  color: ${({ theme }) => theme.colors.textSubtle};
+  display: flex;
+  flex-direction: row;
+  align-items:center;
+  padding-bottom: 5px;
+`
+const DetailsTextContent = styled.div`
+  font-family: 'Oswald';
+  font-size: 14px;
+  color: ${({theme}) => theme.colors.primary};
+  margin-left: 5px;
 `
 
-const cancelOrder = (cancelRequest: CancelLimitOrderTxRequest) => {
-    console.log('cancel order', cancelRequest)
-}
+const TokenContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
 
 export default function OrderRow({order, account, chainId} : OrderRowProps) {
+    const { config } = getNetwork()
+    const web3 = useWeb3()
     const [detailsToggle, setDetailsToggle] = useState(false)
-    const cancelRequest = {
-        account,
-        chainId,
-        module: order.module,
-        inputToken: order.inputToken,
-        outputToken: order.outputToken,
-        minReturn: order.minReturn,
-        owner: order.owner,
-        witness: order.witeness,
+
+    // console.log('order', order)
+    const inputToken = useToken(order?.inputToken)
+    const inputDecimals = (inputToken?.decimals * -1) > 0 ? inputToken?.decimals * -1 : -18
+    const inAmount = order?.inputAmount
+    const outAmount = order?.minReturn
+    const outputToken = useToken(order?.outputToken)
+    const outputDecimals = (outputToken?.decimals * -1) > 0 ? outputToken?.decimals * -1 : -18
+    const parsedInputAmount = new BigNumber(inAmount).shiftedBy(inputDecimals).toPrecision(4)
+    const parsedMinReturn = new BigNumber(outAmount).shiftedBy(outputDecimals).toPrecision(4)
+    const transactionURL = config.network === 'FTM' ? `${BASE_FTM_SCAN_URL}/tx/${order?.createdTxHash}` : `${BASE_BSC_SCAN_URL}/tx/${order?.createdTxHash}`
+    const createdDate = new Date(toNumber(order?.createdAt) * 1000).toLocaleString('en-GB', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    })
+
+    const cancelOrder = async (cancelRequest: CancelLimitOrderTxRequest) => {
+        try{
+          const cancelledOrder = await LimitOrdersApi.cancelOrder(cancelRequest);
+          web3.eth.sendTransaction(cancelledOrder, (error: Error, hash: string) => {
+              if(error){
+                  console.log('error',error)
+              }
+          })
+        }catch(e){
+          console.log(e)
+        }
     }
+
     return(
         <Row>
             <RowContainer>
-            <Text>This token to that token</Text>
-            <ButtonContainer onClick={() => {
-                setDetailsToggle(!detailsToggle)
-            }}>
-                <Text>Details</Text>
-                <ArrowIcon color="primary" toggled={detailsToggle} />
-            </ButtonContainer>
-            </RowContainer>
-            {detailsToggle &&
-            <DetailContainer>
-                <DetailsText>Order Details Here</DetailsText>
-                <Button width="100%" marginTop="10px" onClick={() => cancelOrder(cancelRequest)}>
-                    Cancel Order
-                </Button>
-            </DetailContainer>
-            }
+              <TokenContainer>
+                <Text fontSize='14px' bold>{inputToken?.symbol}</Text><ArrowForwardIcon color="primary" marginLeft="10px" marginRight="10px" width="24px" /><Text fontSize="14px" bold>{outputToken?.symbol}</Text>
+              </TokenContainer>
+            
+              <ButtonContainer onClick={() => {
+                  setDetailsToggle(!detailsToggle)
+              }}>
+                  <Text>Details</Text>
+                  <ArrowIcon color="primary" toggled={detailsToggle} />
+              </ButtonContainer>
+              </RowContainer>
+              {detailsToggle &&
+              <DetailContainer>
+                  <DetailsText>Date Created: <DetailsTextContent>{createdDate}</DetailsTextContent></DetailsText>
+                  <DetailsText>Amount: <DetailsTextContent>{parsedInputAmount}</DetailsTextContent></DetailsText>
+                  <DetailsText>Minimum Return: <DetailsTextContent>{parsedMinReturn}</DetailsTextContent></DetailsText>
+                  <StyledLinkExternal href={transactionURL} target="_blank">{config.network === 'FTM' ? 'FTM Scan' : "BSC Scan"}</StyledLinkExternal>
+                  <Button width="100%" marginTop="10px" onClick={() => cancelOrder({account, chainId, ...order})}>
+                      Cancel Order
+                  </Button>
+              </DetailContainer>
+              }
         </Row>
     )
 }
