@@ -2,7 +2,7 @@ import { toNumber } from "lodash"
 import React from "react"
 import { Button } from 'uikit'
 import useWeb3 from "hooks/useWeb3"
-import LimitOrdersApi from '@unidexexchange/sdk'
+import LimitOrdersApi, {Transaction} from '@unidexexchange/sdk'
 import { Price } from '@hyperjump-defi/sdk'
 
 interface PlaceOrderButtonProps {
@@ -30,11 +30,12 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({chainId, account, se
                 buyToken,
                 buyAmount: bAmount
             }
-            const order = await LimitOrdersApi.placeOrder(request)
-            console.log('order',order)
-            web3.eth.sendTransaction(order).then(function(receipt){
-                console.log('receipt',receipt)
-            });
+            const order: Transaction = await LimitOrdersApi.placeOrder(request)
+            web3.eth.sendTransaction(order, (error: Error, hash: string) => {
+                if(error){
+                    console.log('error',error)
+                }
+            })
         }catch(e){
             console.log('error', e)
         }
