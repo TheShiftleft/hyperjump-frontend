@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Network, ChainId } from '@hyperjump-defi/sdk'
+import { Network } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { getBep20Contract, getFarmingTokenContract, getGovTokenContract } from 'utils/contractHelpers'
-import { getJumpAddress, getMainDistributorAddress, getBridgeDistributorAddress } from 'utils/addressHelpers'
-import getMultiChainContract from 'utils/multiChainHelper'
 import { BIG_ZERO } from 'utils/bigNumber'
 import getNetwork from 'utils/getNetwork'
 import addresses from 'config/constants/contracts'
-import bep20Abi from 'config/abi/erc20.json'
 import useWeb3 from './useWeb3'
 import useRefresh from './useRefresh'
 import useLastUpdated from './useLastUpdated'
@@ -77,102 +74,6 @@ export const useTotalSupply = () => {
   }, [slowRefresh])
 
   return totalSupply
-}
-
-export const useTotalSupplyMultiChain = (chainId: number) => {
-  const { slowRefresh } = useRefresh()
-  const [totalSupply, setTotalSupply] = useState<BigNumber>()
-
-  useEffect(() => {
-    async function fetchTotalSupply() {
-      const contract = getMultiChainContract(bep20Abi, getJumpAddress(chainId), chainId)
-      try {
-        const supply = contract.totalSupply()
-        supply.then((tSupply) => {
-          const _supply = new BigNumber((tSupply ?? undefined ? tSupply.toString() : "0"))
-          setTotalSupply(new BigNumber(_supply))
-        })
-        
-      } catch (e) {
-        console.error(e)
-      }
-    }
-
-    fetchTotalSupply()
-  }, [slowRefresh, chainId])
-
-  return totalSupply
-}
-
-export const useBridgeDistributorBalance = (chainId: number) => {
-  const { NOT_FETCHED, SUCCESS, FAILED } = FetchStatus
-  const [balanceState, setBalanceState] = useState<UseTokenBalanceState>({
-    balance: BIG_ZERO,
-    fetchStatus: NOT_FETCHED,
-  })
-  
-  const web3 = useWeb3()
-
-  const { fastRefresh } = useRefresh()
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      const contract = getMultiChainContract(bep20Abi, getJumpAddress(chainId), chainId)
-      try {
-        const res = contract.balanceOf(getBridgeDistributorAddress(chainId))
-        res.then((bal) => {
-          const _balance = new BigNumber((bal ?? undefined ? bal.toString() : "0"))
-          setBalanceState({ balance: _balance, fetchStatus: SUCCESS })
-        })
-        
-      } catch (e) {
-        console.error(e)
-        setBalanceState((prev) => ({
-          ...prev,
-          fetchStatus: FAILED,
-        }))
-      }
-    }
-    fetchBalance()
-  }, [ chainId, web3, fastRefresh, SUCCESS, FAILED])
-
-  return balanceState
-}
-
-export const useMainDistributorBalance = (chainId: number) => {
-  const { NOT_FETCHED, SUCCESS, FAILED } = FetchStatus
-  const [balanceState, setBalanceState] = useState<UseTokenBalanceState>({
-    balance: BIG_ZERO,
-    fetchStatus: NOT_FETCHED,
-  })
-  const web3 = useWeb3()
-
-  const { fastRefresh } = useRefresh()
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if(chainId === ChainId.FTM_MAINNET){
-        const contract = getBep20Contract(getJumpAddress(chainId), web3)
-        try {
-          const res = await contract.methods.balanceOf(getMainDistributorAddress(chainId)).call()
-          setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
-        } catch (e) {
-          console.error(e)
-          setBalanceState((prev) => ({
-            ...prev,
-            fetchStatus: FAILED,
-          }))
-        }
-      }
-      setBalanceState((prev) => ({
-        ...prev,
-        fetchStatus: FAILED,
-      }))
-    }
-    fetchBalance()
-  }, [ chainId, web3, fastRefresh, SUCCESS, FAILED])
-
-  return balanceState
 }
 
 export const useGovTokenTotalSupply = () => {

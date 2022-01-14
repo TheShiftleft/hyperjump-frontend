@@ -14,10 +14,6 @@ export const getAddress = (address: Address): string => {
   return address[chainId] ? address[chainId] : address[ChainId.BSC_MAINNET]
 }
 
-export const getAddressMulti = (address: Address, chainId: number): string => {
-  return address[chainId] ? address[chainId] : address[ChainId.BSC_MAINNET]
-}
-
 export const getRewardMigratorAddress = () => {
   return getAddress(addresses.migrator)
 }
@@ -64,18 +60,6 @@ export const getGovTokenAddress = () => {
 
 export const getSynapseBridgeAddress = () => {
   return getAddress(addresses.synapse)
-}
-
-export const getMainDistributorAddress = (chainId: number) => {
-  return getAddressMulti(addresses.hyperJumpMainDistributor, chainId)
-}
-
-export const getBridgeDistributorAddress = (chainId: number) => {
-  return getAddressMulti(addresses.hyperJumpBridgeDistributor, chainId)
-}
-
-export const getJumpAddress = (chainId: number) => {
-  return getAddressMulti(addresses.jump, chainId)
 }
 
 const routerAddresses: Record<Network, string> = {

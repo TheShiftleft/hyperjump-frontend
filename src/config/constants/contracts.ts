@@ -78,10 +78,4 @@ export default {
     56: '0xF153911d912de1f4FE576FbE4Ab29C075d656B58',
     250: '0x2B4618996faD3eE7Bc9Ba8c98969A8eaf01B5E20',
   },
-  hyperJumpMainDistributor: {
-    250: '0xFeDd479723B03350cff007fe0DB19D1C6F179457',
-  },
-  hyperJumpBridgeDistributor: {
-    56: '0x7F0a733B03EC455cb340E0f6af736A13d8fBB851',
-  },
 }
