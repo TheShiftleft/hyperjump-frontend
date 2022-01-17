@@ -80,7 +80,6 @@ export default function OrderRow({order, account, chainId} : OrderRowProps) {
     const web3 = useWeb3()
     const [detailsToggle, setDetailsToggle] = useState(false)
 
-    // console.log('order', order)
     const inputToken = useToken(order?.inputToken)
     const inputDecimals = (inputToken?.decimals * -1) > 0 ? inputToken?.decimals * -1 : -18
     const inAmount = order?.inputAmount

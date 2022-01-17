@@ -18,7 +18,7 @@ const tokens: Record<string, Token> = {
   ftm: {
     symbol: 'FTM',
     address: {
-      250: '',
+      250: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     },
     decimals: 18,
     projectLink: 'https://www.fantom.foundation/',
