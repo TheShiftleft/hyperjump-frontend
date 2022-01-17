@@ -38,7 +38,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
     sousId,
     earningToken.symbol,
   )
-
+  
   const handleApprove = handlePoolApprove
   const requestedApproval = requestedPoolApproval
 
@@ -61,6 +61,8 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
   const [onPresentStake] = useModal(
     <StakeModal pool={pool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
   )
+
+  console.log('stakingTokenBalance', stakingTokenBalance)
 
   const [onPresentUnstake] = useModal(
     <StakeModal

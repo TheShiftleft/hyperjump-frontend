@@ -4,9 +4,11 @@ import React, { useState, useCallback } from 'react'
 import { NavLink } from "react-router-dom";
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
-import { Heading, Card, CardBody, Button, Text, Flex } from 'uikit'
+import { Heading, Card, CardBody, Button, Text, Flex, useModal } from 'uikit'
 import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
+import { usePools } from 'state/hooks'
+import { Pool } from 'state/types'
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
 import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
@@ -57,6 +59,8 @@ const HeadingColor = styled.div`
 const FarmingTokenStakingCard = () => {
   const [pendingTx, setPendingTx] = useState(false)
   const { account } = useWeb3React()
+  const { pools } = usePools(account)
+  console.log('pool', pools)
   const { t } = useTranslation()
   const farmsWithBalance = useFarmsWithBalance()
   const poolsWithBalance = usePoolsWithBalance()
@@ -85,6 +89,10 @@ const FarmingTokenStakingCard = () => {
 
     setPendingTx(false)
   }, [account, balancesWithValue, poolsWithValue, poolContract, masterChefContract])
+
+  const [onStake] = useModal(
+    'test'
+  )  
 
   return (
     <StyledFarmingTokenStakingCard>
@@ -116,10 +124,7 @@ const FarmingTokenStakingCard = () => {
             </Heading>
             <Text color="primary">{config.farmingToken.symbol} in Wallet</Text>
           </Flex>
-          
-          <NavLink to="/pools">
-            <CardButton>STAKE JUMP</CardButton>
-          </NavLink>
+          <CardButton onClick={onStake} >STAKE JUMP</CardButton>
         </Flex>
         </>
         ) : (
