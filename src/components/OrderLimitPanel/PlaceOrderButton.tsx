@@ -1,5 +1,7 @@
 import { toNumber } from "lodash"
 import React from "react"
+import BigNumber from 'bignumber.js'
+import { BIG_TEN } from 'utils/bigNumber'
 import { Button } from 'uikit'
 import useWeb3 from "hooks/useWeb3"
 import LimitOrdersApi, {Transaction} from '@unidexexchange/sdk'
@@ -18,8 +20,8 @@ interface PlaceOrderButtonProps {
 
 const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({chainId, account, sellToken, sellAmount, buyToken, buyAmount, limitPrice, price}: PlaceOrderButtonProps) => {
     const web3 = useWeb3()
-    const sAmount = toNumber(sellAmount) * 10 ** price?.baseCurrency?.decimals
-    const bAmount = toNumber(buyAmount) * 10 ** price?.quoteCurrency?.decimals
+    const sAmount = new BigNumber(sellAmount).multipliedBy(BIG_TEN.pow(price?.baseCurrency?.decimals)).toString()
+    const bAmount = new BigNumber(buyAmount).multipliedBy(BIG_TEN.pow(price?.baseCurrency?.decimals)).toString()
     const handlePlaceOrder = async () => {
         try{
             const request = {

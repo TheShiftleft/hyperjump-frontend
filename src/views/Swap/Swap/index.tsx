@@ -607,7 +607,7 @@ const Swap = () => {
                    account={account}
                    sellToken={trade?.inputAmount?.currency?.symbol === "FTM" || trade?.inputAmount?.currency?.symbol === "BNB" ? config.networkToken.address[config.id] : trade?.route.path[0].address}
                    sellAmount={formattedAmounts[Field.INPUT]}
-                   buyToken={trade?.route.path[1].address}
+                   buyToken={trade?.route.path[trade?.route.path.length -1].address}
                    buyAmount={limitOutput}
                    limitPrice={limitPrice}
                    price={trade?.executionPrice}
