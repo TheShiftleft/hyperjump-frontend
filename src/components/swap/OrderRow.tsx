@@ -115,7 +115,7 @@ export default function OrderRow({order, account, chainId} : OrderRowProps) {
         <Row>
             <RowContainer>
               <TokenContainer>
-                <Text fontSize='14px' bold>{order.inputToken === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? config.network : inputToken?.symbol}</Text><ArrowForwardIcon color="primary" marginLeft="10px" marginRight="10px" width="24px" /><Text fontSize="14px" bold>{outputToken?.symbol}</Text>
+                <Text fontSize='14px' bold>{order.inputToken === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? config.networkToken.symbol : inputToken?.symbol}</Text><ArrowForwardIcon color="primary" marginLeft="10px" marginRight="10px" width="24px" /><Text fontSize="14px" bold>{outputToken?.symbol}</Text>
               </TokenContainer>
             
               <ButtonContainer onClick={() => {
