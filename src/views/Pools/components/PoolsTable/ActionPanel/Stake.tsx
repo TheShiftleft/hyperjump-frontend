@@ -62,7 +62,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
     <StakeModal pool={pool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
   )
 
-  console.log('stakingTokenBalance', stakingTokenBalance)
+  console.log('pool', pool)
 
   const [onPresentUnstake] = useModal(
     <StakeModal

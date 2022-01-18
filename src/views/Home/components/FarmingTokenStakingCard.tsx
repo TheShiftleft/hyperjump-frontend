@@ -7,8 +7,8 @@ import BigNumber from 'bignumber.js'
 import { Heading, Card, CardBody, Button, Text, Flex, useModal } from 'uikit'
 import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
-import { usePools } from 'state/hooks'
-import { Pool } from 'state/types'
+import { usePools, useFetchPublicPoolsData } from 'state/hooks'
+
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
 import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
@@ -17,6 +17,8 @@ import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
 
 import { useSousHarvest } from 'hooks/useHarvest'
+
+import StakeModal from './Modals/StakeModal'
 
 import FarmingTokenHarvestBalance from './FarmingTokenHarvestBalance'
 import FarmingTokenWalletBalance from './FarmingTokenWalletBalance'
@@ -57,10 +59,10 @@ const HeadingColor = styled.div`
 `
 
 const FarmingTokenStakingCard = () => {
+  useFetchPublicPoolsData()
   const [pendingTx, setPendingTx] = useState(false)
   const { account } = useWeb3React()
-  const { pools } = usePools(account)
-  console.log('pool', pools)
+  const { pools, userDataLoaded } = usePools(account)
   const { t } = useTranslation()
   const farmsWithBalance = useFarmsWithBalance()
   const poolsWithBalance = usePoolsWithBalance()
@@ -70,6 +72,8 @@ const FarmingTokenStakingCard = () => {
   const poolContract = usePoolContract(config.wrappedFarmingTokenPid)
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
   const poolsWithValue    = poolsWithBalance.filter((balanceType) => (balanceType.userData?.pendingReward ?? undefined ? new BigNumber(balanceType.userData?.pendingReward.toString()).isGreaterThan(0) : undefined))
+
+  console.log('pools', pools[0].userData)
 
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
@@ -90,9 +94,9 @@ const FarmingTokenStakingCard = () => {
     setPendingTx(false)
   }, [account, balancesWithValue, poolsWithValue, poolContract, masterChefContract])
 
-  const [onStake] = useModal(
-    'test'
-  )  
+  const onStake = () => {
+    alert('test only')
+  }
 
   return (
     <StyledFarmingTokenStakingCard>
