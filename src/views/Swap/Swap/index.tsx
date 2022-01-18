@@ -360,10 +360,16 @@ const Swap = () => {
       includeCancelled: false,
       includeExecuted: false
     }
-    if(account && marketSelect){
+
+    const interval = setInterval(async function() {
+      if(account && marketSelect){
         const response = await OrderLimit.listOrders(orderListRequest)
         setOrderList(response)
-    }
+      }else{
+        clearInterval(interval);
+      }
+    }, 1000);
+        
   }, [account, marketSelect, config.id])
 
   return (

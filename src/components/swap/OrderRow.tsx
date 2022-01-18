@@ -8,6 +8,8 @@ import BigNumber from 'bignumber.js'
 import getNetwork from 'utils/getNetwork'
 import { BASE_FTM_SCAN_URL, BASE_BSC_SCAN_URL } from 'config'
 import useWeb3 from "hooks/useWeb3"
+import { useTranslation } from 'contexts/Localization'
+import useToast from 'hooks/useToast'
 
 interface OrderRowProps {
  order: OpenLimitOrder,
@@ -76,6 +78,8 @@ const TokenContainer = styled.div`
 `
 
 export default function OrderRow({order, account, chainId} : OrderRowProps) {
+    const { t } = useTranslation()
+    const { toastSuccess, toastError } = useToast()
     const { config } = getNetwork()
     const web3 = useWeb3()
     const [detailsToggle, setDetailsToggle] = useState(false)
@@ -102,9 +106,20 @@ export default function OrderRow({order, account, chainId} : OrderRowProps) {
         try{
           const cancelledOrder = await LimitOrdersApi.cancelOrder(cancelRequest);
           web3.eth.sendTransaction(cancelledOrder, (error: Error, hash: string) => {
-              if(error){
-                  console.log('error',error)
-              }
+            if(!error){
+              const interval = setInterval(function() {
+                  console.log("Attempting to get transaction receipt...");
+                  web3.eth.getTransactionReceipt(hash, function(err, rec) {
+                      if (rec) {
+                        clearInterval(interval);
+                        toastSuccess(
+                          `${t('Limit Order')}!`,
+                          t('Your Limit Order has been cancelled !', {  }),
+                        )
+                      }
+                  });
+              }, 2000);
+          }
           })
         }catch(e){
           console.log(e)
