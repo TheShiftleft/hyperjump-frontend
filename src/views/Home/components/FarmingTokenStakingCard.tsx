@@ -19,6 +19,7 @@ import getNetwork from 'utils/getNetwork'
 import { useSousHarvest } from 'hooks/useHarvest'
 
 import StakeModal from './Modals/StakeModal'
+import NotEnoughTokensModal from './Modals/NotEnoughTokensModal'
 
 import FarmingTokenHarvestBalance from './FarmingTokenHarvestBalance'
 import FarmingTokenWalletBalance from './FarmingTokenWalletBalance'
@@ -73,7 +74,20 @@ const FarmingTokenStakingCard = () => {
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
   const poolsWithValue    = poolsWithBalance.filter((balanceType) => (balanceType.userData?.pendingReward ?? undefined ? new BigNumber(balanceType.userData?.pendingReward.toString()).isGreaterThan(0) : undefined))
 
-  console.log('pools', pools[0].userData)
+  const stakePool = pools[0]
+  const stakePoolUserData = pools[0].userData 
+  const stakingTokenBalance = stakePoolUserData?.stakingTokenBalance ? new BigNumber(stakePoolUserData.stakingTokenBalance) : BIG_ZERO
+  const stakingTokenPrice = stakePool.stakingTokenPrice
+  const stakingTokenSymbol = stakePool.stakingToken.symbol
+
+  const [onPresentTokenRequired] = useModal(<NotEnoughTokensModal tokenSymbol={stakingTokenSymbol} />)
+  const [onPresentStake] = useModal(
+    <StakeModal pool={stakePool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
+  )
+
+  const onStake = () => {
+    onPresentStake()
+  }
 
   const harvestAllFarms = useCallback(async () => {
     setPendingTx(true)
@@ -93,10 +107,6 @@ const FarmingTokenStakingCard = () => {
 
     setPendingTx(false)
   }, [account, balancesWithValue, poolsWithValue, poolContract, masterChefContract])
-
-  const onStake = () => {
-    alert('test only')
-  }
 
   return (
     <StyledFarmingTokenStakingCard>
@@ -128,7 +138,7 @@ const FarmingTokenStakingCard = () => {
             </Heading>
             <Text color="primary">{config.farmingToken.symbol} in Wallet</Text>
           </Flex>
-          <CardButton onClick={onStake} >STAKE JUMP</CardButton>
+          <CardButton onClick={stakingTokenBalance.gt(0) ? onStake : onPresentTokenRequired} >STAKE JUMP</CardButton>
         </Flex>
         </>
         ) : (
