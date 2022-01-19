@@ -56,7 +56,7 @@ const PageHeader = ({type = "", marketSelect, setMarketSelected, title, descript
             setMarketSelected(false)
           }}>
             <Text color="primary" bold>
-                Limit
+                Limit Orders
             </Text>
           </TextContainer>
         </Flex>
