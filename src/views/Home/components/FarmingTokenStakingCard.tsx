@@ -8,7 +8,7 @@ import { Heading, Card, CardBody, Button, Text, Flex, useModal } from 'uikit'
 import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
 import { usePools, useFetchPublicPoolsData } from 'state/hooks'
-
+import { BIG_ZERO } from 'utils/bigNumber'
 import { useTranslation } from 'contexts/Localization'
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
 import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
@@ -74,12 +74,12 @@ const FarmingTokenStakingCard = () => {
   const balancesWithValue = farmsWithBalance.filter((balanceType) => balanceType.balance.toNumber() > 0)  
   const poolsWithValue    = poolsWithBalance.filter((balanceType) => (balanceType.userData?.pendingReward ?? undefined ? new BigNumber(balanceType.userData?.pendingReward.toString()).isGreaterThan(0) : undefined))
 
-  const stakePool = pools[0]
+  const stakePool = pools.length ? pools[0] : null
   const stakePoolUserData = pools[0].userData 
   const stakingTokenBalance = stakePoolUserData?.stakingTokenBalance ? new BigNumber(stakePoolUserData.stakingTokenBalance) : BIG_ZERO
   const stakingTokenPrice = stakePool.stakingTokenPrice
   const stakingTokenSymbol = stakePool.stakingToken.symbol
-
+  
   const [onPresentTokenRequired] = useModal(<NotEnoughTokensModal tokenSymbol={stakingTokenSymbol} />)
   const [onPresentStake] = useModal(
     <StakeModal pool={stakePool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
