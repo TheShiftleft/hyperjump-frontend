@@ -361,7 +361,7 @@ const Swap = () => {
       includeExecuted: false
     }
 
-    const interval = setInterval(async function() {
+    const interval = setInterval(async () => {
       if(account && marketSelect){
         const response = await OrderLimit.listOrders(orderListRequest)
         setOrderList(response)

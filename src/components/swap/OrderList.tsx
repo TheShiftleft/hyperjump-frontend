@@ -24,6 +24,7 @@ const Container = styled.div<{ hideInput: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom:40px;
 `
 
 const OrderContainer = styled.div`

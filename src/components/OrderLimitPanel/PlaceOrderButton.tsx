@@ -39,8 +39,8 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({chainId, account, se
       const order: Transaction = await LimitOrdersApi.placeOrder(request)
       web3.eth.sendTransaction(order, (error: Error, hash: string) => {
         if(!error){
-          const interval = setInterval(function() {
-            web3.eth.getTransactionReceipt(hash, function(err, rec) {
+          const interval = setInterval(() => {
+            web3.eth.getTransactionReceipt(hash, (err, rec) => {
               if (rec) {
                 clearInterval(interval);
                 toastSuccess(

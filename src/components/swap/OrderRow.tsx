@@ -18,7 +18,7 @@ interface OrderRowProps {
 }
 
 const Row = styled.div`
-  margin: 0px 20px 5px 20px;
+  margin: 0px 10px 5px 10px;
   border-radius: 20px;
   border: 1px solid ${(props) => props.theme.colors.primary};
   background-color: rgba(13,29,54,0.6);
@@ -107,9 +107,9 @@ export default function OrderRow({order, account, chainId} : OrderRowProps) {
           const cancelledOrder = await LimitOrdersApi.cancelOrder(cancelRequest);
           web3.eth.sendTransaction(cancelledOrder, (error: Error, hash: string) => {
             if(!error){
-              const interval = setInterval(function() {
+              const interval = setInterval(() => {
                   console.log("Attempting to get transaction receipt...");
-                  web3.eth.getTransactionReceipt(hash, function(err, rec) {
+                  web3.eth.getTransactionReceipt(hash, (err, rec) => {
                       if (rec) {
                         clearInterval(interval);
                         toastSuccess(
