@@ -53,6 +53,7 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({chainId, account, se
         }
       })
     }catch(e){
+      // eslint-disable-next-line no-console
       console.log('error', e)
     }
   }

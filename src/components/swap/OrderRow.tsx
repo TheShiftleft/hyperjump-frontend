@@ -108,6 +108,7 @@ export default function OrderRow({order, account, chainId} : OrderRowProps) {
           web3.eth.sendTransaction(cancelledOrder, (error: Error, hash: string) => {
             if(!error){
               const interval = setInterval(() => {
+                  // eslint-disable-next-line no-console
                   console.log("Attempting to get transaction receipt...");
                   web3.eth.getTransactionReceipt(hash, (err, rec) => {
                       if (rec) {
@@ -122,6 +123,7 @@ export default function OrderRow({order, account, chainId} : OrderRowProps) {
           }
           })
         }catch(e){
+          // eslint-disable-next-line no-console
           console.log(e)
         }
     }
