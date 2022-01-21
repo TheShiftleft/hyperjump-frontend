@@ -45,11 +45,6 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     ],
   },
   {
-    label: t('Buy Crypto'),
-    icon: 'OnrampIcon',
-    href: '/onramp',
-  },
-  {
     label: 'Earn',
     icon: 'FarmIcon',
     items: [
