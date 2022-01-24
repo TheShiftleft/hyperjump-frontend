@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Price } from '@hyperjump-defi/sdk'
 import { Text } from 'uikit'
 import styled from 'styled-components'
@@ -55,6 +55,11 @@ const InputRow = styled.div<{ selected: boolean }>`
 export default function OrderLimitPanel({price, limitPrice, showInverted, setLimitPrice, handleLimitInput, setLimitOutput, inputValue}:OrderLimitPanelProps){
     const token = showInverted ? `${price?.quoteCurrency?.symbol ? `(${price?.quoteCurrency?.symbol})` : ''}` : `${price?.baseCurrency?.symbol ? `(${price?.baseCurrency?.symbol})` : ''}`
     
+    useEffect(() => {
+      const output = showInverted ? toNumber(limitPrice) * toNumber(inputValue) : toNumber(inputValue) / toNumber(limitPrice)
+      setLimitOutput(output === Infinity || !!output === false ? "0" : output.toString())
+    }, [inputValue, limitPrice, setLimitOutput, showInverted])
+
     return(
         <InputPanel>
           <Container>
@@ -68,8 +73,6 @@ export default function OrderLimitPanel({price, limitPrice, showInverted, setLim
                 onUserInput={(val) => {
                   setLimitPrice(val);
                   handleLimitInput(val)
-                  const output = showInverted ? toNumber(val) * toNumber(inputValue) : toNumber(inputValue) / toNumber(val)
-                  setLimitOutput(output === Infinity ? "0" : output.toString())
                 }} />
             </InputRow>
           </Container>
