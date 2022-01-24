@@ -77,9 +77,9 @@ const FarmingTokenStakingCard = () => {
   const stakePool = pools.length ? pools[0] : null
   const stakePoolUserData = pools[0].userData 
   const stakingTokenBalance = stakePoolUserData?.stakingTokenBalance ? new BigNumber(stakePoolUserData.stakingTokenBalance) : BIG_ZERO
-  const stakingTokenPrice = stakePool.stakingTokenPrice
+  const {stakingTokenPrice} = stakePool
   const stakingTokenSymbol = stakePool.stakingToken.symbol
-  
+
   const [onPresentTokenRequired] = useModal(<NotEnoughTokensModal tokenSymbol={stakingTokenSymbol} />)
   const [onPresentStake] = useModal(
     <StakeModal pool={stakePool} stakingTokenBalance={stakingTokenBalance} stakingTokenPrice={stakingTokenPrice} />,
