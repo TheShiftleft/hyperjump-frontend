@@ -34,11 +34,11 @@ export const BLOCKS_PER_YEAR: Record<Network, BigNumber> = {
 }
 
 export const VAULTS_API_BASE: Record<Network, string> = {
-  [Network.BSC_TESTNET]: 'https://vaults.hyperswap.info',
-  [Network.BSC]: 'https://vaults.hyperswap.info',
-  [Network.FANTOM]: 'https://ftmvaults.hyperswap.info',
+  [Network.BSC_TESTNET]: 'https://vaultsapi.hyperjump.app',
+  [Network.BSC]: 'https://vaultsapi.hyperjump.app',
+  [Network.FANTOM]: 'https://ftmvaultsapi.hyperjump.app',
 }
-export const VAULTS_API_URL = 'https://vaults.hyperswap.info' // VAULTS_API_BASE[config.network]
+export const VAULTS_API_URL = 'https://vaultsapi.hyperjump.app' // VAULTS_API_BASE[config.network]
 
 const BSC_NETWORK_URL = process.env.REACT_APP_BSC_NETWORK_URL
 const BSC_TESTNET_NETWORK_URL = process.env.REACT_APP_BSC_TESTNET_NETWORK_URL

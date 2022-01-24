@@ -48,9 +48,9 @@ const Farm: React.FunctionComponent<FarmProps> = ({ image, label }) => {
       {img_split.length > 0
         ? !(isXs || isSm) && (
             <>
-              <IconImage src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={40} height={40} mr="8px" />
+              <IconImage src={`/images/tokens/${primaryImg}.png`} alt="icon" width={40} height={40} mr="8px" />
               <div style={{ position: 'absolute', margin: '0 0 -22px 20px', borderRadius: '10px' }}>
-                <IconImage src={`/images/tokens/${primaryImg}.png`} alt="icon" width={20} height={20} mr="8px" />
+                <IconImage src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={20} height={20} mr="8px" />
               </div>
             </>
           )

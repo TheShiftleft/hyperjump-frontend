@@ -1820,7 +1820,11 @@ const tokens: Record<string, Token> = {
   },
   avax: {
     symbol: 'AVAX',
-    address: { 56: '', 97: '', 250: '0x1ce0c2827e2ef14d5c4f29a091d735a204794041' },
+    address: {
+      56: '0x1ce0c2827e2ef14d5c4f29a091d735a204794041',
+      97: '',
+      250: '0x511D35c52a3C244E7b8bd92c0C297755FbD89212',
+    },
     decimals: 18,
     projectLink: '',
   },
