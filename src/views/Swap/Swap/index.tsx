@@ -9,15 +9,20 @@ import Card, { GreyCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
 import ConfirmSwapModal from 'components/swap/ConfirmSwapModal'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
+import OrderLimitPanel from 'components/OrderLimitPanel'
 import CardNav from 'components/CardNav'
 import { AutoRow, RowBetween } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
+import OrderList from 'components/swap/OrderList'
+import OrderLimit, { OpenLimitOrder } from 'utils/orderlimit'
+import PlaceOrderButton from 'components/OrderLimitPanel/PlaceOrderButton'
 import confirmPriceImpactWithoutFee from 'components/swap/confirmPriceImpactWithoutFee'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TradePrice from 'components/swap/TradePrice'
 import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
 import Container from 'components/Container'
+import { toNumber, round } from 'lodash'
 
 import { BASE_EXCHANGE_URL, INITIAL_ALLOWED_SLIPPAGE } from 'config/index'
 import { useCurrency } from 'hooks/Tokens'
@@ -48,6 +53,11 @@ const Swap = () => {
   const [disableSwap, setDisableSwap] = useState(false)
   const [hasPoppedModal, setHasPoppedModal] = useState(false)
   const [interruptRedirectCountdown, setInterruptRedirectCountdown] = useState(false)
+  const [marketSelect, setMarketSelected] = useState(true)
+  const [limitValidity, setLimitValidity] = useState({valid: true, error: ""})
+  const [limitPrice, setLimitPrice] = useState("")
+  const [limitOutput, setLimitOutput] = useState("")
+  const [orderList, setOrderList] = useState<OpenLimitOrder[]>([])
   const [onPresentV2ExchangeRedirectModal] = useModal(
     <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
   )
@@ -313,8 +323,54 @@ const Swap = () => {
     address: config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[250]
   }
 
+  const handleLimitInput = (limit: string) => {
+    const limitValue = toNumber(limit);
+    const quotePrice = toNumber(trade?.executionPrice?.toSignificant())
+    const basePrice = toNumber(trade?.executionPrice?.invert()?.toSignificant())
+    setLimitValidity({
+      valid: true,
+      error: ``
+    })
+    if(quotePrice && basePrice && limitValue){
+      if(showInverted) {
+        if(limitValue < quotePrice){
+          const percentage = round(((quotePrice - limitValue) / quotePrice) * 100, 2 )
+          setLimitValidity({
+            valid: false,
+            error: `Entered limit rate ${percentage}% below market`
+          })
+        }
+      }else if(basePrice < limitValue){
+          const percentage = round(((limitValue - basePrice) / ((limitValue + basePrice) / 2)) * 100, 2);
+          setLimitValidity({
+            valid: false,
+            error: `Entered limit rate ${percentage}% above market`
+          })
+      }
+    }
+  }
+
   const slippageIsTooLow = currencies[Field.INPUT]?.symbol === config.govToken.symbol
     && (allowedSlippage / 100) < getBalanceNumber(govTokenBurnRate)
+
+  const fetchOrderList = useCallback(async ()=> {
+    const orderListRequest = {
+      account,
+      chainId: config.id,
+      includeCancelled: false,
+      includeExecuted: false
+    }
+
+    const interval = setInterval(async () => {
+      if(account && marketSelect){
+        const response = await OrderLimit.listOrders(orderListRequest)
+        setOrderList(response)
+      }else{
+        clearInterval(interval);
+      }
+    }, 1000);
+        
+  }, [account, marketSelect, config.id])
 
   return (
     <Container>
@@ -340,6 +396,12 @@ const Swap = () => {
             onDismiss={handleConfirmDismiss}
           />
           <PageHeaderSwap
+            type="Swap"
+            marketSelect={marketSelect}
+            setMarketSelected={(val) => {
+              setMarketSelected(val)
+              fetchOrderList()
+            }}
             title={TranslateString(8, 'Exchange')}
             description={TranslateString(1192, 'Trade tokens in an instant')}
           />
@@ -383,7 +445,7 @@ const Swap = () => {
                 </AutoRow>
               </AutoColumn>
               <CurrencyInputPanel
-                value={formattedAmounts[Field.OUTPUT]}
+                value={toNumber(limitOutput) === 0 ? formattedAmounts[Field.OUTPUT] : limitOutput}
                 onUserInput={handleTypeOutput}
                 label={
                   independentField === Field.INPUT && !showWrap && trade
@@ -395,8 +457,19 @@ const Swap = () => {
                 onCurrencySelect={handleOutputSelect}
                 otherCurrency={currencies[Field.INPUT] == null ? defaultFromCurrency : currencies[Field.INPUT]}
                 id="swap-currency-output"
+                disabledNumericalInput={!marketSelect}
               />
-
+              {!marketSelect &&
+                <OrderLimitPanel 
+                  price={trade?.executionPrice}
+                  limitPrice={limitPrice} 
+                  setLimitPrice={setLimitPrice}
+                  showInverted={showInverted}
+                  handleLimitInput={handleLimitInput}
+                  setLimitOutput={setLimitOutput}
+                  inputValue={formattedAmounts[Field.INPUT]}
+                />
+              }
               {recipient !== null && !showWrap ? (
                 <>
                   <AutoRow justify="space-between" style={{ padding: '0 1rem' }}>
@@ -419,8 +492,11 @@ const Swap = () => {
                         <Text fontSize="14px">{TranslateString(1182, 'Price')}</Text>
                         <TradePrice
                           price={trade?.executionPrice}
+                          limit={limitPrice}
                           showInverted={showInverted}
                           setShowInverted={setShowInverted}
+                          setLimitPrice={setLimitPrice}
+                          setLimitValidity={setLimitValidity}
                         />
                       </RowBetween>
                     )}
@@ -502,7 +578,7 @@ const Swap = () => {
                       : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
                   </Button>
                 </RowBetween>
-              ) : (
+              ) : marketSelect ? (
                 <Button
                   onClick={() => {
                     if (isExpertMode) {
@@ -531,6 +607,23 @@ const Swap = () => {
                       ? 'Increase Slippage'
                       : `Swap${priceImpactSeverity > 2 ? ' Anyway' : ''}`)}
                 </Button>
+              ): limitValidity.valid ? (
+                <PlaceOrderButton 
+                   chainId={config.id}
+                   account={account}
+                   sellToken={trade?.inputAmount?.currency?.symbol === "FTM" || trade?.inputAmount?.currency?.symbol === "BNB" ? config.networkToken.address[config.id] : trade?.route.path[0].address}
+                   sellAmount={formattedAmounts[Field.INPUT]}
+                   buyToken={trade?.route.path[trade?.route.path.length -1].address}
+                   buyAmount={limitOutput}
+                   limitPrice={limitPrice}
+                   price={trade?.executionPrice}
+                >
+                  {toNumber(limitPrice) === 0 ? 'Enter a valid limit price' : 'Place Order'}
+                </PlaceOrderButton>
+              ): (
+                <GreyCard style={{ textAlign: 'center' }}>
+                  <Text mb="4px">{TranslateString(1194, `${limitValidity.error}`)}</Text>
+                </GreyCard>
               )}
               {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
               {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
@@ -539,6 +632,7 @@ const Swap = () => {
         </Wrapper>
       </AppBody>
       <AdvancedSwapDetailsDropdown trade={trade} />
+      <OrderList show={Boolean(account) && !marketSelect} orders={orderList} account={account} chainId={config.id} />
     </Container>
   )
 }

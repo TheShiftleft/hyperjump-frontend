@@ -34,7 +34,7 @@ const Farms: React.FC = () => {
   const [query, setQuery] = useState('')
   const [viewMode, setViewMode] = usePersistState(ViewMode.TABLE, { localStorageKey: 'hyper_farm_view' })
   const { account } = useWeb3React()
-  const [sortOption, setSortOption] = useState('hot')
+  const [sortOption, setSortOption] = useState('apr')
   const { config } = getNetwork()
 
   const isInactive = pathname.includes('history')
