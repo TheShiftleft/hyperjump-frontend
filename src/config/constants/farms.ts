@@ -315,4 +315,3 @@ const farms: Record<Network, FarmConfig[]> = {
 }
 
 export default farms
-// 0x37cC74ACd40569f0B639bfb4cdA0Fea07a21F3E0
