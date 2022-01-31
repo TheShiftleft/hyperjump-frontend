@@ -47,6 +47,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
   const earningTokenBalance = getBalanceNumber(earnings, earningToken.decimals)
   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
   const hasEarnings = earnings.gt(0)
+  const earningsMinimumChecker = earningTokenBalance >= 0.001
   const isCompoundPool = sousId === 0
   const displayBalance = hasEarnings ? earningTokenBalance : 0
   const isMobile = isXs || isSm || isMd
@@ -121,7 +122,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
         <ActionTitles>{actionTitle}</ActionTitles>
         <ActionContent>
           <Flex flex="1" flexDirection="column" alignSelf="flex-start">
-            <Balance lineHeight="1" bold fontSize="32px" decimals={3} value={displayBalance} />
+            <Balance lineHeight="1" bold fontSize="32px" decimals={4} value={displayBalance} />
             {hasEarnings ? (
               <Balance
                 display="inline"
@@ -144,7 +145,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
       <Flex flexGrow={1} justifyContent="center" alignItems="center" flexDirection="column">
         <ActionButton
           className="staked-btn"
-          disabled={!hasEarnings}
+          disabled={!(hasEarnings && earningsMinimumChecker)}
           isLoading={pendingTx}
           onClick={handleCollect}
           mb={direction === 'column' ? '5px' : ''}
@@ -154,7 +155,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
         <ActionButton
             className="staked-btn"
             ml={direction === 'column' ? '' : '8px'}
-            disabled={!hasEarnings}
+            disabled={!(hasEarnings && earningsMinimumChecker)}
             isLoading={pendingTx}
             onClick={handleCompound}
           >
