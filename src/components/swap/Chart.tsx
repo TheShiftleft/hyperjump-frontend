@@ -23,7 +23,6 @@ const ChartFrame = styled(Iframe)`
 export default function Chart({tokenPair, network}) {
     const networkName = network === 'FTM' ? 'fantom' : 'bsc'
     const url = tokenPair !== undefined ? `https://dexscreener.com/${networkName}/${tokenPair}?embed=1&theme=dark` : `https://dexscreener.com/${networkName}/0x?embed=1&theme=dark`
-    console.log('url', url)
     return(
         <ChartFrame 
             url={url}
