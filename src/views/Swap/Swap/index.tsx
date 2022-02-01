@@ -32,6 +32,7 @@ import { useSwapCallback } from 'hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { Field } from 'state/swap/actions'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { usePair } from 'data/Reserves'
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'state/user/hooks'
 import { LinkStyledButton } from 'components/Shared'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -95,6 +96,7 @@ const Swap = () => {
     inputError: wrapInputError,
   } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+  const pair = usePair(currencies[Field.INPUT], currencies[Field.OUTPUT])
   const trade = showWrap ? undefined : v2Trade
 
   // gov token burn
@@ -321,7 +323,7 @@ const Swap = () => {
     symbol: config.farmingToken.symbol,
     name: "HyperJump",
     chainId: config.baseCurrency.symbol === 'FTM' ? 250 : 56,
-    address: config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[250]
+    address: config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56]
   }
 
   const handleLimitInput = (limit: string) => {
@@ -376,7 +378,12 @@ const Swap = () => {
  
   return (
     <Container flexDirection='row'>
-      <Chart />
+      {account &&
+        <Chart 
+          tokenPair={pair[1]?.liquidityToken?.address}
+          network={config.name}
+        />
+      }
       <Container>
         <TokenWarningModal
           isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}

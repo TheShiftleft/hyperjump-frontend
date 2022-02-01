@@ -20,11 +20,13 @@ const ChartFrame = styled(Iframe)`
         display: block !important;
     }
 `
-export default function Chart() {
-
+export default function Chart({tokenPair, network}) {
+    const networkName = network === 'FTM' ? 'fantom' : 'bsc'
+    const url = tokenPair !== undefined ? `https://dexscreener.com/${networkName}/${tokenPair}?embed=1&theme=dark` : `https://dexscreener.com/${networkName}/0x?embed=1&theme=dark`
+    console.log('url', url)
     return(
         <ChartFrame 
-            url="https://dexscreener.com/fantom/0x5448a3B93731e7C1d6e6310Cb614843FbaC21f69?embed=1&theme=dark"
+            url={url}
         />
     )
 }
