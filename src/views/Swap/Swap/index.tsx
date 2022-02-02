@@ -62,6 +62,7 @@ const Swap = () => {
   const [limitPrice, setLimitPrice] = useState("")
   const [limitOutput, setLimitOutput] = useState("")
   const [orderList, setOrderList] = useState<OpenLimitOrder[]>([])
+  const [showChart, setShowChart] = useState(false)
   const [onPresentV2ExchangeRedirectModal] = useModal(
     <V2ExchangeRedirectModal handleCloseModal={() => setInterruptRedirectCountdown(true)} />,
   )
@@ -385,8 +386,8 @@ const Swap = () => {
           onConfirm={handleConfirmTokenWarning}
         />
         <CardNav />
-        <AppBody flexDirection='row' account={account}>
-          {account ?
+        <AppBody flexDirection='row' account={account} showChart={showChart}>
+          {account && showChart ?
                 <Chart 
                   tokenPair={pair[1]?.liquidityToken?.address}
                   network={config.name}
@@ -414,6 +415,8 @@ const Swap = () => {
                 setMarketSelected(val)
                 fetchOrderList()
               }}
+              setShowChart={setShowChart}
+              showChart={showChart}
               title={TranslateString(8, 'Exchange')}
               description={TranslateString(1192, 'Trade tokens in an instant')}
             />
