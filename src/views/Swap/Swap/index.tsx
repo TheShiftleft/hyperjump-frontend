@@ -24,6 +24,7 @@ import TokenWarningModal from 'components/TokenWarningModal'
 import ProgressSteps from 'components/ProgressSteps'
 import Container from 'components/Container'
 import { toNumber, round } from 'lodash'
+import useWindowDimensions from 'hooks/useWindowDimension'
 
 import { BASE_EXCHANGE_URL, INITIAL_ALLOWED_SLIPPAGE } from 'config/index'
 import { useCurrency } from 'hooks/Tokens'
@@ -49,6 +50,7 @@ import AppBody from '../AppBody'
 
 const Swap = () => {
   const { config } = getNetwork()
+  const { height, width } = useWindowDimensions();
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()
   const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
@@ -375,15 +377,7 @@ const Swap = () => {
         
   }, [account, marketSelect, config.id])
 
- 
   return (
-    <Container flexDirection='row'>
-      {account &&
-        <Chart 
-          tokenPair={pair[1]?.liquidityToken?.address}
-          network={config.name}
-        />
-      }
       <Container>
         <TokenWarningModal
           isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning}
@@ -391,7 +385,14 @@ const Swap = () => {
           onConfirm={handleConfirmTokenWarning}
         />
         <CardNav />
-        <AppBody>
+        <AppBody flexDirection='row' account={account}>
+          {account ?
+                <Chart 
+                  tokenPair={pair[1]?.liquidityToken?.address}
+                  network={config.name}
+                />
+            : ""
+            }
           <Wrapper id="swap-page" color="transparent">
             <ConfirmSwapModal
               isOpen={showConfirm}
@@ -645,7 +646,6 @@ const Swap = () => {
         <AdvancedSwapDetailsDropdown trade={trade} />
         <OrderList show={Boolean(account) && !marketSelect} orders={orderList} account={account} chainId={config.id} />
       </Container>
-    </Container>
   )
 }
 

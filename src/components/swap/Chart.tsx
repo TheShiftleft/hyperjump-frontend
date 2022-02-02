@@ -5,14 +5,13 @@ import styled from 'styled-components'
 const ChartFrame = styled(Iframe)`
     position: relative;
     width:100%;
-    height: 90vh;
     top: 0;
     left: 0;
     border: 0;
     flex: 2;
     display: none !important;
     min-width: 995px;
-    ${({ theme }) => theme.mediaQueries.lg} {
+    @media(min-width: 1400px) {
         display: block !important;
     }
 `
