@@ -119,8 +119,7 @@ const Farms: React.FC = () => {
           return farms
       }
     }
-    // console.log('stakedOnlyFarms',stakedOnlyFarms)
-    // console.log('activeFarms',activeFarms)
+
     if (isActive) {
       farmsStaked = stakedOnly ? farmsList(stakedOnlyFarms) : farmsList(activeFarms)
     }
@@ -162,7 +161,6 @@ const Farms: React.FC = () => {
   }, [farmsStakedMemoized, observerIsSet])
 
   const rowData = farmsStakedMemoized.map((farm) => {
-    // console.log('farm', farm)
     const { token, quoteToken } = farm
     const tokenAddress = token.address
     const quoteTokenAddress = quoteToken.address
