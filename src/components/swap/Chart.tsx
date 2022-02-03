@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Iframe from 'react-iframe'
 import styled from 'styled-components'
+import useWindowDimensions from 'hooks/useWindowDimension'
+import Modal from '../Modal'
 
 const ChartFrame = styled(Iframe)`
     position: relative;
@@ -9,18 +11,33 @@ const ChartFrame = styled(Iframe)`
     left: 0;
     border: 0;
     flex: 2;
-    display: none !important;
-    min-width: 995px;
     @media(min-width: 1400px) {
-        display: block !important;
+        min-width: 992px;
     }
 `
-export default function Chart({tokenPair, network}) {
+export default function Chart({tokenPair, network, setShowChart, showChart, setModalOpen, modalOpen}) {
+    
+    const {width} = useWindowDimensions()
+    const enableModal = width < 1400
+    const showModal = modalOpen && showChart
     const networkName = network === 'FTM' ? 'fantom' : 'bsc'
-    const url = tokenPair !== undefined ? `https://dexscreener.com/${networkName}/${tokenPair}?embed=0&theme=dark&info=0&trades=0` : `https://dexscreener.com/${networkName}/0x?embed=1&theme=dark&info=0&trades=0`
+    const url = tokenPair !== undefined ? `https://dexscreener.com/${networkName}/${tokenPair}?embed=0&theme=dark&trades=1` : `https://dexscreener.com/${networkName}/0x?embed=1&theme=dark&trades=0`
+    
     return(
-        <ChartFrame 
-            url={url}
-        />
+        <>
+            {enableModal ? 
+                <Modal  isOpen={showModal} onDismiss={() => {setModalOpen(!modalOpen); setShowChart(!showChart)}} maxHeight={90} minHeight={80} maxWidth={90}>
+                    <>
+                        <ChartFrame
+                            url={width > 1168 ? url.concat('&info=0') : url}
+                        />
+                    </>
+                </Modal>
+            :
+                <ChartFrame
+                url={url.concat('&info=0')}
+            /> 
+            }
+        </>
     )
 }

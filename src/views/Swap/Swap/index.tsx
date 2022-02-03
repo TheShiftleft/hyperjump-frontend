@@ -50,7 +50,7 @@ import AppBody from '../AppBody'
 
 const Swap = () => {
   const { config } = getNetwork()
-  const { height, width } = useWindowDimensions();
+  const [modalOpen, setModalOpen] = useState(false)
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()
   const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
@@ -391,6 +391,10 @@ const Swap = () => {
                 <Chart 
                   tokenPair={pair[1]?.liquidityToken?.address}
                   network={config.name}
+                  showChart={showChart}
+                  setShowChart={setShowChart}
+                  setModalOpen={setModalOpen}
+                  modalOpen={modalOpen}
                 />
             : ""
             }
@@ -417,6 +421,8 @@ const Swap = () => {
               }}
               setShowChart={setShowChart}
               showChart={showChart}
+              setModalOpen={setModalOpen}
+              modalOpen={modalOpen}
               title={TranslateString(8, 'Exchange')}
               description={TranslateString(1192, 'Trade tokens in an instant')}
             />
