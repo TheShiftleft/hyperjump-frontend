@@ -17,7 +17,7 @@ export const BodyWrapper = styled(Card)<{flexDirection?: string, account?: strin
   flex-direction: ${({flexDirection}) => (!!flexDirection && flexDirection === "row" ? "row" : "column")};
 
   ${({ theme }) => theme.mediaQueries.lg} {
-    max-width: ${({account, showChart, width}) => (showChart && account && width >= 1400) ? 'none' : '436px'};
+    max-width: ${({account, showChart, width}) => (showChart && account && width >= 1400) ? '1600px' : '436px'};
 }
 `
 
