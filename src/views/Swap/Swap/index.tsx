@@ -50,7 +50,7 @@ import AppBody from '../AppBody'
 
 const Swap = () => {
   const { config } = getNetwork()
-  const [modalOpen, setModalOpen] = useState(false)
+  const {width} = useWindowDimensions()
   const loadedUrlParams = useDefaultsFromURLSearch()
   const TranslateString = useI18n()
   const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
@@ -386,15 +386,11 @@ const Swap = () => {
           onConfirm={handleConfirmTokenWarning}
         />
         <CardNav />
-        <AppBody flexDirection='row' account={account} showChart={showChart}>
+        <AppBody flexDirection={width < 969 ? 'column-reverse' : 'row'} showChart={showChart} width={width}>
           {account && showChart ?
                 <Chart 
                   tokenPair={pair[1]?.liquidityToken?.address}
                   network={config.name}
-                  showChart={showChart}
-                  setShowChart={setShowChart}
-                  setModalOpen={setModalOpen}
-                  modalOpen={modalOpen}
                 />
             : ""
             }
@@ -421,8 +417,6 @@ const Swap = () => {
               }}
               setShowChart={setShowChart}
               showChart={showChart}
-              setModalOpen={setModalOpen}
-              modalOpen={modalOpen}
               title={TranslateString(8, 'Exchange')}
               description={TranslateString(1192, 'Trade tokens in an instant')}
             />

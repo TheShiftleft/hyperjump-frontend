@@ -25,7 +25,7 @@ const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 const AnimatedDialogContent = animated(DialogContent)
 // destructure to not pass custom props to Dialog DOM element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogContent = styled(({ minHeight, maxHeight, maxWidth, mobile, isOpen, ...rest }) => (
+const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...rest }) => (
   <AnimatedDialogContent {...rest} />
 )).attrs({
   'aria-label': 'dialog',
@@ -44,7 +44,7 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, maxWidth, mobile, is
 
     align-self: ${({ mobile }) => (mobile ? 'flex-end' : 'center')};
 
-    ${({ maxWidth }) => maxWidth ? css`max-width: ${maxWidth}vw;` : css`max-width: 420px;`}
+    max-width: 420px;
     ${({ maxHeight }) =>
       maxHeight &&
       css`
@@ -72,8 +72,6 @@ interface ModalProps {
   onDismiss: () => void
   minHeight?: number | false
   maxHeight?: number
-  minWidth?: number | false
-  maxWidth?: number | false
   initialFocusRef?: React.RefObject<any>
   children?: React.ReactNode
 }
@@ -83,7 +81,6 @@ export default function Modal({
   onDismiss,
   minHeight = false,
   maxHeight = 50,
-  maxWidth = false,
   initialFocusRef,
   children,
 }: ModalProps) {
@@ -105,7 +102,6 @@ export default function Modal({
                 minHeight={minHeight}
                 maxHeight={maxHeight}
                 mobile={isMobile}
-                maxWidth={maxWidth}
               >
                 {/* prevents the automatic focusing of inputs on mobile by the reach dialog */}
                 {/* eslint-disable */}

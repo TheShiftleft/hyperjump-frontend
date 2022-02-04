@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Card } from 'uikit'
 import useWindowDimensions from 'hooks/useWindowDimension'
 
-export const BodyWrapper = styled(Card)<{flexDirection?: string, account?: string, width?: number, showChart?: boolean}>`
+export const BodyWrapper = styled(Card)<{flexDirection?: string, showChart?: boolean, width?: number}>`
   position: relative;
   padding: 20px 10px;
   width: 436px;
@@ -14,17 +14,19 @@ export const BodyWrapper = styled(Card)<{flexDirection?: string, account?: strin
   border-radius: 32px;
   background-color: rgba(13,29,54,0.5);
   display: flex;
-  flex-direction: ${({flexDirection}) => (!!flexDirection && flexDirection === "row" ? "row" : "column")};
+  flex-direction: ${({flexDirection, showChart}) => showChart ? flexDirection : 'column'};
+  min-height: ${({showChart}) => showChart ? '1280px' : null };
 
   ${({ theme }) => theme.mediaQueries.lg} {
-    max-width: ${({account, showChart, width}) => (showChart && account && width >= 1400) ? '1600px' : '436px'};
-}
+      min-height: 0px;
+      max-width: ${({showChart}) => (showChart) ? '1600px' : '436px'};
+    }
+  }
 `
 
 /**
  * The styled container element that wraps the content of most pages and the tabs.
  */
-export default function AppBody({ children, flexDirection, account, showChart}: { children: React.ReactNode, flexDirection?: string, account?: string, showChart?: boolean }) {
-  const {width} = useWindowDimensions()
-  return <BodyWrapper flexDirection={flexDirection} account={account} width={width} showChart={showChart}>{children}</BodyWrapper>
+export default function AppBody({ children, flexDirection, showChart, width }: { children: React.ReactNode, flexDirection: string, showChart: boolean, width: number}) {
+  return <BodyWrapper flexDirection={flexDirection} showChart={showChart} width={width}>{children}</BodyWrapper>
 }

@@ -15,8 +15,6 @@ interface PageHeaderProps {
   children?: ReactNode
   setShowChart?: (showChart: boolean) => void
   showChart?: boolean
-  setModalOpen?: (modalOpen: boolean) => void
-  modalOpen: boolean
 }
 
 //  border-bottom: 1px solid ${({ theme }) => theme.colors.borderColor};
@@ -42,7 +40,7 @@ const Details = styled.div`
   flex: 1;
 `
 
-const PageHeader = ({type = "", marketSelect, setMarketSelected, title, description, children, setShowChart, showChart, setModalOpen, modalOpen }: PageHeaderProps) => {
+const PageHeader = ({type = "", marketSelect, setMarketSelected, title, description, children, setShowChart, showChart }: PageHeaderProps) => {
   const TranslateString = useI18n()
   const [onPresentSettings] = useModal(<SettingsModal translateString={TranslateString} />)
   const [onPresentRecentTransactions] = useModal(<RecentTransactionsModal translateString={TranslateString} />)
@@ -86,7 +84,6 @@ const PageHeader = ({type = "", marketSelect, setMarketSelected, title, descript
             variant="text" 
             onClick={() => {
                 setShowChart(!showChart)
-                setModalOpen(!modalOpen)
               }
             } 
             title={TranslateString(1200, 'Toggle display chart')}>

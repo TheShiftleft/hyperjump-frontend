@@ -5,10 +5,8 @@ import { Text } from 'uikit'
 import styled, { css } from 'styled-components'
 import { AutoColumn } from '../Column'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{width?: string}>`
   position: relative;
-  width: 436px;
-  max-width: 436px;
 `
 
 export const ArrowWrapper = styled.div<{ clickable: boolean }>`
