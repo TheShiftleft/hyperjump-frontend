@@ -101,6 +101,7 @@ const Bridge = () => {
     const [input, setInput] = useState(false)
     const [bridgeTokensOnly] = useState(true)
     const [isOpen, setModalSubmitted] = useState(false)
+    const [networkRedirect, setNetworkRedirect] = useState(false)
     const [toRedirect, setRedirect] = useState(false)
     const [isInvalidAmountWithFee, setInvalidAmountWithFee] = useState(false)
     const [transactionHash, setTransactionHash] = useState("") 
@@ -123,7 +124,10 @@ const Bridge = () => {
           .forEach(function eachKey(key) { 
             if(bridgeNetworks[key].chainId === config.id)
                 setFromBridgeNetworkKey(key)
+
             
+            if(bridgeNetworks[key].chainId === loadedUrlParams?.outputChainId)
+                setToBridgeNetworkKey(key)
           });
           setRedirect(true);
       }
@@ -331,20 +335,18 @@ const Bridge = () => {
 
     useEffect(() => {
         // Override Default TO Bridge Network based on config
-        // TO-DO need this to update if we add more chain
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
             if(bridgeNetworks[key].chainId === config.id){
               setFromBridgeNetworkKey(key);
               
-            }else{
-              setToBridgeNetworkKey(key);
             }
             
-                
-            
+            if(bridgeNetworks[key].chainId.toString() === loadedUrlParams?.outputChainId)
+              setToBridgeNetworkKey(key)
+ 
           });
-    },[config])
+    },[config, loadedUrlParams])
 
     const handleFromNetworkSelect = useCallback(
       (fromNetwork) => {
@@ -358,8 +360,7 @@ const Bridge = () => {
                 setFromBridgeNetworkKey(key)
             
           });
-
-        setRedirect(true);
+        setNetworkRedirect(true)
       },
       [onNetworkSelection],
     )
@@ -376,7 +377,7 @@ const Bridge = () => {
                 setToBridgeNetworkKey(key)
             
           });
-
+        setRedirect(true)
       },
       [onNetworkSelection],
     )
@@ -409,10 +410,11 @@ const Bridge = () => {
     return (
         <>
             <Container>
-                {(toRedirect ? <Route path='/bridge' component={() => { 
-                      window.location.href = `${bridgeNetworks[fromBridgeNetworkKey].redirect_url}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`; 
-                      return null;
-                  }} /> : '')}
+                {(networkRedirect ? <Route path='/bridge' component={() => { 
+                    window.location.href = `${bridgeNetworks[fromBridgeNetworkKey].redirect_url}?outputChainId=${bridgeNetworks[toBridgeNetworkKey].chainId}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`; 
+                    return null;
+                }} /> : '')}
+                {(toRedirect ? <Redirect to={`/bridge?outputChainId=${bridgeNetworks[toBridgeNetworkKey].chainId}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`} /> : '')}
                 <CardNav activeIndex={2} />
                 <AppBody>
                     <Wrapper id="swap-page" color="transparent">
@@ -469,7 +471,8 @@ const Bridge = () => {
                                         selected={!!currencies[Field.OUTPUT]}
                                         className="open-currency-select-button"
                                         onClick={() => {
-                                            setInput(false)
+                                          setModalOpen(true)
+                                          setInput(false)
                                         }}
                                     >
                                         <AutoColumn justify="start">
@@ -482,7 +485,7 @@ const Bridge = () => {
                                                         ? bridgeNetworks[toBridgeNetworkKey].name
                                                         : bridgeNetworks[toBridgeNetworkKey].name) || TranslateString(1196, 'To Chain')}
                                                 </Text>
-                                                
+                                                <ChevronDownIcon />
                                             </Aligner>
                                         </AutoColumn>
                                     </NetworkSelect>

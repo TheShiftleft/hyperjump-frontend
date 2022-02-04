@@ -1,4 +1,5 @@
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@hyperjump-defi/sdk'
+import ChainId from 'utils/getChain';
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
@@ -122,6 +123,7 @@ export default function NetworkList({
   otherCurrency,
   fixedListRef,
   showETH,
+  isOrigin,
 }: {
   height: number
   availableBridgeNetwork: any
@@ -130,10 +132,13 @@ export default function NetworkList({
   otherCurrency?: Currency | null
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
+  isOrigin: boolean
 }) {
   const { config } = getNetwork()
   const bN: any = bridgeNetworks;
-  const itemData = useMemo(() => bN, [ bN])
+  const itemData = useMemo(() => {
+    return (!isOrigin ? bN : bN.filter((n) => {return (n.chainId === ChainId.BSC_MAINNET || n.chainId === ChainId.FTM_MAINNET ? n : undefined)} ) )
+  }, [bN, isOrigin])
   const Row = useCallback(
     ({ data, index, style }) => {
       const network = data[index]

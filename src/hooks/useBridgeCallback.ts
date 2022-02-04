@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { BIG_TEN } from 'utils/bigNumber'
 import { BigNumber as EthBigNumber } from '@ethersproject/bignumber'
-import { CurrencyAmount, Currency, Token, ChainId } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, Currency, Token } from '@hyperjump-defi/sdk'
 import { useMemo } from 'react'
+import ChainId from 'utils/getChain'
 import { BridgeNetwork } from 'components/NetworkSelectionModal/types'
 import { useSynapseBridgeContract, useBridgeConfigInstance } from './useContract'
 import { isAddress  } from '../utils'
@@ -13,6 +14,11 @@ enum BridgeCallbackState {
   INVALID,
   LOADING,
   VALID,
+}
+
+function getTimeMinutesFromNow(minutesFromNow) {
+  const currentTimeSeconds = new Date().getTime() / 1000;
+  return Math.round(currentTimeSeconds + 60 * minutesFromNow);
 }
 
 // returns a function that will execute a bridge, if the parameters are all valid
@@ -51,7 +57,7 @@ export function useBridgeCallback(
     const validToToken = isAddress(toToken instanceof Token
       ? toToken.address
       : undefined)
-
+    
     const bridgeFeeRequest = bridgeConfigContract.calculateSwapFee(validToToken, toChainId, EthBigNumber.from(currencyAmountFrom.raw.toString()))
     const bridgeFee = bridgeFeeRequest.then((bf) => {
       const bFee = new BigNumber((bf ?? undefined ? bf.toString() : "0"))
@@ -60,22 +66,61 @@ export function useBridgeCallback(
       return amountWithFee.toString()
     })
 
-    
     return {
       calculatedBridgeFee: bridgeFee,
       state: BridgeCallbackState.VALID,
-      callback: async function onBridge(): Promise<any> {      
-        const txhash = (toChainId === ChainId.FTM_MAINNET ? synapseBridgeContract.methods
-          .redeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
-          .send({ from: account })
-          .on('transactionHash', (tx) => {
-            return tx.transactionHash
-          }) : toChainId === ChainId.BSC_MAINNET ? synapseBridgeContract.methods
-          .deposit(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
-          .send({ from: account })
-          .on('transactionHash', (tx) => {
-            return tx.transactionHash
-          }) : undefined) 
+      callback: async function onBridge(): Promise<any> {  
+        let txhash;
+        const txDeadline = getTimeMinutesFromNow(10)
+        const bridgeTxDeadline = getTimeMinutesFromNow(60 * 24)
+        switch(toToken.symbol) {
+          case "JUMP":
+            txhash = (toChainId === ChainId.FTM_MAINNET ? synapseBridgeContract.methods
+              .redeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              }) : toChainId === ChainId.BSC_MAINNET ? synapseBridgeContract.methods
+              .deposit(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              }) : undefined) 
+            break;
+          case "NUSD":
+            if(fromToken.symbol === "NUSD"){
+              txhash = synapseBridgeContract.methods
+              .swapAndRedeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              })
+            }
+            break;
+          default:
+            if(toChainId === ChainId.ETH){
+              txhash = synapseBridgeContract.methods
+              .swapAndRedeemAndRemove(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              })
+            }else if(fromToken.symbol === "NUSD"){
+              txhash = synapseBridgeContract.methods
+              .swapAndRedeemAndRemove(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              })
+            }else{
+              txhash = synapseBridgeContract.methods
+              .swapAndRedeemAndSwap(account, toChainId, validFromToken, 1, 0, 1200000, 1176000, txDeadline, 0, 2, 190187, bridgeTxDeadline)
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              })
+            }
+        }
 
         return txhash.then((hash) => {
           return hash;
