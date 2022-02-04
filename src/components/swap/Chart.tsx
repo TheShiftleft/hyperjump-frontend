@@ -21,7 +21,7 @@ export default function Chart({tokenPair, network, setShowChart, showChart, setM
     const enableModal = width < 1400
     const showModal = modalOpen && showChart
     const networkName = network === 'FTM' ? 'fantom' : 'bsc'
-    const url = tokenPair !== undefined ? `https://dexscreener.com/${networkName}/${tokenPair}?embed=0&theme=dark&trades=1` : `https://dexscreener.com/${networkName}/0x?embed=1&theme=dark&trades=0`
+    const url = tokenPair !== undefined ? `https://dexscreener.com/${networkName}/${tokenPair}?embed=1&theme=dark&trades=1` : `https://dexscreener.com/${networkName}/0x?embed=1&theme=dark&trades=0`
     
     return(
         <>
