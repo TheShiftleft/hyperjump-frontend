@@ -71,6 +71,7 @@ const lotteryABIs = {
   [ChainId.FTM_MAINNET]: bscLotteryABI,
 }
 
+
 export const getRewardMigratorABI = () => {
   return rewardMigratorABI
 }

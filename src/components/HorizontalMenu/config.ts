@@ -62,11 +62,6 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     ],
   },
   {
-    label: t('Buy Crypto'),
-    icon: 'OnrampIcon',
-    href: '/onramp',
-  },
-  {
     label: 'Earn',
     icon: 'FarmIcon',
     items: [
@@ -148,7 +143,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('UnRekt'),
-        href: 'https://unrekt.hyperjump.fi/',
+        href: 'https://unrekt.hyperjump.app/',
         target: '_blank',
       },
       {
@@ -158,7 +153,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('FTM V1 APP'),
-        href: 'https://ftmv1.hyperjump.app/',
+        href: 'https://ftm-v1.hyperjump.app/',
         target: '_blank',
       },
     ],

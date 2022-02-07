@@ -17,7 +17,7 @@ import {
   getXJumpAddress,
   getMechAddress,
   getClaimLpRewardsMigratorAddress,
-  getSynapseBridgeAddress,
+  getSynapseBridgeAddress
 } from 'utils/addressHelpers'
 
 // ABI
@@ -38,7 +38,7 @@ import {
   getClaimLpRewardsMigratorABI,
   getMechMigratorABI,
   getXJumpABI,
-  getMechABI,
+  getMechABI
 } from 'config/abi'
 import { Pool } from 'state/types'
 import getNetwork from './getNetwork'
