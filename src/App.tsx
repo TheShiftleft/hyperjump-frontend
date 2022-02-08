@@ -19,6 +19,8 @@ import Pool from './views/Swap/Pool'
 import PoolFinder from './views/Swap/PoolFinder'
 import RemoveLiquidity from './views/Swap/RemoveLiquidity'
 import Swap from './views/Swap/Swap'
+import Zap from './views/Zap/Zap'
+import Warp from './views/Zap/Warp'
 import Lottery from './views/Lottery'
 
 // Route-based code splitting
@@ -54,6 +56,8 @@ const App: React.FC = () => {
             </Route>
 
             <Route exact strict path="/swap" component={Swap} />
+            <Route exact strict path="/zap" component={Zap} />
+            <Route exact strict path="/warp" component={Warp} />
             <Route exact strict path="/find" component={PoolFinder} />
             <Route exact path="/bridge" component={VortexBridge} />
             <Route exact path="/pool" component={Pool} />
