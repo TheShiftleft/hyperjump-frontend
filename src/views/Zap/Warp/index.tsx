@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal } from 'uikit'
 import Container from 'components/Container'
-import AppBody from '../AppBody'
-import CardNav from '../CardNav'
+import AppBody from 'components/Zap/AppBody'
+import CardNav from 'components/Zap/CardNav'
 
 const Warp = () => {
 
