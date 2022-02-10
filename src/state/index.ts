@@ -13,6 +13,7 @@ import user from './user/reducer'
 import transactions from './transactions/reducer'
 import swap from './swap/reducer'
 import zap from './zap/reducer'
+import warp from './warp/reducer'
 import bridge from './bridge/reducer'
 import mint from './mint/reducer'
 import lists from './lists/reducer'
@@ -48,6 +49,7 @@ const store = configureStore({
     user,
     swap,
     zap,
+    warp,
     bridge,
     mint,
     burn,

@@ -7,12 +7,12 @@ import CardNav from 'components/Zap/CardNav'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import PageHeader from 'components/Zap/PageHeader'
 import { Wrapper } from 'components/Zap/styled'
-import getNetwork from 'utils/getNetwork'
 import { useCurrency } from 'hooks/Tokens'
-import { useZapDefaultState, useZapState } from 'state/zap/hooks'
+import { useZapDefaultState } from 'state/zap/hooks'
 
 const Zap = () => {
     const [input, setUserInput] = useState("")
+    const [currency, setCurrencySelected] = useState()
     const res = useZapDefaultState()
     const [loadedInputCurrency, loadedOutputCurrency] = [
         useCurrency(res?.inputCurrencyId),
@@ -24,12 +24,19 @@ const Zap = () => {
         },
         [setUserInput],
       )
+
+    const handleOutputCurrencySelect = useCallback(
+    (inputCurrency) => {
+        setCurrencySelected(inputCurrency)
+    }, [setCurrencySelected],
+    )
+
     return(
         <Container>
             <CardNav />
             <AppBody>
                 <Wrapper id='zap-page' color='transparent'>
-                    <PageHeader title="Zap" description="Zap out of our LP tokens" />
+                    <PageHeader title="Zap" description="Zap out of our LP token" />
                     <CardBody p='12px'>
                         <AutoColumn gap='md'>
                             <CurrencyInputPanel
@@ -37,6 +44,7 @@ const Zap = () => {
                                 value={input}
                                 showMaxButton={false}
                                 currency={loadedInputCurrency}
+                                disableCurrencySelect
                                 onUserInput={handleTypeInput}
                                 id="zap-currency-input"
                             />
@@ -53,6 +61,7 @@ const Zap = () => {
                                 label='Out'
                                 value=''
                                 currency={loadedOutputCurrency}
+                                onCurrencySelect={handleOutputCurrencySelect}
                                 showMaxButton={false}
                                 onUserInput={handleTypeInput}
                                 id="zap-currency-input"
