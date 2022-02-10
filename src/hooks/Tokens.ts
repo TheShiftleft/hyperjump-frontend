@@ -12,7 +12,7 @@ import { useUserAddedTokens } from '../state/user/hooks'
 import { isAddress } from '../utils'
 
 import { useActiveWeb3React } from './index'
-import { useBytes32TokenContract, useTokenContract } from './useContract'
+import { useBytes32TokenContract, useTokenContract, useMultiChainContract, useMultiChainContractBytes32 } from './useContract'
 
 type TagDetails = Tags[keyof Tags]
 export interface TagInfo extends TagDetails {
@@ -174,6 +174,7 @@ export function useTokenOnOtherChain(tokenAddress?: string, outputChainId?: stri
 
   const selectedBridgeNetwork = useSelectedBridgeNetwork(parseInt(outputChainId))
   const _networkTokens = useBridgeTokens(selectedBridgeNetwork)
+  const toChain = parseInt(outputChainId)
 
   const tokens = useMemo(() => {
     return _networkTokens[0]
@@ -181,8 +182,8 @@ export function useTokenOnOtherChain(tokenAddress?: string, outputChainId?: stri
 
   const address = isAddress(tokenAddress)
 
-  const tokenContract = useTokenContract(address || undefined, false)
-  const tokenContractBytes32 = useBytes32TokenContract(address || undefined, false)
+  const tokenContract = useMultiChainContract(address || undefined, toChain)
+  const tokenContractBytes32 = useMultiChainContractBytes32(address || undefined, toChain)
   const token: Token | undefined = address ? tokens[address] : undefined
   const tokenName = useSingleCallResult(token ? undefined : tokenContract, 'name', undefined, NEVER_RELOAD)
 
@@ -199,11 +200,11 @@ export function useTokenOnOtherChain(tokenAddress?: string, outputChainId?: stri
 
   return useMemo(() => {
     if (token) return token
-    if (!chainId || !address) return undefined
+    if (!toChain || !address) return undefined
     if (decimals.loading || symbol.loading || tokenName.loading) return null
     if (decimals.result) {
       return new Token(
-        chainId,
+        toChain,
         address,
         decimals.result[0],
         parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
@@ -213,7 +214,7 @@ export function useTokenOnOtherChain(tokenAddress?: string, outputChainId?: stri
     return undefined
   }, [
     address,
-    chainId,
+    toChain,
     decimals.loading,
     decimals.result,
     symbol.loading,

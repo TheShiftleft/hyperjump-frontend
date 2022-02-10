@@ -169,7 +169,9 @@ export function useDerivedBridgeInfo(): {
     outputChainId,
   } = useBridgeState()
   const inputCurrency = useCurrency(inputCurrencyId)
+  
   const outputCurrency = useCurrencyOnOtherChain(outputCurrencyId, outputChainId)
+  console.log("outputCurrency", outputCurrency)
   const recipientLookup = useENS(recipient ?? undefined)
 
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null

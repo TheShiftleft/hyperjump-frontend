@@ -7,7 +7,7 @@ import getNetwork from 'utils/getNetwork'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { useCurrencyBalance } from '../../state/multiChainWallet/hooks'
 import { LinkStyledButton } from '../Shared'
 import { useIsUserAddedToken } from '../../hooks/Tokens'
 import Column from '../Column'
@@ -99,6 +99,7 @@ function CurrencyRow({
   const { account, chainId } = useActiveWeb3React()
   const key = currencyKey(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
+  console.log("CURRENCY", currency)
 
   return (
     <MenuItem

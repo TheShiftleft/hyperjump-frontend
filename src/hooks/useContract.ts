@@ -14,10 +14,13 @@ import {
   getMechContract,
   getClaimLpRewardsMigratorContract,
   getSynapseBridgeContract,
+  getL2BridgeZapContract,
 } from 'utils/contractHelpers'
-import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
+import { getLotteryAddress, getFarmingTokenAddress, getSynapseBridgeAddress } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
+import getMultiChainContract from 'utils/multiChainHelper'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
+import {L2_BRIDGE_ZAP_ABI} from 'config/abi/L2BridgeZap'
 import { Contract } from '@ethersproject/contracts'
 import { WRAPPED } from '@hyperjump-defi/sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
@@ -91,14 +94,26 @@ export const usePoolContract = (id: number) => {
   return useMemo(() => getPoolContract(pool, web3), [pool, web3])
 }
 
-export const useSynapseBridgeContract = () => {
-  const web3 = useWeb3()
-  return useMemo(() => getSynapseBridgeContract(web3), [web3])
+export const useSynapseBridgeContract = (chainId: number) => {
+  return useMemo(() => getMultiChainContract(L2_BRIDGE_ZAP_ABI.abi, getSynapseBridgeAddress() ,chainId), [chainId])
 }
 
 export const useBridgeConfigInstance = () => {
   const web3 = useWeb3()
   return useMemo(() => getBridgeConfigFactory(web3), [web3])
+}
+
+export const useL2BridgeZapContract = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getL2BridgeZapContract(web3), [web3])
+}
+
+export const useMultiChainContract = (tokenAddress: string, chainId: number) => {
+  return useMemo(() => getMultiChainContract(ERC20_ABI, tokenAddress ,chainId), [chainId, tokenAddress])
+}
+
+export const useMultiChainContractBytes32 = (tokenAddress: string, chainId: number) => {
+  return useMemo(() => getMultiChainContract(ERC20_BYTES32_ABI, tokenAddress ,chainId), [chainId, tokenAddress])
 }
 
 // returns null on errors

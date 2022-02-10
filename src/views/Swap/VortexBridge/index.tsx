@@ -93,6 +93,7 @@ const Aligner = styled.div`
 
 `
 const Bridge = () => {
+    console.log("bridgeNetworks", bridgeNetworks)
     const { config } = getNetwork()
     const { data, userDataLoaded } = useFarms()
     const loadedUrlParams = useDefaultsFromURLSearch()
@@ -272,6 +273,7 @@ const Bridge = () => {
     const { callback: bridgeCallback, error: bridgeCallbackError, calculatedBridgeFee: calcFee } = useBridgeCallback(
         (independentField === Field.INPUT ? parsedAmount : undefined),
         bridgeNetworks[toBridgeNetworkKey],
+        bridgeNetworks[fromBridgeNetworkKey],
         currencies[Field.INPUT],
         currencies[Field.OUTPUT],
         recipient,
