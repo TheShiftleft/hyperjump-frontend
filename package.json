@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
+    "@clover-network/clover-connector": "^1.0.0",
     "@crowdin/crowdin-api-client": "1.8.16",
     "@ethersproject/abi": "^5.1.2",
     "@hyperjump-defi/onramper-widget": "2.2.27",
