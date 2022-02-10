@@ -1,13 +1,12 @@
-import BigNumber from 'bignumber.js'
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@hyperjump-defi/sdk'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import getNetwork from 'utils/getNetwork'
 import ERC20_INTERFACE from '../../config/abi/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useSwapMulticallContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData, useMultiChainContractSingleData } from '../multicall/hooksMultilChain'
+import { useSingleContractMultipleData, useMultiChainContractSingleData } from '../multicall/hooksMultilChain'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -60,41 +59,31 @@ export function useTokenBalancesWithLoadingIndicator(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
     [tokens],
   )
-
-  const multChainId = (tokens ?? undefined ? tokens[0].chainId : undefined)
+  const { chainId } = getNetwork()
+  const multChainId = (tokens ?? undefined ? tokens[0]?.chainId : chainId)
 
   const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens])
-  const new_balances = useMultiChainContractSingleData(multChainId, validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
-  console.log("new_balances", new_balances[0])
-  const balances = useMultipleContractSingleData(multChainId, validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address])
-  console.log(multChainId, balances)
-  const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances])
+  const new_balances = useMultiChainContractSingleData(multChainId, validatedTokenAddresses, ERC20_INTERFACE, [address])
+  const [amount, setAmount] = useState(JSBI.BigInt(0))
+  new_balances[0]?.then((b) => {
+    const v = b?.[0]
+    setAmount((v ? JSBI.BigInt(v.toString()) : undefined))
+  })
 
   return [
     useMemo(
       () =>
         address && validatedTokens.length > 0
           ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0]
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined
-
-              
-              console.log(new_balances)
-              const nb = new_balances[0];
-              
-              nb[0].then((b) => {
-                const amount11 = b ?? undefined ? JSBI.BigInt(b.toString()) : undefined
-                memo[token.address] = new TokenAmount(token, amount11)
-                console.log("bbbb",memo[token.address])
-                
-              })
-
-              return memo
+              if (amount) {
+                memo[token.address] = new TokenAmount(token, amount)
+              }
+              return (memo ?? undefined ? memo : undefined)
             }, {})
           : {},
-      [address, validatedTokens, balances, new_balances],
+      [address, validatedTokens, amount],
     ),
-    anyLoading,
+    undefined,
   ]
 }
 
@@ -123,7 +112,6 @@ export function useCurrencyBalances(
   const { config } = getNetwork()
 
   const tokenBalances = useTokenBalances(account, tokens)
-  console.log("tokenBalances", tokenBalances)
   const containsETH: boolean = useMemo(() => currencies?.some((currency) => currency === config.baseCurrency) ?? false, [config.baseCurrency, currencies])
   const ethBalance = useETHBalances(containsETH ? [account] : [])
 

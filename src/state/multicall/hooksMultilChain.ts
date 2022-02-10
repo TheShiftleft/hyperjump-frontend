@@ -197,63 +197,21 @@ export function useMultiChainContractSingleData(
   multChainId: number,
   addresses: (string | undefined)[],
   contractInterface: Interface,
-  methodName: string,
   callInputs?: OptionalMethodInputs,
-  options?: ListenerOptions
-) {
+) : Promise<any>[] {
  
   return useMemo(() => {
-    return addresses.map((address) => {
+    return addresses.map(async (address) => {
       const multiChainContract = getMultiChainContract(contractInterface, address, multChainId)
-      console.log("multiChainContract", multiChainContract)
-      
-      const balanceRequest = (multiChainContract ?? undefined ? multiChainContract.balanceOf("0x2871aB0e15573b0F5F05442ac3A824fD5a4DC890") : undefined)
-      console.log("balanceRequest", balanceRequest)
-      return [balanceRequest, address];
+      let balance;
+      await multiChainContract.balanceOf(callInputs[0]).then((b) => {
+        balance = b
+      })
+      return [balance];
     })
-  }, [addresses, contractInterface, multChainId ])
+  }, [addresses, contractInterface, multChainId, callInputs ])
 }
 
-export function useMultipleContractSingleData(
-  multChainId: number,
-  addresses: (string | undefined)[],
-  contractInterface: Interface,
-  methodName: string,
-  callInputs?: OptionalMethodInputs,
-  options?: ListenerOptions
-): CallState[] {
-  const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName])
-  const callData: string | undefined = useMemo(
-    () =>
-      fragment && isValidMethodArgs(callInputs)
-        ? contractInterface.encodeFunctionData(fragment, callInputs)
-        : undefined,
-    [callInputs, contractInterface, fragment]
-  )
-
-  const calls = useMemo(
-    () =>
-      fragment && addresses && addresses.length > 0 && callData
-        ? addresses.map<Call | undefined>((address) => {
-            return address && callData
-              ? {
-                  address,
-                  callData,
-                }
-              : undefined
-          })
-        : [],
-    [addresses, callData, fragment]
-  )
-
-  const results = useCallsData(multChainId, calls, options)
-
-  const latestBlockNumber = useBlockNumber()
-
-  return useMemo(() => {
-    return results.map((result) => toCallState(result, contractInterface, fragment, latestBlockNumber))
-  }, [fragment, results, contractInterface, latestBlockNumber])
-}
 
 export function useSingleCallResult(
   multChainId: number,

@@ -42,7 +42,6 @@ export default createReducer(initialState, builder =>
         ? state.callListeners
         : (state.callListeners = {})
       listeners[chainId] = listeners[chainId] ?? {}
-      console.log("listeners", chainId)
       calls.forEach(call => {
         const callKey = toCallKey(call)
         
