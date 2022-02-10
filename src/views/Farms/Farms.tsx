@@ -51,16 +51,32 @@ const Farms: React.FC = () => {
     setStakedOnly(!isActive)
   }, [isActive])
 
+  const currentDate = Date.now()
   const farmsLP = data
-  const activeFarms = farmsLP.filter((farm) => farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid))
-  const inactiveFarms = farmsLP.filter((farm) => farm.pid !== 0 && farm.multiplier === '0X' && !isArchivedPid(farm.pid))
-
+  const activeFarms = farmsLP.filter(
+    (farm) =>
+      farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid) && currentDate <= farm.endTime * 1000,
+  )
+  const inactiveFarms = farmsLP.filter(
+    (farm) =>
+      farm.pid !== 0 &&
+      !isArchivedPid(farm.pid) &&
+      ((!!farm.endTime && farm.multiplier === '0X') || currentDate > farm.endTime * 1000),
+  )
   const stakedOnlyFarms = activeFarms.filter(
-    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
+    (farm) =>
+      farm.userData &&
+      new BigNumber(farm.userData.stakedBalance).isGreaterThan(0) &&
+      !!farm.endTime &&
+      currentDate <= farm.endTime * 1000,
   )
 
   const stakedInactiveFarms = inactiveFarms.filter(
-    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
+    (farm) =>
+      farm.userData &&
+      new BigNumber(farm.userData.stakedBalance).isGreaterThan(0) &&
+      !!farm.endTime &&
+      currentDate > farm.endTime * 1000,
   )
 
   const farmsList = useCallback(
