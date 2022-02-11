@@ -12,7 +12,8 @@ import { useZapDefaultState } from 'state/zap/hooks'
 
 const Zap = () => {
     const [input, setUserInput] = useState("")
-    const [currency, setCurrencySelected] = useState()
+    const [outputCurrency, setOutputCurrencySelected] = useState()
+    const [inputCurrency, setInputCurrencySelected] = useState()
     const res = useZapDefaultState()
     const [loadedInputCurrency, loadedOutputCurrency] = [
         useCurrency(res?.inputCurrencyId),
@@ -26,9 +27,15 @@ const Zap = () => {
       )
 
     const handleOutputCurrencySelect = useCallback(
-    (inputCurrency) => {
-        setCurrencySelected(inputCurrency)
-    }, [setCurrencySelected],
+    (currency) => {
+        setOutputCurrencySelected(currency)
+    }, [setOutputCurrencySelected],
+    )
+
+    const handleInputCurrencySelect = useCallback(
+    (currency) => {
+        setInputCurrencySelected(currency)
+    }, [setInputCurrencySelected],
     )
 
     return(
@@ -44,8 +51,9 @@ const Zap = () => {
                                 value={input}
                                 showMaxButton={false}
                                 currency={loadedInputCurrency}
-                                disableCurrencySelect
+                                onCurrencySelect={handleInputCurrencySelect}
                                 onUserInput={handleTypeInput}
+                                zap
                                 id="zap-currency-input"
                             />
                             <AutoColumn justify='center'>

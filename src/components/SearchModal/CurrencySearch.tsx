@@ -8,6 +8,7 @@ import styled, { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import useI18n from 'hooks/useI18n'
 import getNetwork from 'utils/getNetwork'
+import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
 import { useActiveWeb3React } from '../../hooks'
 import { AppState } from '../../state'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
@@ -33,6 +34,8 @@ interface CurrencySearchProps {
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
   onChangeList: () => void
+  zap?: boolean
+  warp?: boolean
 }
 
 const ColumnWBorder = styled.div`
@@ -51,6 +54,8 @@ export function CurrencySearch({
   onDismiss,
   isOpen,
   onChangeList,
+  zap,
+  warp
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -60,7 +65,15 @@ export function CurrencySearch({
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-  const allTokens = useAllTokens()
+  const tokens = useAllTokens()
+  const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : {}
+
+  const allTokens = zap ? Object.keys(tokens).filter(key => zwTokens.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = tokens[key]
+        return obj
+      }, {})
+      : tokens
 
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
@@ -184,7 +197,7 @@ export function CurrencySearch({
           {({ height }) => (
             <CurrencyList
               height={height}
-              showETH={showETH}
+              showETH={showETH && !zap}
               currencies={filteredSortedTokens}
               onCurrencySelect={handleCurrencySelect}
               otherCurrency={otherSelectedCurrency}

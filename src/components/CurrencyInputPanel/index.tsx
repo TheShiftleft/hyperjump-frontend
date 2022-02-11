@@ -83,6 +83,8 @@ interface CurrencyInputPanelProps {
   id: string
   showCommonBases?: boolean
   disabledNumericalInput?: boolean
+  zap?: boolean
+  warp?: boolean
 }
 export default function CurrencyInputPanel({
   value,
@@ -99,7 +101,9 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
-  disabledNumericalInput = false
+  disabledNumericalInput = false,
+  zap,
+  warp
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -186,6 +190,8 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          zap={zap}
+          warp={warp}
         />
       )}
     </InputPanel>

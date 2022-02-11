@@ -12,7 +12,8 @@ import { useWarpDefaultState } from 'state/warp/hooks'
 
 const Warp = () => {
     const [input, setInput] = useState('')
-    const [currency, setInputCurrency] = useState()
+    const [inputCurrency, setInputCurrency] = useState()
+    const [outputCurrency, setOutputCurrencySelected] = useState()
     const res = useWarpDefaultState()
     const [loadedInputCurrency, loadedOutputCurrency] = [
         useCurrency(res?.inputCurrencyId),
@@ -26,11 +27,17 @@ const Warp = () => {
       )
 
     const handleInputCurrencySelect = useCallback(
-        (inputCurrency) => {
-            setInputCurrency(inputCurrency)
+        (currency) => {
+            setInputCurrency(currency)
         },
         [setInputCurrency]
     )
+
+    const handleOutputCurrencySelect = useCallback(
+        (currency) => {
+            setOutputCurrencySelected(currency)
+        }, [setOutputCurrencySelected],
+        )
     return(
         <Container>
             <CardNav activeIndex={1}/>
@@ -61,9 +68,10 @@ const Warp = () => {
                                 label='Out'
                                 value=''
                                 currency={loadedOutputCurrency}
+                                onCurrencySelect={handleOutputCurrencySelect}
                                 showMaxButton={false}
-                                disableCurrencySelect
                                 onUserInput={handleTypeInput}
+                                zap
                                 id="zap-currency-input"
                             />
                             <Button

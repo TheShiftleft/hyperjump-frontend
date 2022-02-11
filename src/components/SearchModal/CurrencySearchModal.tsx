@@ -14,6 +14,8 @@ interface CurrencySearchModalProps {
   otherSelectedCurrency?: Currency | null
   // eslint-disable-next-line react/no-unused-prop-types
   showCommonBases?: boolean
+  zap?: boolean
+  warp?: boolean
 }
 
 export default function CurrencySearchModal({
@@ -22,6 +24,8 @@ export default function CurrencySearchModal({
   onCurrencySelect,
   selectedCurrency,
   otherSelectedCurrency,
+  zap,
+  warp
 }: CurrencySearchModalProps) {
   const [listView, setListView] = useState<boolean>(false)
   const lastOpen = useLast(isOpen)
@@ -63,6 +67,8 @@ export default function CurrencySearchModal({
           selectedCurrency={selectedCurrency}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
+          zap={zap}
+          warp={warp}
         />
       ) : (
         <CurrencySearch
@@ -73,6 +79,8 @@ export default function CurrencySearchModal({
           selectedCurrency={selectedCurrency}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
+          zap={zap}
+          warp={warp}
         />
       )}
     </Modal>
