@@ -9,7 +9,6 @@ import BinanceChain from './icons/BinanceChain'
 import SafePalWallet from './icons/SafePalWallet'
 import WalletLinkIcon from './icons/WalletLink'
 import Coin98Icon from './icons/Coin98'
-import CloverWallet from './icons/CloverWallet'
 import { Config, ConnectorNames } from './types'
 
 const connectors: Record<Network, Config[]> = {
@@ -23,11 +22,6 @@ const connectors: Record<Network, Config[]> = {
       title: 'TrustWallet',
       icon: TrustWallet,
       connectorId: ConnectorNames.Injected,
-    },
-    {
-      title: 'CloverWallet',
-      icon: CloverWallet,
-      connectorId: ConnectorNames.Clover,
     },
     {
       title: 'MathWallet',
@@ -79,11 +73,6 @@ const connectors: Record<Network, Config[]> = {
       connectorId: ConnectorNames.Injected,
     },
     {
-      title: 'CloverWallet',
-      icon: CloverWallet,
-      connectorId: ConnectorNames.Clover,
-    },
-    {
       title: 'MathWallet',
       icon: MathWallet,
       connectorId: ConnectorNames.Injected,
@@ -107,7 +96,7 @@ const connectors: Record<Network, Config[]> = {
       title: 'SafePal Wallet',
       icon: SafePalWallet,
       connectorId: ConnectorNames.Injected,
-    },
+    },    
   ],
 }
 

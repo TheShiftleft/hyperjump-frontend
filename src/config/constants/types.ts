@@ -31,7 +31,6 @@ export interface FarmConfig {
   token: Token
   quoteToken: Token
   multiplier?: string
-  isFinished?: boolean
   dual?: {
     rewardPerBlock: number
     earnLabel: string

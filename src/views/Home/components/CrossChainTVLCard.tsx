@@ -28,7 +28,9 @@ const StyledTotalValueLockedCard = styled(Card)`
 const CrossChainTVLCard = () => {
   const { t } = useTranslation()
   const bscTvlData = useGetBscStats()
-  const crossTvl = bscTvlData ? bscTvlData.tvl : 'Available soon!'
+  const ftmData = useGetFtmStats()
+
+  const crossTvl = bscTvlData && ftmData ? bscTvlData.tvl + ftmData.tvl : 'Available soon!'
   const crossTvlString = crossTvl ? crossTvl.toLocaleString('en-US', { maximumFractionDigits: 0 }) : 69
   return (
     <StyledTotalValueLockedCard>

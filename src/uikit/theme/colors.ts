@@ -1,6 +1,4 @@
 import { Colors } from './types'
-//     background-color: rgba(13, 29, 54, 0.5);
-
 
 export const baseColors = {
   failure: '#53DEE9',

@@ -3,9 +3,6 @@
 interface WindowChain {
   ethereum?: {
     isMetaMask?: true
-    request?: (...args: any[]) => Promise<void>
-  }
-  clover?: {
-    request?: (...args: any[]) => Promise<void>
+    request?: (...args: any[]) => void
   }
 }

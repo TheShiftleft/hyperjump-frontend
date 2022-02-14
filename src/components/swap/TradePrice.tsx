@@ -4,15 +4,12 @@ import { SyncAltIcon, Text } from 'uikit'
 import { StyledBalanceMaxMini } from './styleds'
 
 interface TradePriceProps {
-  price?: Price,
-  limit?: string
+  price?: Price
   showInverted: boolean
   setShowInverted: (showInverted: boolean) => void
-  setLimitPrice?: React.Dispatch<React.SetStateAction<any>>
-  setLimitValidity?: React.Dispatch<React.SetStateAction<any>>
 }
 
-export default function TradePrice({ price, limit, showInverted, setShowInverted, setLimitPrice, setLimitValidity }: TradePriceProps) {
+export default function TradePrice({ price, showInverted, setShowInverted }: TradePriceProps) {
   const formattedPrice = showInverted ? price?.toSignificant(6) : price?.invert()?.toSignificant(6)
 
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
@@ -25,12 +22,7 @@ export default function TradePrice({ price, limit, showInverted, setShowInverted
       {show ? (
         <>
           {formattedPrice ?? '-'} {label}
-          <StyledBalanceMaxMini onClick={() => {
-            setShowInverted(!showInverted)
-            setLimitPrice('');
-            setLimitValidity({valid: true, error: ''})
-            }
-          }>
+          <StyledBalanceMaxMini onClick={() => setShowInverted(!showInverted)}>
             <SyncAltIcon width="20px" color="primary" />
           </StyledBalanceMaxMini>
         </>

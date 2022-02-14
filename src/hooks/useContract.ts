@@ -14,6 +14,7 @@ import {
   getMechContract,
   getClaimLpRewardsMigratorContract,
   getSynapseBridgeContract,
+  getBroomContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
@@ -172,4 +173,9 @@ export const useFarmingTokenContract = (withSignerIfPossible?: boolean) => {
 
   // const web3 = useWeb3()
   // return useMemo(() => getFarmingTokenContract(web3), [web3])
+}
+
+export const useBroomContract = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getBroomContract(web3), [web3])
 }

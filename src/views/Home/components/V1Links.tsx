@@ -59,8 +59,8 @@ const V1Links = () => {
           <Flex justifyContent="space-between" alignItems="flex-end">
             <Flex flexDirection="column">
               <Heading>FTM </Heading>
-              <Link href="https://ftm-v1.hyperjump.app">
-                <CardButton id="ftm-go">FTM-V1.HYPERJUMP.APP</CardButton>
+              <Link href="https://ftmv1.hyperjump.app">
+                <CardButton id="ftm-go">FTMV1.HYPERJUMP.APP</CardButton>
               </Link>
               </Flex>
           </Flex>

@@ -79,7 +79,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('UnRekt'),
-        href: 'https://unrekt.hyperjump.app/',
+        href: 'https://unrekt.hyperjump.fi/',
         target: '_blank',
       },
     ],

@@ -22,6 +22,7 @@ import rewardMigratorABI from './RewardMigrator.json'
 import mechABI from './mechs.json'
 import mechMigratorABI from './mechMigrator.json'
 import claimLpRewardMigratorABI from './claimLpRewards.json'
+import broomABI from './broom.json'
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -71,6 +72,11 @@ const lotteryABIs = {
   [ChainId.FTM_MAINNET]: bscLotteryABI,
 }
 
+const broomABIs = {
+  [ChainId.BSC_MAINNET]: broomABI,
+  [ChainId.BSC_TESTNET]: broomABI,
+  [ChainId.FTM_MAINNET]: broomABI,
+}
 
 export const getRewardMigratorABI = () => {
   return rewardMigratorABI
@@ -137,4 +143,9 @@ export const getVaultABI = () => {
 export const getLotteryABI = () => {
   const { chainId } = getNetwork()
   return lotteryABIs[chainId]
+}
+
+export const getBroomABI = () => {
+  const { chainId } = getNetwork()
+  return broomABIs[chainId]
 }

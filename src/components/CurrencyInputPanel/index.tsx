@@ -82,7 +82,6 @@ interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
-  disabledNumericalInput?: boolean
 }
 export default function CurrencyInputPanel({
   value,
@@ -99,7 +98,6 @@ export default function CurrencyInputPanel({
   otherCurrency,
   id,
   showCommonBases,
-  disabledNumericalInput = false
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -130,7 +128,6 @@ export default function CurrencyInputPanel({
           {!hideInput && (
             <>
               <NumericalInput
-                disabled={disabledNumericalInput}
                 className="token-amount-input"
                 value={value}
                 onUserInput={(val) => {

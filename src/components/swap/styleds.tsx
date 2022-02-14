@@ -5,7 +5,7 @@ import { Text } from 'uikit'
 import styled, { css } from 'styled-components'
 import { AutoColumn } from '../Column'
 
-export const Wrapper = styled.div<{width?: string}>`
+export const Wrapper = styled.div`
   position: relative;
 `
 

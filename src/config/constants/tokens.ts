@@ -3,7 +3,7 @@ import { Token } from './types'
 const tokens: Record<string, Token> = {
   bnb: {
     symbol: 'BNB',
-    address: { 56: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', 250: '0xd67de0e0a0fd7b15dc8348bb9be742f3c5850454' },
+    address: { 56: '', 250: '0xd67de0e0a0fd7b15dc8348bb9be742f3c5850454' },
     projectLink: 'https://www.binance.com/',
   },
   wftm: {
@@ -18,7 +18,7 @@ const tokens: Record<string, Token> = {
   ftm: {
     symbol: 'FTM',
     address: {
-      250: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      250: '',
     },
     decimals: 18,
     projectLink: 'https://www.fantom.foundation/',
@@ -1820,11 +1820,7 @@ const tokens: Record<string, Token> = {
   },
   avax: {
     symbol: 'AVAX',
-    address: {
-      56: '0x1ce0c2827e2ef14d5c4f29a091d735a204794041',
-      97: '',
-      250: '0x511D35c52a3C244E7b8bd92c0C297755FbD89212',
-    },
+    address: { 56: '', 97: '', 250: '0x1ce0c2827e2ef14d5c4f29a091d735a204794041' },
     decimals: 18,
     projectLink: '',
   },

@@ -34,7 +34,7 @@ const Farms: React.FC = () => {
   const [query, setQuery] = useState('')
   const [viewMode, setViewMode] = usePersistState(ViewMode.TABLE, { localStorageKey: 'hyper_farm_view' })
   const { account } = useWeb3React()
-  const [sortOption, setSortOption] = useState('apr')
+  const [sortOption, setSortOption] = useState('hot')
   const { config } = getNetwork()
 
   const isInactive = pathname.includes('history')
@@ -51,32 +51,16 @@ const Farms: React.FC = () => {
     setStakedOnly(!isActive)
   }, [isActive])
 
-  const currentDate = Date.now()
   const farmsLP = data
-  const activeFarms = farmsLP.filter(
-    (farm) =>
-      farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid) && currentDate <= farm.endTime * 1000,
-  )
-  const inactiveFarms = farmsLP.filter(
-    (farm) =>
-      farm.pid !== 0 &&
-      !isArchivedPid(farm.pid) &&
-      ((!!farm.endTime && farm.multiplier === '0X') || currentDate > farm.endTime * 1000),
-  )
+  const activeFarms = farmsLP.filter((farm) => farm.pid !== 0 && farm.multiplier !== '0X' && !isArchivedPid(farm.pid))
+  const inactiveFarms = farmsLP.filter((farm) => farm.pid !== 0 && farm.multiplier === '0X' && !isArchivedPid(farm.pid))
+
   const stakedOnlyFarms = activeFarms.filter(
-    (farm) =>
-      farm.userData &&
-      new BigNumber(farm.userData.stakedBalance).isGreaterThan(0) &&
-      !!farm.endTime &&
-      currentDate <= farm.endTime * 1000,
+    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
   )
 
   const stakedInactiveFarms = inactiveFarms.filter(
-    (farm) =>
-      farm.userData &&
-      new BigNumber(farm.userData.stakedBalance).isGreaterThan(0) &&
-      !!farm.endTime &&
-      currentDate > farm.endTime * 1000,
+    (farm) => farm.userData && new BigNumber(farm.userData.stakedBalance).isGreaterThan(0),
   )
 
   const farmsList = useCallback(

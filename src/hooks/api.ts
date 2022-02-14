@@ -7,12 +7,6 @@ export interface ApiResponse {
   tvl: number
 }
 
-export interface CirculatingSupplyApiResponse {
-  totalCirculatingSupply: number
-  ftm: any
-  bsc: any
-}
-
 export const useGetBscStats = () => {
   const [data, setData] = useState<ApiResponse | null>(null)
   const { config } = getNetwork()
@@ -20,7 +14,7 @@ export const useGetBscStats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://vaultsapi.hyperjump.app/tvl`)
+        const response = await fetch(`https://vaults.hyperswap.info/tvl`)
         const responseData: ApiResponse = await response.json()
 
         setData(responseData)
@@ -41,7 +35,7 @@ export const useGetFtmStats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ftmResponse = await fetch('https://ftmvaultsapi.hyperjump.app/tvl')
+        const ftmResponse = await fetch('https://ftmvaults.hyperswap.info/tvl')
         const ftmResponseData: ApiResponse = await ftmResponse.json()
 
         setFtmData(ftmResponseData)
@@ -54,26 +48,4 @@ export const useGetFtmStats = () => {
   }, [setFtmData])
 
   return ftmData
-}
-
-export const useGetCirculatingSupplyStats = () => {
-  const [data, setData] = useState<CirculatingSupplyApiResponse | null>(null)
-  const { config } = getNetwork()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`https://vaultsapi.hyperjump.app/circulating_supply`)
-        const responseData: CirculatingSupplyApiResponse = await response.json()
-
-        setData(responseData)
-      } catch (error) {
-        console.error('Unable to fetch data:', error)
-      }
-    }
-
-    fetchData()
-  }, [config.network, setData])
-
-  return data
 }

@@ -11,7 +11,7 @@ import Vibrant from 'node-vibrant'
 import { hex } from 'wcag-contrast'
 import copy from 'copy-to-clipboard'
 import { isAddress } from '../utils/analytics'
-import { injected } from '../utils/web3React'
+import { injected } from '../connectors'
 import { NetworkContextName } from '../config'
 
 declare global {

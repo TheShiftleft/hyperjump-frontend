@@ -3,6 +3,7 @@ import { ModalProvider } from 'uikit'
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import { HelmetProvider } from 'react-helmet-async'
 import { Provider } from 'react-redux'
+import { MoralisProvider } from 'react-moralis'
 import { getLibrary, getLibrarySwap } from 'utils/web3React'
 import { ThemeContextProvider } from 'contexts/ThemeContext'
 import { LanguageProvider } from 'contexts/Localization'
@@ -10,7 +11,7 @@ import { RefreshContextProvider } from 'contexts/RefreshContext'
 import { ToastsProvider } from 'contexts/ToastsContext'
 import store from 'state'
 import { ApolloProvider } from 'react-apollo'
-import { NetworkContextName } from './config'
+import { NetworkContextName, MORALIS_SERVER_URL, MORALIS_APP_ID } from './config'
 import { client } from './views/Analytics/apollo/client'
 import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
 import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
@@ -26,31 +27,33 @@ const Providers: React.FC = ({ children }) => {
     <ApolloProvider client={client}>
       <Web3ReactProvider getLibrary={getLibrarySwap}>
         <Web3ProviderNetwork getLibrary={getLibrarySwap}>
-          <Provider store={store}>
-            <ToastsProvider>
-              <HelmetProvider>
-                <ThemeContextProvider>
-                  <LanguageProvider>
-                    <RefreshContextProvider>
-                      <LocalStorageContextProvider>
-                        <ApplicationContextProvider>
-                          <TokenDataContextProvider>
-                            <GlobalDataContextProvider>
-                              <PairDataContextProvider>
-                                <UserContextProvider>
-                                  <ModalProvider>{children}</ModalProvider>
-                                </UserContextProvider>
-                              </PairDataContextProvider>
-                            </GlobalDataContextProvider>
-                          </TokenDataContextProvider>
-                        </ApplicationContextProvider>
-                      </LocalStorageContextProvider>
-                    </RefreshContextProvider>
-                  </LanguageProvider>
-                </ThemeContextProvider>
-              </HelmetProvider>
-            </ToastsProvider>
-          </Provider>
+          <MoralisProvider appId={MORALIS_APP_ID} serverUrl={MORALIS_SERVER_URL}>
+            <Provider store={store}>
+              <ToastsProvider>
+                <HelmetProvider>
+                  <ThemeContextProvider>
+                    <LanguageProvider>
+                      <RefreshContextProvider>
+                        <LocalStorageContextProvider>
+                          <ApplicationContextProvider>
+                            <TokenDataContextProvider>
+                              <GlobalDataContextProvider>
+                                <PairDataContextProvider>
+                                  <UserContextProvider>
+                                    <ModalProvider>{children}</ModalProvider>
+                                  </UserContextProvider>
+                                </PairDataContextProvider>
+                              </GlobalDataContextProvider>
+                            </TokenDataContextProvider>
+                          </ApplicationContextProvider>
+                        </LocalStorageContextProvider>
+                      </RefreshContextProvider>
+                    </LanguageProvider>
+                  </ThemeContextProvider>
+                </HelmetProvider>
+              </ToastsProvider>
+            </Provider>
+          </MoralisProvider>
         </Web3ProviderNetwork>
       </Web3ReactProvider>
     </ApolloProvider>

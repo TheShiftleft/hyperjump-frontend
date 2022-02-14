@@ -10,7 +10,6 @@ import useWeb3 from './useWeb3'
 import useRefresh from './useRefresh'
 import useLastUpdated from './useLastUpdated'
 
-
 type UseTokenBalanceState = {
   balance: BigNumber
   fetchStatus: FetchStatus

@@ -30,19 +30,12 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         href: '/convert',
         target: '_self',
       },
-      {
-        label: t('Buy Crypto'),
-        //        icon: 'ConvertIcon',
-        href: '/onramp',
-        target: '_self',
-      },
-      {
-        label: t('Vortex Bridge'),
-        // icon: 'BridgeIcon',
-        href: '/bridge',
-        target: '_self',
-      },
     ],
+  },
+  {
+    label: t('Bridge'),
+    icon: 'BridgeIcon',
+    href: "/bridge" ,
   },
   {
     label: 'Earn',
@@ -126,7 +119,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('UnRekt'),
-        href: 'https://unrekt.hyperjump.app/',
+        href: 'https://unrekt.hyperjump.fi/',
         target: '_blank',
       },
       {
@@ -136,7 +129,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('FTM V1 APP'),
-        href: 'https://ftm-v1.hyperjump.app/',
+        href: 'https://ftmv1.hyperjump.app/',
         target: '_blank',
       },
     ],

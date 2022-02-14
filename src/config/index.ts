@@ -34,11 +34,11 @@ export const BLOCKS_PER_YEAR: Record<Network, BigNumber> = {
 }
 
 export const VAULTS_API_BASE: Record<Network, string> = {
-  [Network.BSC_TESTNET]: 'https://vaultsapi.hyperjump.app',
-  [Network.BSC]: 'https://vaultsapi.hyperjump.app',
-  [Network.FANTOM]: 'https://ftmvaultsapi.hyperjump.app',
+  [Network.BSC_TESTNET]: 'https://vaults.hyperswap.info',
+  [Network.BSC]: 'https://vaults.hyperswap.info',
+  [Network.FANTOM]: 'https://ftmvaults.hyperswap.info',
 }
-export const VAULTS_API_URL = 'https://vaultsapi.hyperjump.app' // VAULTS_API_BASE[config.network]
+export const VAULTS_API_URL = VAULTS_API_BASE[config.network]
 
 const BSC_NETWORK_URL = process.env.REACT_APP_BSC_NETWORK_URL
 const BSC_TESTNET_NETWORK_URL = process.env.REACT_APP_BSC_TESTNET_NETWORK_URL
@@ -240,3 +240,9 @@ const SCANNER_URLS = {
 }
 
 export const SCANNER_URL = SCANNER_URLS[chainId]
+
+export const MORALIS_API_KEY = process.env.REACT_APP_MORALIS_API_KEY;
+export const MORALIS_API_URL = process.env.REACT_APP_MORALIS_API_URL;
+
+export const MORALIS_SERVER_URL = process.env.REACT_APP_MORALIS_SERVER_URL;
+export const MORALIS_APP_ID = process.env.REACT_APP_MORALIS_APP_ID;

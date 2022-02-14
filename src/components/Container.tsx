@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-const Container = styled.div<{ flexDirection?: string}>`
+const Container = styled.div`
   display: flex;
-  flex-direction: ${({flexDirection}) => (!!flexDirection && flexDirection === "row" ? "row" : "column")};
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex: 1;
