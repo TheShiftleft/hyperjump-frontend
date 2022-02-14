@@ -126,9 +126,11 @@ const Bridge = () => {
             if(bridgeNetworks[key].chainId === config.id)
                 setFromBridgeNetworkKey(key)
 
-            
-            if(bridgeNetworks[key].chainId === loadedUrlParams?.outputChainId)
-                setToBridgeNetworkKey(key)
+            if(ChainId.BSC_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
+              setToBridgeNetworkKey(key)
+            }else if(ChainId.FTM_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
+              setToBridgeNetworkKey(key)
+            }
           });
           setRedirect(true);
       }
@@ -352,10 +354,11 @@ const Bridge = () => {
 
     const handleFromNetworkSelect = useCallback(
       (fromNetwork) => {
+        console.log("fromNetwork", fromNetwork)
         setHasPoppedModal(false)
         setInterruptRedirectCountdown(false)
         setApprovalSubmitted(false) // reset 2 step UI for approvals
-        onNetworkSelection(Field.INPUT, fromNetwork)
+        onNetworkSelection(Field.INPUT, fromNetwork, bridgeNetworks[toBridgeNetworkKey])
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
             if(bridgeNetworks[key].chainId === fromNetwork.chainId)
@@ -364,28 +367,33 @@ const Bridge = () => {
           });
         setNetworkRedirect(true)
       },
-      [onNetworkSelection],
+      [onNetworkSelection, toBridgeNetworkKey],
     )
 
     const handleToNetworkSelect = useCallback(
       (toNetwork) => {
+        if(toNetwork.chainId === config.id)
+          return
+
+        console.log("frmbridgeNetworks", bridgeNetworks[fromBridgeNetworkKey])
         setHasPoppedModal(false)
         setInterruptRedirectCountdown(false)
         setApprovalSubmitted(false) // reset 2 step UI for approvals
-        onNetworkSelection(Field.OUTPUT, toNetwork)
+        onNetworkSelection(Field.OUTPUT, toNetwork, bridgeNetworks[fromBridgeNetworkKey])
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
-            if(bridgeNetworks[key].chainId === toNetwork.chainId)
-                setToBridgeNetworkKey(key)
-            
-          });
-        setRedirect(true)
+            if(bridgeNetworks[key].chainId === toNetwork.chainId) {
+              setToBridgeNetworkKey(key)
+              setRedirect(true)
+            }
+          }); 
       },
-      [onNetworkSelection],
+      [config, onNetworkSelection, fromBridgeNetworkKey],
     )
 
     const handleInputSelect = useCallback(
         (inputCurrency) => {
+            console.log("11inputCurrency", inputCurrency)
             setHasPoppedModal(false)
             setInterruptRedirectCountdown(false)
             setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -402,6 +410,7 @@ const Bridge = () => {
 
     const handleOutputSelect = useCallback(
         (outputCurrency) => {
+          console.log("11inputCurrency222", outputCurrency)
             setHasPoppedModal(false)
             setInterruptRedirectCountdown(false)
             onCurrencySelection(Field.OUTPUT, outputCurrency)
@@ -451,11 +460,7 @@ const Bridge = () => {
                                     </AutoColumn>
                                 </NetworkSelect>
                                 <NetworkBridgeInputPanel
-                                    label={
-                                        independentField === Field.OUTPUT 
-                                            ? TranslateString(194, 'Amount (estimated)')
-                                            : TranslateString(76, 'Amount')
-                                    }
+                                    label={TranslateString(194, 'Amount')}
                                     value={formattedAmounts[Field.INPUT]}
                                     showMaxButton={!atMaxAmountInput}
                                     currency={currencies[Field.INPUT]}

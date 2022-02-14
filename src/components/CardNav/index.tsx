@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { ButtonMenu, ButtonMenuItem } from 'uikit'
+import ChainId from 'utils/getChain'
 import bridgeNetworks from 'config/constants/bridgeNetworks'
 
 import useI18n from 'hooks/useI18n'
@@ -23,8 +24,13 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
     Object.keys(bridgeNetworks)
       .forEach(function eachKey(key) { 
         if(bridgeNetworks[key].chainId !== config.id){
-          _outputChainId = bridgeNetworks[key].chainId
-          _outputCurrency = bridgeNetworks[key].tokens[0].address
+          if(ChainId.BSC_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
+            _outputChainId = bridgeNetworks[key].chainId
+            _outputCurrency = bridgeNetworks[key].tokens[0].address
+          }else if(ChainId.FTM_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
+            _outputChainId = bridgeNetworks[key].chainId
+            _outputCurrency = bridgeNetworks[key].tokens[0].address
+          }
         }else{
           _inputCurrency = bridgeNetworks[key].tokens[0].address
         }

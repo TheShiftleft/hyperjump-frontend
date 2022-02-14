@@ -24,13 +24,48 @@ export function useBridgeState(): AppState['bridge'] {
 }
 
 export function useBridgeNetworkActionHandlers(): {
-  onNetworkSelection: (field: Field, bridgeNetwork: BridgeNetwork) => void
+  onNetworkSelection: (field: Field, bridgeNetwork: BridgeNetwork, otherBridgeNetwork: BridgeNetwork, ) => void
   onSwitchNetworks: () => void
 } {
   
   const dispatch = useDispatch<AppDispatch>()
   const onNetworkSelection = useCallback(
-    (field: Field, bridgeNetwork: BridgeNetwork) => {
+    (field: Field, bridgeNetwork: BridgeNetwork, otherBridgeNetwork: BridgeNetwork) => {
+      let fromBridgeNetwork: BridgeNetwork
+      let toBridgeNetwork: BridgeNetwork
+      
+      if(field === Field.INPUT){
+        fromBridgeNetwork = bridgeNetwork
+        toBridgeNetwork = otherBridgeNetwork
+      }else{
+        fromBridgeNetwork = otherBridgeNetwork
+        toBridgeNetwork = bridgeNetwork
+
+        const currency = toBridgeNetwork.tokens[0]
+
+        dispatch(
+          selectCurrency({
+            field,
+            currencyId: currency instanceof Token
+              ? currency.address
+              : currency === BNB
+              ? 'BNB'
+              : currency === FANTOM
+              ? 'FTM'
+              : '',
+            chainId: currency instanceof Token
+              ? currency.chainId.toString()
+              : currency === BNB
+              ? '56'
+              : currency === FANTOM
+              ? '250'
+              : '56',
+          })
+        )
+      }
+      console.log("asdf11", fromBridgeNetwork)
+      console.log("asdf22", toBridgeNetwork)
+      console.log("asdf333", field)
       dispatch(
         selectNetwork({
           field,

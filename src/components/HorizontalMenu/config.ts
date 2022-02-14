@@ -1,5 +1,6 @@
 import { MenuEntry } from 'uikit'
 import { ContextApi } from 'contexts/Localization/types'
+import ChainId from 'utils/getChain'
 import bridgeNetworks from 'config/constants/bridgeNetworks'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
@@ -13,8 +14,14 @@ let outputCurrency
 Object.keys(bridgeNetworks)
 .forEach(function eachKey(key) {
   if(bridgeNetworks[key].chainId !== networkConfig.id){
-    outputChainId = bridgeNetworks[key].chainId
-    outputCurrency = bridgeNetworks[key].tokens[0].address
+    if(ChainId.BSC_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
+      outputChainId = bridgeNetworks[key].chainId
+      outputCurrency = bridgeNetworks[key].tokens[0].address
+    }else if(ChainId.FTM_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
+      outputChainId = bridgeNetworks[key].chainId
+      outputCurrency = bridgeNetworks[key].tokens[0].address
+    }
+    
   }else{
     inputCurrency = bridgeNetworks[key].tokens[0].address
   }

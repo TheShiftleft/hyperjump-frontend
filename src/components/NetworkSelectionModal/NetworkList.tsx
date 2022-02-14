@@ -23,7 +23,7 @@ import { BridgeNetwork } from './types'
 
 function currencyKey(currency: Currency): string {
   const { config } = getNetwork()
-  return currency instanceof Token ? currency.address : currency === config.baseCurrency ? config.networkToken.symbol : ''
+  return currency instanceof Token ? currency.address : currency.symbol
 }
 
 const StyledBalanceText = styled(Text)`
