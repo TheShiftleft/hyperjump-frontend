@@ -12,6 +12,7 @@ import { ToastsProvider } from 'contexts/ToastsContext'
 import store from 'state'
 import { ApolloProvider } from 'react-apollo'
 import { NetworkContextName, MORALIS_SERVER_URL, MORALIS_APP_ID } from './config'
+
 import { client } from './views/Analytics/apollo/client'
 import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
 import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'

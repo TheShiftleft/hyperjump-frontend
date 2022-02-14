@@ -61,7 +61,7 @@ const Pools: React.FC = () => {
   const loadMoreRef = useRef<HTMLDivElement>(null)
   const [viewMode, setViewMode] = usePersistState(ViewMode.TABLE, { localStorageKey: 'hyper_farm_view' })
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortOption, setSortOption] = useState('hot')
+  const [sortOption, setSortOption] = useState('apr')
   const { config } = getNetwork()
 
   const [finishedPools, openPools] = partition(pools, (pool) => pool.isFinished)
@@ -196,10 +196,10 @@ const Pools: React.FC = () => {
               <ControlStretch>
                 <Select
                   options={[
-                    {
+                /*     {
                       label: t('Hot'),
                       value: 'hot',
-                    },
+                    }, */
                     {
                       label: t('APR'),
                       value: 'apr',

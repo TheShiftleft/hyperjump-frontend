@@ -90,7 +90,7 @@ const Home: React.FC = () => {
           </HeadingFlex>
           <ShipLogo src="/images/plane.png" />
         </Flex>
-        <Column>
+       {/*  <Column>
           <Welcome />
         </Column>
         <Column>
@@ -98,7 +98,7 @@ const Home: React.FC = () => {
         </Column>
         <Column>
           <LpRewardsClaimer />
-        </Column>
+        </Column> */}
         <Column>
           <FarmingTokenStats />
           <GovTokenStats />
