@@ -14,6 +14,7 @@ import {
   getMechContract,
   getClaimLpRewardsMigratorContract,
   getSynapseBridgeContract,
+  getZapContract
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
@@ -94,6 +95,11 @@ export const usePoolContract = (id: number) => {
 export const useSynapseBridgeContract = () => {
   const web3 = useWeb3()
   return useMemo(() => getSynapseBridgeContract(web3), [web3])
+}
+
+export const useZapContract = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getZapContract(web3), [web3])
 }
 
 export const useBridgeConfigInstance = () => {

@@ -5,6 +5,7 @@ export enum Field {
   OUTPUT = 'OUTPUT'
 }
 
+export const selectCurrency = createAction<{ field: Field; currencyId: string }>('zap/selectCurrency')
 export const typeInput = createAction<{ field: Field; typedValue: string }>('zap/typeInput')
 export const replaceZapState = createAction<{
     field: Field

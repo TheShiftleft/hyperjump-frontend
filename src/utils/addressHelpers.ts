@@ -88,3 +88,8 @@ export const getRouterAddress = () => {
   const { config } = getNetwork()
   return routerAddresses[config.network]
 }
+
+export const getZapAddress = () => {
+  const { config } = getNetwork()
+  return getAddress(addresses.zap)
+}

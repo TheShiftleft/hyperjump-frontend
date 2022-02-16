@@ -5,29 +5,36 @@ import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
 import AppBody from 'components/Zap/AppBody'
 import CardNav from 'components/Zap/CardNav'
+import { useZapContract } from 'hooks/useContract'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import PageHeader from 'components/Zap/PageHeader'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Wrapper } from 'components/Zap/styled'
 import { useCurrency } from 'hooks/Tokens'
-import { useDerivedZapInfo, useZapActionHandlers, useZapDefaultState, useZapState } from 'state/zap/hooks'
+import useEstimateZapInToken from 'hooks/useZap'
+import { useDerivedZapInfo, useZapActionHandlers, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
 
 const Zap = () => {
-    const [input, setUserInput] = useState("")
+    const zapContract = useZapContract()
     
+    console.log('zapContract',zapContract)
     const {field} = useZapState()
     const {currencyBalances, currencies, parsedAmount} = useDerivedZapInfo()
-    const { onUserInput } = useZapActionHandlers()
-    const [outputCurrency, setOutputCurrencySelected] = useState()
-    const [inputCurrency, setInputCurrencySelected] = useState()
+    const { onUserInput, onCurrencySelect } = useZapActionHandlers()
     const parsedAmounts =  {
         [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
         [Field.OUTPUT]: field === Field.OUTPUT ? undefined : undefined,
       }
-
+    
+    console.log('currencies', currencies)
+    
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
+    const estimate = useEstimateZapInToken("0x130025eE738A66E691E6A7a62381CB33c6d9Ae83", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", maxAmountInput)
+    estimate().then(result => {
+        console.log('estimate', result)
+    })
 
     const handleTypeInput = useCallback(
         (value: string) => {
@@ -45,14 +52,14 @@ const Zap = () => {
 
     const handleOutputCurrencySelect = useCallback(
     (currency) => {
-        setOutputCurrencySelected(currency)
-    }, [setOutputCurrencySelected],
+        onCurrencySelect(Field.OUTPUT, currency)
+    }, [onCurrencySelect],
     )
 
     const handleInputCurrencySelect = useCallback(
     (currency) => {
-        setInputCurrencySelected(currency)
-    }, [setInputCurrencySelected],
+        onCurrencySelect(Field.INPUT, currency)
+    }, [onCurrencySelect],
     )
 
     const handleMaxInput = useCallback(() => {

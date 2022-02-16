@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Currency, CurrencyAmount } from '@hyperjump-defi/sdk'
+import { BNB, Currency, CurrencyAmount, FANTOM, Token } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
 import { tryParseAmount } from 'state/swap/hooks'
@@ -9,7 +9,7 @@ import { AppDispatch, AppState } from '../index'
 import { useCurrency } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { replaceZapState, typeInput, Field } from './actions'
+import { replaceZapState, typeInput, Field, selectCurrency } from './actions'
 
 export function useZapState(): AppState['zap'] {
     return useSelector<AppState, AppState['zap']>((state) => state.zap)
@@ -50,9 +50,23 @@ export function useZapDefaultState(): {inputCurrencyId: string | undefined, outp
 
 export function useZapActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void
+  onCurrencySelect: (field: Field, currency: Currency) => void
 } {
 
   const dispatch = useDispatch<AppDispatch>()
+
+  const onCurrencySelect = useCallback(
+    (field: Field, currency: Currency) => {
+      dispatch(selectCurrency({field, currencyId: currency instanceof Token
+        ? currency.address
+        : currency === BNB
+        ? 'BNB'
+        : currency === FANTOM
+        ? 'FTM'
+        : ''}))
+    },
+    [dispatch]
+  )
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
@@ -62,7 +76,8 @@ export function useZapActionHandlers(): {
   )
 
   return {
-    onUserInput
+    onUserInput,
+    onCurrencySelect
   }
 }
 

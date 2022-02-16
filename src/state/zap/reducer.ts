@@ -1,5 +1,5 @@
 import { createReducer, createSlice } from '@reduxjs/toolkit'
-import { Field, replaceZapState, typeInput } from './actions'
+import { Field, replaceZapState, typeInput, selectCurrency } from './actions'
 
 export interface ZapState {
 	readonly field: Field
@@ -48,6 +48,15 @@ export default createReducer<ZapState>(zapInitialState, (builder) =>
 					...state,
 					field,
 					typedValue
+				}
+			}
+		)
+		.addCase(
+			selectCurrency,
+			(state, {payload: {field, currencyId }}) => {
+				return {
+					...state,
+					[field]: {currencyId}
 				}
 			}
 		)
