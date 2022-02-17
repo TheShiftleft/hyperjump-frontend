@@ -5,37 +5,66 @@ import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
 import AppBody from 'components/Zap/AppBody'
 import CardNav from 'components/Zap/CardNav'
-import { useZapContract } from 'hooks/useContract'
+import { usePairContract, useZapContract } from 'hooks/useContract'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import PageHeader from 'components/Zap/PageHeader'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Wrapper } from 'components/Zap/styled'
-import { useCurrency } from 'hooks/Tokens'
-import useEstimateZapInToken from 'hooks/useZap'
+import { useCurrency, useToken } from 'hooks/Tokens'
+import { AutoRow, RowBetween } from 'components/Row'
+import Loader from 'components/Loader'
+import { useApproveCallbackFromZap, ApprovalState } from 'hooks/useApproveCallback'
 import { useDerivedZapInfo, useZapActionHandlers, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
+import { useCurrencyBalances } from 'state/wallet/hooks'
+import { useActiveWeb3React } from 'hooks'
+import { useAllPairData } from 'contexts/Analytics/PairData'
+import { useSavedPairs } from 'contexts/Analytics/LocalStorage'
+import { usePair } from 'data/Reserves'
+import zapPairs from 'config/constants/zap'
+import getNetwork from 'utils/getNetwork'
 
 const Zap = () => {
     const zapContract = useZapContract()
-    
-    console.log('zapContract',zapContract)
+    const { account } = useActiveWeb3React()
+    const { config } = getNetwork()
     const {field} = useZapState()
     const {currencyBalances, currencies, parsedAmount} = useDerivedZapInfo()
+    const [tokenA, setTokenA] = useState()
+    const [tokenB, setTokenB] = useState()
     const { onUserInput, onCurrencySelect } = useZapActionHandlers()
     const parsedAmounts =  {
         [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
         [Field.OUTPUT]: field === Field.OUTPUT ? undefined : undefined,
       }
-    
-    console.log('currencies', currencies)
-    
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
-    const estimate = useEstimateZapInToken("0x130025eE738A66E691E6A7a62381CB33c6d9Ae83", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", maxAmountInput)
-    estimate().then(result => {
-        console.log('estimate', result)
-    })
+    // const pairs = zapPairs[config.network]
+    // Approval Test for LP tokens
+    
+    // const LPToken = useCurrency("0x5448a3B93731e7C1d6e6310Cb614843FbaC21f69")
+    // const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
+        // LPToken ?? undefined
+    // ])
+    // const [approval, approveCallback] = useApproveCallbackFromZap(relevantTokenBalances[0])
 
+
+    const [approval, approveCallback] = useApproveCallbackFromZap(parsedAmounts[field])
+    const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+    const showApproval = approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)
+    
+    // const handleZap = useCallback(
+    //     () => {
+
+    //     },[]
+    // )
+
+    // mark when a user has submitted an approval, reset onTokenSelection for input field
+    useEffect(() => {
+      if (approval === ApprovalState.PENDING) {
+        setApprovalSubmitted(true)
+      }
+    }, [approval, approvalSubmitted])
     const handleTypeInput = useCallback(
         (value: string) => {
             onUserInput(Field.INPUT, value)
@@ -104,7 +133,26 @@ const Zap = () => {
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
                                 id="zap-currency-input"
+                                pairToken
                             />
+                            {showApproval ?
+                                (<Button
+                                    width="100%"
+                                    disabled={false}
+                                    variant='primary'
+                                    onClick={approveCallback}
+                                    >
+                                    {approval === ApprovalState.PENDING ? (
+                                        <AutoRow gap="6px" justify="center">
+                                        Approving <Loader stroke="white" />
+                                        </AutoRow>
+                                    ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+                                        'Approved'
+                                    ) : (
+                                        `Approve ${currencies[Field.INPUT]?.symbol}`
+                                    )}
+                                </Button>)
+                            :
                             <Button
                                 width="100%"
                                 disabled={false}
@@ -112,7 +160,7 @@ const Zap = () => {
                                 onClick={() => console.info('clicked')}
                                 >
                                 Zap Out
-                            </Button>
+                            </Button>}
                         </AutoColumn>
                     </CardBody>
                 </Wrapper>

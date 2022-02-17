@@ -21,7 +21,7 @@ import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
 import CommonBases from './CommonBases'
-import CurrencyList from './CurrencyList'
+import CurrencyListZap from './CurrencyListZap'
 import { filterTokens } from './filtering'
 import SortButton from './SortButton'
 import { useTokenComparator } from './sorting'
@@ -47,7 +47,7 @@ const ColumnWBorder = styled.div`
   border-radius: ${({ theme }) => theme.radii.card};
 `
 
-export function CurrencySearch({
+export default function CurrencySearchZap({
   selectedCurrency,
   onCurrencySelect,
   otherSelectedCurrency,
@@ -197,14 +197,15 @@ export function CurrencySearch({
       <div style={{ flex: '1' }}>
         <AutoSizer disableWidth>
           {({ height }) => (
-            <CurrencyList
+            <CurrencyListZap
               height={height}
               showETH={showETH && !zap}
-              currencies={filteredSortedTokens}
+              currencies={pairs}
               onCurrencySelect={handleCurrencySelect}
               otherCurrency={otherSelectedCurrency}
               selectedCurrency={selectedCurrency}
               fixedListRef={fixedList}
+              zap
             />
           )}
         </AutoSizer>
@@ -242,4 +243,3 @@ export function CurrencySearch({
   )
 }
 
-export default CurrencySearch

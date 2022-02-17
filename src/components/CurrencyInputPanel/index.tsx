@@ -85,6 +85,7 @@ interface CurrencyInputPanelProps {
   disabledNumericalInput?: boolean
   zap?: boolean
   warp?: boolean
+  pairToken?: boolean
 }
 export default function CurrencyInputPanel({
   value,
@@ -103,7 +104,8 @@ export default function CurrencyInputPanel({
   showCommonBases,
   disabledNumericalInput = false,
   zap,
-  warp
+  warp,
+  pairToken
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -192,6 +194,7 @@ export default function CurrencyInputPanel({
           showCommonBases={showCommonBases}
           zap={zap}
           warp={warp}
+          pair={pairToken}
         />
       )}
     </InputPanel>

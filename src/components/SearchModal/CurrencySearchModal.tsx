@@ -1,21 +1,24 @@
 import { Currency } from '@hyperjump-defi/sdk'
+import { PairConfig } from 'config/constants/types'
 import React, { useCallback, useEffect, useState } from 'react'
 import useLast from '../../hooks/useLast'
 import { useSelectedListUrl } from '../../state/lists/hooks'
 import Modal from '../Modal'
 import { CurrencySearch } from './CurrencySearch'
+import CurrencySearchZap from './CurrencySearchZap'
 import { ListSelect } from './ListSelect'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency) => void
+  onCurrencySelect: (currency: Currency | PairConfig) => void
   otherSelectedCurrency?: Currency | null
   // eslint-disable-next-line react/no-unused-prop-types
   showCommonBases?: boolean
   zap?: boolean
   warp?: boolean
+  pair?: boolean
 }
 
 export default function CurrencySearchModal({
@@ -25,7 +28,8 @@ export default function CurrencySearchModal({
   selectedCurrency,
   otherSelectedCurrency,
   zap,
-  warp
+  warp,
+  pair
 }: CurrencySearchModalProps) {
   const [listView, setListView] = useState<boolean>(false)
   const lastOpen = useLast(isOpen)
@@ -37,7 +41,7 @@ export default function CurrencySearchModal({
   }, [isOpen, lastOpen])
 
   const handleCurrencySelect = useCallback(
-    (currency: Currency) => {
+    (currency: Currency | PairConfig) => {
       onCurrencySelect(currency)
       onDismiss()
     },
@@ -58,6 +62,18 @@ export default function CurrencySearchModal({
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} minHeight={listView ? 40 : noListSelected ? 0 : 80}>
       {listView ? (
         <ListSelect onDismiss={onDismiss} onBack={handleClickBack} />
+      ) : pair ? (
+        <CurrencySearchZap
+          isOpen={isOpen}
+          onDismiss={onDismiss}
+          onCurrencySelect={handleCurrencySelect}
+          onChangeList={handleClickChangeList}
+          selectedCurrency={selectedCurrency}
+          otherSelectedCurrency={otherSelectedCurrency}
+          showCommonBases={false}
+          zap={zap}
+          warp={warp}
+        />
       ) : noListSelected ? (
         <CurrencySearch
           isOpen={isOpen}
