@@ -202,11 +202,19 @@ export function useMultiChainContractSingleData(
  
   return useMemo(() => {
     return addresses.map(async (address) => {
+      let balance: Promise<any>[];
       const multiChainContract = getMultiChainContract(contractInterface, address, multChainId)
-      let balance;
-      await multiChainContract.balanceOf(callInputs[0]).then((b) => {
-        balance = b
-      })
+      if (callInputs && callInputs.length > 0 ){
+        try {
+          await multiChainContract.balanceOf("0x2871aB0e15573b0F5F05442ac3A824fD5a4DC890").then((b) => {
+            balance = b
+          })
+        } catch(e){
+          console.log(e)
+        }
+      }
+        
+        
       return [balance];
     })
   }, [addresses, contractInterface, multChainId, callInputs ])

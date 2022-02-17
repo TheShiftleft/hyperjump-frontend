@@ -37,18 +37,7 @@ const bridgeTokens = [
       [ChainId.ARBITRUM]: 6,
       [ChainId.HARMONY]: 6,
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0x04068da6c83afcfa0e13ba15a6696662335d5b75.png"
-  },
-  {
-    name: 'MIM',
-    symbol: 'MIM',
-    addresses: {
-      [ChainId.FTM_MAINNET]: '0x82f0b8b456c1a451378467398982d4834b6829c1'
-    },
-    decimals: {
-      [ChainId.FTM_MAINNET]: 18
-    },
-    logoURI: "https://tokens.hyperswap.fi/images/0x82f0b8b456c1a451378467398982d4834b6829c1.png"
+    logoURI: "https://tokens.hyperswap.fi/images/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d.png"
   },
   {
     name: 'USD Tether',
@@ -73,14 +62,13 @@ const bridgeTokens = [
       [ChainId.AVALANCHE]: 6,
       [ChainId.HARMONY]: 6,
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0x049d68029688eabf473097a2fc38ef61633a3c7a.png"
+    logoURI: "https://tokens.hyperswap.fi/images/0x55d398326f99059fF775485246999027B3197955.png"
   },
   {
     name: 'Dai',
     symbol: 'DAI',
     addresses: {
       [ChainId.ETH]: '0x6b175474e89094c44da98b954eedeac495271d0f',
-      [ChainId.BSC_MAINNET]: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
       [ChainId.POLYGON]: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
       [ChainId.BOBA]: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35',
       [ChainId.ARBITRUM]: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
@@ -89,14 +77,13 @@ const bridgeTokens = [
     },
     decimals: {
       [ChainId.ETH]: 18,
-      [ChainId.BSC_MAINNET]: 18,
       [ChainId.POLYGON]: 18,
       [ChainId.BOBA]: 18,
       [ChainId.ARBITRUM]: 18,
       [ChainId.AVALANCHE]: 18,
       [ChainId.HARMONY]: 18
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0x6b175474e89094c44da98b954eedeac495271d0f.png"
+    logoURI: "https://tokens.hyperswap.fi/images/0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3.png"
   },
   {
     name: 'Binance USD',
@@ -124,16 +111,12 @@ const bridgeTokens = [
     name: 'Wrapped ETH',
     symbol: 'WETH',
     addresses: {
-      [ChainId.ETH]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      [ChainId.BOBA]: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
-      [ChainId.ARBITRUM]: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
+      [ChainId.FTM_MAINNET]: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
     },
     decimals: {
-      [ChainId.ETH]: 18,
-      [ChainId.BOBA]: 18,
-      [ChainId.ARBITRUM]: 18
+      [ChainId.FTM_MAINNET]: 18,
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    logoURI: "https://tokens.hyperswap.fi/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png"
   },
   {
     name: 'Synapse',
@@ -160,7 +143,7 @@ const bridgeTokens = [
       [ChainId.AVALANCHE]: 18,
       [ChainId.HARMONY]: 18,
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0xE55e19Fb4F2D85af758950957714292DAC1e25B2.png"
+    logoURI: "https://synapseprotocol.com/static/media/synapse.2ad11ea43218bdada85bff8f054dd4be.svg"
   },
   {
     name: 'Synapse nUSD',
@@ -185,59 +168,29 @@ const bridgeTokens = [
       [ChainId.AVALANCHE]: 18,
       [ChainId.HARMONY]: 18,
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0xED2a7edd7413021d440b09D654f3b87712abAB66.png"
+    logoURI: "https://synapseprotocol.com/static/media/nusd.c53623fc82a6883515f6cffe1d6cc925.svg"
   },
   {
     name: 'Synapse nETH',
     symbol: 'nETH',
     addresses: {
-      [ChainId.BOBA]: '0x96419929d7949D6A801A6909c145C8EEf6A40431',
-      [ChainId.ARBITRUM]: '0x3ea9B0ab55F34Fb188824Ee288CeaEfC63cf908e'
+      [ChainId.FTM_MAINNET]: '0x67C10C397dD0Ba417329543c1a40eb48AAa7cd00',
     },
     decimals: {
-      [ChainId.BOBA]: 18,
-      [ChainId.ARBITRUM]: 18,
+      [ChainId.FTM_MAINNET]: 18,
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0xED2a7edd7413021d440b09D654f3b87712abAB66.png"
+    logoURI: "https://synapseprotocol.com/static/media/neth.832ca487dfcd9a1be8f9f9f0242e0171.svg"
   },
   {
     name: 'Ethereum',
-    symbol: 'ETH',
+    symbol: 'WETH',
     addresses: {
-      [ChainId.ETH]: '',
-      [ChainId.BOBA]: '',
-      [ChainId.ARBITRUM]: ''
+      [ChainId.ETH]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     },
     decimals: {
       [ChainId.ETH]: 18,
-      [ChainId.BOBA]: 18,
-      [ChainId.ARBITRUM]: 18
     },
-    logoURI: "https://tokens.hyperswap.fi/images/ETH.png"
-  },
-  {
-    name: 'Frax',
-    symbol: 'FRAX',
-    addresses: {
-      [ChainId.ETH]: '0x853d955acef822db058eb8505911ed77f175b99e',
-      [ChainId.MOONRIVER]: '0x1a93b23281cc1cde4c4741353f3064709a16197d'
-    },
-    decimals: {
-      [ChainId.ETH]: 18,
-      [ChainId.MOONRIVER]: 18
-    },
-    logoURI: "https://tokens.hyperswap.fi/images/0x853d955acef822db058eb8505911ed77f175b99e.png"
-  },
-  {
-    name: 'Synapse Frax',
-    symbol: 'synFRAX',
-    addresses: {
-      [ChainId.MOONRIVER]: '0x1a93b23281cc1cde4c4741353f3064709a16197d'
-    },
-    decimals: {
-      [ChainId.MOONRIVER]: 18
-    },
-    logoURI: "https://tokens.hyperswap.fi/images/0x853d955acef822db058eb8505911ed77f175b99e.png"
+    logoURI: "https://tokens.hyperswap.fi/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png"
   },
   {
     name: 'Highstreet',
@@ -250,7 +203,7 @@ const bridgeTokens = [
       [ChainId.BSC_MAINNET]: 18,
       [ChainId.ETH]: 18
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0x71Ab77b7dbB4fa7e017BC15090b2163221420282.png"
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/11232.png"
   },
   {
     name: 'The Doge NFT',
@@ -263,7 +216,7 @@ const bridgeTokens = [
       [ChainId.ETH]: 18,
       [ChainId.BSC_MAINNET]: 18
     },
-    logoURI: "https://tokens.hyperswap.fi/images/0xaa88c603d142c371ea0eac8756123c5805edee03.png"
+    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/11557.png"
   }
   
 ]

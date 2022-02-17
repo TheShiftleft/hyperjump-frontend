@@ -63,7 +63,7 @@ export function useTokenBalancesWithLoadingIndicator(
   const multChainId = (tokens ?? undefined ? tokens[0]?.chainId : chainId)
 
   const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens])
-  const new_balances = useMultiChainContractSingleData(multChainId, validatedTokenAddresses, ERC20_INTERFACE, [address])
+  const new_balances = useMultiChainContractSingleData(multChainId, validatedTokenAddresses, ERC20_INTERFACE, (address ?? undefined ? [address] : undefined))
   const [amount, setAmount] = useState(JSBI.BigInt(0))
   new_balances[0]?.then((b) => {
     const v = b?.[0]

@@ -21,7 +21,8 @@ const easyRedeemables = [
   "HIGH",
   "DOG",
   "FRAX",
-  "JUMP"
+  "JUMP",
+  "WETH"
 ];
 
 
@@ -32,6 +33,7 @@ function getTimeMinutesFromNow(minutesFromNow) {
 }
 
 function tokenIndex(bridgeNetwork, token) {
+  console.log("token", token)
   return Object.keys(bridgeNetwork.swappablePools).findIndex((t) => token.symbol === t)
 }
 
@@ -73,14 +75,14 @@ export function useBridgeCallback(
       ? toToken.address
       : undefined)
 
-    const subtituteValidFromToken = getSubstituteToken(fromBridgeNetwork, "nUSD")
+    const subtituteValidFromToken = getSubstituteToken(fromBridgeNetwork, (toToken.symbol==="WETH" ? "nETH" : "nUSD"))
     const subtituteValidToToken = getSubstituteToken(toBridgeNetwork, "nUSD")
     const tokenIndexFrom = tokenIndex(fromBridgeNetwork, fromToken) - 1
     const tokenIndexTo = tokenIndex(toBridgeNetwork, toToken)
 
     console.log("subtituteValidFromToken", subtituteValidFromToken)
-    console.log("tokenIndexFrom", tokenIndexFrom)
-    console.log("tokenIndexTo", tokenIndexTo)
+    console.log("tokenIndexFrom", tokenIndexFrom, fromBridgeNetwork)
+    console.log("tokenIndexTo", tokenIndexTo, toBridgeNetwork)
     console.log("validFromToken", validFromToken)
     console.log("validToToken", validToToken)
     
@@ -90,8 +92,10 @@ export function useBridgeCallback(
       const inputAmount = (currencyAmountFrom ?? undefined ? new BigNumber(currencyAmountFrom.toExact()).multipliedBy(BIG_TEN.pow(18)) : new BigNumber("0") ) 
       const amountWithFee = inputAmount.minus(bFee);
       const inputDecimals = (fromToken?.decimals * -1) > 0 ? fromToken?.decimals * -1 : -18
-      console.log("amountWithFee",amountWithFee.toString())
-      return new BigNumber(amountWithFee).shiftedBy(inputDecimals).toPrecision(4)
+      return [
+        new BigNumber(amountWithFee).shiftedBy(inputDecimals).toPrecision(4),
+        parseFloat(new BigNumber(bf.toString()).shiftedBy(inputDecimals).toPrecision(3)).toFixed(2)
+      ]
     })
     
     return {
@@ -101,17 +105,16 @@ export function useBridgeCallback(
         let txhash;
         const txDeadline = getTimeMinutesFromNow(10)
         const bridgeTxDeadline = getTimeMinutesFromNow(60 * 24)
-        
-        
+        const amountToBridge = EthBigNumber.from(currencyAmountFrom.raw.toString())
         switch(toToken.symbol) {
           case "JUMP":
             txhash = (toChainId === ChainId.FTM_MAINNET ? l2BridgeZapContract.methods
-              .redeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .redeem(account, toChainId, validFromToken, amountToBridge)
               .send({ from: account })
               .on('transactionHash', (tx) => {
                 return tx.transactionHash
               }) : toChainId === ChainId.BSC_MAINNET ? l2BridgeZapContract.methods
-              .deposit(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
+              .deposit(account, toChainId, validFromToken, amountToBridge)
               .send({ from: account })
               .on('transactionHash', (tx) => {
                 return tx.transactionHash
@@ -120,7 +123,14 @@ export function useBridgeCallback(
           case "nUSD":
             if(fromToken.symbol !== "nUSD"){
               txhash = l2BridgeZapContract.methods
-              .swapAndRedeem(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, 1200000, 1176000, txDeadline)
+              .swapAndRedeem(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline)
+              .send({ from: account })
+              .on('transactionHash', (tx) => {
+                return tx.transactionHash
+              })
+            }else{
+              txhash = l2BridgeZapContract.methods
+              .redeem(account, toChainId, validFromToken, amountToBridge)
               .send({ from: account })
               .on('transactionHash', (tx) => {
                 return tx.transactionHash
@@ -129,29 +139,50 @@ export function useBridgeCallback(
             break;
           default:
             if(easyRedeemables.includes(toToken.symbol)){
-              txhash = l2BridgeZapContract.methods
-              .redeem(account, toChainId, validFromToken, EthBigNumber.from(currencyAmountFrom.raw.toString()))
-              .send({ from: account })
-              .on('transactionHash', (tx) => {
-                return tx.transactionHash
-              })
+              if(toToken.symbol === "WETH"){
+                console.log("AWU1", [account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, 0, tokenIndexTo, 0, bridgeTxDeadline])
+                txhash = l2BridgeZapContract.methods
+                .swapAndRedeemAndSwap(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, 0, tokenIndexTo, 0, bridgeTxDeadline)
+                .send({ from: account })
+                .on('transactionHash', (tx) => {
+                  return tx.transactionHash
+                })
+              }else{
+                txhash = l2BridgeZapContract.methods
+                .redeem(account, toChainId, validFromToken, amountToBridge)
+                .send({ from: account })
+                .on('transactionHash', (tx) => {
+                  return tx.transactionHash
+                })
+              }
+              
             }else if(toChainId === ChainId.ETH){
-              txhash = l2BridgeZapContract.methods
-              .swapAndRedeemAndRemove(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, 1200000, 1176000, txDeadline, tokenIndexTo, 190187, bridgeTxDeadline)
-              .send({ from: account })
-              .on('transactionHash', (tx) => {
-                return tx.transactionHash
-              })
+              if(fromToken.symbol === "nUSD"){
+                txhash = l2BridgeZapContract.methods
+                  .redeemAndRemove(account, toChainId, subtituteValidFromToken, amountToBridge, tokenIndexTo, 0, bridgeTxDeadline)
+                  .send({ from: account })
+                  .on('transactionHash', (tx) => {
+                    return tx.transactionHash
+                })
+              }else{
+                console.log("AWU", [account, toChainId, subtituteValidFromToken, amountToBridge, tokenIndexTo, 0, bridgeTxDeadline])
+                txhash = l2BridgeZapContract.methods
+                .swapAndRedeemAndRemove(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, tokenIndexTo, 0, bridgeTxDeadline)
+                .send({ from: account })
+                .on('transactionHash', (tx) => {
+                  return tx.transactionHash
+                })
+              }
             }else if(fromToken.symbol === "nUSD"){
               txhash = l2BridgeZapContract.methods
-              .redeemAndSwap(account, toChainId, subtituteValidFromToken, 2500000, 0, tokenIndexTo, 1176000, txDeadline)
+              .redeemAndSwap(account, toChainId, subtituteValidFromToken, amountToBridge, 0, tokenIndexTo, 0, txDeadline)
               .send({ from: account })
               .on('transactionHash', (tx) => {
                 return tx.transactionHash
               })
             }else{
               txhash = l2BridgeZapContract.methods
-              .swapAndRedeemAndSwap(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, 1200000, 1176000, txDeadline, 0, tokenIndexTo, 190187, bridgeTxDeadline)
+              .swapAndRedeemAndSwap(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, 0, tokenIndexTo, 0, bridgeTxDeadline)
               .send({ from: account })
               .on('transactionHash', (tx) => {
                 return tx.transactionHash
