@@ -210,7 +210,7 @@ export function useMultiChainContractSingleData(
             balance = b
           })
         } catch(e){
-          console.log(e)
+          return null
         }
       }
         

@@ -367,7 +367,6 @@ const Bridge = () => {
 
     const handleFromNetworkSelect = useCallback(
       (fromNetwork) => {
-        console.log("fromNetwork", fromNetwork)
         setHasPoppedModal(false)
         setInterruptRedirectCountdown(false)
         setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -388,7 +387,6 @@ const Bridge = () => {
         if(toNetwork.chainId === config.id)
           return
 
-        console.log("frmbridgeNetworks", bridgeNetworks[fromBridgeNetworkKey])
         setHasPoppedModal(false)
         setInterruptRedirectCountdown(false)
         setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -408,7 +406,6 @@ const Bridge = () => {
 
     const handleInputSelect = useCallback(
         (inputCurrency) => {
-            console.log("11inputCurrency", inputCurrency)
             setHasPoppedModal(false)
             setInterruptRedirectCountdown(false)
             setApprovalSubmitted(false) // reset 2 step UI for approvals
@@ -427,7 +424,6 @@ const Bridge = () => {
 
     const handleOutputSelect = useCallback(
         (outputCurrency) => {
-          console.log("11inputCurrency222", outputCurrency)
             setHasPoppedModal(false)
             setInterruptRedirectCountdown(false)
             onCurrencySelection(Field.OUTPUT, outputCurrency)

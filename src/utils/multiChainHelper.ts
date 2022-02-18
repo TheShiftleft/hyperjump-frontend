@@ -6,7 +6,7 @@ import { Contract } from '@ethersproject/contracts'
 
 const PROVIDERS = {
   [ChainId.ETH]: new JsonRpcProvider("https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"),
-  [ChainId.BSC_MAINNET]: new JsonRpcProvider("https://bsc-dataseed.binance.org"),
+  [ChainId.BSC_MAINNET]: new JsonRpcProvider("https://bsc-dataseed1.ninicoin.io"), // https://bsc-dataseed.binance.org
   [ChainId.FTM_MAINNET]: new JsonRpcProvider("https://rpc.ftm.tools/"),
   [ChainId.POLYGON]: new JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/O6nbQONUKZ-V4B_4111Xt7Dg0vm_bQEm"),
   [ChainId.BOBA]: new JsonRpcProvider("https://mainnet.boba.network/"),

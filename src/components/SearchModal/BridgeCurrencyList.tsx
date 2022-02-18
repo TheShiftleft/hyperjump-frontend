@@ -5,18 +5,13 @@ import styled from 'styled-components'
 import { Text } from 'uikit'
 import getNetwork from 'utils/getNetwork'
 import { useActiveWeb3React } from '../../hooks'
-import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
+import { WrappedTokenInfo } from '../../state/lists/hooks'
 import { useCurrencyBalance } from '../../state/multiChainWallet/hooks'
-import { LinkStyledButton } from '../Shared'
-import { useIsUserAddedToken } from '../../hooks/Tokens'
 import Column from '../Column'
 import { RowFixed } from '../Row'
 import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
-import { FadedSpan, MenuItem } from './styleds'
-import Loader from '../Loader'
-import { isTokenOnList } from '../../utils'
-
+import { MenuItem } from './styleds'
 
 function currencyKey(currency: Currency): string {
   const { config } = getNetwork()

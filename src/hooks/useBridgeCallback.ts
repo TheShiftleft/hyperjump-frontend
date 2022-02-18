@@ -5,7 +5,7 @@ import { CurrencyAmount, Currency, Token } from '@hyperjump-defi/sdk'
 import { useMemo } from 'react'
 import ChainId from 'utils/getChain'
 import { BridgeNetwork } from 'components/NetworkSelectionModal/types'
-import { useSynapseBridgeContract, useBridgeConfigInstance, useL2BridgeZapContract } from './useContract'
+import { useBridgeConfigInstance, useL2BridgeZapContract } from './useContract'
 import { isAddress  } from '../utils'
 import { useActiveWeb3React } from './index'
 import useENS from './useENS'
@@ -33,7 +33,6 @@ function getTimeMinutesFromNow(minutesFromNow) {
 }
 
 function tokenIndex(bridgeNetwork, token) {
-  console.log("token", token)
   return Object.keys(bridgeNetwork.swappablePools).findIndex((t) => token.symbol === t)
 }
 
@@ -59,7 +58,6 @@ export function useBridgeCallback(
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
-  const synapseBridgeContract = useSynapseBridgeContract(fromChainId)
   const l2BridgeZapContract = useL2BridgeZapContract()
   const bridgeConfigContract = useBridgeConfigInstance()
 
@@ -77,14 +75,9 @@ export function useBridgeCallback(
 
     const subtituteValidFromToken = getSubstituteToken(fromBridgeNetwork, (toToken.symbol==="WETH" ? "nETH" : "nUSD"))
     const subtituteValidToToken = getSubstituteToken(toBridgeNetwork, "nUSD")
-    const tokenIndexFrom = tokenIndex(fromBridgeNetwork, fromToken) - 1
+    const tokenIndexFrom = (fromToken.symbol === "BUSD" ? tokenIndex(fromBridgeNetwork, fromToken) : tokenIndex(fromBridgeNetwork, fromToken) - 1)
     const tokenIndexTo = tokenIndex(toBridgeNetwork, toToken)
 
-    console.log("subtituteValidFromToken", subtituteValidFromToken)
-    console.log("tokenIndexFrom", tokenIndexFrom, fromBridgeNetwork)
-    console.log("tokenIndexTo", tokenIndexTo, toBridgeNetwork)
-    console.log("validFromToken", validFromToken)
-    console.log("validToToken", validToToken)
     
     const bridgeFeeRequest = bridgeConfigContract.calculateSwapFee((easyRedeemables.includes(toToken.symbol) ? validToToken : subtituteValidToToken), toChainId, EthBigNumber.from(currencyAmountFrom.raw.toString()))
     let bridgeFee = bridgeFeeRequest.then((bf) => {
@@ -140,7 +133,6 @@ export function useBridgeCallback(
           default:
             if(easyRedeemables.includes(toToken.symbol)){
               if(toToken.symbol === "WETH"){
-                console.log("AWU1", [account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, 0, tokenIndexTo, 0, bridgeTxDeadline])
                 txhash = l2BridgeZapContract.methods
                 .swapAndRedeemAndSwap(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, 0, tokenIndexTo, 0, bridgeTxDeadline)
                 .send({ from: account })
@@ -165,7 +157,6 @@ export function useBridgeCallback(
                     return tx.transactionHash
                 })
               }else{
-                console.log("AWU", [account, toChainId, subtituteValidFromToken, amountToBridge, tokenIndexTo, 0, bridgeTxDeadline])
                 txhash = l2BridgeZapContract.methods
                 .swapAndRedeemAndRemove(account, toChainId, subtituteValidFromToken, tokenIndexFrom, 0, amountToBridge, 0, txDeadline, tokenIndexTo, 0, bridgeTxDeadline)
                 .send({ from: account })

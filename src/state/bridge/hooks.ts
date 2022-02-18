@@ -33,6 +33,7 @@ function assignToken(token) {
   )
 }
 
+
 function findBridgeToken(bridgeNetwork: BridgeNetwork, swapType: string) {
   return bridgeNetwork.tokens.map((t) => {
     const bSwapType = bridgeNetwork.swappablePools[t.symbol]
@@ -48,6 +49,7 @@ export function checkCanBridgeByNetwork(fromBridgeNetwork: BridgeNetwork, toBrid
   let fromCurrency: Token
   let toCurrency: Token
   let bSymbol: string
+
 
   if(toBridgeNetwork.chainId === ChainId.BSC_MAINNET || toBridgeNetwork.chainId === ChainId.FTM_MAINNET ){
     bSymbol = "JUMP"
@@ -86,10 +88,7 @@ export function useBridgeNetworkActionHandlers(): {
       let fromBridgeNetwork: BridgeNetwork
       let toBridgeNetwork: BridgeNetwork
       
-      if(field === Field.INPUT){
-        fromBridgeNetwork = bridgeNetwork
-        toBridgeNetwork = otherBridgeNetwork
-      }else{
+      if(field === Field.OUTPUT) {
         fromBridgeNetwork = otherBridgeNetwork
         toBridgeNetwork = bridgeNetwork
 
@@ -148,6 +147,7 @@ export function checkCanBridgeByCurrency(inputCurrency: Currency, outputCurrency
   if(!inputCurrency || !outputCurrency)
     return [undefined, undefined];
 
+  // Put aside all network object that can be use later
   Object.keys(bridgeNetworks)
   .forEach(function eachKey(key) { 
     if(inputCurrency?.chainId === bridgeNetworks[key]?.chainId )
@@ -171,31 +171,38 @@ export function checkCanBridgeByCurrency(inputCurrency: Currency, outputCurrency
 
   const fromSwapType = fromBridgeNetwork.swappablePools[inputCurrency.symbol]
   const toSwapType = toBridgeNetwork.swappablePools[outputCurrency.symbol]
-  console.log("AWUR", inputCurrency.symbol)
-  console.log("AWUR", fromSwapType,toSwapType )
+
   if(fromSwapType !== toSwapType){
     if(field === Field.OUTPUT){
-      if(toSwapType === "USD" || toSwapType === "SYN" || toSwapType === "JUMP" || toSwapType === "DOG" || toSwapType === "HIGH" || toSwapType === "ETH"){
-        if((toSwapType === "DOG" || toSwapType === "HIGH") && fromBridgeNetwork.chainId === ChainId.FTM_MAINNET){
-          let bToken = findBridgeToken(toBridgeNetwork, fromSwapType)
-          outputCurrency = assignToken(bToken[0])
-          return [inputCurrency, outputCurrency, toBridgeNetwork]
-        }
-
-        let bToken = findBridgeToken(fromBridgeNetwork, toSwapType)
-        const exactToken = bToken.find(t => {return (t.symbol === outputCurrency.symbol ? t : undefined)})
-        if(exactToken){
-          inputCurrency = assignToken(exactToken)
-        }else{
-          inputCurrency = assignToken(bToken[0])
-        }
+      // On FTM, DOG and HIGH is not supported, use the default instead
+      if((toSwapType === "DOG" || toSwapType === "HIGH") && fromBridgeNetwork.chainId === ChainId.FTM_MAINNET){
+        let bToken = findBridgeToken(toBridgeNetwork, fromSwapType)
+        outputCurrency = assignToken(bToken[0])
+        return [inputCurrency, outputCurrency, toBridgeNetwork]
       }
-    }else if(fromSwapType === "USD" || fromSwapType === "SYN" || fromSwapType === "JUMP" || fromSwapType === "DOG" || fromSwapType === "HIGH"  || fromSwapType === "ETH"){
+
+      // On BSC, ETH is not supported, use the default instead
+      if(toSwapType === "ETH" && fromBridgeNetwork.chainId === ChainId.BSC_MAINNET){
+        let bToken = findBridgeToken(toBridgeNetwork, fromSwapType)
+        outputCurrency = assignToken(bToken[0])
+        return [inputCurrency, outputCurrency, toBridgeNetwork]
+      }
+
+      let bToken = findBridgeToken(fromBridgeNetwork, toSwapType)
+      const exactToken = bToken.find(t => {return (t.symbol === outputCurrency.symbol ? t : undefined)})
+      if(exactToken){
+        inputCurrency = assignToken(exactToken)
+      }else{
+        inputCurrency = assignToken(bToken[0])
+      }
+    }else {
+      // MOONRIVER only have 1 token available that can be bridge
       if(toBridgeNetwork.chainId === ChainId.MOONRIVER && fromSwapType !== "SYN"){
         let bToken = findBridgeToken(fromBridgeNetwork, toSwapType)
         inputCurrency = assignToken(bToken[0])
         return [inputCurrency, outputCurrency, toBridgeNetwork]
       }
+      // Switch From Network base on the swap type below
       if(fromSwapType === "DOG" || fromSwapType === "HIGH"  || fromSwapType === "ETH"){
         if(fromBridgeNetwork.chainId === ChainId.BSC_MAINNET && toBridgeNetwork.chainId !== ChainId.ETH){
           let bToken = findBridgeToken(ethBridgeNetwork, fromSwapType)
