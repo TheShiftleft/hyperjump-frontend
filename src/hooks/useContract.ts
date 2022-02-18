@@ -16,9 +16,9 @@ import {
   getSynapseBridgeContract,
   getZapContract
 } from 'utils/contractHelpers'
-import { getLotteryAddress, getFarmingTokenAddress } from 'utils/addressHelpers'
+import { getLotteryAddress, getFarmingTokenAddress, getZapAddress } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
-import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI } from 'config/abi'
+import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI, getZapABI } from 'config/abi'
 import { Contract } from '@ethersproject/contracts'
 import { WRAPPED } from '@hyperjump-defi/sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
@@ -97,11 +97,6 @@ export const useSynapseBridgeContract = () => {
   return useMemo(() => getSynapseBridgeContract(web3), [web3])
 }
 
-export const useZapContract = () => {
-  const web3 = useWeb3()
-  return useMemo(() => getZapContract(web3), [web3])
-}
-
 export const useBridgeConfigInstance = () => {
   const web3 = useWeb3()
   return useMemo(() => getBridgeConfigFactory(web3), [web3])
@@ -122,6 +117,9 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
+export const useZapContract = (witSignerIfPossible?: boolean) => {
+  return useContract(getZapAddress(), getZapABI(), witSignerIfPossible)
+}
 // export function useV1ExchangeContract(address?: string, withSignerIfPossible?: boolean): Contract | null {
 //   return useContract(address, V1_EXCHANGE_ABI, withSignerIfPossible)
 // }

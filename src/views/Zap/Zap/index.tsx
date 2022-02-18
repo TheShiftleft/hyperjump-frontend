@@ -23,15 +23,14 @@ import { useSavedPairs } from 'contexts/Analytics/LocalStorage'
 import { usePair } from 'data/Reserves'
 import zapPairs from 'config/constants/zap'
 import getNetwork from 'utils/getNetwork'
+import useZapInToken from 'hooks/useZap'
+import useToast from 'hooks/useToast'
 
 const Zap = () => {
-    const zapContract = useZapContract()
-    const { account } = useActiveWeb3React()
+    const { toastSuccess, toastError } = useToast()
     const { config } = getNetwork()
     const {field} = useZapState()
     const {currencyBalances, currencies, parsedAmount} = useDerivedZapInfo()
-    const [tokenA, setTokenA] = useState()
-    const [tokenB, setTokenB] = useState()
     const { onUserInput, onCurrencySelect } = useZapActionHandlers()
     const parsedAmounts =  {
         [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
@@ -39,12 +38,36 @@ const Zap = () => {
       }
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
+
+    // Temporary parameters in testing zapInToken method.
+    const { callback: zapCallback, error: swapCallbackError, state: zapState } = useZapInToken(
+        "0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73", // JUMP
+        "0x5448a3b93731e7c1d6e6310cb614843fbac21f69", // JUMP - FTM
+        parsedAmounts[Field.INPUT]
+      )
+
+    const handleZapCallback = useCallback(
+        () => {
+            zapCallback()
+            .then(result => {
+                result.wait().then(confirmation => {
+                    if(confirmation.status){
+                        toastSuccess('Zapped', 'Zap transaction successful.')
+                    }else{
+                        toastError('Zap Error', 'Something went wrong during transaction.')
+                    }
+                })
+            })
+            .catch(error => toastError('Zap Error', 'An error occured while processing transaction.'))
+        }
+        ,[zapCallback, toastSuccess, toastError]
+    )
     // const pairs = zapPairs[config.network]
     // Approval Test for LP tokens
     
-    // const LPToken = useCurrency("0x5448a3B93731e7C1d6e6310Cb614843FbaC21f69")
+    // const LPToken = useCurrency("0x5448a3b93731e7c1d6e6310cb614843fbac21f69")
     // const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
-        // LPToken ?? undefined
+    //     LPToken ?? undefined
     // ])
     // const [approval, approveCallback] = useApproveCallbackFromZap(relevantTokenBalances[0])
 
@@ -53,13 +76,6 @@ const Zap = () => {
     const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
     const showApproval = approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)
     
-    // const handleZap = useCallback(
-    //     () => {
-
-    //     },[]
-    // )
-
-    // mark when a user has submitted an approval, reset onTokenSelection for input field
     useEffect(() => {
       if (approval === ApprovalState.PENDING) {
         setApprovalSubmitted(true)
@@ -157,7 +173,7 @@ const Zap = () => {
                                 width="100%"
                                 disabled={false}
                                 variant='primary'
-                                onClick={() => console.info('clicked')}
+                                onClick={() => handleZapCallback()}
                                 >
                                 Zap Out
                             </Button>}
