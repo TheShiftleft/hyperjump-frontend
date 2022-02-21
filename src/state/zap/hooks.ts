@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { BNB, Currency, CurrencyAmount, FANTOM, Token } from '@hyperjump-defi/sdk'
+import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
 import { tryParseAmount } from 'state/swap/hooks'
@@ -50,7 +50,7 @@ export function useZapDefaultState(): {inputCurrencyId: string | undefined, outp
 
 export function useZapActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void
-  onCurrencySelect: (field: Field, currency: Currency) => void
+  onCurrencySelect: (field: Field, currency: Currency | Pair) => void
 } {
 
   const dispatch = useDispatch<AppDispatch>()

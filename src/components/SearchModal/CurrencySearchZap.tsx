@@ -1,4 +1,4 @@
-import { Currency, Token } from '@hyperjump-defi/sdk'
+import { Currency, Token, Pair } from '@hyperjump-defi/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Text, CloseIcon } from 'uikit'
 import { useSelector } from 'react-redux'
@@ -7,6 +7,8 @@ import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import useI18n from 'hooks/useI18n'
+import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
+import { usePairs } from 'data/Reserves'
 import getNetwork from 'utils/getNetwork'
 import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
 import zapPairs from 'config/constants/zap'
@@ -22,9 +24,10 @@ import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
 import CommonBases from './CommonBases'
 import CurrencyListZap from './CurrencyListZap'
-import { filterTokens } from './filtering'
+import { filterPairs } from './filteringPairs'
 import SortButton from './SortButton'
 import { useTokenComparator } from './sorting'
+import { usePairComparator } from './sortingPairs'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 
 interface CurrencySearchProps {
@@ -66,16 +69,16 @@ export default function CurrencySearchZap({
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-  const tokens = useAllTokens()
-  const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : []
-  const pairs = zapPairs[config.network]
+  const trackedTokenPairs = useTrackedTokenPairs()
+  const tokenPairsWithLiquidityTokens = useMemo(
+    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
+    [trackedTokenPairs],
+  )
+  const v2Pairs = usePairs(tokenPairsWithLiquidityTokens.map(({ tokens }) => tokens))
+  const allV2PairsWithLiquidity = useMemo(() => { return v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))},[v2Pairs]) 
+  // const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : []
+  // const pairs = zapPairs[config.network]
 
-  const allTokens = zap ? Object.keys(tokens).filter(key => zwTokens.includes(key))
-      .reduce((obj, key) => {
-        obj[key] = tokens[key]
-        return obj
-      }, {})
-      : tokens
 
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
@@ -86,18 +89,17 @@ export default function CurrencySearchZap({
     return config.networkToken.symbol.toLowerCase().startsWith(s)
   }, [config.networkToken.symbol, searchQuery])
 
-  const tokenComparator = useTokenComparator(invertSearchOrder)
-
+  const pairComparator = usePairComparator(invertSearchOrder)
   const audioPlay = useSelector<AppState, AppState['user']['audioPlay']>((state) => state.user.audioPlay)
 
-  const filteredTokens: Token[] = useMemo(() => {
-    if (isAddressSearch) return searchToken ? [searchToken] : []
-    return filterTokens(Object.values(allTokens), searchQuery)
-  }, [isAddressSearch, searchToken, allTokens, searchQuery])
+  const filteredPairs = useMemo(() => {
+    return filterPairs(Object.values(allV2PairsWithLiquidity), searchQuery)
+  }, [allV2PairsWithLiquidity, searchQuery])
 
-  const filteredSortedTokens: Token[] = useMemo(() => {
-    if (searchToken) return [searchToken]
-    const sorted = filteredTokens.sort(tokenComparator)
+  
+  
+  const filteredSortedTokens = useMemo(() => {
+    const sorted = filteredPairs.sort(pairComparator)
     const symbolMatch = searchQuery
       .toLowerCase()
       .split(/\s+/)
@@ -105,12 +107,11 @@ export default function CurrencySearchZap({
     if (symbolMatch.length > 1) return sorted
 
     return [
-      ...(searchToken ? [searchToken] : []),
       // sort any exact symbol matches first
-      ...sorted.filter((token) => token.symbol?.toLowerCase() === symbolMatch[0]),
-      ...sorted.filter((token) => token.symbol?.toLowerCase() !== symbolMatch[0]),
+      ...sorted.filter((pair) => pair?.token0?.symbol?.toLowerCase() === symbolMatch[0]),
+      ...sorted.filter((pair) => pair?.token0?.symbol?.toLowerCase() !== symbolMatch[0]),
     ]
-  }, [filteredTokens, searchQuery, searchToken, tokenComparator])
+  }, [filteredPairs, searchQuery, pairComparator])
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -140,24 +141,24 @@ export default function CurrencySearchZap({
     fixedList.current?.scrollTo(0)
   }, [])
 
-  const handleEnter = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        const s = searchQuery.toLowerCase().trim()
-        if (s === config.networkToken.symbol.toLowerCase()) {
-          handleCurrencySelect(config.baseCurrency)
-        } else if (filteredSortedTokens.length > 0) {
-          if (
-            filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
-            filteredSortedTokens.length === 1
-          ) {
-            handleCurrencySelect(filteredSortedTokens[0])
-          }
-        }
-      }
-    },
-    [config.baseCurrency, config.networkToken, filteredSortedTokens, handleCurrencySelect, searchQuery],
-  )
+  // const handleEnter = useCallback(
+  //   (e: KeyboardEvent<HTMLInputElement>) => {
+  //     if (e.key === 'Enter') {
+  //       const s = searchQuery.toLowerCase().trim()
+  //       if (s === config.networkToken.symbol.toLowerCase()) {
+  //         handleCurrencySelect(config.baseCurrency)
+  //       } else if (filteredSortedTokens.length > 0) {
+  //         if (
+  //           filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
+  //           filteredSortedTokens.length === 1
+  //         ) {
+  //           handleCurrencySelect(filteredSortedTokens[0])
+  //         }
+  //       }
+  //     }
+  //   },
+  //   [config.baseCurrency, config.networkToken, filteredSortedTokens, handleCurrencySelect, searchQuery],
+  // )
 
   const selectedListInfo = useSelectedListInfo()
   const TranslateString = useI18n()
@@ -183,7 +184,7 @@ export default function CurrencySearchZap({
           value={searchQuery}
           ref={inputRef as RefObject<HTMLInputElement>}
           onChange={handleInput}
-          onKeyDown={handleEnter}
+          // onKeyDown={handleEnter}
         />
         {showCommonBases && (
           <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
@@ -200,7 +201,7 @@ export default function CurrencySearchZap({
             <CurrencyListZap
               height={height}
               showETH={showETH && !zap}
-              currencies={pairs}
+              pairs={filteredSortedTokens}
               onCurrencySelect={handleCurrencySelect}
               otherCurrency={otherSelectedCurrency}
               selectedCurrency={selectedCurrency}

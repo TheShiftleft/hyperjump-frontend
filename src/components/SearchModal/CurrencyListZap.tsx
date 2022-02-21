@@ -1,13 +1,15 @@
-import { Currency, CurrencyAmount, currencyEquals, Token } from '@hyperjump-defi/sdk'
+import { Currency, CurrencyAmount, currencyEquals, Token, Pair, TokenAmount } from '@hyperjump-defi/sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text, Image } from 'uikit'
 import getNetwork from 'utils/getNetwork'
 import { PairConfig } from 'config/constants/types'
+import Logo from 'components/Logo'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
+import useHttpLocations from '../../hooks/useHttpLocations'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { LinkStyledButton } from '../Shared'
 import { useCurrency, useIsUserAddedToken, useToken } from '../../hooks/Tokens'
@@ -19,11 +21,17 @@ import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
 import { isAddress, isTokenOnList } from '../../utils'
 
-function currencyKey(currency: Currency): string {
+function pairKey(pair: Pair): string {
   const { config } = getNetwork()
-  return currency instanceof Token ? currency.address : currency === config.baseCurrency ? config.networkToken.symbol : ''
+  return pair ? pair.liquidityToken.address : pair.liquidityToken === config.baseCurrency ? config.networkToken.symbol : ''
 }
 
+const getTokenLogoURL = (address: string) => `https://tokens.hyperswap.fi/images/${address}.png`
+
+const StyledLogo = styled(Logo)<{ size: string }>`
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
+`
 const IconImage = styled(Image)`
   width: 30px;
   height: 30px;
@@ -61,6 +69,12 @@ const Container = styled.div`
   ${({ theme }) => theme.mediaQueries.sm} {
     width: 150px;
   }
+`
+
+const LogoContainer = styled.div<{size: string}>`
+  position: relative;
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
 `
 
 function Balance({ balance }: { balance: CurrencyAmount }) {
@@ -107,9 +121,9 @@ function CurrencyRow({
   isSelected,
   otherSelected,
   style,
-  zap
+  zap,
 }: {
-  pair: PairConfig
+  pair: Pair
   onSelect: () => void
   isSelected?: boolean
   otherSelected?: boolean
@@ -117,18 +131,50 @@ function CurrencyRow({
   zap: boolean
 }) {
   const { account, chainId } = useActiveWeb3React()
-  const currency = {...pair, ...useCurrency(pair?.lpAddresses[chainId])}
-  const image = currency.lpSymbol.split('-')
-  const primaryImg = image[0].toLowerCase()
-  const secondaryImg = image[1].toLowerCase()
-  const key = currencyKey(currency)
+  const {token0, token1} = pair
+  const pairSymbol = `${token0.symbol.toUpperCase() === "WFTM" ? "FTM" : token0.symbol.toUpperCase() === "WBNB" ? "BNB" : token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase() === "WFTM" ? "FTM" : token1.symbol.toUpperCase() === "WBNB" ? "BNB" : token1.symbol.toUpperCase()}`
+  const pairCurrency = useCurrency(pair.liquidityToken.address)
+  const key = pairKey(pair)
   const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, currency)
-  const customAdded = useIsUserAddedToken(currency)
-  const balance = useCurrencyBalance(account ?? undefined, currency)
-
+  const isOnSelectedList = isTokenOnList(selectedTokenList, pairCurrency)
+  const customAdded = useIsUserAddedToken(pairCurrency)
+  const balance = useCurrencyBalance(account ?? undefined, pairCurrency)
+  const logo1 = getTokenLogoURL(pair.token0.address)
+  const logo2 = getTokenLogoURL(pair.token1.address)
   const removeToken = useRemoveUserAddedToken()
   const addToken = useAddUserToken()
+  const uriLocations0 = useHttpLocations(token0 instanceof WrappedTokenInfo ? token0.logoURI : undefined)
+  const uriLocations1 = useHttpLocations(token1 instanceof WrappedTokenInfo ? token1.logoURI : undefined)
+
+  const srcs0 = useMemo(() => {
+    if (token0 instanceof Token) {
+      if (token0 instanceof WrappedTokenInfo) {
+        return [
+          ...uriLocations0,
+          `/images/tokens/${token0?.address ?? 'token'}.png`,
+          getTokenLogoURL(token0?.symbol.toLowerCase() === "wftm" ? "FTM" : token0?.symbol.toLowerCase() === "bnb" ? "BNB" : token0?.address),
+        ]
+      }
+
+      return [`/images/tokens/${token0?.address ?? 'token'}.png`, getTokenLogoURL(token0?.symbol.toLowerCase() === "wftm" ? "FTM" : token0?.symbol.toLowerCase() === "bnb" ? "BNB" : token0?.address)]
+    }
+    return []
+  }, [token0, uriLocations0])
+
+  const srcs1 = useMemo(() => {
+    if (token1 instanceof Token) {
+      if (token1 instanceof WrappedTokenInfo) {
+        return [
+          ...uriLocations1,
+          `/images/tokens/${token1?.address ?? 'token'}.png`,
+          getTokenLogoURL(token1?.symbol.toLowerCase() === "wftm" ? "FTM" : token1?.symbol.toLowerCase() === "bnb" ? "BNB" : token1?.address),
+        ]
+      }
+
+      return [`/images/tokens/${token1?.address ?? 'token'}.png`, getTokenLogoURL(token1?.symbol.toLowerCase() === "wftm" ? "FTM" : token1?.symbol.toLowerCase() === "bnb" ? "BNB" : token1?.address)]
+    }
+    return []
+  }, [token1, uriLocations1])
 
   // only show add or remove buttons if not on selected list
   return (
@@ -138,45 +184,18 @@ function CurrencyRow({
       onClick={() => (isSelected ? null : onSelect())}
       disabled={isSelected}
       selected={otherSelected}
+      key={key}
     >
-      <>
-        <IconImage src={`/images/tokens/${primaryImg}.png`} alt="icon" width={40} height={40} mr="8px" />
-        <div style={{ position: 'absolute', margin: '0 0 -22px 20px', borderRadius: '10px' }}>
-            <IconImage src={`/images/tokens/${secondaryImg}.png`} alt="icon" width={20} height={20} mr="8px" />
-        </div>
-      </>
+      <LogoContainer size="40px">
+        <StyledLogo size="40px" srcs={srcs0} alt={`${token0?.symbol ?? 'token'} logo`} style={{position: 'absolute', borderRadius: '20px'}} />
+        <StyledLogo  size="20px" srcs={srcs1} alt={`${token1?.symbol ?? 'token'} logo`} style={{ position: 'absolute', bottom: 0, right: 0, borderRadius: '10px' }}/>
+      </LogoContainer>
+
       <Column>
-        <Text title={currency?.name}>{currency?.lpSymbol}</Text>
-        <FadedSpan>
-          {!isOnSelectedList && customAdded && !(currency instanceof WrappedTokenInfo) ? (
-            <Text>
-              Added by user
-              <LinkStyledButton
-                onClick={(event) => {
-                  event.stopPropagation()
-                  if (chainId && currency instanceof Token) removeToken(chainId, currency?.address)
-                }}
-              >
-                (Remove)
-              </LinkStyledButton>
-            </Text>
-          ) : null}
-          {!isOnSelectedList && !customAdded && !(currency instanceof WrappedTokenInfo) ? (
-            <Text>
-              Found by address
-              <LinkStyledButton
-                onClick={(event) => {
-                  event.stopPropagation()
-                  if (currency instanceof Token) addToken(currency)
-                }}
-              >
-                (Add)
-              </LinkStyledButton>
-            </Text>
-          ) : null}
-        </FadedSpan>
+        <Text title={`${token0.name} - ${token1.name}`}>{pairSymbol}</Text>
+        
       </Column>
-      <TokenTags currency={currency} />
+      <TokenTags currency={pairCurrency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
         {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
       </RowFixed>
@@ -186,7 +205,7 @@ function CurrencyRow({
 
 export default function CurrencyListZap({
   height,
-  currencies,
+  pairs,
   selectedCurrency,
   onCurrencySelect,
   otherCurrency,
@@ -195,7 +214,7 @@ export default function CurrencyListZap({
   zap
 }: {
   height: number
-  currencies: PairConfig[]
+  pairs: Pair[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency | PairConfig) => void
   otherCurrency?: Currency | null
@@ -205,19 +224,19 @@ export default function CurrencyListZap({
 }) {
   const { config } = getNetwork()
 
-  // const itemData = useMemo(() => (showETH ? [config.baseCurrency, ...currencies] : [...currencies]), [config.baseCurrency, currencies, showETH])
-  const itemData = useMemo(() => (zap ? currencies : showETH ? [config.baseCurrency, ...currencies] : [...currencies]), [config.baseCurrency, currencies, showETH, zap])
+  const itemData = useMemo(() => (zap ? pairs : showETH ? [config.baseCurrency, ...pairs] : [...pairs]), [config.baseCurrency, pairs, showETH, zap])
 
   const Row = useCallback(
     ({ data, index, style }) => {
-      const currency: PairConfig = data[index]
+      const pair = data[index]
     //   const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
     //   const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-      const handleSelect = () => onCurrencySelect(currency)
+      const handleSelect = () => onCurrencySelect(pair)
       return (
         <CurrencyRow
+          key={index}
           style={style}
-          pair={currency}
+          pair={pair}
         //   isSelected={isSelected}
           onSelect={handleSelect}
         //   otherSelected={otherSelected}
@@ -228,8 +247,7 @@ export default function CurrencyListZap({
     [onCurrencySelect, zap]
   )
 
-  const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
-
+  const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])
   return (
     <FixedSizeList
       height={height}
