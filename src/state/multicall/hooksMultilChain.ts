@@ -206,7 +206,7 @@ export function useMultiChainContractSingleData(
       const multiChainContract = getMultiChainContract(contractInterface, address, multChainId)
       if (callInputs && callInputs.length > 0 ){
         try {
-          await multiChainContract.balanceOf("0x2871aB0e15573b0F5F05442ac3A824fD5a4DC890").then((b) => {
+          await multiChainContract.balanceOf(callInputs[0]).then((b) => {
             balance = b
           })
         } catch(e){
