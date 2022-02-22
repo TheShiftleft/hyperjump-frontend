@@ -1,5 +1,6 @@
 import { createReducer, createSlice } from '@reduxjs/toolkit'
-import { Field, replaceZapState, typeInput, selectCurrency } from './actions'
+import { Pair } from '@hyperjump-defi/sdk'
+import { Field, replaceZapState, typeInput, selectCurrency, selectPair } from './actions'
 
 export interface ZapState {
 	readonly field: Field
@@ -9,7 +10,7 @@ export interface ZapState {
 
 	}
 	readonly [Field.OUTPUT] : {
-			readonly currencyId: string | undefined
+			readonly pairId: string | undefined
 	}
 }
 
@@ -20,7 +21,7 @@ const zapInitialState: ZapState = {
 			currencyId: ''
 	},
 	[Field.OUTPUT]: {
-			currencyId: ''
+			pairId: ''
 	}
 }
 
@@ -28,13 +29,13 @@ export default createReducer<ZapState>(zapInitialState, (builder) =>
 	builder
 		.addCase(
 			replaceZapState,
-			(state, { payload: { typedValue, field, inputCurrencyId, outputCurrencyId } }) => {
+			(state, { payload: { typedValue, field, inputCurrencyId, outputPairId } }) => {
 				return {
 					[Field.INPUT]: {
 						currencyId: inputCurrencyId,
 					},
 					[Field.OUTPUT]: {
-						currencyId: outputCurrencyId,
+						pairId: outputPairId,
 					},
 					field,
 					typedValue
@@ -57,6 +58,15 @@ export default createReducer<ZapState>(zapInitialState, (builder) =>
 				return {
 					...state,
 					[field]: {currencyId}
+				}
+			}
+		)
+		.addCase(
+			selectPair,
+			(state, {payload: {field, pairId}}) => {
+				return {
+					...state,
+					[field]: {pairId}
 				}
 			}
 		)

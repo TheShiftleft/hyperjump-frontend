@@ -14,7 +14,7 @@ import { useCurrency, useToken } from 'hooks/Tokens'
 import { AutoRow, RowBetween } from 'components/Row'
 import Loader from 'components/Loader'
 import { useApproveCallbackFromZap, ApprovalState } from 'hooks/useApproveCallback'
-import { useDerivedZapInfo, useZapActionHandlers, useZapState } from 'state/zap/hooks'
+import { useDerivedZapInfo, useZapActionHandlers, useZapDefaultState, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
 import { useCurrencyBalances } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
@@ -28,10 +28,11 @@ import useToast from 'hooks/useToast'
 
 const Zap = () => {
     const { toastSuccess, toastError } = useToast()
+    useZapDefaultState()
     const { config } = getNetwork()
     const {field} = useZapState()
-    const {currencyBalances, currencies, parsedAmount} = useDerivedZapInfo()
-    const { onUserInput, onCurrencySelect } = useZapActionHandlers()
+    const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency} = useDerivedZapInfo()
+    const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
     const parsedAmounts =  {
         [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
         [Field.OUTPUT]: field === Field.OUTPUT ? undefined : undefined,
@@ -41,8 +42,8 @@ const Zap = () => {
 
     // Temporary parameters in testing zapInToken method.
     const { callback: zapCallback, error: swapCallbackError, state: zapState } = useZapInToken(
-        "0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73", // JUMP
-        "0x5448a3b93731e7c1d6e6310cb614843fbac21f69", // JUMP - FTM
+        currencyInput, // JUMP
+        pairOutput, // JUMP - FTM
         parsedAmounts[Field.INPUT]
       )
 
@@ -58,23 +59,17 @@ const Zap = () => {
                     }
                 })
             })
-            .catch(error => toastError('Zap Error', 'An error occured while processing transaction.'))
+            .catch(error => {
+                console.error(error)
+                toastError('Zap Error', 'An error occured while processing transaction.')
+            })
         }
         ,[zapCallback, toastSuccess, toastError]
     )
-    // const pairs = zapPairs[config.network]
-    // Approval Test for LP tokens
-    
-    // const LPToken = useCurrency("0x5448a3b93731e7c1d6e6310cb614843fbac21f69")
-    // const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
-    //     LPToken ?? undefined
-    // ])
-    // const [approval, approveCallback] = useApproveCallbackFromZap(relevantTokenBalances[0])
-
 
     const [approval, approveCallback] = useApproveCallbackFromZap(parsedAmounts[field])
     const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
-    const showApproval = approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)
+    const showApproval = useMemo(() => { return approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)}, [approval, approvalSubmitted]) 
     
     useEffect(() => {
       if (approval === ApprovalState.PENDING) {
@@ -95,10 +90,10 @@ const Zap = () => {
           [onUserInput],
       )
 
-    const handleOutputCurrencySelect = useCallback(
-    (currency) => {
-        onCurrencySelect(Field.OUTPUT, currency)
-    }, [onCurrencySelect],
+    const handleOutputPairSelect = useCallback(
+    (pair) => {
+        onPairSelect(Field.OUTPUT, pair)
+    }, [onPairSelect],
     )
 
     const handleInputCurrencySelect = useCallback(
@@ -118,7 +113,7 @@ const Zap = () => {
             <CardNav />
             <AppBody>
                 <Wrapper id='zap-page' color='transparent'>
-                    <PageHeader title="Zap" description="Zap out of our LP token" />
+                    <PageHeader title="Zap" description="Zap into our LP tokens" />
                     <CardBody p='12px'>
                         <AutoColumn gap='md'>
                             <CurrencyInputPanel
@@ -126,7 +121,7 @@ const Zap = () => {
                                 value={parsedAmounts[Field.INPUT]?.toSignificant(6)}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
-                                currency={currencies[Field.INPUT]}
+                                currency={currencyInput}
                                 onCurrencySelect={handleInputCurrencySelect}
                                 onUserInput={handleTypeInput}
                                 zap
@@ -144,8 +139,9 @@ const Zap = () => {
                             <CurrencyInputPanel
                                 label='Out'
                                 value={parsedAmounts[Field.OUTPUT]?.toSignificant(6)}
-                                currency={currencies[Field.OUTPUT]}
-                                onCurrencySelect={handleOutputCurrencySelect}
+                                currency={pairCurrency}
+                                pair={pairOutput}
+                                onPairSelect={handleOutputPairSelect}
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
                                 id="zap-currency-input"
@@ -165,7 +161,7 @@ const Zap = () => {
                                     ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
                                         'Approved'
                                     ) : (
-                                        `Approve ${currencies[Field.INPUT]?.symbol}`
+                                        `Approve ${currencyInput?.name}`
                                     )}
                                 </Button>)
                             :
@@ -175,7 +171,7 @@ const Zap = () => {
                                 variant='primary'
                                 onClick={() => handleZapCallback()}
                                 >
-                                Zap Out
+                                Zap In
                             </Button>}
                         </AutoColumn>
                     </CardBody>

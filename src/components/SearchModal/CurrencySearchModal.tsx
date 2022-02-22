@@ -1,4 +1,4 @@
-import { Currency } from '@hyperjump-defi/sdk'
+import { Currency, Pair } from '@hyperjump-defi/sdk'
 import { PairConfig } from 'config/constants/types'
 import React, { useCallback, useEffect, useState } from 'react'
 import useLast from '../../hooks/useLast'
@@ -12,7 +12,9 @@ interface CurrencySearchModalProps {
   isOpen: boolean
   onDismiss: () => void
   selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency | PairConfig) => void
+  selectedPair?: Pair | null
+  onCurrencySelect: (currency: Currency) => void
+  onPairSelect?: (pairToken: Pair) => void
   otherSelectedCurrency?: Currency | null
   // eslint-disable-next-line react/no-unused-prop-types
   showCommonBases?: boolean
@@ -25,7 +27,9 @@ export default function CurrencySearchModal({
   isOpen,
   onDismiss,
   onCurrencySelect,
+  onPairSelect,
   selectedCurrency,
+  selectedPair,
   otherSelectedCurrency,
   zap,
   warp,
@@ -41,11 +45,19 @@ export default function CurrencySearchModal({
   }, [isOpen, lastOpen])
 
   const handleCurrencySelect = useCallback(
-    (currency: Currency | PairConfig) => {
+    (currency: Currency ) => {
       onCurrencySelect(currency)
       onDismiss()
     },
     [onDismiss, onCurrencySelect]
+  )
+
+  const handlePairSelect = useCallback(
+    (pairToken: Pair) => {
+      onPairSelect(pairToken)
+      onDismiss()
+    },
+    [onDismiss, onPairSelect]
   )
 
   const handleClickChangeList = useCallback(() => {
@@ -66,9 +78,9 @@ export default function CurrencySearchModal({
         <CurrencySearchZap
           isOpen={isOpen}
           onDismiss={onDismiss}
-          onCurrencySelect={handleCurrencySelect}
+          onPairSelect={handlePairSelect}
           onChangeList={handleClickChangeList}
-          selectedCurrency={selectedCurrency}
+          selectedPair={selectedPair}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
           zap={zap}

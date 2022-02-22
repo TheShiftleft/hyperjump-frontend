@@ -1,4 +1,4 @@
-import { CurrencyAmount } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, Currency, Pair, Token } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useCallback } from 'react'
@@ -12,14 +12,16 @@ enum ZapCallbackState {
     PENDING
 }
 
-export default function useZapInToken(fromAddress: string, toAddress: string, amount: CurrencyAmount) {
+export default function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: CurrencyAmount) {
     const { account } = useActiveWeb3React()
     const zapContract = useZapContract()
     const router = getRouterAddress()
     const amountToProcess = new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString()
+    const from = fromAddress instanceof Token ? fromAddress.address : undefined
+    const to = toAddress?.liquidityToken?.address
     
     return useMemo(() => {
-        if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress) {
+        if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress || !from || !to) {
             return {
                 state: ZapCallbackState.INVALID,
                 callback: null,
@@ -29,10 +31,10 @@ export default function useZapInToken(fromAddress: string, toAddress: string, am
         return {
             state: ZapCallbackState.VALID,
             callback: async () => {
-                const zapInToken = await zapContract.zapInToken(fromAddress, amountToProcess, toAddress, router, account)
+                const zapInToken = await zapContract.zapInToken(from, amountToProcess, to, router, account)
                 return zapInToken
             },
             error: null
         }
-    }, [zapContract, account, router, amountToProcess, fromAddress, toAddress])
+    }, [zapContract, account, router, amountToProcess, fromAddress, toAddress, from, to])
 }

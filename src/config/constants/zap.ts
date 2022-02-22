@@ -46,15 +46,6 @@ const zapPairs: Record<Network, PairConfig[]> = {
      * These 3 farms (PID 0, 1, 3) should always be at the top of the list.
      */
     {
-      pid: 0,
-      lpSymbol: 'JUMP',
-      lpAddresses: {
-        56: '0x130025eE738A66E691E6A7a62381CB33c6d9Ae83',
-      },
-      token: tokens.jump,
-      quoteToken: tokens.wbnb,
-    },
-    {
       pid: 1,
       lpSymbol: 'JUMP-BNB',
       lpAddresses: {

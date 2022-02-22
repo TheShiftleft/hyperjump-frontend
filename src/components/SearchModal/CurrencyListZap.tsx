@@ -132,7 +132,7 @@ function CurrencyRow({
 }) {
   const { account, chainId } = useActiveWeb3React()
   const {token0, token1} = pair
-  const pairSymbol = `${token0.symbol.toUpperCase() === "WFTM" ? "FTM" : token0.symbol.toUpperCase() === "WBNB" ? "BNB" : token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase() === "WFTM" ? "FTM" : token1.symbol.toUpperCase() === "WBNB" ? "BNB" : token1.symbol.toUpperCase()}`
+  const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(pair.liquidityToken.address)
   const key = pairKey(pair)
   const selectedTokenList = useSelectedTokenList()
@@ -206,8 +206,8 @@ function CurrencyRow({
 export default function CurrencyListZap({
   height,
   pairs,
-  selectedCurrency,
-  onCurrencySelect,
+  selectedPair,
+  onPairSelect,
   otherCurrency,
   fixedListRef,
   showETH,
@@ -215,8 +215,8 @@ export default function CurrencyListZap({
 }: {
   height: number
   pairs: Pair[]
-  selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency | PairConfig) => void
+  selectedPair?: Pair | null
+  onPairSelect: (pair: Pair) => void
   otherCurrency?: Currency | null
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showETH: boolean
@@ -228,23 +228,21 @@ export default function CurrencyListZap({
 
   const Row = useCallback(
     ({ data, index, style }) => {
-      const pair = data[index]
-    //   const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency))
-    //   const otherSelected = Boolean(otherCurrency && currencyEquals(otherCurrency, currency))
-      const handleSelect = () => onCurrencySelect(pair)
+      const pair: Pair = data[index]
+      const isSelected = Boolean(selectedPair && (pair.liquidityToken.address === selectedPair.liquidityToken.address))
+      const handleSelect = () => onPairSelect(pair)
       return (
         <CurrencyRow
           key={index}
           style={style}
           pair={pair}
-        //   isSelected={isSelected}
+          isSelected={isSelected}
           onSelect={handleSelect}
-        //   otherSelected={otherSelected}
           zap={zap}
         />
       )
     },
-    [onCurrencySelect, zap]
+    [onPairSelect, zap, selectedPair]
   )
 
   const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])

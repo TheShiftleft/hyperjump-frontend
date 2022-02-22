@@ -33,8 +33,8 @@ import { PaddedColumn, SearchInput, Separator } from './styleds'
 interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
-  selectedCurrency?: Currency | null
-  onCurrencySelect: (currency: Currency) => void
+  selectedPair?: Pair | null
+  onPairSelect: (pair: Pair) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
   onChangeList: () => void
@@ -51,8 +51,8 @@ const ColumnWBorder = styled.div`
 `
 
 export default function CurrencySearchZap({
-  selectedCurrency,
-  onCurrencySelect,
+  selectedPair,
+  onPairSelect,
   otherSelectedCurrency,
   showCommonBases,
   onDismiss,
@@ -113,9 +113,9 @@ export default function CurrencySearchZap({
     ]
   }, [filteredPairs, searchQuery, pairComparator])
 
-  const handleCurrencySelect = useCallback(
-    (currency: Currency) => {
-      onCurrencySelect(currency)
+  const handlePairSelect = useCallback(
+    (pair: Pair) => {
+      onPairSelect(pair)
       onDismiss()
       if (audioPlay) {
         const audio = document.getElementById('bgMusic') as HTMLAudioElement
@@ -124,7 +124,7 @@ export default function CurrencySearchZap({
         }
       }
     },
-    [onDismiss, onCurrencySelect, audioPlay],
+    [onDismiss, onPairSelect, audioPlay],
   )
 
   // clear the input on open
@@ -141,24 +141,21 @@ export default function CurrencySearchZap({
     fixedList.current?.scrollTo(0)
   }, [])
 
-  // const handleEnter = useCallback(
-  //   (e: KeyboardEvent<HTMLInputElement>) => {
-  //     if (e.key === 'Enter') {
-  //       const s = searchQuery.toLowerCase().trim()
-  //       if (s === config.networkToken.symbol.toLowerCase()) {
-  //         handleCurrencySelect(config.baseCurrency)
-  //       } else if (filteredSortedTokens.length > 0) {
-  //         if (
-  //           filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
-  //           filteredSortedTokens.length === 1
-  //         ) {
-  //           handleCurrencySelect(filteredSortedTokens[0])
-  //         }
-  //       }
-  //     }
-  //   },
-  //   [config.baseCurrency, config.networkToken, filteredSortedTokens, handleCurrencySelect, searchQuery],
-  // )
+  const handleEnter = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+       if (filteredSortedTokens.length > 0) {
+          if (
+            filteredSortedTokens[0].token1.symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
+            filteredSortedTokens.length === 1
+          ) {
+            handlePairSelect(filteredSortedTokens[0])
+          }
+        }
+      }
+    },
+    [filteredSortedTokens, handlePairSelect, searchQuery],
+  )
 
   const selectedListInfo = useSelectedListInfo()
   const TranslateString = useI18n()
@@ -184,11 +181,8 @@ export default function CurrencySearchZap({
           value={searchQuery}
           ref={inputRef as RefObject<HTMLInputElement>}
           onChange={handleInput}
-          // onKeyDown={handleEnter}
+          onKeyDown={handleEnter}
         />
-        {showCommonBases && (
-          <CommonBases chainId={chainId} onSelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
-        )}
         <RowBetween>
           <Text fontSize="18px">{TranslateString(126, 'Token name')}</Text>
           <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder((iso) => !iso)} />
@@ -202,9 +196,9 @@ export default function CurrencySearchZap({
               height={height}
               showETH={showETH && !zap}
               pairs={filteredSortedTokens}
-              onCurrencySelect={handleCurrencySelect}
+              onPairSelect={handlePairSelect}
               otherCurrency={otherSelectedCurrency}
-              selectedCurrency={selectedCurrency}
+              selectedPair={selectedPair}
               fixedListRef={fixedList}
               zap
             />

@@ -74,6 +74,7 @@ interface CurrencyInputPanelProps {
   showMaxButton: boolean
   label?: string
   onCurrencySelect?: (currency: Currency) => void
+  onPairSelect?: (pair: Pair) => void
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
@@ -94,6 +95,7 @@ export default function CurrencyInputPanel({
   showMaxButton,
   label,
   onCurrencySelect,
+  onPairSelect,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -167,7 +169,7 @@ export default function CurrencyInputPanel({
               ) : null}
               {pair ? (
                 <Text id="pair">
-                  {pair?.token0.symbol}:{pair?.token1.symbol}
+                  {pair?.token0?.symbol}:{pair?.token1?.symbol}
                 </Text>
               ) : (
                 <Text id="pair">
@@ -184,12 +186,14 @@ export default function CurrencyInputPanel({
           </CurrencySelect>
         </InputRow>
       </Container>
-      {!disableCurrencySelect && onCurrencySelect && (
+      {!disableCurrencySelect && (onCurrencySelect || onPairSelect) && (
         <CurrencySearchModal
           isOpen={modalOpen}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
+          onPairSelect={onPairSelect}
           selectedCurrency={currency}
+          selectedPair={pair}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
           zap={zap}
