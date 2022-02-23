@@ -92,6 +92,7 @@ export default function OrderRow({ order, account, chainId }: OrderRowProps) {
   const outputDecimals = outputToken?.decimals * -1 > 0 ? outputToken?.decimals * -1 : -18
   const parsedInputAmount = new BigNumber(inAmount).shiftedBy(inputDecimals).toPrecision(4)
   const parsedMinReturn = new BigNumber(outAmount).shiftedBy(outputDecimals).toPrecision(4)
+  const limitPriceAmount = parsedInputAmount / parsedMinReturn
   const transactionURL =
     config.network === 'FTM'
       ? `${BASE_FTM_SCAN_URL}/tx/${order?.createdTxHash}`
@@ -162,6 +163,9 @@ export default function OrderRow({ order, account, chainId }: OrderRowProps) {
           </DetailsText>
           <DetailsText>
             Minimum Return: <DetailsTextContent>{parsedMinReturn}</DetailsTextContent>
+          </DetailsText>
+          <DetailsText>
+            Limit Price: <DetailsTextContent>{limitPriceAmount}</DetailsTextContent>
           </DetailsText>
           <StyledLinkExternal href={transactionURL} target="_blank">
             {config.network === 'FTM' ? 'FTM Scan' : 'BSC Scan'}
