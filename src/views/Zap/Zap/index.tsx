@@ -23,13 +23,12 @@ import { useSavedPairs } from 'contexts/Analytics/LocalStorage'
 import { usePair } from 'data/Reserves'
 import zapPairs from 'config/constants/zap'
 import getNetwork from 'utils/getNetwork'
-import useZapInToken from 'hooks/useZap'
+import {useZapInToken, useEstimateZapInToken} from 'hooks/useZap'
 import useToast from 'hooks/useToast'
 
 const Zap = () => {
     const { toastSuccess, toastError } = useToast()
     useZapDefaultState()
-    const { config } = getNetwork()
     const {field} = useZapState()
     const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency} = useDerivedZapInfo()
     const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
@@ -40,12 +39,15 @@ const Zap = () => {
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
 
-    // Temporary parameters in testing zapInToken method.
     const { callback: zapCallback, error: swapCallbackError, state: zapState } = useZapInToken(
         currencyInput, // JUMP
         pairOutput, // JUMP - FTM
         parsedAmounts[Field.INPUT]
       )
+    
+    // const {estimate0, estimate1} = useEstimateZapInToken(zapState, currencyInput, pairOutput, pairCurrency, parsedAmounts[Field.INPUT])
+    // console.log('estimate0', estimate0?.toExact())
+    // console.log('estimate1', estimate1?.toExact())
 
     const handleZapCallback = useCallback(
         () => {
@@ -76,6 +78,8 @@ const Zap = () => {
         setApprovalSubmitted(true)
       }
     }, [approval, approvalSubmitted])
+
+
     const handleTypeInput = useCallback(
         (value: string) => {
             onUserInput(Field.INPUT, value)
@@ -144,6 +148,7 @@ const Zap = () => {
                                 onPairSelect={handleOutputPairSelect}
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
+                                disabledNumericalInput
                                 id="zap-currency-input"
                                 pairToken
                             />
