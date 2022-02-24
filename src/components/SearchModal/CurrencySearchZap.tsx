@@ -8,7 +8,7 @@ import styled, { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import useI18n from 'hooks/useI18n'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { usePairs } from 'data/Reserves'
+import { usePair, usePairs } from 'data/Reserves'
 import getNetwork from 'utils/getNetwork'
 import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
 import zapPairs from 'config/constants/zap'
@@ -74,11 +74,18 @@ export default function CurrencySearchZap({
     () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
     [trackedTokenPairs],
   )
-  const v2Pairs = usePairs(tokenPairsWithLiquidityTokens.map(({ tokens }) => tokens))
-  const allV2PairsWithLiquidity = useMemo(() => { return v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))},[v2Pairs]) 
-  // const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : []
-  // const pairs = zapPairs[config.network]
+  const pairs = zapPairs[config.network]
 
+  const allPairs = useMemo(() => {
+    return tokenPairsWithLiquidityTokens.map(pair => pair).filter(v2Pair => {
+      return pairs.find((pair) => {
+        return pair.lpAddresses[chainId].toLowerCase() === v2Pair.liquidityToken.address.toLowerCase()
+      })
+    }) 
+  }, [tokenPairsWithLiquidityTokens, pairs, chainId])
+
+  const allv2Pairs = usePairs(allPairs.map(({ tokens }) => tokens))
+  const allV2PairsWithLiquidity = useMemo(() => { return allv2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))},[allv2Pairs]) 
 
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
