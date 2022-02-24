@@ -12,9 +12,10 @@ import { RowBetween } from '../Row'
 import { Input as NumericalInput } from '../NumericalInput'
 import { useActiveWeb3React } from '../../hooks'
 
-const InputRow = styled.div<{ selected: boolean }>`
+const InputRow = styled.div<{ selected: boolean, hideInput?: boolean }>`
   display: flex;
   flex-flow: row nowrap;
+  ${({hideInput}) => hideInput ? 'justify-content: right': ''};
   align-items: center;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
 `
@@ -87,6 +88,7 @@ interface CurrencyInputPanelProps {
   zap?: boolean
   warp?: boolean
   pairToken?: boolean
+  hideLabel?: boolean
 }
 export default function CurrencyInputPanel({
   value,
@@ -107,7 +109,8 @@ export default function CurrencyInputPanel({
   disabledNumericalInput = false,
   zap,
   warp,
-  pairToken
+  pairToken,
+  hideLabel
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -120,7 +123,7 @@ export default function CurrencyInputPanel({
   return (
     <InputPanel id={id}>
       <Container hideInput={hideInput}>
-        {!hideInput && (
+        {!hideLabel && (
           <LabelRow>
             <RowBetween>
               <Text fontSize="14px">{translatedLabel}</Text>
@@ -134,7 +137,7 @@ export default function CurrencyInputPanel({
             </RowBetween>
           </LabelRow>
         )}
-        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
+        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect} hideInput>
           {!hideInput && (
             <>
               <NumericalInput

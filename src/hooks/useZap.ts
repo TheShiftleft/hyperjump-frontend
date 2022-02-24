@@ -1,7 +1,7 @@
 import { CurrencyAmount, Currency, Pair, Token, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { useActiveWeb3React } from 'hooks'
-import { useMemo, useCallback, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { getRouterAddress } from 'utils/addressHelpers'
 import { BIG_TEN } from 'utils/bigNumber'
 import { useZapContract } from './useContract'
@@ -12,27 +12,26 @@ enum ZapCallbackState {
     PENDING
 }
 
-export function useEstimateZapInToken(zapState: ZapCallbackState, currencyInput: Currency, pairOutput: Pair, pairCurrency: Currency, amount: CurrencyAmount)
-    : {estimate0: TokenAmount; estimate1: TokenAmount} {
-    const { account } = useActiveWeb3React()
+export function useEstimateZapInToken(currencyInput: Currency, pairOutput: Pair, amount: CurrencyAmount)
+     {
     const zapContract = useZapContract()
     const router = getRouterAddress()
     const amountToProcess = new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString()
     const from = currencyInput instanceof Token ? currencyInput.address : undefined
     const to = pairOutput?.liquidityToken?.address
-    const [{estimate0, estimate1}, setEstimate] = useState<{estimate0: TokenAmount, estimate1: TokenAmount}>({estimate0: undefined, estimate1: undefined})
-    return useMemo(() => {
-        if(zapState === ZapCallbackState.VALID && amountToProcess && amountToProcess !== 'NaN'){
-            zapContract.estimateZapInToken(from, to, router, amountToProcess)
-            .then((result) => {
-                const estimatedAmount0 = new TokenAmount(pairCurrency instanceof Token ? pairCurrency : undefined, JSBI.BigInt(result[0]?.toString()))
-                const estimatedAmount1 = new TokenAmount(pairCurrency instanceof Token ? pairCurrency : undefined, JSBI.BigInt(result[1]?.toString()))
-                setEstimate({estimate0: estimatedAmount0, estimate1:estimatedAmount1})
-            })
+    const [estimate, setEstimate] = useState<BigNumber[]>()
+    useEffect(
+        () => {
+            if(amountToProcess && amountToProcess !== 'NaN' && from && to){
+                zapContract.estimateZapInToken(from, to, router, amountToProcess)
+                .then((est: BigNumber[]) => {
+                    setEstimate(est)
+                })
+            }
         }
-        return {estimate0, estimate1}
-    }, [zapContract, from, to, router, amountToProcess, estimate0, estimate1, zapState, pairCurrency])
-
+        ,[amountToProcess, zapContract, from, to, router, setEstimate]
+    )
+    return estimate
 }
 
 export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: CurrencyAmount) {
@@ -42,9 +41,8 @@ export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: Cu
     const amountToProcess = new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString()
     const from = fromAddress instanceof Token ? fromAddress.address : undefined
     const to = toAddress?.liquidityToken?.address
-    
     return useMemo(() => {
-        if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress || !from || !to) {
+        if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress || !from || !to || amountToProcess === "NaN") {
             if(fromAddress?.symbol === "FTM" || fromAddress?.symbol === "BNB"){
                 return {
                     state: ZapCallbackState.VALID,

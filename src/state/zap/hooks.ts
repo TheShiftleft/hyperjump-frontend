@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair } from '@hyperjump-defi/sdk'
+import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { PairState, usePair, usePairs } from 'data/Reserves'
-import { usePairContract } from 'hooks/useContract'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
+import { useEstimateZapInToken } from 'hooks/useZap'
 import { AppDispatch, AppState } from '../index'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
@@ -98,7 +98,8 @@ export function useDerivedZapInfo(): {
   pairOutput: Pair,
   pairCurrency: Currency
   currencyBalances: { [field in Field]?: CurrencyAmount },
-  parsedAmount: CurrencyAmount | undefined
+  parsedAmount: CurrencyAmount | undefined,
+  estimates: TokenAmount[] | undefined
   } {
   const { account } = useActiveWeb3React()
   const {
@@ -117,7 +118,6 @@ export function useDerivedZapInfo(): {
   const allV2PairsWithLiquidity = useMemo(() => { return v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))},[v2Pairs]) 
 
   const pairToken = allV2PairsWithLiquidity.find(pair => pair.liquidityToken.address === outputPairId)
-  
   const [,pairOutput] = usePair(pairToken?.token0, pairToken?.token1)
   const pairCurrency = useCurrency(outputPairId)
   const currencyInput = inputCurrency
@@ -126,10 +126,14 @@ export function useDerivedZapInfo(): {
   ])
   const isExactIn: boolean = field === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (inputCurrency) ?? undefined)
-
+  const estimate = useEstimateZapInToken(inputCurrency, pairToken, parsedAmount)
+  const estimates = estimate ? [
+    new TokenAmount(pairToken?.token0, JSBI.BigInt(estimate[0] ? estimate[0].toString() : undefined)),
+    new TokenAmount(pairToken?.token1, JSBI.BigInt(estimate[1] ? estimate[1].toString() : undefined))
+  ] : []
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0]
   }
 
-  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount};
+  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates};
 }

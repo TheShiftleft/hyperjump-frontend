@@ -1,36 +1,40 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
-import { CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
-import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal } from 'uikit'
+import { CurrencyAmount, Token } from '@hyperjump-defi/sdk'
+import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
 import AppBody from 'components/Zap/AppBody'
+import styled from 'styled-components'
+import Logo from 'components/Logo'
 import CardNav from 'components/Zap/CardNav'
-import { usePairContract, useZapContract } from 'hooks/useContract'
+import Card from 'components/Card'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import PageHeader from 'components/Zap/PageHeader'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Wrapper } from 'components/Zap/styled'
-import { useCurrency, useToken } from 'hooks/Tokens'
 import { AutoRow, RowBetween } from 'components/Row'
 import Loader from 'components/Loader'
 import { useApproveCallbackFromZap, ApprovalState } from 'hooks/useApproveCallback'
 import { useDerivedZapInfo, useZapActionHandlers, useZapDefaultState, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
-import { useCurrencyBalances } from 'state/wallet/hooks'
-import { useActiveWeb3React } from 'hooks'
-import { useAllPairData } from 'contexts/Analytics/PairData'
-import { useSavedPairs } from 'contexts/Analytics/LocalStorage'
-import { usePair } from 'data/Reserves'
-import zapPairs from 'config/constants/zap'
-import getNetwork from 'utils/getNetwork'
 import {useZapInToken, useEstimateZapInToken} from 'hooks/useZap'
 import useToast from 'hooks/useToast'
+import { BIG_ZERO } from 'utils/bigNumber'
+import { WrappedTokenInfo } from 'state/lists/hooks'
+import useHttpLocations from 'hooks/useHttpLocations'
+
+const StyledLogo = styled(Logo)<{ size: string }>`
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
+`
+
+const getTokenLogoURL = (address: string) => `https://tokens.hyperswap.fi/images/${address}.png`
 
 const Zap = () => {
     const { toastSuccess, toastError } = useToast()
     useZapDefaultState()
     const {field} = useZapState()
-    const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency} = useDerivedZapInfo()
+    const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates} = useDerivedZapInfo()
     const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
     const parsedAmounts =  {
         [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
@@ -38,16 +42,47 @@ const Zap = () => {
       }
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
-
     const { callback: zapCallback, error: swapCallbackError, state: zapState } = useZapInToken(
         currencyInput, // JUMP
         pairOutput, // JUMP - FTM
         parsedAmounts[Field.INPUT]
       )
+      
+    const token0 = estimates[0] ?? undefined
+    const token1 = estimates[1] ?? undefined
+
+    const uriLocations0 = useHttpLocations(token0?.token instanceof WrappedTokenInfo ? token0?.token.logoURI : undefined)
+    const uriLocations1 = useHttpLocations(token1?.token instanceof WrappedTokenInfo ? token1?.token.logoURI : undefined)
     
-    // const {estimate0, estimate1} = useEstimateZapInToken(zapState, currencyInput, pairOutput, pairCurrency, parsedAmounts[Field.INPUT])
-    // console.log('estimate0', estimate0?.toExact())
-    // console.log('estimate1', estimate1?.toExact())
+    const srcs0 = useMemo(() => {
+        if (token0?.token instanceof Token) {
+            if (token0?.token instanceof WrappedTokenInfo) {
+            return [
+                ...uriLocations0,
+                `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
+                getTokenLogoURL(token0?.token?.symbol.toLowerCase() === "wftm" ? "FTM" : token0?.token?.symbol.toLowerCase() === "bnb" ? "BNB" : token0?.token?.address),
+            ]
+            }
+
+            return [`/images/tokens/${token0?.token?.address ?? 'token'}.png`, getTokenLogoURL(token0?.token?.symbol.toLowerCase() === "wftm" ? "FTM" : token0?.token?.symbol.toLowerCase() === "bnb" ? "BNB" : token0?.token?.address)]
+        }
+        return []
+    }, [token0, uriLocations0])
+
+    const srcs1 = useMemo(() => {
+        if (token1?.token instanceof Token) {
+            if (token1?.token instanceof WrappedTokenInfo) {
+            return [
+                ...uriLocations1,
+                `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
+                getTokenLogoURL(token1?.token?.symbol.toLowerCase() === "wftm" ? "FTM" : token1?.token?.symbol.toLowerCase() === "bnb" ? "BNB" : token1?.token?.address),
+            ]
+            }
+
+            return [`/images/tokens/${token1?.token?.address ?? 'token'}.png`, getTokenLogoURL(token1?.token?.symbol.toLowerCase() === "wftm" ? "FTM" : token1?.token?.symbol.toLowerCase() === "bnb" ? "BNB" : token1?.token?.address)]
+        }
+        return []
+    }, [token1, uriLocations1])
 
     const handleZapCallback = useCallback(
         () => {
@@ -149,9 +184,28 @@ const Zap = () => {
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
                                 disabledNumericalInput
+                                hideInput
                                 id="zap-currency-input"
                                 pairToken
                             />
+                            {estimates.length !== 0 ?
+                                <Card padding=".25rem .75rem 0 .75rem" borderRadius="20px">
+                                    <AutoColumn justify='center' gap='5px'>
+                                        <Text fontSize="16px" color='primary' bold>Estimate</Text>
+                                        <AutoRow>
+                                            <StyledLogo size="25px" srcs={srcs0} alt={`${token0?.currency?.symbol ?? 'token'} logo`} style={{ borderRadius: '20px', marginRight: '10px'}} />
+                                            <Text fontSize="14px" marginRight="10px">{token0?.currency?.symbol} :</Text>
+                                            <Text fontSize="14px">{token0?.toSignificant(6)}</Text>
+                                        </AutoRow>
+                                        <AutoRow>
+                                            <StyledLogo size="25px" srcs={srcs1} alt={`${token0?.currency?.symbol ?? 'token'} logo`} style={{ borderRadius: '20px', marginRight: '10px'}} />
+                                            <Text fontSize="14px" marginRight="10px">{token1?.currency?.symbol} :</Text>
+                                            <Text fontSize="14px">{token1?.toSignificant(6)}</Text>
+                                        </AutoRow>
+                                    </AutoColumn>
+                                </Card>
+                            : ''
+                            }
                             {showApproval ?
                                 (<Button
                                     width="100%"
