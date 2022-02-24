@@ -107,7 +107,7 @@ export function useDerivedZapInfo(): {
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { pairId: outputPairId }
   } = useZapState();
-  const inputCurrency = useToken(inputCurrencyId)
+  const inputCurrency = useCurrency(inputCurrencyId)
   const trackedTokenPairs = useTrackedTokenPairs()
   const tokenPairsWithLiquidityTokens = useMemo(
     () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),

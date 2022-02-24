@@ -45,6 +45,16 @@ export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: Cu
     
     return useMemo(() => {
         if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress || !from || !to) {
+            if(fromAddress?.symbol === "FTM" || fromAddress?.symbol === "BNB"){
+                return {
+                    state: ZapCallbackState.VALID,
+                    callback: async () => {
+                        const zapIn = await zapContract.zapIn(to, router, account, {value: amountToProcess})
+                        return zapIn
+                    },
+                    error: null
+                }
+            }
             return {
                 state: ZapCallbackState.INVALID,
                 callback: null,
