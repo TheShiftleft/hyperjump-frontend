@@ -2,11 +2,12 @@ import { CurrencyAmount, Currency, Pair, Token, TokenAmount, JSBI } from '@hyper
 import BigNumber from 'bignumber.js'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState, useEffect } from 'react'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import { getRouterAddress } from 'utils/addressHelpers'
 import { BIG_TEN } from 'utils/bigNumber'
 import { useZapContract } from './useContract'
 
-enum ZapCallbackState {
+export enum ZapCallbackState {
     INVALID,
     VALID,
     PENDING
@@ -34,7 +35,7 @@ export function useEstimateZapInToken(currencyInput: Currency, pairOutput: Pair,
     return estimate
 }
 
-export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: CurrencyAmount) {
+export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: CurrencyAmount, currencyBalance: CurrencyAmount) {
     const { account } = useActiveWeb3React()
     const zapContract = useZapContract()
     const router = getRouterAddress()
@@ -42,21 +43,28 @@ export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: Cu
     const from = fromAddress instanceof Token ? fromAddress.address : undefined
     const to = toAddress?.liquidityToken?.address
     return useMemo(() => {
-        if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress || !from || !to || amountToProcess === "NaN") {
-            if(fromAddress?.symbol === "FTM" || fromAddress?.symbol === "BNB"){
-                return {
-                    state: ZapCallbackState.VALID,
-                    callback: async () => {
-                        const zapIn = await zapContract.zapIn(to, router, account, {value: amountToProcess})
-                        return zapIn
-                    },
-                    error: null
-                }
-            }
+        if(!zapContract || !router || !amountToProcess || !fromAddress || !toAddress || !to || !currencyBalance || amountToProcess === "NaN") {
             return {
                 state: ZapCallbackState.INVALID,
                 callback: null,
                 error: "Missing dependencies"
+            }
+        }
+        if(JSBI.greaterThan(amount?.raw, currencyBalance?.raw)){
+            return {
+                state: ZapCallbackState.INVALID,
+                callback: null,
+                error: 'Invalid input amount'
+            }
+        }
+        if(fromAddress?.symbol === "FTM" || fromAddress?.symbol === "BNB"){
+            return {
+                state: ZapCallbackState.VALID,
+                callback: async () => {
+                    const zapIn = await zapContract.zapIn(to, router, account, {value: amountToProcess})
+                    return zapIn
+                },
+                error: null
             }
         }
         return {
@@ -67,7 +75,7 @@ export function useZapInToken(fromAddress: Currency, toAddress: Pair, amount: Cu
             },
             error: null
         }
-    }, [zapContract, account, router, amountToProcess, fromAddress, toAddress, from, to])
+    }, [zapContract, account, router, amountToProcess, fromAddress, toAddress, from, to, currencyBalance, amount])
 }
 
 export function useZapOutToken(fromAddress: Pair, toAddress: Currency, amount: CurrencyAmount) {

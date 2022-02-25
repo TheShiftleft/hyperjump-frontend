@@ -6,13 +6,13 @@ import { getAddress } from 'utils/addressHelpers'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
-import { PairState, usePair, usePairs } from 'data/Reserves'
+import { usePair, usePairs } from 'data/Reserves'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useEstimateZapInToken } from 'hooks/useZap'
 import { useTotalSupply } from 'data/TotalSupply'
 import { wrappedCurrencyAmount } from 'utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
-import { useCurrency, useToken } from '../../hooks/Tokens'
+import { useCurrency } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
 import { replaceZapState, typeInput, Field, selectCurrency, selectPair } from './actions'
@@ -130,11 +130,11 @@ export function useDerivedZapInfo(): {
   const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
   let estimate = useEstimateZapInToken(currencyInput, pairToken, parsedAmount)
   const estimates = useMemo(() => {
-    return estimate && parsedAmount ? [
+    return estimate && parsedAmount && (currencyInput?.symbol !== 'BNB' && currencyInput?.symbol !== 'FTM') ? [
       new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),
       new TokenAmount(pairToken?.token1 ?? undefined, JSBI.BigInt(estimate[1] ? estimate[1].toString() : 0))
     ] : [undefined, undefined]
-  }, [estimate, pairToken, parsedAmount]) 
+  }, [estimate, pairToken, parsedAmount, currencyInput]) 
   
   const liquidityMinted = useMemo(() => {
     const [estimate0, estimate1] = estimates

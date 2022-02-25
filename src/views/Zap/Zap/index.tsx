@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
-import { CurrencyAmount, Token, TokenAmount } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, Token } from '@hyperjump-defi/sdk'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
@@ -17,9 +17,8 @@ import Loader from 'components/Loader'
 import { useApproveCallbackFromZap, ApprovalState } from 'hooks/useApproveCallback'
 import { useDerivedZapInfo, useZapActionHandlers, useZapDefaultState, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
-import {useZapInToken, useEstimateZapInToken} from 'hooks/useZap'
+import {useZapInToken, ZapCallbackState} from 'hooks/useZap'
 import useToast from 'hooks/useToast'
-import { BIG_ZERO } from 'utils/bigNumber'
 import { WrappedTokenInfo } from 'state/lists/hooks'
 import useHttpLocations from 'hooks/useHttpLocations'
 
@@ -45,9 +44,9 @@ const Zap = () => {
     const { callback: zapCallback, error: swapCallbackError, state: zapState } = useZapInToken(
         currencyInput, // JUMP
         pairOutput, // JUMP - FTM
-        parsedAmounts[Field.INPUT]
+        parsedAmounts[Field.INPUT],
+        currencyBalances[Field.INPUT]
       )
-      
     const token0 = estimates[0] ?? undefined
     const token1 = estimates[1] ?? undefined
 
@@ -226,7 +225,7 @@ const Zap = () => {
                             :
                             <Button
                                 width="100%"
-                                disabled={false}
+                                disabled={!(zapState === ZapCallbackState.VALID)}
                                 variant='primary'
                                 onClick={() => handleZapCallback()}
                                 >
