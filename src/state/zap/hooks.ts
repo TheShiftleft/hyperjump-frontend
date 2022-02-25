@@ -9,6 +9,8 @@ import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { PairState, usePair, usePairs } from 'data/Reserves'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useEstimateZapInToken } from 'hooks/useZap'
+import { useTotalSupply } from 'data/TotalSupply'
+import { wrappedCurrencyAmount } from 'utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useCurrency, useToken } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
@@ -99,16 +101,17 @@ export function useDerivedZapInfo(): {
   pairCurrency: Currency
   currencyBalances: { [field in Field]?: CurrencyAmount },
   parsedAmount: CurrencyAmount | undefined,
-  estimates: TokenAmount[] | undefined
+  estimates: TokenAmount[] | undefined,
+  liquidityMinted: TokenAmount
   } {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const {
     field,
     typedValue,
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { pairId: outputPairId }
   } = useZapState();
-  const inputCurrency = useCurrency(inputCurrencyId)
+  const currencyInput = useCurrency(inputCurrencyId)
   const trackedTokenPairs = useTrackedTokenPairs()
   const tokenPairsWithLiquidityTokens = useMemo(
     () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
@@ -119,21 +122,34 @@ export function useDerivedZapInfo(): {
 
   const pairToken = allV2PairsWithLiquidity.find(pair => pair.liquidityToken.address === outputPairId)
   const [,pairOutput] = usePair(pairToken?.token0, pairToken?.token1)
+  const totalSupply = useTotalSupply(pairOutput?.liquidityToken)
   const pairCurrency = useCurrency(outputPairId)
-  const currencyInput = inputCurrency
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
-    inputCurrency ?? undefined
+    currencyInput ?? undefined
   ])
-  const isExactIn: boolean = field === Field.INPUT
-  const parsedAmount = tryParseAmount(typedValue, (inputCurrency) ?? undefined)
-  const estimate = useEstimateZapInToken(inputCurrency, pairToken, parsedAmount)
-  const estimates = estimate ? [
-    new TokenAmount(pairToken?.token0, JSBI.BigInt(estimate[0] ? estimate[0].toString() : undefined)),
-    new TokenAmount(pairToken?.token1, JSBI.BigInt(estimate[1] ? estimate[1].toString() : undefined))
-  ] : []
+  const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
+  let estimate = useEstimateZapInToken(currencyInput, pairToken, parsedAmount)
+  const estimates = useMemo(() => {
+    return estimate && parsedAmount ? [
+      new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),
+      new TokenAmount(pairToken?.token1 ?? undefined, JSBI.BigInt(estimate[1] ? estimate[1].toString() : 0))
+    ] : [undefined, undefined]
+  }, [estimate, pairToken, parsedAmount]) 
+  
+  const liquidityMinted = useMemo(() => {
+    const [estimate0, estimate1] = estimates
+    const [tokenAmountA, tokenAmountB] = [
+      wrappedCurrencyAmount(estimate0, chainId),
+      wrappedCurrencyAmount(estimate1, chainId),
+    ]
+    if (pairOutput && totalSupply && tokenAmountA && tokenAmountB) {
+      return pairOutput.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB)
+    }
+    return undefined
+  }, [ chainId, pairOutput, totalSupply, estimates])
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0]
   }
 
-  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates};
+  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted};
 }

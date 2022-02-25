@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
-import { CurrencyAmount, Token } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, Token, TokenAmount } from '@hyperjump-defi/sdk'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
@@ -34,7 +34,7 @@ const Zap = () => {
     const { toastSuccess, toastError } = useToast()
     useZapDefaultState()
     const {field} = useZapState()
-    const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates} = useDerivedZapInfo()
+    const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted} = useDerivedZapInfo()
     const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
     const parsedAmounts =  {
         [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
@@ -176,30 +176,30 @@ const Zap = () => {
                                 </IconButton>
                             </AutoColumn>
                             <CurrencyInputPanel
-                                label='Out'
-                                value={parsedAmounts[Field.OUTPUT]?.toSignificant(6)}
+                                label={liquidityMinted ? 'Out (Estimated)' : 'Out'}
+                                value={liquidityMinted ? liquidityMinted?.toSignificant(6) : "0"}
                                 currency={pairCurrency}
                                 pair={pairOutput}
                                 onPairSelect={handleOutputPairSelect}
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
                                 disabledNumericalInput
-                                hideInput
+                                
                                 id="zap-currency-input"
                                 pairToken
                             />
-                            {estimates.length !== 0 ?
+                            {token0 && token1 ?
                                 <Card padding=".25rem .75rem 0 .75rem" borderRadius="20px">
                                     <AutoColumn justify='center' gap='5px'>
-                                        <Text fontSize="16px" color='primary' bold>Estimate</Text>
+                                        <Text fontSize="16px" color='primary' bold>Estimated</Text>
                                         <AutoRow>
                                             <StyledLogo size="25px" srcs={srcs0} alt={`${token0?.currency?.symbol ?? 'token'} logo`} style={{ borderRadius: '20px', marginRight: '10px'}} />
-                                            <Text fontSize="14px" marginRight="10px">{token0?.currency?.symbol} :</Text>
+                                            <Text fontSize="14px" marginRight="10px">{token0?.currency?.symbol} Deposited :</Text>
                                             <Text fontSize="14px">{token0?.toSignificant(6)}</Text>
                                         </AutoRow>
                                         <AutoRow>
                                             <StyledLogo size="25px" srcs={srcs1} alt={`${token0?.currency?.symbol ?? 'token'} logo`} style={{ borderRadius: '20px', marginRight: '10px'}} />
-                                            <Text fontSize="14px" marginRight="10px">{token1?.currency?.symbol} :</Text>
+                                            <Text fontSize="14px" marginRight="10px">{token1?.currency?.symbol} Deposited :</Text>
                                             <Text fontSize="14px">{token1?.toSignificant(6)}</Text>
                                         </AutoRow>
                                     </AutoColumn>

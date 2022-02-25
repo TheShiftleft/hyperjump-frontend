@@ -16,7 +16,7 @@ export function useEstimateZapInToken(currencyInput: Currency, pairOutput: Pair,
      {
     const zapContract = useZapContract()
     const router = getRouterAddress()
-    const amountToProcess = new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString()
+    const amountToProcess = amount ? new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString() : undefined
     const from = currencyInput instanceof Token ? currencyInput.address : undefined
     const to = pairOutput?.liquidityToken?.address
     const [estimate, setEstimate] = useState<BigNumber[]>()
