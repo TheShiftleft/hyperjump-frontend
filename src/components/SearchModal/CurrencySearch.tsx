@@ -56,7 +56,7 @@ export function CurrencySearch({
   isOpen,
   onChangeList,
   zap,
-  warp
+  warp,
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -70,12 +70,14 @@ export function CurrencySearch({
   const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : []
   const pairs = zapPairs[config.network]
 
-  const allTokens = zap ? Object.keys(tokens).filter(key => zwTokens.includes(key))
-      .reduce((obj, key) => {
-        obj[key] = tokens[key]
-        return obj
-      }, {})
-      : tokens
+  const allTokens = zap
+    ? Object.keys(tokens)
+        .filter((key) => zwTokens.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = tokens[key]
+          return obj
+        }, {})
+    : tokens
 
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)

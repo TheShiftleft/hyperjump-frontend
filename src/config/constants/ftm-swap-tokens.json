@@ -15,6 +15,14 @@
       "logoURI": "https://tokens.hyperswap.fi/images/0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83.png"
     },
     {
+      "name": "HyperJump",
+      "address": "0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73",
+      "symbol": "JUMP",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73.png"
+    },
+    {
       "name": "HyperAurora",
       "address": "0xbc2451AaD349b6B43FD05F4F0cC327F8A6bcA2d4",
       "symbol": "AURORA",
@@ -41,7 +49,7 @@
     {
       "name": "Binance Coin",
       "address": "0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454",
-      "symbol": "wBNB",
+      "symbol": "BNB",
       "decimals": 18,
       "chainId": 250,
       "logoURI": "https://tokens.hyperswap.fi/images/0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454.png"
@@ -109,6 +117,14 @@
       "decimals": 18,
       "chainId": 250,
       "logoURI": "https://tokens.hyperswap.fi/images/0x1E4F97b9f9F913c46F1632781732927B9019C68b.png"
+    },
+    {
+      "name": "Shadow Token",
+      "address": "0x4E8348FDd1B6619a95334Fe08a82872047154Cb3",
+      "symbol": "SHADOW",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x4E8348FDd1B6619a95334Fe08a82872047154Cb3.png"
     },
     {
       "name": "Band",
@@ -269,6 +285,78 @@
       "decimals": 8,
       "chainId": 250,
       "logoURI": "https://tokens.hyperswap.fi/images/0xc3fEd6eB39178A541D274e6Fc748d48f0Ca01CC3.png"
+    },
+    {
+      "name": "Boo",
+      "address": "0x841FAD6EAe12c286d1Fd18d1d525DFfA75C7EFFE",
+      "symbol": "BOO",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x841FAD6EAe12c286d1Fd18d1d525DFfA75C7EFFE.png"
+    },
+    {
+      "name": "Wild",
+      "address": "0xAe0C241Ec740309c2cbdc27456eB3C1a2aD74737",
+      "symbol": "WILD",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0xAe0C241Ec740309c2cbdc27456eB3C1a2aD74737.png"
+    },
+    {
+      "name": "Strange Brew",
+      "address": "0x3853F3839ca1655AcC8c433EEF8C086F9895d0BF",
+      "symbol": "SBRW",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x3853F3839ca1655AcC8c433EEF8C086F9895d0BF.png"
+    },
+    {
+      "name": "Synfin",
+      "address": "0x1BCF4DC879979C68fA255f731FE8Dcf71970c9bC",
+      "symbol": "SYF",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x1BCF4DC879979C68fA255f731FE8Dcf71970c9bC.png"
+    },
+    {
+      "name": "Atari Token",
+      "address": "0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b",
+      "symbol": "ATARI",
+      "decimals": 0,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b.png"
+    },
+    {
+      "name": "Scream",
+      "address": "0xe0654C8e6fd4D733349ac7E09f6f23DA256bF475",
+      "symbol": "SCREAM",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x6D494E0C2717998D7DAE88E644Fb80F8dC94483d.png"
+    },
+    {
+      "name": "Bolt Dollar",
+      "address": "0x4792C1EcB969B036eb51330c63bD27899A13D84e",
+      "symbol": "BTD",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0xD1102332a213E21faF78B69C03572031F3552c33.png"
+    },
+    {
+      "name": "Magic Internet Money",
+      "address": "0x82f0B8B456c1A451378467398982d4834b6829c1",
+      "symbol": "MIM",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x82f0B8B456c1A451378467398982d4834b6829c1.png"
+    },
+    {
+      "name": "Avalanche",
+      "address": "0x511D35c52a3C244E7b8bd92c0C297755FbD89212",
+      "symbol": "AVAX",
+      "decimals": 18,
+      "chainId": 250,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x511D35c52a3C244E7b8bd92c0C297755FbD89212.png"
     }
   ]
 }

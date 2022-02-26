@@ -27,6 +27,14 @@
       "logoURI": "https://tokens.hyperswap.fi/images/0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd.png"
     },
     {
+      "name": "HyperJump",
+      "address": "0x130025eE738A66E691E6A7a62381CB33c6d9Ae83",
+      "symbol": "JUMP",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x130025eE738A66E691E6A7a62381CB33c6d9Ae83.png"
+    },
+    {
       "name": "Siphon",
       "address": "0xb58a579e8f987b52564A5fE08Fe5181dc2621a9c",
       "symbol": "SPHN",
@@ -377,6 +385,14 @@
       "decimals": 18,
       "chainId": 56,
       "logoURI": "https://tokens.hyperswap.fi/images/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d.png"
+    },
+    {
+      "name": "Krown",
+      "address": "0x1446f3CEdf4d86a9399E49f7937766E6De2A3AAB",
+      "symbol": "KRW",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x1446f3CEdf4d86a9399E49f7937766E6De2A3AAB.png"
     },
     {
       "name": "yearn.finance",
@@ -1529,6 +1545,62 @@
       "decimals": 8,
       "chainId": 56,
       "logoURI": "https://tokens.hyperswap.fi/images/0xA164B067193bd119933e5C1e7877421FCE53D3E5.png"
+    },
+    {
+      "name": "Fish",
+      "address": "0xD47c524ae4Cf0f941D0Dd03b44CD9C80dd4238d6",
+      "symbol": "FISH",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0xD47c524ae4Cf0f941D0Dd03b44CD9C80dd4238d6.png"
+    },
+    {
+      "name": "Chips",
+      "address": "0x7a4Feb21b86281F7D345dEDE500c9C51881b948B",
+      "symbol": "CHIPS",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x7a4Feb21b86281F7D345dEDE500c9C51881b948B.png"
+    },
+    {
+      "name": "Axie Infinity",
+      "address": "0x715D400F88C167884bbCc41C5FeA407ed4D2f8A0",
+      "symbol": "AXS",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x715D400F88C167884bbCc41C5FeA407ed4D2f8A0.png"
+    },
+    {
+      "name": "HERO",
+      "address": "0x9B26e16377ad29A6CCC01770bcfB56DE3A36d8b2",
+      "symbol": "HERO",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x9B26e16377ad29A6CCC01770bcfB56DE3A36d8b2.png"
+    },
+    {
+      "name": "Fantom",
+      "address": "0xAD29AbB318791D579433D831ed122aFeAf29dcfe",
+      "symbol": "FTM",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0xAD29AbB318791D579433D831ed122aFeAf29dcfe.png"
+    },
+    {
+      "name": "GLITCH PROTOCOL",
+      "address": "0xF0902eB0049A4003793BAb33F3566A22D2834442",
+      "symbol": "GLCH",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0xF0902eB0049A4003793BAb33F3566A22D2834442.png"
+    },
+    {
+      "name": "Avalanche",
+      "address": "0x1CE0c2827e2eF14D5C4f29a091d735A204794041",
+      "symbol": "AVAX",
+      "decimals": 18,
+      "chainId": 56,
+      "logoURI": "https://tokens.hyperswap.fi/images/0x1CE0c2827e2eF14D5C4f29a091d735A204794041.png"
     }
   ]
 }

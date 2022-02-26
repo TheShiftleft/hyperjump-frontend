@@ -67,7 +67,7 @@ export default function TokenLogo({ address, header = false, size = '24px', ...r
     )
   }
 
-  const path = `https://tokens.thugs.fi/images/${isAddress(
+  const path = `https://tokens.hyperjump.app/images/${isAddress(
     address
   )}.png`
 

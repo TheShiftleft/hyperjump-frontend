@@ -101,7 +101,7 @@ export function useInactiveListener(suppress = false) {
 export function useColor(tokenAddress, token) {
   const [color, setColor] = useState('#2172E5')
   if (tokenAddress) {
-    const path = `https://tokens.thugs.fi/images/${isAddress(tokenAddress)}.png`
+    const path = `https://tokens.hyperjump.app/images/${isAddress(tokenAddress)}.png`
     if (path) {
       Vibrant.from(path).getPalette((err, palette) => {
         if (palette && palette.Vibrant) {

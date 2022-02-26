@@ -21,6 +21,8 @@ import { AutoRow } from 'components/Row'
 const Warp = () => {
     useWarpDefaultState()
     const { toastSuccess, toastError } = useToast()
+    const [input, setInput] = useState('')
+    const [inputCurrency, setInputCurrency] = useState()
     const {field} = useWarpState()
     const [outputCurrency, setOutputCurrencySelected] = useState()
     const {pairInput, pairBalance, pairCurrency, currencyOutput, parsedAmount} = useDerivedWarpInfo()

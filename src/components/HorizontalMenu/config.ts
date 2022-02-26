@@ -25,9 +25,14 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         target: '_self',
       },
       {
-        label: t('Convert & Claim'),
-        //        icon: 'ConvertIcon',
-        href: '/convert',
+        label: t('Zap & Warp'),
+        href: '/zap',
+        target: '_self',
+      },
+      {
+        label: t('Vortex Bridge'),
+        // icon: 'BridgeIcon',
+        href: '/bridge',
         target: '_self',
       },
       {
@@ -37,9 +42,9 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         target: '_self',
       },
       {
-        label: t('Vortex Bridge'),
-        // icon: 'BridgeIcon',
-        href: '/bridge',
+        label: t('Convert & Claim'),
+        //        icon: 'ConvertIcon',
+        href: '/convert',
         target: '_self',
       },
     ],

@@ -82,7 +82,7 @@ export function useTokenList(url: string | undefined): TokenAddressMap {
     try {
       return listToTokenMap(current)
     } catch (error) {
-      console.error('Could not show token list due to error', error)
+      console.error('Could not show token list due to error', lists[url], error)
       return EMPTY_LIST
     }
   }, [lists, url])
