@@ -29,7 +29,7 @@ const Converter = () => {
   const convertedmechTokenValue = getBalanceNumber(mechTokenBalance)
   const balance = getBalanceNumber(mechTokenBalance)
   const { account } = useWeb3React()
-  const imageSrc = 'https://tokens.hyperswap.fi/images/0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73.png'
+  const imageSrc = 'https://tokens.hyperjump.app/images/0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73.png'
   const { onMigrate } = useMechMigrate(account)
 
   return (

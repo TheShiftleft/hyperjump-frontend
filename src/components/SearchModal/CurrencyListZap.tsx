@@ -23,10 +23,14 @@ import { isAddress, isTokenOnList } from '../../utils'
 
 function pairKey(pair: Pair): string {
   const { config } = getNetwork()
-  return pair ? pair.liquidityToken.address : pair.liquidityToken === config.baseCurrency ? config.networkToken.symbol : ''
+  return pair
+    ? pair.liquidityToken.address
+    : pair.liquidityToken === config.baseCurrency
+    ? config.networkToken.symbol
+    : ''
 }
 
-const getTokenLogoURL = (address: string) => `https://tokens.hyperswap.fi/images/${address}.png`
+const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
@@ -71,7 +75,7 @@ const Container = styled.div`
   }
 `
 
-const LogoContainer = styled.div<{size: string}>`
+const LogoContainer = styled.div<{ size: string }>`
   position: relative;
   width: ${({ size }) => size};
   height: ${({ size }) => size};
@@ -131,7 +135,7 @@ function CurrencyRow({
   zap: boolean
 }) {
   const { account, chainId } = useActiveWeb3React()
-  const {token0, token1} = pair
+  const { token0, token1 } = pair
   const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(pair.liquidityToken.address)
   const key = pairKey(pair)
@@ -152,11 +156,26 @@ function CurrencyRow({
         return [
           ...uriLocations0,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
-          getTokenLogoURL(token0?.symbol.toLowerCase() === "wftm" ? "FTM" : token0?.symbol.toLowerCase() === "bnb" ? "BNB" : token0?.address),
+          getTokenLogoURL(
+            token0?.symbol.toLowerCase() === 'wftm'
+              ? 'FTM'
+              : token0?.symbol.toLowerCase() === 'bnb'
+              ? 'BNB'
+              : token0?.address,
+          ),
         ]
       }
 
-      return [`/images/tokens/${token0?.address ?? 'token'}.png`, getTokenLogoURL(token0?.symbol.toLowerCase() === "wftm" ? "FTM" : token0?.symbol.toLowerCase() === "bnb" ? "BNB" : token0?.address)]
+      return [
+        `/images/tokens/${token0?.address ?? 'token'}.png`,
+        getTokenLogoURL(
+          token0?.symbol.toLowerCase() === 'wftm'
+            ? 'FTM'
+            : token0?.symbol.toLowerCase() === 'bnb'
+            ? 'BNB'
+            : token0?.address,
+        ),
+      ]
     }
     return []
   }, [token0, uriLocations0])
@@ -167,11 +186,26 @@ function CurrencyRow({
         return [
           ...uriLocations1,
           `/images/tokens/${token1?.address ?? 'token'}.png`,
-          getTokenLogoURL(token1?.symbol.toLowerCase() === "wftm" ? "FTM" : token1?.symbol.toLowerCase() === "bnb" ? "BNB" : token1?.address),
+          getTokenLogoURL(
+            token1?.symbol.toLowerCase() === 'wftm'
+              ? 'FTM'
+              : token1?.symbol.toLowerCase() === 'bnb'
+              ? 'BNB'
+              : token1?.address,
+          ),
         ]
       }
 
-      return [`/images/tokens/${token1?.address ?? 'token'}.png`, getTokenLogoURL(token1?.symbol.toLowerCase() === "wftm" ? "FTM" : token1?.symbol.toLowerCase() === "bnb" ? "BNB" : token1?.address)]
+      return [
+        `/images/tokens/${token1?.address ?? 'token'}.png`,
+        getTokenLogoURL(
+          token1?.symbol.toLowerCase() === 'wftm'
+            ? 'FTM'
+            : token1?.symbol.toLowerCase() === 'bnb'
+            ? 'BNB'
+            : token1?.address,
+        ),
+      ]
     }
     return []
   }, [token1, uriLocations1])
@@ -187,13 +221,22 @@ function CurrencyRow({
       key={key}
     >
       <LogoContainer size="40px">
-        <StyledLogo size="40px" srcs={srcs0} alt={`${token0?.symbol ?? 'token'} logo`} style={{position: 'absolute', borderRadius: '20px'}} />
-        <StyledLogo  size="20px" srcs={srcs1} alt={`${token1?.symbol ?? 'token'} logo`} style={{ position: 'absolute', bottom: 0, right: 0, borderRadius: '10px' }}/>
+        <StyledLogo
+          size="40px"
+          srcs={srcs0}
+          alt={`${token0?.symbol ?? 'token'} logo`}
+          style={{ position: 'absolute', borderRadius: '20px' }}
+        />
+        <StyledLogo
+          size="20px"
+          srcs={srcs1}
+          alt={`${token1?.symbol ?? 'token'} logo`}
+          style={{ position: 'absolute', bottom: 0, right: 0, borderRadius: '10px' }}
+        />
       </LogoContainer>
 
       <Column>
         <Text title={`${token0.name} - ${token1.name}`}>{pairSymbol}</Text>
-        
       </Column>
       <TokenTags currency={pairCurrency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
@@ -211,7 +254,7 @@ export default function CurrencyListZap({
   otherCurrency,
   fixedListRef,
   showETH,
-  zap
+  zap,
 }: {
   height: number
   pairs: Pair[]
@@ -224,25 +267,21 @@ export default function CurrencyListZap({
 }) {
   const { config } = getNetwork()
 
-  const itemData = useMemo(() => (zap ? pairs : showETH ? [config.baseCurrency, ...pairs] : [...pairs]), [config.baseCurrency, pairs, showETH, zap])
+  const itemData = useMemo(
+    () => (zap ? pairs : showETH ? [config.baseCurrency, ...pairs] : [...pairs]),
+    [config.baseCurrency, pairs, showETH, zap],
+  )
 
   const Row = useCallback(
     ({ data, index, style }) => {
       const pair: Pair = data[index]
-      const isSelected = Boolean(selectedPair && (pair.liquidityToken.address === selectedPair.liquidityToken.address))
+      const isSelected = Boolean(selectedPair && pair.liquidityToken.address === selectedPair.liquidityToken.address)
       const handleSelect = () => onPairSelect(pair)
       return (
-        <CurrencyRow
-          key={index}
-          style={style}
-          pair={pair}
-          isSelected={isSelected}
-          onSelect={handleSelect}
-          zap={zap}
-        />
+        <CurrencyRow key={index} style={style} pair={pair} isSelected={isSelected} onSelect={handleSelect} zap={zap} />
       )
     },
-    [onPairSelect, zap, selectedPair]
+    [onPairSelect, zap, selectedPair],
   )
 
   const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])
