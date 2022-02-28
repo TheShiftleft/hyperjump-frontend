@@ -105,3 +105,36 @@ export function useZapOutToken(fromAddress: Pair, toAddress: Currency, amount: C
         }
     }, [zapContract, account, router, amountToProcess, fromAddress, toAddress, from, to])
 }
+
+export function useZapAcross(address: Pair, pairBalance: CurrencyAmount, amount: CurrencyAmount) {
+    const { account } = useActiveWeb3React()
+    const zapContract = useZapContract()
+    const router = getRouterAddress()
+    const amountToProcess = new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString()
+    const from = address?.liquidityToken?.address
+    return useMemo(() => {
+        if(!zapContract || !router || !amountToProcess || !address || !from || !pairBalance || !amount) {
+            return {
+                state: ZapCallbackState.INVALID,
+                callback: null,
+                error: "Missing dependencies"
+            }
+        }
+        if(JSBI.greaterThan(amount?.raw, pairBalance?.raw)){
+            return {
+                state: ZapCallbackState.INVALID,
+                callback: null,
+                error: 'Invalid input amount'
+            }
+        }
+        return {
+            state: ZapCallbackState.VALID,
+            callback: async () => {
+                
+                const zapAccross = await zapContract.zapAcross(from, amountToProcess, router, account)
+                return zapAccross
+            },
+            error: null
+        }
+    }, [zapContract, account, router, amountToProcess, from, address, pairBalance, amount])
+}

@@ -15,11 +15,15 @@ import { Field } from 'state/swap/actions'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { CurrencyAmount } from '@hyperjump-defi/sdk'
 import { ApprovalState, useApproveCallbackFromZap } from 'hooks/useApproveCallback'
-import { useZapOutToken } from 'hooks/useZap'
+import { useZapAcross, useZapOutToken, ZapCallbackState } from 'hooks/useZap'
 import { AutoRow } from 'components/Row'
+import { useCurrencyBalance } from 'state/wallet/hooks'
+import { useActiveWeb3React } from 'hooks'
+import { usePairContract } from 'hooks/useContract'
 
 const Warp = () => {
     useWarpDefaultState()
+    const { account } = useActiveWeb3React()
     const { toastSuccess, toastError } = useToast()
     const {field} = useWarpState()
     const [outputCurrency, setOutputCurrencySelected] = useState()
@@ -30,10 +34,9 @@ const Warp = () => {
     const [approval, approveCallback] = useApproveCallbackFromZap(pairBalance)
     const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
     const showApproval = useMemo(() => { return approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)}, [approval, approvalSubmitted]) 
-
-    const { callback: zapCallback, error: swapCallbackError, state: zapState} = useZapOutToken(
+    const { callback: zapCallback, error: swapCallbackError, state: zapState} = useZapAcross(
         pairInput,
-        currencyOutput,
+        pairBalance,
         parsedAmount
     )
 
@@ -140,7 +143,7 @@ const Warp = () => {
                             :
                             <Button
                                 width="100%"
-                                disabled={false}
+                                disabled={!(zapState === ZapCallbackState.VALID)}
                                 variant='primary'
                                 onClick={() => handleZapCallback()}
                                 >

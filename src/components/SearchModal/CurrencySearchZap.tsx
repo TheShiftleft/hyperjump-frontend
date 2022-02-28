@@ -12,6 +12,7 @@ import { usePair, usePairs } from 'data/Reserves'
 import getNetwork from 'utils/getNetwork'
 import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
 import zapPairs from 'config/constants/zap'
+import { usePairContract, useTokenContract } from 'hooks/useContract'
 import { useActiveWeb3React } from '../../hooks'
 import { AppState } from '../../state'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
@@ -90,7 +91,6 @@ export default function CurrencySearchZap({
   // if they input an address, use it
   const isAddressSearch = isAddress(searchQuery)
   const searchToken = useToken(searchQuery)
-
   const showETH: boolean = useMemo(() => {
     const s = searchQuery.toLowerCase().trim()
     return config.networkToken.symbol.toLowerCase().startsWith(s)
