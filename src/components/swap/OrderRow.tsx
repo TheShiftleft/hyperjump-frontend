@@ -90,9 +90,10 @@ export default function OrderRow({ order, account, chainId }: OrderRowProps) {
   const outAmount = order?.minReturn
   const outputToken = useToken(order?.outputToken)
   const outputDecimals = outputToken?.decimals * -1 > 0 ? outputToken?.decimals * -1 : -18
-  const parsedInputAmount = new BigNumber(inAmount).shiftedBy(inputDecimals).toPrecision(4)
-  const parsedMinReturn = new BigNumber(outAmount).shiftedBy(outputDecimals).toPrecision(4)
-  const limitPriceAmount = parsedInputAmount / parsedMinReturn
+  const parsedInputAmount = new BigNumber(inAmount).shiftedBy(inputDecimals).toNumber()
+  const parsedMinReturn = new BigNumber(outAmount).shiftedBy(outputDecimals).toNumber()
+  const limitPrice = parsedInputAmount / parsedMinReturn
+  const limitPriceAmount = limitPrice.toFixed(6)
   const transactionURL =
     config.network === 'FTM'
       ? `${BASE_FTM_SCAN_URL}/tx/${order?.createdTxHash}`
