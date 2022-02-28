@@ -68,11 +68,10 @@ export function CurrencySearch({
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
   const tokens = useAllTokens()
   const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : []
-  const pairs = zapPairs[config.network]
 
   const allTokens = zap
     ? Object.keys(tokens)
-        .filter((key) => zwTokens.includes(key))
+        .filter((key) => !zwTokens.includes(key))
         .reduce((obj, key) => {
           obj[key] = tokens[key]
           return obj

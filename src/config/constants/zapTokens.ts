@@ -1,7 +1,7 @@
 import tokens from './tokens'
 
-const { jump, ...removeJumpFromTokenList } = tokens
+const { jump } = tokens
 
 export default {
-  ...removeJumpFromTokenList,
+  jump,
 }

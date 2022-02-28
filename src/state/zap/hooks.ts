@@ -25,7 +25,7 @@ export function useZapDefaultState(): {inputCurrencyId: string | undefined, outp
     const { account, chainId } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const pairs = zapPairs[config.network]
-    const inputCurrencyId = getAddress(config.wrappedNetworkToken.address)
+    const inputCurrencyId = config.networkToken.symbol
     const inputCurrency = useCurrency(inputCurrencyId)
     const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [inputCurrency ?? undefined])
     const maxInput = maxAmountSpend(relevantTokenBalances[0])?.toExact()
