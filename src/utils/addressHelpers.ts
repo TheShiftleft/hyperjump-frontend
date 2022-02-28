@@ -18,7 +18,7 @@ export const getAddress = (address: Address): string => {
 
 export const getZapTokens = () => {
   const zap = Object.keys(zapTokens).map((key, index) => {
-    return getAddress(zapTokens[key])
+    return getAddress(zapTokens[key].address)
   })
   return zap
 }
