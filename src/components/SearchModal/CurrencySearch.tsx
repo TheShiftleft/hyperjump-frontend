@@ -36,7 +36,6 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   onChangeList: () => void
   zap?: boolean
-  warp?: boolean
 }
 
 const ColumnWBorder = styled.div`
@@ -55,8 +54,7 @@ export function CurrencySearch({
   onDismiss,
   isOpen,
   onChangeList,
-  zap,
-  warp,
+  zap
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -67,7 +65,7 @@ export function CurrencySearch({
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
   const tokens = useAllTokens()
-  const zwTokens = zap ? getZapTokens() : warp ? getWarpTokens() : []
+  const zwTokens = zap ? getZapTokens() : []
 
   const allTokens = zap
     ? Object.keys(tokens)

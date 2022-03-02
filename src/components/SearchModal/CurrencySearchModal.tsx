@@ -6,6 +6,7 @@ import { useSelectedListUrl } from '../../state/lists/hooks'
 import Modal from '../Modal'
 import { CurrencySearch } from './CurrencySearch'
 import CurrencySearchZap from './CurrencySearchZap'
+import CurrencySearchWarp from './CurrencySearchWarp'
 import { ListSelect } from './ListSelect'
 
 interface CurrencySearchModalProps {
@@ -84,6 +85,16 @@ export default function CurrencySearchModal({
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
           zap={zap}
+        />
+      ) : warp ? (
+        <CurrencySearchWarp
+          isOpen={isOpen}
+          onDismiss={onDismiss}
+          onPairSelect={handlePairSelect}
+          onChangeList={handleClickChangeList}
+          selectedPair={selectedPair}
+          otherSelectedCurrency={otherSelectedCurrency}
+          showCommonBases={false}
           warp={warp}
         />
       ) : noListSelected ? (
@@ -96,7 +107,6 @@ export default function CurrencySearchModal({
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
           zap={zap}
-          warp={warp}
         />
       ) : (
         <CurrencySearch
@@ -108,7 +118,6 @@ export default function CurrencySearchModal({
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
           zap={zap}
-          warp={warp}
         />
       )}
     </Modal>

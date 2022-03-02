@@ -13,6 +13,7 @@ import getNetwork from 'utils/getNetwork'
 import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
 import zapPairs from 'config/constants/zap'
 import { usePairContract, useTokenContract } from 'hooks/useContract'
+import { useOtherLpsCurrency } from 'hooks/useOtherLps'
 import { useActiveWeb3React } from '../../hooks'
 import { AppState } from '../../state'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
@@ -40,7 +41,6 @@ interface CurrencySearchProps {
   showCommonBases?: boolean
   onChangeList: () => void
   zap?: boolean
-  warp?: boolean
 }
 
 const ColumnWBorder = styled.div`
@@ -59,8 +59,7 @@ export default function CurrencySearchZap({
   onDismiss,
   isOpen,
   onChangeList,
-  zap,
-  warp
+  zap
 }: CurrencySearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()

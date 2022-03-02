@@ -15,11 +15,9 @@ import { Field } from 'state/swap/actions'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { CurrencyAmount } from '@hyperjump-defi/sdk'
 import { ApprovalState, useApproveCallbackFromZap } from 'hooks/useApproveCallback'
-import { useZapAcross, useZapOutToken, ZapCallbackState } from 'hooks/useZap'
+import { useZapAcross, ZapCallbackState } from 'hooks/useZap'
 import { AutoRow } from 'components/Row'
-import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
-import { usePairContract } from 'hooks/useContract'
 
 const Warp = () => {
     useWarpDefaultState()
@@ -101,7 +99,7 @@ const Warp = () => {
                                 onPairSelect={handleInputPairSelect}
                                 onUserInput={handleTypeInput}
                                 id="warp-currency-input"
-                                pairToken
+                                warp
                             />
                             <AutoColumn justify='center'>
                                 <IconButton
