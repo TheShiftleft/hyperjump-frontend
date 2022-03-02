@@ -22,7 +22,7 @@ import Loader from '../Loader'
 import { isAddress, isTokenOnList } from '../../utils'
 
 
-interface LPToken {
+export interface LPToken {
     liquidityToken: Token
     balance: TokenAmount
     tokens: [Token, Token]
@@ -32,7 +32,7 @@ interface CurrencyListWarpProps {
     height: number
     lps: LPToken[]
     selectedPair?: Pair | null
-    onPairSelect: (pair: Pair) => void
+    onLPSelect: (lp: LPToken) => void
     otherCurrency?: Currency | null
     fixedListRef?: MutableRefObject<FixedSizeList | undefined>
     showETH: boolean
@@ -261,7 +261,7 @@ export default function CurrencyListWarp({
   height,
   lps,
   selectedPair,
-  onPairSelect,
+  onLPSelect,
   otherCurrency,
   fixedListRef,
   showETH,
@@ -278,12 +278,12 @@ export default function CurrencyListWarp({
     ({ data, index, style }) => {
       const lp: LPToken = data[index]
       const isSelected = Boolean(selectedPair && lp.liquidityToken.address === selectedPair.liquidityToken.address)
-    //   const handleSelect = () => onPairSelect(lp)
+      const handleSelect = () => onLPSelect(lp)
       return (
-        <CurrencyRow key={index} style={style} lp={lp} isSelected={isSelected} onSelect={() => console.info('select')} warp={warp} />
+        <CurrencyRow key={index} style={style} lp={lp} isSelected={isSelected} onSelect={handleSelect} warp={warp} />
       )
     },
-    [warp, selectedPair],
+    [warp, selectedPair, onLPSelect],
   )
 
   const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])

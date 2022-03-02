@@ -9,6 +9,7 @@ import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
+import { LPToken } from '../SearchModal/CurrencyListWarp'
 import { Input as NumericalInput } from '../NumericalInput'
 import { useActiveWeb3React } from '../../hooks'
 
@@ -76,6 +77,7 @@ interface CurrencyInputPanelProps {
   label?: string
   onCurrencySelect?: (currency: Currency) => void
   onPairSelect?: (pair: Pair) => void
+  onLPSelect?: (lp: LPToken) => void
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
@@ -98,6 +100,7 @@ export default function CurrencyInputPanel({
   label,
   onCurrencySelect,
   onPairSelect,
+  onLPSelect,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
@@ -189,12 +192,13 @@ export default function CurrencyInputPanel({
           </CurrencySelect>
         </InputRow>
       </Container>
-      {!disableCurrencySelect && (onCurrencySelect || onPairSelect) && (
+      {!disableCurrencySelect && (onCurrencySelect || onPairSelect || onLPSelect) && (
         <CurrencySearchModal
           isOpen={modalOpen}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
           onPairSelect={onPairSelect}
+          onLPSelect={onLPSelect}
           selectedCurrency={currency}
           selectedPair={pair}
           otherSelectedCurrency={otherCurrency}

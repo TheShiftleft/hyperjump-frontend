@@ -8,6 +8,7 @@ import { CurrencySearch } from './CurrencySearch'
 import CurrencySearchZap from './CurrencySearchZap'
 import CurrencySearchWarp from './CurrencySearchWarp'
 import { ListSelect } from './ListSelect'
+import { LPToken } from './CurrencyListWarp'
 
 interface CurrencySearchModalProps {
   isOpen: boolean
@@ -16,6 +17,7 @@ interface CurrencySearchModalProps {
   selectedPair?: Pair | null
   onCurrencySelect: (currency: Currency) => void
   onPairSelect?: (pairToken: Pair) => void
+  onLPSelect?: (lp: LPToken) => void
   otherSelectedCurrency?: Currency | null
   // eslint-disable-next-line react/no-unused-prop-types
   showCommonBases?: boolean
@@ -29,6 +31,7 @@ export default function CurrencySearchModal({
   onDismiss,
   onCurrencySelect,
   onPairSelect,
+  onLPSelect,
   selectedCurrency,
   selectedPair,
   otherSelectedCurrency,
@@ -61,6 +64,14 @@ export default function CurrencySearchModal({
     [onDismiss, onPairSelect]
   )
 
+  const handleLPSelect = useCallback(
+    (lp: LPToken) => {
+      onLPSelect(lp)
+      onDismiss()
+    },
+    [onDismiss, onLPSelect]
+  )
+
   const handleClickChangeList = useCallback(() => {
     setListView(true)
   }, [])
@@ -90,7 +101,7 @@ export default function CurrencySearchModal({
         <CurrencySearchWarp
           isOpen={isOpen}
           onDismiss={onDismiss}
-          onPairSelect={handlePairSelect}
+          onLPSelect={handleLPSelect}
           onChangeList={handleClickChangeList}
           selectedPair={selectedPair}
           otherSelectedCurrency={otherSelectedCurrency}

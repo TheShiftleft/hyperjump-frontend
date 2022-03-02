@@ -1,20 +1,21 @@
 import { Token, TokenAmount, Pair } from '@hyperjump-defi/sdk'
 import { useMemo } from 'react'
 import { useAllTokenBalances } from '../../state/wallet/hooks'
+import { balanceComparator } from './sorting'
 
 // compare two token amounts with highest one coming first
-function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {
-  if (balanceA && balanceB) {
-    return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
-  }
-  if (balanceA && balanceA.greaterThan('0')) {
-    return -1
-  }
-  if (balanceB && balanceB.greaterThan('0')) {
-    return 1
-  }
-  return 0
-}
+// function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {
+//   if (balanceA && balanceB) {
+//     return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1
+//   }
+//   if (balanceA && balanceA.greaterThan('0')) {
+//     return -1
+//   }
+//   if (balanceB && balanceB.greaterThan('0')) {
+//     return 1
+//   }
+//   return 0
+// }
 
 function getTokenComparator(balances: {
   [tokenAddress: string]: TokenAmount | undefined
@@ -24,17 +25,17 @@ function getTokenComparator(balances: {
     // 1 = b is first
 
     // sort by balances
-    const balanceA = balances[pairA.token1.address]
-    const balanceB = balances[pairB.token1.address]
+    const balanceA = balances[pairA.token0.address]
+    const balanceB = balances[pairB.token0.address]
 
     const balanceComp = balanceComparator(balanceA, balanceB)
     if (balanceComp !== 0) return balanceComp
 
-    if (pairA.token1.symbol && pairB.token1.symbol) {
+    if (pairA.token0.symbol && pairB.token0.symbol) {
       // sort by symbol
-      return pairA.token1.symbol.toLowerCase() < pairB.token1.symbol.toLowerCase() ? -1 : 1
+      return pairA.token0.symbol.toLowerCase() < pairB.token0.symbol.toLowerCase() ? -1 : 1
     }
-    return pairA.token1.symbol ? -1 : pairB.token1.symbol ? -1 : 0
+    return pairA.token0.symbol ? -1 : pairB.token0.symbol ? -1 : 0
   }
 }
 

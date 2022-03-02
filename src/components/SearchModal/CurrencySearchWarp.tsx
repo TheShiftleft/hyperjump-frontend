@@ -26,18 +26,20 @@ import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
 import CommonBases from './CommonBases'
-import CurrencyListWarp from './CurrencyListWarp'
+import CurrencyListWarp, {LPToken} from './CurrencyListWarp'
 import { filterPairs } from './filteringPairs'
+import { filterOtherLPs } from './filteringOtherLPs'
 import SortButton from './SortButton'
 import { useTokenComparator } from './sorting'
 import { usePairComparator } from './sortingPairs'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
+import { useOtherLPComparator } from './sortingOtherLPs'
 
 interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
   selectedPair?: Pair | null
-  onPairSelect: (pair: Pair) => void
+  onLPSelect: (lp: LPToken) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
   onChangeList: () => void
@@ -54,7 +56,7 @@ const ColumnWBorder = styled.div`
 
 export default function CurrencySearchZap({
   selectedPair,
-  onPairSelect,
+  onLPSelect,
   otherSelectedCurrency,
   showCommonBases,
   onDismiss,
@@ -79,23 +81,6 @@ export default function CurrencySearchZap({
             return {...lp, balance: balances[lp.liquidityToken.address]}
         })
     }, [balances, otherLps])
-    // To be removed later
-    const tokenPairsWithLiquidityTokens = useMemo(
-        () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
-        [trackedTokenPairs],
-    )
-    const pairs = zapPairs[config.network]
-    // To be removed later
-    const allPairs = useMemo(() => {
-        return tokenPairsWithLiquidityTokens.map(pair => pair).filter(v2Pair => {
-        return pairs.find((pair) => {
-            return pair.lpAddresses[chainId].toLowerCase() === v2Pair.liquidityToken.address.toLowerCase()
-        })
-        }) 
-    }, [tokenPairsWithLiquidityTokens, pairs, chainId])
-    // To be removed later
-    const allv2Pairs = usePairs(allPairs.map(({ tokens }) => tokens))
-    const allV2PairsWithLiquidity = useMemo(() => { return allv2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))},[allv2Pairs]) 
 
     // if they input an address, use it
     const isAddressSearch = isAddress(searchQuery)
@@ -105,19 +90,15 @@ export default function CurrencySearchZap({
         return config.networkToken.symbol.toLowerCase().startsWith(s)
     }, [config.networkToken.symbol, searchQuery])
 
-    // Need modifications
-    const pairComparator = usePairComparator(invertSearchOrder)
+    const lpComparator = useOtherLPComparator(invertSearchOrder)
     const audioPlay = useSelector<AppState, AppState['user']['audioPlay']>((state) => state.user.audioPlay)
 
-    // Need modifications
-    const filteredPairs = useMemo(() => {
-        return filterPairs(Object.values(allV2PairsWithLiquidity), searchQuery)
-    }, [allV2PairsWithLiquidity, searchQuery])
+    const filteredLPs = useMemo(() => {
+        return filterOtherLPs(Object.values(otherLpsWithBalance), searchQuery)
+    }, [otherLpsWithBalance, searchQuery])
 
-    
-    // Need modifications
-    const filteredSortedTokens = useMemo(() => {
-        const sorted = filteredPairs.sort(pairComparator)
+    const filteredSortedLPs = useMemo(() => {
+        const sorted = filteredLPs.sort(lpComparator)
         const symbolMatch = searchQuery
         .toLowerCase()
         .split(/\s+/)
@@ -126,15 +107,14 @@ export default function CurrencySearchZap({
 
         return [
         // sort any exact symbol matches first
-        ...sorted.filter((pair) => pair?.token0?.symbol?.toLowerCase() === symbolMatch[0]),
-        ...sorted.filter((pair) => pair?.token0?.symbol?.toLowerCase() !== symbolMatch[0]),
+        ...sorted.filter((lp) => lp?.tokens[0]?.symbol?.toLowerCase() === symbolMatch[0]),
+        ...sorted.filter((lp) => lp?.tokens[0]?.symbol?.toLowerCase() !== symbolMatch[0]),
         ]
-    }, [filteredPairs, searchQuery, pairComparator])
+    }, [filteredLPs, searchQuery, lpComparator])
 
-    // Need modifications
-    const handlePairSelect = useCallback(
-        (pair: Pair) => {
-        onPairSelect(pair)
+    const handleLPSelect = useCallback(
+        (lp: LPToken) => {
+        onLPSelect(lp)
         onDismiss()
         if (audioPlay) {
             const audio = document.getElementById('bgMusic') as HTMLAudioElement
@@ -143,7 +123,7 @@ export default function CurrencySearchZap({
             }
         }
         },
-        [onDismiss, onPairSelect, audioPlay],
+        [onDismiss, onLPSelect, audioPlay],
     )
 
     // clear the input on open
@@ -160,21 +140,21 @@ export default function CurrencySearchZap({
         fixedList.current?.scrollTo(0)
     }, [])
 
-    // Need modifications
     const handleEnter = useCallback(
         (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-        if (filteredSortedTokens.length > 0) {
+        if (filteredSortedLPs.length > 0) {
             if (
-                filteredSortedTokens[0].token1.symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
-                filteredSortedTokens.length === 1
+                filteredSortedLPs[0].tokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() || 
+                filteredSortedLPs[0].tokens[1].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
+                filteredSortedLPs.length === 1
             ) {
-                handlePairSelect(filteredSortedTokens[0])
+                handleLPSelect(filteredSortedLPs[0])
             }
             }
         }
         },
-        [filteredSortedTokens, handlePairSelect, searchQuery],
+        [filteredSortedLPs, handleLPSelect, searchQuery],
     )
 
     const selectedListInfo = useSelectedListInfo()
@@ -215,8 +195,8 @@ export default function CurrencySearchZap({
                 <CurrencyListWarp
                 height={height}
                 showETH={showETH && !warp}
-                lps={otherLpsWithBalance}
-                onPairSelect={handlePairSelect}
+                lps={filteredSortedLPs}
+                onLPSelect={handleLPSelect}
                 otherCurrency={otherSelectedCurrency}
                 selectedPair={selectedPair}
                 fixedListRef={fixedList}

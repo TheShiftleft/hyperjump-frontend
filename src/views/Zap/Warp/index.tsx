@@ -69,11 +69,11 @@ const Warp = () => {
         }, [setOutputCurrencySelected],
         )
 
-
-    const handleInputPairSelect = useCallback(
-        (pair) => {
-            onPairSelect(Field.INPUT, pair)
-        }, [onPairSelect],
+    const handleInputLPSelect = useCallback(
+        (lp) => {
+            console.info('selected lp', lp)
+            // onPairSelect(Field.INPUT, pair)
+        }, [],
     )
 
     const handleMaxInput = useCallback(() => {
@@ -96,7 +96,7 @@ const Warp = () => {
                                 onMax={handleMaxInput}
                                 currency={pairCurrency}
                                 pair={pairInput}
-                                onPairSelect={handleInputPairSelect}
+                                onLPSelect={handleInputLPSelect}
                                 onUserInput={handleTypeInput}
                                 id="warp-currency-input"
                                 warp
