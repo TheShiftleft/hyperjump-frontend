@@ -22,7 +22,8 @@ const FarmingTokenStats = () => {
   const { config, chainId } = getNetwork()
 
   const circulatingSupplyData = useGetCirculatingSupplyStats()
-  const burnedBalance = circulatingSupplyData && chainId === circulatingSupplyData.ftm.totalBurned
+  // we dont  have burn data from bsc yet
+  const burnedBalance = circulatingSupplyData && circulatingSupplyData.ftm.totalBurned
   const farmingTokenTotalSupply = circulatingSupplyData ? circulatingSupplyData.ftm.totalSupply : 0
   const farmingTokenTotalCirculatingSupply = circulatingSupplyData ? circulatingSupplyData.totalCirculatingSupply : 0
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
