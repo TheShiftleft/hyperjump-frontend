@@ -7,18 +7,6 @@ export default {
             logoUrl: 'https://pancakeswap.finance/images/tokens/0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82.png',
             url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/cakeLpPools.json',
             imageUrl: 'https://pancakeswap.finance/images/tokens'
-        },
-        SpiritSwap: {
-            name: 'SpiritSwap',
-            logoUrl: '',
-            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spiritPools.json',
-            imageUrl: 'https://pancakeswap.finance/images/tokens'
-        },
-        SpookySwap: {
-            name: 'SpookySwap',
-            logoUrl: '',
-            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spookyLpPools.json',
-            imageUrl: ''
         }
     },
     [Network.FTM]: {
