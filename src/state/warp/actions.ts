@@ -6,11 +6,13 @@ export enum Field {
 }
 
 export const selectCurrency = createAction<{ field: Field; currencyId: string }>('warp/selectCurrency')
-export const selectPair = createAction<{field: Field; pairId: string}>('warp/selectPair')
+export const selectLP = createAction<{field: Field; lpId: string}>('warp/selectLP')
+export const selectSwap = createAction<{swapId: string}>('warp/selectSwap')
 export const typeInput = createAction<{ field: Field; typedValue: string }>('warp/typeInput')
 export const replaceWarpState = createAction<{
     field: Field
     typedValue: string
-    inputPairId: string
+    inputLpId: string
     outputCurrencyId: string
+    swapId: string
   }>('warp/replaceWarpState')

@@ -1,6 +1,7 @@
 import { Currency, Pair } from '@hyperjump-defi/sdk'
 import { PairConfig } from 'config/constants/types'
 import React, { useCallback, useEffect, useState } from 'react'
+import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import useLast from '../../hooks/useLast'
 import { useSelectedListUrl } from '../../state/lists/hooks'
 import Modal from '../Modal'
@@ -24,6 +25,8 @@ interface CurrencySearchModalProps {
   zap?: boolean
   warp?: boolean
   pair?: boolean
+  selectedSwap?: OtherSwapConfig | null
+  selectedLP?: LPToken | null
 }
 
 export default function CurrencySearchModal({
@@ -37,7 +40,9 @@ export default function CurrencySearchModal({
   otherSelectedCurrency,
   zap,
   warp,
-  pair
+  pair,
+  selectedSwap,
+  selectedLP
 }: CurrencySearchModalProps) {
   const [listView, setListView] = useState<boolean>(false)
   const lastOpen = useLast(isOpen)
@@ -103,10 +108,11 @@ export default function CurrencySearchModal({
           onDismiss={onDismiss}
           onLPSelect={handleLPSelect}
           onChangeList={handleClickChangeList}
-          selectedPair={selectedPair}
           otherSelectedCurrency={otherSelectedCurrency}
           showCommonBases={false}
           warp={warp}
+          selectedSwap={selectedSwap}
+          selectedLP={selectedLP}
         />
       ) : noListSelected ? (
         <CurrencySearch

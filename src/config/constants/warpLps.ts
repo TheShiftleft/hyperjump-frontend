@@ -2,19 +2,37 @@ import { Network } from '@hyperjump-defi/sdk'
 
 export default {
     [Network.BSC]: {
-        pancake: {
+        PancakeSwap: {
             name: 'PancakeSwap',
-            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/cakeLpPools.json'
+            logoUrl: 'https://pancakeswap.finance/images/tokens/0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82.png',
+            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/cakeLpPools.json',
+            imageUrl: 'https://pancakeswap.finance/images/tokens'
+        },
+        SpiritSwap: {
+            name: 'SpiritSwap',
+            logoUrl: '',
+            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spiritPools.json',
+            imageUrl: 'https://pancakeswap.finance/images/tokens'
+        },
+        SpookySwap: {
+            name: 'SpookySwap',
+            logoUrl: '',
+            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spookyLpPools.json',
+            imageUrl: ''
         }
     },
     [Network.FTM]: {
-        spirit: {
+        SpiritSwap: {
             name: 'SpiritSwap',
-            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spiritPools.json'
+            logoUrl: 'https://swap.spiritswap.finance/images/coins/SPIRIT.png',
+            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spiritPools.json',
+            imageUrl: 'https://swap.spiritswap.finance/images/coins'
         },
-        spooky: {
+        SpookySwap: {
             name: 'SpookySwap',
-            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spookyLpPools.json'
+            logoUrl: 'https://assets.spookyswap.finance/tokens/BOO.png',
+            url: 'https://raw.githubusercontent.com/beefyfinance/beefy-api/master/src/data/fantom/spookyLpPools.json',
+            imageUrl: 'https://assets.spookyswap.finance/tokens'
         }
     }
 }

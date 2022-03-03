@@ -15,26 +15,30 @@ import { Field } from 'state/swap/actions'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { CurrencyAmount } from '@hyperjump-defi/sdk'
 import { ApprovalState, useApproveCallbackFromZap } from 'hooks/useApproveCallback'
+import { LPToken } from 'components/SearchModal/CurrencyListWarp'
 import { useZapAcross, ZapCallbackState } from 'hooks/useZap'
 import { AutoRow } from 'components/Row'
 import { useActiveWeb3React } from 'hooks'
+import useOtherSwapList from 'hooks/useOtherSwapList'
+import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionModal'
+import DefiSelect from './DefiSelect'
 
 const Warp = () => {
     useWarpDefaultState()
     const { account } = useActiveWeb3React()
     const { toastSuccess, toastError } = useToast()
-    const {field} = useWarpState()
     const [outputCurrency, setOutputCurrencySelected] = useState()
-    const {pairInput, pairBalance, pairCurrency, currencyOutput, parsedAmount} = useDerivedWarpInfo()
-    const { onUserInput, onCurrencySelect, onPairSelect } = useWarpActionHandlers()
-    const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(pairBalance)
+    const [modalOpen, setModalOpen] = useState(false)
+    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap} = useDerivedWarpInfo()
+    const { onUserInput, onCurrencySelect, onLPSelect, onSwapSelect } = useWarpActionHandlers()
+    const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(lpBalance)
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
-    const [approval, approveCallback] = useApproveCallbackFromZap(pairBalance)
+    const [approval, approveCallback] = useApproveCallbackFromZap(lpBalance)
     const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
     const showApproval = useMemo(() => { return approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)}, [approval, approvalSubmitted]) 
     const { callback: zapCallback, error: swapCallbackError, state: zapState} = useZapAcross(
-        pairInput,
-        pairBalance,
+        lpInput,
+        lpBalance,
         parsedAmount
     )
 
@@ -70,10 +74,9 @@ const Warp = () => {
         )
 
     const handleInputLPSelect = useCallback(
-        (lp) => {
-            console.info('selected lp', lp)
-            // onPairSelect(Field.INPUT, pair)
-        }, [],
+        (lp: LPToken) => {
+            onLPSelect(Field.INPUT, lp)
+        }, [onLPSelect],
     )
 
     const handleMaxInput = useCallback(() => {
@@ -81,25 +84,42 @@ const Warp = () => {
             onUserInput(Field.INPUT, maxAmountInput.toExact())
         }
     }, [maxAmountInput, onUserInput])
+
+    const handleModalDismiss = useCallback(() => {
+        setModalOpen(false)
+    }, [setModalOpen])
+
+    const handleSwapSelect = useCallback(
+        (swap: OtherSwapConfig) => {
+            onSwapSelect(swap)
+    }, [onSwapSelect])
     return(
+        <>
         <Container>
             <CardNav activeIndex={1}/>
             <AppBody>
             <Wrapper id='warp-page' color='transparent'>
-                    <PageHeader title="Warp" description="Warp from other tokens to our JUMP LP token" />
+                    <PageHeader title="Warp" description="Warp from other Defi LP tokens to our JUMP LP token" />
                     <CardBody p='12px'>
                         <AutoColumn gap='md'>
+                            <DefiSelect 
+                                selected={selectedSwap}
+                                onClick={() => {
+                                    setModalOpen(true)
+                                }}
+                            />
                             <CurrencyInputPanel
-                                label='In'
+                                label='From'
                                 value={parsedAmount?.toSignificant(6)}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
-                                currency={pairCurrency}
-                                pair={pairInput}
+                                currency={lpCurrency}
+                                lp={lpInput}
                                 onLPSelect={handleInputLPSelect}
                                 onUserInput={handleTypeInput}
                                 id="warp-currency-input"
                                 warp
+                                selectedSwap={selectedSwap}
                             />
                             <AutoColumn justify='center'>
                                 <IconButton
@@ -135,7 +155,7 @@ const Warp = () => {
                                 ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
                                     'Approved'
                                 ) : (
-                                    `Approve ${pairInput?.token0?.symbol}-${pairInput?.token1?.symbol}`
+                                    `Approve ${lpInput?.tokens[0]?.symbol}-${lpInput?.tokens[1]?.symbol}`
                                 )}
                             </Button>
                             :
@@ -153,6 +173,13 @@ const Warp = () => {
                 </Wrapper>
             </AppBody>
         </Container>
+        <SwapSelectionModal
+            isOpen={modalOpen}
+            onDismiss={handleModalDismiss}
+            selectedSwap={selectedSwap}
+            onSwapSelect={handleSwapSelect}
+        />
+        </>
     )
 }
 

@@ -1,5 +1,6 @@
 import { CurrencyAmount, Currency, Pair, Token, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
+import { LPToken } from 'components/SearchModal/CurrencyListWarp'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState, useEffect } from 'react'
 import { useCurrencyBalance } from 'state/wallet/hooks'
@@ -106,7 +107,7 @@ export function useZapOutToken(fromAddress: Pair, toAddress: Currency, amount: C
     }, [zapContract, account, router, amountToProcess, fromAddress, toAddress, from, to])
 }
 
-export function useZapAcross(address: Pair, pairBalance: CurrencyAmount, amount: CurrencyAmount) {
+export function useZapAcross(address: LPToken, pairBalance: CurrencyAmount, amount: CurrencyAmount) {
     const { account } = useActiveWeb3React()
     const zapContract = useZapContract()
     const router = getRouterAddress()

@@ -6,6 +6,7 @@ import { Text, Image } from 'uikit'
 import getNetwork from 'utils/getNetwork'
 import { PairConfig } from 'config/constants/types'
 import Logo from 'components/Logo'
+import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { useActiveWeb3React } from '../../hooks'
 import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
 import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
@@ -31,12 +32,13 @@ export interface LPToken {
 interface CurrencyListWarpProps {
     height: number
     lps: LPToken[]
-    selectedPair?: Pair | null
     onLPSelect: (lp: LPToken) => void
     otherCurrency?: Currency | null
     fixedListRef?: MutableRefObject<FixedSizeList | undefined>
     showETH: boolean
     warp?: boolean
+    selectedLP?: LPToken
+    selectedSwap: OtherSwapConfig
 }
 
 function pairKey(pair: Pair): string {
@@ -47,9 +49,20 @@ function pairKey(pair: Pair): string {
     ? config.networkToken.symbol
     : ''
 }
-// Need modifications based on the selected swap/defi apps
-const getTokenLogoURL = (address: string) => `https://pancakeswap.finance/images/tokens/${address}.png`
 
+const getTokenLogoURL = (address: string, lpUrl?: string) => {
+  if(lpUrl){
+    return `${lpUrl}/${address}.png`
+  }
+  return `https://tokens.hyperjump.app/images/${address}.png`
+}
+
+const getTokenLogoUrlWithSymbol = (symbol: string, lpUrl?: string) => {
+  if(lpUrl){
+    return [`${lpUrl}/${symbol}.png`,`${lpUrl}/${symbol.toUpperCase()}.png`]
+  }
+  return[`https://tokens.hyperjump.app/images/${symbol}.png`]
+}
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
@@ -135,13 +148,15 @@ function CurrencyRow({
   otherSelected,
   style,
   warp,
+  tokenLogoUrl
 }: {
   lp: LPToken
   onSelect: () => void
   isSelected?: boolean
   otherSelected?: boolean
   style: CSSProperties
-  warp: boolean
+  warp: boolean,
+  tokenLogoUrl?: string
 }) {
   const { account, chainId } = useActiveWeb3React()
   const token0 = lp.tokens[0]
@@ -149,18 +164,9 @@ function CurrencyRow({
   const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(lp.liquidityToken.address)
   const key = lp.liquidityToken.address
-//   const selectedTokenList = useSelectedTokenList()
-//   const isOnSelectedList = isTokenOnList(selectedTokenList, pairCurrency)
-//   const customAdded = useIsUserAddedToken(pairCurrency)
   const { balance } = lp
-//   const balance = undefined
-//   const logo1 = getTokenLogoURL(token0.address)
-//   const logo2 = getTokenLogoURL(token1.address)
-//   const removeToken = useRemoveUserAddedToken()
-//   const addToken = useAddUserToken()
   const uriLocations0 = useHttpLocations(token0 instanceof WrappedTokenInfo ? token0.logoURI : undefined)
   const uriLocations1 = useHttpLocations(token1 instanceof WrappedTokenInfo ? token1.logoURI : undefined)
-
   const srcs0 = useMemo(() => {
     if (token0 instanceof Token) {
       if (token0 instanceof WrappedTokenInfo) {
@@ -174,6 +180,7 @@ function CurrencyRow({
               ? 'BNB'
               : token0?.address,
           ),
+          ...getTokenLogoUrlWithSymbol(token0.symbol, tokenLogoUrl)
         ]
       }
 
@@ -186,10 +193,11 @@ function CurrencyRow({
             ? 'BNB'
             : token0?.address,
         ),
+        ...getTokenLogoUrlWithSymbol(token0.symbol, tokenLogoUrl)
       ]
     }
     return []
-  }, [token0, uriLocations0])
+  }, [token0, uriLocations0, tokenLogoUrl])
 
   const srcs1 = useMemo(() => {
     if (token1 instanceof Token) {
@@ -204,6 +212,7 @@ function CurrencyRow({
               ? 'BNB'
               : token1?.address,
           ),
+          ...getTokenLogoUrlWithSymbol(token1.symbol, tokenLogoUrl)
         ]
       }
 
@@ -216,10 +225,11 @@ function CurrencyRow({
             ? 'BNB'
             : token1?.address,
         ),
+        ...getTokenLogoUrlWithSymbol(token1.symbol, tokenLogoUrl),
       ]
     }
     return []
-  }, [token1, uriLocations1])
+  }, [token1, uriLocations1, tokenLogoUrl])
 
   // only show add or remove buttons if not on selected list
   return (
@@ -260,12 +270,13 @@ function CurrencyRow({
 export default function CurrencyListWarp({
   height,
   lps,
-  selectedPair,
   onLPSelect,
   otherCurrency,
   fixedListRef,
   showETH,
   warp,
+  selectedLP,
+  selectedSwap
 }: CurrencyListWarpProps) {
   const { config } = getNetwork()
 
@@ -277,13 +288,13 @@ export default function CurrencyListWarp({
   const Row = useCallback(
     ({ data, index, style }) => {
       const lp: LPToken = data[index]
-      const isSelected = Boolean(selectedPair && lp.liquidityToken.address === selectedPair.liquidityToken.address)
+      const isSelected = Boolean(selectedLP && lp.liquidityToken.address === selectedLP.liquidityToken.address)
       const handleSelect = () => onLPSelect(lp)
       return (
-        <CurrencyRow key={index} style={style} lp={lp} isSelected={isSelected} onSelect={handleSelect} warp={warp} />
+        <CurrencyRow key={index} style={style} lp={lp} isSelected={isSelected} onSelect={handleSelect} warp={warp} tokenLogoUrl={selectedSwap.imageUrl} />
       )
     },
-    [warp, selectedPair, onLPSelect],
+    [warp, selectedLP, onLPSelect, selectedSwap],
   )
 
   const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])

@@ -4,6 +4,7 @@ import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
 import useI18n from 'hooks/useI18n'
+import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
@@ -82,6 +83,7 @@ interface CurrencyInputPanelProps {
   disableCurrencySelect?: boolean
   hideBalance?: boolean
   pair?: Pair | null
+  lp?: LPToken | null
   hideInput?: boolean
   otherCurrency?: Currency | null
   id: string
@@ -91,6 +93,8 @@ interface CurrencyInputPanelProps {
   warp?: boolean
   pairToken?: boolean
   hideLabel?: boolean
+  lpUrl?: string,
+  selectedSwap?: OtherSwapConfig | null
 }
 export default function CurrencyInputPanel({
   value,
@@ -105,6 +109,7 @@ export default function CurrencyInputPanel({
   disableCurrencySelect = false,
   hideBalance = false,
   pair = null, // used for double token logo
+  lp = null, // used for LPs of other swap/defi
   hideInput = false,
   otherCurrency,
   id,
@@ -113,7 +118,8 @@ export default function CurrencyInputPanel({
   zap,
   warp,
   pairToken,
-  hideLabel
+  hideLabel,
+  selectedSwap
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -168,14 +174,18 @@ export default function CurrencyInputPanel({
             }}
           >
             <Aligner>
-              {pair ? (
-                <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
+              {pair || lp? (
+                <DoubleCurrencyLogo lpUrl={selectedSwap?.imageUrl} currency0={pair ? pair.token0 : lp?.tokens[0]} currency1={pair ? pair.token1 : lp?.tokens[1]} size={24} margin />
               ) : currency ? (
                 <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
               ) : null}
               {pair ? (
                 <Text id="pair">
                   {pair?.token0?.symbol}:{pair?.token1?.symbol}
+                </Text>
+              ) : lp ? (
+                <Text id="lp">
+                  {lp?.tokens[0]?.symbol}:{lp?.tokens[1]?.symbol}
                 </Text>
               ) : (
                 <Text id="pair">
@@ -206,6 +216,8 @@ export default function CurrencyInputPanel({
           zap={zap}
           warp={warp}
           pair={pairToken}
+          selectedSwap={selectedSwap}
+          selectedLP={lp}
         />
       )}
     </InputPanel>

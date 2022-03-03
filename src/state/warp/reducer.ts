@@ -1,11 +1,12 @@
-import { createReducer, createSlice } from '@reduxjs/toolkit'
-import { Field, replaceWarpState, typeInput, selectCurrency, selectPair } from './actions'
+import { createReducer } from '@reduxjs/toolkit'
+import { Field, replaceWarpState, typeInput, selectLP, selectSwap } from './actions'
 
 export interface WarpState {
 	readonly field: Field
 	readonly typedValue: string
+	readonly selectedSwap: string
 	readonly [Field.INPUT] : {
-			readonly pairId: string | undefined
+			readonly lpId: string | undefined
 
 	}
 	readonly [Field.OUTPUT] : {
@@ -16,8 +17,9 @@ export interface WarpState {
 const warpInitialState: WarpState = {
 	field: Field.INPUT,
 	typedValue: '',
+	selectedSwap: '',
 	[Field.INPUT]: {
-			pairId: ''
+			lpId: ''
 	},
 	[Field.OUTPUT]: {
 			currencyId: ''
@@ -28,16 +30,17 @@ export default createReducer<WarpState>(warpInitialState, (builder) =>
 	builder
 		.addCase(
 			replaceWarpState,
-			(state, { payload: { field, typedValue, inputPairId, outputCurrencyId } }) => {
+			(state, { payload: { field, typedValue, inputLpId, outputCurrencyId, swapId } }) => {
 				return {
 					[Field.INPUT]: {
-						pairId: inputPairId,
+						lpId: inputLpId,
 					},
 					[Field.OUTPUT]: {
 						currencyId: outputCurrencyId,
 					},
 					field,
-					typedValue
+					typedValue,
+					selectedSwap: swapId
 				}
 			}
 		)
@@ -52,11 +55,22 @@ export default createReducer<WarpState>(warpInitialState, (builder) =>
 			}
 		)
 		.addCase(
-			selectPair,
-			(state, {payload: {field, pairId}}) => {
+			selectLP,
+			(state, {payload: {field, lpId}}) => {
 				return {
 					...state,
-					[field]: {pairId}
+					[field]: {
+						lpId
+					}
+				}
+			}
+		)
+		.addCase(
+			selectSwap,
+			(state, {payload: {swapId}}) => {
+				return {
+					...state,
+					selectedSwap: swapId
 				}
 			}
 		)

@@ -15,6 +15,7 @@ import zapPairs from 'config/constants/zap'
 import { usePairContract, useTokenContract } from 'hooks/useContract'
 import { useOtherLpsCurrency } from 'hooks/useOtherLps'
 import { useTokenBalance, useTokenBalances } from 'state/wallet/hooks'
+import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { useActiveWeb3React } from '../../hooks'
 import { AppState } from '../../state'
 import { useAllTokens, useToken } from '../../hooks/Tokens'
@@ -38,12 +39,13 @@ import { useOtherLPComparator } from './sortingOtherLPs'
 interface CurrencySearchProps {
   isOpen: boolean
   onDismiss: () => void
-  selectedPair?: Pair | null
   onLPSelect: (lp: LPToken) => void
   otherSelectedCurrency?: Currency | null
   showCommonBases?: boolean
   onChangeList: () => void
-  warp?: boolean
+  warp?: boolean,
+  selectedSwap?: OtherSwapConfig
+  selectedLP?: LPToken
 }
 
 const ColumnWBorder = styled.div`
@@ -55,14 +57,15 @@ const ColumnWBorder = styled.div`
 `
 
 export default function CurrencySearchZap({
-  selectedPair,
   onLPSelect,
   otherSelectedCurrency,
   showCommonBases,
   onDismiss,
   isOpen,
   onChangeList,
-  warp
+  warp,
+  selectedLP,
+  selectedSwap
 }: CurrencySearchProps) {
     const { t } = useTranslation()
     const { chainId, account } = useActiveWeb3React()
@@ -72,15 +75,8 @@ export default function CurrencySearchZap({
     const fixedList = useRef<FixedSizeList>()
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-    const trackedTokenPairs = useTrackedTokenPairs()
     // Need modifications
-    const otherLps = useOtherLpsCurrency('pancake')
-    const balances = useTokenBalances(account, otherLps.map(({liquidityToken}) => liquidityToken))
-    const otherLpsWithBalance = useMemo(() => {
-        return otherLps.map((lp) => {
-            return {...lp, balance: balances[lp.liquidityToken.address]}
-        })
-    }, [balances, otherLps])
+    const otherLpsWithBalance = useOtherLpsCurrency(selectedSwap.name)
 
     // if they input an address, use it
     const isAddressSearch = isAddress(searchQuery)
@@ -198,8 +194,9 @@ export default function CurrencySearchZap({
                 lps={filteredSortedLPs}
                 onLPSelect={handleLPSelect}
                 otherCurrency={otherSelectedCurrency}
-                selectedPair={selectedPair}
                 fixedListRef={fixedList}
+                selectedLP={selectedLP}
+                selectedSwap={selectedSwap}
                 warp
                 />
             )}

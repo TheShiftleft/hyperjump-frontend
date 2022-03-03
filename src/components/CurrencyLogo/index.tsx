@@ -7,7 +7,19 @@ import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 // FIXME replace this
-const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
+const getTokenLogoURL = (address: string, lpUrl?: string) => {
+  if(lpUrl){
+    return `${lpUrl}/${address}.png`
+  }
+  return `https://tokens.hyperjump.app/images/${address}.png`
+}
+
+const getTokenLogoUrlWithSymbol = (symbol: string, lpUrl?: string) => {
+  if(lpUrl){
+    return [`${lpUrl}/${symbol}.png`, `${lpUrl}/${symbol.toUpperCase()}.png`]
+  }
+  return [`https://tokens.hyperjump.app/images/${symbol}.png`]
+}
 
 const StyledBnbLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};
@@ -25,10 +37,12 @@ export default function CurrencyLogo({
   currency,
   size = '24px',
   style,
+  lpUrl
 }: {
   currency?: Currency
   size?: string
   style?: React.CSSProperties
+  lpUrl?: string
 }) {
   const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
 
@@ -41,14 +55,15 @@ export default function CurrencyLogo({
         return [
           ...uriLocations,
           `/images/tokens/${currency?.address ?? 'token'}.png`,
-          getTokenLogoURL(currency.address),
+          getTokenLogoURL(currency.address, lpUrl),
+          ...getTokenLogoUrlWithSymbol(currency.symbol, lpUrl)
         ]
       }
 
-      return [`/images/tokens/${currency?.address ?? 'token'}.png`, getTokenLogoURL(currency.address)]
+      return [`/images/tokens/${currency?.address ?? 'token'}.png`, getTokenLogoURL(currency.address, lpUrl), ...getTokenLogoUrlWithSymbol(currency.symbol, lpUrl)]
     }
     return []
-  }, [config.baseCurrency, currency, uriLocations])
+  }, [config.baseCurrency, currency, uriLocations, lpUrl])
 
   if (currency === config.baseCurrency) {
     return (
