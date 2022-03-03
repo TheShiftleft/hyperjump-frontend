@@ -157,6 +157,9 @@ export default function NetworkBridgeInputPanel({
             }}
           >
             <Aligner>
+              {currency ? (
+                <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
+              ) : null}
               <Text id="pair">
                 {(currency && currency.symbol && currency.symbol.length > 20
                   ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
