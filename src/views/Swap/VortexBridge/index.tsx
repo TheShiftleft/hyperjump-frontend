@@ -12,7 +12,7 @@ import { darken } from 'polished'
 import { AutoColumn } from 'components/Column'
 import NetworkBridgeInputPanel from 'components/NetworkBridgeInputPanel'
 import CardNav from 'components/CardNav'
-import { AutoRow, RowBetween } from 'components/Row'
+import { AutoRow, RowBetween, RowFixed } from 'components/Row'
 import AdvancedSwapDetailsDropdown from 'components/swap/AdvancedSwapDetailsDropdown'
 import { ArrowWrapper, BottomGrouping, SwapCallbackError, Wrapper } from 'components/swap/styleds'
 import TransactionSubmittedContent from 'components/TransactionConfirmationModal/TransactionSubmittedContent'
@@ -84,13 +84,29 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
   }
 `
 const Aligner = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid ${(props) => props.theme.colors.primary};
-    padding:10px;
-    border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid ${(props) => props.theme.colors.primary};
+  padding:10px;
+  border-radius: 8px;
 
+`
+const AdvancedDetailsFooter = styled.div<{ show: boolean }>`
+  padding-bottom: 20px;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 400px;
+  height: 70px;
+  border-radius: 20px;
+  color: ${({ theme }) => theme.colors.textSubtle};
+  z-index: 1;
+  border: 2px solid #44c4e2;
+  background-color: rgba(13, 29, 54, 0.5);
+
+  transform: ${({ show }) => (show ? 'translateY(0%)' : 'translateY(-30%)')};
+  transition: transform 300ms ease-in-out;
+  opacity: ${({ show }) => (show ? '1' : '0')};
 `
 const Bridge = () => {
     const { config } = getNetwork()
@@ -101,12 +117,14 @@ const Bridge = () => {
     const [input, setInput] = useState(false)
     const [bridgeTokensOnly] = useState(true)
     const [isOpen, setModalSubmitted] = useState(false)
+    const [networkRedirect, setNetworkRedirect] = useState(false)
     const [toRedirect, setRedirect] = useState(false)
     const [isInvalidAmountWithFee, setInvalidAmountWithFee] = useState(false)
     const [transactionHash, setTransactionHash] = useState("") 
     const [fromBridgeNetworkKey, setFromBridgeNetworkKey] = useState("0") 
     const [toBridgeNetworkKey, setToBridgeNetworkKey] = useState("1")
     const [bridgingFee, setBridgeFee] = useState("0.0")
+    const [amountToWithFee, setAmountToWithFee] = useState("0.0")
     const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
     const [disableSwap, setDisableSwap] = useState(false)
     const [hasPoppedModal, setHasPoppedModal] = useState(false)
@@ -118,14 +136,18 @@ const Bridge = () => {
 
     useMemo(() => {
       // make sure that outputChain is not blank OR not equal to the current network otherwise redirect to the correct network
-      if(loadedUrlParams?.outputChainId === '' || loadedUrlParams?.outputChainId === config.id.toString()){ 
+      if(loadedUrlParams?.outputChainId === '' || loadedUrlParams?.outputChainId === config.id.toString() || !loadedUrlParams ){ 
           Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
             if(bridgeNetworks[key].chainId === config.id)
                 setFromBridgeNetworkKey(key)
-            
+
+            if(ChainId.BSC_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
+              setToBridgeNetworkKey(key)
+            }else if(ChainId.FTM_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
+              setToBridgeNetworkKey(key)
+            }
           });
-          setRedirect(true);
       }
     }, [loadedUrlParams, config]) 
 
@@ -137,16 +159,10 @@ const Bridge = () => {
     const [isExpertMode] = useExpertModeManager()
 
     // bridge state
-    const { independentField, typedValue, recipient } = useBridgeState()
+    const { independentField, typedValue, recipient, outputChainId  } = useBridgeState()
 
     const { currencyBalances, parsedAmount, currencies, inputError: bridgeInputError } = useDerivedBridgeInfo()
         
-    const {
-        wrapType,
-        execute: onWrap,
-        inputError: wrapInputError,
-    } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
-
     // Manage disabled trading pairs that should redirect users to V2
     useEffect(() => {
         const disabledSwaps = []
@@ -268,16 +284,18 @@ const Bridge = () => {
     const { callback: bridgeCallback, error: bridgeCallbackError, calculatedBridgeFee: calcFee } = useBridgeCallback(
         (independentField === Field.INPUT ? parsedAmount : undefined),
         bridgeNetworks[toBridgeNetworkKey],
+        bridgeNetworks[fromBridgeNetworkKey],
         currencies[Field.INPUT],
         currencies[Field.OUTPUT],
         recipient,
     )
 
     if(calcFee){
-      calcFee.then((_amountWithFee) => {
-        const amountWithFee = new BigNumber(_amountWithFee)
+      calcFee.then((bridgeAmountAndFee) => {
+        const amountWithFee = new BigNumber(bridgeAmountAndFee[0])
         setInvalidAmountWithFee(amountWithFee.isLessThan(0))
-        setBridgeFee((amountWithFee.isGreaterThan(0) ? amountWithFee.toString() : new BigNumber("0.0").toString()))
+        setBridgeFee(bridgeAmountAndFee[1])
+        setAmountToWithFee((amountWithFee.isGreaterThan(0) ? amountWithFee.toString() : new BigNumber("0.0").toString()))
       })
     }
 
@@ -316,7 +334,7 @@ const Bridge = () => {
             setTransactionHash(hash.transactionHash)
             setModalSubmitted(true)
             onUserInput(Field.INPUT, '')
-            setBridgeFee("0")
+            setAmountToWithFee("0")
           }
         })
         .catch((error) => {
@@ -327,58 +345,63 @@ const Bridge = () => {
             txHash: undefined,
           }))
         })
-    }, [bridgeCallback, setBridgeState, onUserInput, setBridgeFee])
+    }, [bridgeCallback, setBridgeState, onUserInput, setAmountToWithFee])
 
     useEffect(() => {
         // Override Default TO Bridge Network based on config
-        // TO-DO need this to update if we add more chain
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
+            
             if(bridgeNetworks[key].chainId === config.id){
               setFromBridgeNetworkKey(key);
               
-            }else{
-              setToBridgeNetworkKey(key);
             }
             
-                
-            
+            if(bridgeNetworks[key].chainId.toString() === outputChainId){
+              setToBridgeNetworkKey(key)
+            }
+              
+ 
           });
-    },[config])
+    },[config, outputChainId])
 
     const handleFromNetworkSelect = useCallback(
       (fromNetwork) => {
         setHasPoppedModal(false)
         setInterruptRedirectCountdown(false)
         setApprovalSubmitted(false) // reset 2 step UI for approvals
-        onNetworkSelection(Field.INPUT, fromNetwork)
+        onNetworkSelection(Field.INPUT, fromNetwork, bridgeNetworks[toBridgeNetworkKey])
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
             if(bridgeNetworks[key].chainId === fromNetwork.chainId)
                 setFromBridgeNetworkKey(key)
             
           });
-
-        setRedirect(true);
+        setNetworkRedirect(true)
       },
-      [onNetworkSelection],
+      [onNetworkSelection, toBridgeNetworkKey],
     )
 
     const handleToNetworkSelect = useCallback(
       (toNetwork) => {
+        if(toNetwork.chainId === config.id)
+          return
+
         setHasPoppedModal(false)
         setInterruptRedirectCountdown(false)
         setApprovalSubmitted(false) // reset 2 step UI for approvals
-        onNetworkSelection(Field.OUTPUT, toNetwork)
+        onNetworkSelection(Field.OUTPUT, toNetwork, bridgeNetworks[fromBridgeNetworkKey])
+        setAmountToWithFee(new BigNumber("0.0").toString())
+        onUserInput(Field.INPUT, "0")
         Object.keys(bridgeNetworks)
           .forEach(function eachKey(key) { 
-            if(bridgeNetworks[key].chainId === toNetwork.chainId)
-                setToBridgeNetworkKey(key)
-            
-          });
-
+            if(bridgeNetworks[key].chainId === toNetwork.chainId) {
+              setToBridgeNetworkKey(key)
+              setRedirect(true)
+            }
+          }); 
       },
-      [onNetworkSelection],
+      [config, onNetworkSelection, fromBridgeNetworkKey, onUserInput],
     )
 
     const handleInputSelect = useCallback(
@@ -387,8 +410,10 @@ const Bridge = () => {
             setInterruptRedirectCountdown(false)
             setApprovalSubmitted(false) // reset 2 step UI for approvals
             onCurrencySelection(Field.INPUT, inputCurrency)
+            setAmountToWithFee(new BigNumber("0.0").toString())
+            onUserInput(Field.INPUT, "0")
         },
-        [onCurrencySelection],
+        [onCurrencySelection, onUserInput],
     )
 
     const handleMaxInput = useCallback(() => {
@@ -402,17 +427,20 @@ const Bridge = () => {
             setHasPoppedModal(false)
             setInterruptRedirectCountdown(false)
             onCurrencySelection(Field.OUTPUT, outputCurrency)
+            setAmountToWithFee(new BigNumber("0.0").toString())
+            onUserInput(Field.INPUT, "0")
         },
-        [onCurrencySelection],
+        [onCurrencySelection, onUserInput],
     )
 
     return (
         <>
             <Container>
-                {(toRedirect ? <Route path='/bridge' component={() => { 
-                      window.location.href = `${bridgeNetworks[fromBridgeNetworkKey].redirect_url}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`; 
-                      return null;
-                  }} /> : '')}
+                {(networkRedirect ? <Route path='/bridge' component={() => { 
+                    window.location.href = `${bridgeNetworks[fromBridgeNetworkKey].redirect_url}?outputChainId=${bridgeNetworks[toBridgeNetworkKey].chainId}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`; 
+                    return null;
+                }} /> : '')}
+                {(toRedirect ? <Redirect to={`/bridge?outputChainId=${bridgeNetworks[toBridgeNetworkKey].chainId}&inputCurrency=${bridgeNetworks[fromBridgeNetworkKey].tokens[0].address}&outputCurrency=${bridgeNetworks[toBridgeNetworkKey].tokens[0].address}`} /> : '')}
                 <CardNav activeIndex={2} />
                 <AppBody>
                     <Wrapper id="swap-page" color="transparent">
@@ -447,11 +475,7 @@ const Bridge = () => {
                                     </AutoColumn>
                                 </NetworkSelect>
                                 <NetworkBridgeInputPanel
-                                    label={
-                                        independentField === Field.OUTPUT 
-                                            ? TranslateString(194, 'Amount (estimated)')
-                                            : TranslateString(76, 'Amount')
-                                    }
+                                    label={TranslateString(194, 'Amount')}
                                     value={formattedAmounts[Field.INPUT]}
                                     showMaxButton={!atMaxAmountInput}
                                     currency={currencies[Field.INPUT]}
@@ -469,7 +493,8 @@ const Bridge = () => {
                                         selected={!!currencies[Field.OUTPUT]}
                                         className="open-currency-select-button"
                                         onClick={() => {
-                                            setInput(false)
+                                          setModalOpen(true)
+                                          setInput(false)
                                         }}
                                     >
                                         <AutoColumn justify="start">
@@ -482,13 +507,13 @@ const Bridge = () => {
                                                         ? bridgeNetworks[toBridgeNetworkKey].name
                                                         : bridgeNetworks[toBridgeNetworkKey].name) || TranslateString(1196, 'To Chain')}
                                                 </Text>
-                                                
+                                                <ChevronDownIcon />
                                             </Aligner>
                                         </AutoColumn>
                                     </NetworkSelect>
                                 </AutoColumn>
                                 <NetworkBridgeInputPanel
-                                    value={bridgingFee}
+                                    value={amountToWithFee}
                                     onUserInput={handleTypeOutput}
                                     label={
                                         independentField === Field.INPUT
@@ -570,7 +595,20 @@ const Bridge = () => {
                         </CardBody>
                     </Wrapper>
                 </AppBody>
-                
+                <AdvancedDetailsFooter show={Boolean(calcFee)}>
+                  <CardBody>
+                    <RowBetween>
+                      <RowFixed>
+                        <Text color="info" fontSize="14px" fontWeight="bold">
+                          {bridgingFee} 
+                        </Text>
+                        <Text color="primary" fontSize="14px" marginLeft="5px">
+                          {TranslateString(226, `${currencies[Field.OUTPUT]?.symbol} transaction fee on ${bridgeNetworks[toBridgeNetworkKey]?.name}`)}
+                        </Text>
+                      </RowFixed>
+                    </RowBetween>
+                  </CardBody>
+                </AdvancedDetailsFooter>
             </Container>
             
             <Modal isOpen={isOpen} onDismiss={handleConfirmDismiss} maxHeight={90}>

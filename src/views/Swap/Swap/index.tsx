@@ -387,12 +387,11 @@ const Swap = () => {
         />
         <CardNav />
         <AppBody flexDirection={width < 969 ? 'column-reverse' : 'row'} showChart={showChart} width={width}>
-          {account && showChart ?
+          {showChart &&
                 <Chart 
                   tokenPair={pair[1]?.liquidityToken?.address}
                   network={config.name}
                 />
-            : ""
             }
           <Wrapper id="swap-page" color="transparent">
             <ConfirmSwapModal

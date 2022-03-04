@@ -27,6 +27,10 @@ export const BodyWrapper = styled(Card)<{flexDirection?: string, showChart?: boo
 /**
  * The styled container element that wraps the content of most pages and the tabs.
  */
+<<<<<<< HEAD
 export default function AppBody({ children, flexDirection, showChart, width }: { children: React.ReactNode, flexDirection?: string, showChart?: boolean, width?: number}) {
+=======
+export default function AppBody({ children, flexDirection, showChart, width }: { children: React.ReactNode, flexDirection: string, showChart: boolean, width: number}) {
+>>>>>>> aa8f156e64a878eb24379da0dc42c806d4db55e1
   return <BodyWrapper flexDirection={flexDirection} showChart={showChart} width={width}>{children}</BodyWrapper>
 }
