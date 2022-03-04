@@ -18,7 +18,8 @@ import {
   getMechAddress,
   getClaimLpRewardsMigratorAddress,
   getSynapseBridgeAddress,
-  getZapAddress
+  getZapAddress,
+  getL2BridgeZapAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -26,6 +27,7 @@ import bep20Abi from 'config/abi/erc20.json'
 import erc721Abi from 'config/abi/erc721.json'
 import lpTokenAbi from 'config/abi/lpToken.json'
 import {SYNAPSE_BRIDGE_ABI} from 'config/abi/synapseBridge'
+import {L2_BRIDGE_ZAP_ABI} from 'config/abi/L2BridgeZap'
 import { DEFAULT_GAS_PRICE } from 'config'
 import {
   getFarmingTokenABI,
@@ -127,11 +129,12 @@ export const getMulticallContract = (web3?: Web3) => {
 export const getLotteryContract = (web3?: Web3) => {
   return getContract(getLotteryABI(), getLotteryAddress(), web3)
 }
-
 export const getSynapseBridgeContract = (web3?: Web3) => {
   return getContract(SYNAPSE_BRIDGE_ABI.abi, getSynapseBridgeAddress(), web3)
 }
-
 export const getZapContract = (web3?: Web3) => {
   return getContract(getZapABI(),getZapAddress(), web3)
+}
+export const getL2BridgeZapContract = (web3?: Web3) => {
+  return getContract(L2_BRIDGE_ZAP_ABI.abi, getL2BridgeZapAddress(), web3)
 }

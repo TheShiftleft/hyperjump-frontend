@@ -151,6 +151,7 @@ export function NetworkSearch({
             <NetworkList
               height={height}
               showETH={showETH}
+              isOrigin={isOrigin}
               availableBridgeNetwork={availableBridgeNetwork}
               onNetworkSelect={handleNetworkSelect}
               selectedNetwork={selectedNetwork}

@@ -11,7 +11,7 @@ import { ToastsProvider } from 'contexts/ToastsContext'
 import store from 'state'
 import { ApolloProvider } from 'react-apollo'
 import { NetworkContextName } from './config'
-import { client } from './views/Analytics/apollo/client';
+import { client } from './views/Analytics/apollo/client'
 import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
 import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
 import GlobalDataContextProvider from './contexts/Analytics/GlobalData'
@@ -20,7 +20,6 @@ import ApplicationContextProvider from './contexts/Analytics/Application'
 import UserContextProvider from './contexts/Analytics/User'
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
-
 
 const Providers: React.FC = ({ children }) => {
   return (
