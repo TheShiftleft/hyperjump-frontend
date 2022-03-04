@@ -3,11 +3,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Trade, TokenAmount, CurrencyAmount } from '@hyperjump-defi/sdk'
 import { useCallback, useMemo } from 'react'
 import getNetwork from 'utils/getNetwork'
-<<<<<<< HEAD
-import { getRouterAddress, getSynapseBridgeAddress, getZapAddress } from 'utils/addressHelpers'
-=======
-import { getRouterAddress, getL2BridgeZapAddress } from 'utils/addressHelpers'
->>>>>>> aa8f156e64a878eb24379da0dc42c806d4db55e1
+import { getRouterAddress, getL2BridgeZapAddress, getZapAddress } from 'utils/addressHelpers'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'

@@ -1,5 +1,5 @@
 import { Network } from '@hyperjump-defi/sdk'
-import ChainId from 'utils/getChain';
+import ChainId from 'utils/getChain'
 import getChainSupportedTokens from 'config/constants/bridgeTokens'
 
 // KEEP THE ORDER INTACT AS IT IS USE TO GET TOKENINDEX
