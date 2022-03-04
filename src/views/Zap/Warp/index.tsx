@@ -21,15 +21,16 @@ import { AutoRow } from 'components/Row'
 import { useActiveWeb3React } from 'hooks'
 import useOtherSwapList from 'hooks/useOtherSwapList'
 import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionModal'
+import { GreyCard } from 'components/Card'
+import { PairState } from 'data/Reserves'
 import DefiSelect from './DefiSelect'
 
 const Warp = () => {
     useWarpDefaultState()
     const { account } = useActiveWeb3React()
     const { toastSuccess, toastError } = useToast()
-    const [outputCurrency, setOutputCurrencySelected] = useState()
     const [modalOpen, setModalOpen] = useState(false)
-    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap} = useDerivedWarpInfo()
+    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP, outputCurrency} = useDerivedWarpInfo()
     const { onUserInput, onCurrencySelect, onLPSelect, onSwapSelect } = useWarpActionHandlers()
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(lpBalance)
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
@@ -67,12 +68,6 @@ const Warp = () => {
         [onUserInput],
       )
 
-    const handleOutputCurrencySelect = useCallback(
-        (currency) => {
-            setOutputCurrencySelected(currency)
-        }, [setOutputCurrencySelected],
-        )
-
     const handleInputLPSelect = useCallback(
         (lp: LPToken) => {
             onLPSelect(Field.INPUT, lp)
@@ -91,7 +86,7 @@ const Warp = () => {
 
     const handleSwapSelect = useCallback(
         (swap: OtherSwapConfig) => {
-            onSwapSelect(swap)
+            onSwapSelect(Field.INPUT, swap)
     }, [onSwapSelect])
     return(
         <>
@@ -110,7 +105,7 @@ const Warp = () => {
                             />
                             <CurrencyInputPanel
                                 label='From'
-                                value={parsedAmount?.toSignificant(6)}
+                                value={parsedAmount ? parsedAmount?.toSignificant(6) : maxAmountInput ? maxAmountInput.toSignificant(6) : ''}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
                                 currency={lpCurrency}
@@ -131,12 +126,13 @@ const Warp = () => {
                                 </IconButton>
                             </AutoColumn>
                             <CurrencyInputPanel
-                                label='Out'
+                                label='To HyperJUMP LP'
                                 value=''
-                                currency={currencyOutput}
-                                onCurrencySelect={handleOutputCurrencySelect}
                                 showMaxButton={false}
+                                pair={outputLP[1]}
                                 onUserInput={handleTypeInput}
+                                currency={outputCurrency}
+                                disableCurrencySelect
                                 zap
                                 disabledNumericalInput
                                 id="zap-currency-input"
@@ -158,15 +154,18 @@ const Warp = () => {
                                     `Approve ${lpInput?.tokens[0]?.symbol}-${lpInput?.tokens[1]?.symbol}`
                                 )}
                             </Button>
-                            :
-                            <Button
-                                width="100%"
-                                disabled={!(zapState === ZapCallbackState.VALID)}
-                                variant='primary'
-                                onClick={() => handleZapCallback()}
-                                >
-                                Warp
-                            </Button>
+                            : outputLP[0] !== PairState.EXISTS ? 
+                                <GreyCard style={{ textAlign: 'center' }}>
+                                    <Text mb="4px">Pair does not exist in HyperJUMP LP</Text>
+                                </GreyCard>
+                            :   <Button
+                                    width="100%"
+                                    disabled={!(zapState === ZapCallbackState.VALID)}
+                                    variant='primary'
+                                    onClick={() => handleZapCallback()}
+                                    >
+                                    Warp
+                                </Button>
                             }
                         </AutoColumn>
                     </CardBody>

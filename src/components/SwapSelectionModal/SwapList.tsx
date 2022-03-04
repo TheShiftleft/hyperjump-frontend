@@ -95,8 +95,8 @@ export default function SwapList({
         },
         [swapList, selectedSwap, onSwapSelect]
       )
-
-    const itemKey = useCallback((index: number, data: any) => data[index].name , [])
+    
+    const itemKey = useCallback((index: number, data: any) => swapList[data[index]].name , [swapList])
     return (
         <FixedSizeList
           height={height}
