@@ -1,14 +1,13 @@
-import { Token } from '@hyperjump-defi/sdk'
+import { Pair, Token } from '@hyperjump-defi/sdk'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { LPToken } from 'components/SearchModal/CurrencyListWarp'
 import warpLps from 'config/constants/warpLps'
 import { useActiveWeb3React } from 'hooks'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { toV2LiquidityToken } from 'state/user/hooks'
+import { useMemo, useRef, useState } from 'react'
 import { useTokenBalances } from 'state/wallet/hooks'
 import getNetwork from 'utils/getNetwork'
-import { useToken } from './Tokens'
+import { PairState, usePairs } from 'data/Reserves'
 
 export default function useOtherLps(defiName: string) {
     const cache = useRef({})
@@ -53,5 +52,7 @@ export function useOtherLpsCurrency(defiName: string): LPToken[] {
         })
     }, [balances, tokenPairsWithLiquidityTokens])
 
-    return otherLpsWithBalance
+    const checkPairs = usePairs(otherLpsWithBalance.map(({tokens}) => tokens))
+    const validPairs: LPToken[] = checkPairs.map((checkPair, index) => checkPair[0] === PairState.EXISTS ? otherLpsWithBalance[index] : undefined).filter(value => value !== undefined)
+    return validPairs
 }
