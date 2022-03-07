@@ -5,5 +5,6 @@ export interface BridgeNetwork {
   tokens: any,
   chainCurrency: string,
   timestamp: string,
-  version: any
+  version: any,
+  swappablePools: string[],
 }
