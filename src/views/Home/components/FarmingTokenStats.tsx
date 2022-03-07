@@ -115,7 +115,7 @@ const FarmingTokenStats = () => {
         <Text color="primary">{config.name} Emission Rate</Text>
         <Flex justifyContent="space-between">
           <Heading mb="10px">
-            <CardValue decimals={3} value={localEmissionRate} postfix="/ SECOND" />
+            <CardValue decimals={3} value={Number(localEmissionRate)} postfix="/ SECOND" />
           </Heading>
           <MetamaskButton
             onClick={() =>
