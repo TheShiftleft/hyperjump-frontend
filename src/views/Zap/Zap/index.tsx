@@ -21,6 +21,7 @@ import {useZapInToken, ZapCallbackState} from 'hooks/useZap'
 import useToast from 'hooks/useToast'
 import { WrappedTokenInfo } from 'state/lists/hooks'
 import useHttpLocations from 'hooks/useHttpLocations'
+import useI18n from 'hooks/useI18n'
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
@@ -32,6 +33,7 @@ const getTokenLogoURL = (address: string) => `https://tokens.hyperswap.fi/images
 const Zap = () => {
     const { toastSuccess, toastError } = useToast()
     useZapDefaultState()
+    const TranslateString = useI18n()
     const {field} = useZapState()
     const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted} = useDerivedZapInfo()
     const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
@@ -155,8 +157,8 @@ const Zap = () => {
                     <CardBody p='12px'>
                         <AutoColumn gap='md'>
                             <CurrencyInputPanel
-                                label='In'
-                                value={parsedAmounts[Field.INPUT]?.toSignificant(6)}
+                                label={TranslateString(76, 'From')}
+                                value={parsedAmounts[Field.INPUT] ? parsedAmounts[Field.INPUT]?.toSignificant(6) : ''}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
                                 currency={currencyInput}
@@ -175,7 +177,7 @@ const Zap = () => {
                                 </IconButton>
                             </AutoColumn>
                             <CurrencyInputPanel
-                                label={liquidityMinted ? 'Out (Estimated)' : 'Out'}
+                                label={liquidityMinted ? TranslateString(196,'To (Estimated)') : TranslateString(80,'To')}
                                 value={liquidityMinted ? liquidityMinted?.toSignificant(6) : "0"}
                                 currency={pairCurrency}
                                 pair={pairOutput}
@@ -183,7 +185,6 @@ const Zap = () => {
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
                                 disabledNumericalInput
-                                
                                 id="zap-currency-input"
                                 pairToken
                             />
@@ -229,7 +230,7 @@ const Zap = () => {
                                 variant='primary'
                                 onClick={() => handleZapCallback()}
                                 >
-                                Zap In
+                                {TranslateString(1211, 'Zap In')}
                             </Button>}
                         </AutoColumn>
                     </CardBody>

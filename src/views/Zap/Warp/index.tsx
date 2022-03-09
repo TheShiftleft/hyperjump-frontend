@@ -23,11 +23,12 @@ import useOtherSwapList from 'hooks/useOtherSwapList'
 import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { GreyCard } from 'components/Card'
 import { PairState } from 'data/Reserves'
+import useI18n from 'hooks/useI18n'
 import DefiSelect from './DefiSelect'
 
 const Warp = () => {
     useWarpDefaultState()
-    const { account } = useActiveWeb3React()
+    const TranslateString = useI18n()
     const { toastSuccess, toastError } = useToast()
     const [modalOpen, setModalOpen] = useState(false)
     const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP, outputCurrency} = useDerivedWarpInfo()
@@ -71,7 +72,8 @@ const Warp = () => {
     const handleInputLPSelect = useCallback(
         (lp: LPToken) => {
             onLPSelect(Field.INPUT, lp)
-        }, [onLPSelect],
+            onUserInput(Field.INPUT, maxAmountSpend(lp.balance).toExact())
+        }, [onLPSelect, onUserInput],
     )
 
     const handleMaxInput = useCallback(() => {
@@ -104,8 +106,8 @@ const Warp = () => {
                                 }}
                             />
                             <CurrencyInputPanel
-                                label='From'
-                                value={parsedAmount ? parsedAmount?.toSignificant(6) : maxAmountInput ? maxAmountInput.toSignificant(6) : ''}
+                                label={TranslateString(76,'From')}
+                                value={parsedAmount ? parsedAmount?.toSignificant(6) : ''}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
                                 currency={lpCurrency}
@@ -126,13 +128,14 @@ const Warp = () => {
                                 </IconButton>
                             </AutoColumn>
                             <CurrencyInputPanel
-                                label='To HyperJUMP LP'
+                                label={TranslateString(1207,'To HyperJUMP LP')}
                                 value=''
                                 showMaxButton={false}
                                 pair={outputLP[1]}
                                 onUserInput={handleTypeInput}
                                 currency={outputCurrency}
                                 disableCurrencySelect
+                                hideInput
                                 zap
                                 disabledNumericalInput
                                 id="zap-currency-input"
@@ -164,7 +167,7 @@ const Warp = () => {
                                     variant='primary'
                                     onClick={() => handleZapCallback()}
                                     >
-                                    Warp
+                                    {TranslateString(1209,'Warp')}
                                 </Button>
                             }
                         </AutoColumn>

@@ -56,7 +56,7 @@ const ColumnWBorder = styled.div`
   border-radius: ${({ theme }) => theme.radii.card};
 `
 
-export default function CurrencySearchZap({
+export default function CurrencySearchWarp({
   onLPSelect,
   otherSelectedCurrency,
   showCommonBases,
@@ -67,7 +67,6 @@ export default function CurrencySearchZap({
   selectedLP,
   selectedSwap
 }: CurrencySearchProps) {
-    const { t } = useTranslation()
     const { chainId, account } = useActiveWeb3React()
     const theme = useContext(ThemeContext)
     const { config } = getNetwork()
@@ -173,7 +172,7 @@ export default function CurrencySearchZap({
             <SearchInput
             type="text"
             id="token-search-input"
-            placeholder={t('type token name here to search')}
+            placeholder='type token name here to search'
             value={searchQuery}
             ref={inputRef as RefObject<HTMLInputElement>}
             onChange={handleInput}

@@ -140,7 +140,7 @@ export function useDerivedWarpInfo(): {
   const lpTokens = useOtherLpsCurrency(selectedSwap)
   const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
   ,[lpTokens,inputLpId])
-  const lpCurrency = useCurrency(inputLpId)
+  const lpCurrency = lpInput?.liquidityToken
   const lpBalance = lpInput?.balance
   const parsedAmount = tryParseAmount(typedValue, lpCurrency ?? undefined)
   const pair = usePair(lpInput?.tokens[0], lpInput?.tokens[1])
