@@ -6,7 +6,7 @@ import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
 
-import { getBroomAddess } from 'utils/addressHelpers'
+import { getBroomAddress } from 'utils/addressHelpers'
 
 export interface TokenRowProps {
   token: TokenProps
@@ -83,7 +83,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { t } = useTranslation()
   const [isSelected, setIsSelected] = useState(false)
 
-  const broomAddress = getBroomAddess()
+  const broomAddress = getBroomAddress()
   
   const { token, isModal, selectTokens } = props
 
