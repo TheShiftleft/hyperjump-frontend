@@ -127,12 +127,9 @@ export function useDerivedWarpInfo(): {
   outputLP: [PairState, Pair],
   outputCurrency : Currency
 } {
-  const { account } = useActiveWeb3React()
   const {
-    field,
     typedValue,
     [Field.INPUT]: { lpId: inputLpId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
     selectedSwap
   } = useWarpState();
   const swapList = useOtherSwapList()

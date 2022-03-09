@@ -34,12 +34,12 @@ const Zap = () => {
     const { toastSuccess, toastError } = useToast()
     useZapDefaultState()
     const TranslateString = useI18n()
-    const {field} = useZapState()
+    const {field, typedValue} = useZapState()
     const {currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted} = useDerivedZapInfo()
     const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
     const parsedAmounts =  {
-        [Field.INPUT]: field === Field.INPUT ? parsedAmount : undefined,
-        [Field.OUTPUT]: field === Field.OUTPUT ? undefined : undefined,
+        [Field.INPUT]: parsedAmount,
+        [Field.OUTPUT]: liquidityMinted,
       }
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT])
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmounts[Field.INPUT]?.equalTo(maxAmountInput))
@@ -115,6 +115,10 @@ const Zap = () => {
       }
     }, [approval, approvalSubmitted])
 
+    const formattedAmounts = {
+        [Field.INPUT]: typedValue ?? '',
+        [Field.OUTPUT]: parsedAmounts[Field.OUTPUT]?.toSignificant(6) ?? ''
+    }
 
     const handleTypeInput = useCallback(
         (value: string) => {
@@ -158,7 +162,7 @@ const Zap = () => {
                         <AutoColumn gap='md'>
                             <CurrencyInputPanel
                                 label={TranslateString(76, 'From')}
-                                value={parsedAmounts[Field.INPUT] ? parsedAmounts[Field.INPUT]?.toSignificant(6) : ''}
+                                value={formattedAmounts[Field.INPUT]}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
                                 currency={currencyInput}
@@ -185,6 +189,7 @@ const Zap = () => {
                                 showMaxButton={false}
                                 onUserInput={handleTypeOutput}
                                 disabledNumericalInput
+                                hideInput={!formattedAmounts[Field.OUTPUT]}
                                 id="zap-currency-input"
                                 pairToken
                             />

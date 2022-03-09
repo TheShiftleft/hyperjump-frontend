@@ -29,6 +29,7 @@ import DefiSelect from './DefiSelect'
 const Warp = () => {
     useWarpDefaultState()
     const TranslateString = useI18n()
+    const {typedValue} = useWarpState()
     const { toastSuccess, toastError } = useToast()
     const [modalOpen, setModalOpen] = useState(false)
     const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP, outputCurrency} = useDerivedWarpInfo()
@@ -107,7 +108,7 @@ const Warp = () => {
                             />
                             <CurrencyInputPanel
                                 label={TranslateString(76,'From')}
-                                value={parsedAmount ? parsedAmount?.toSignificant(6) : ''}
+                                value={typedValue ?? ''}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
                                 currency={lpCurrency}
