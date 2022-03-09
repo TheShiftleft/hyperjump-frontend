@@ -66,6 +66,10 @@ export const getL2BridgeZapAddress = () => {
   return getAddress(addresses.l2BridgeZap)
 }
 
+export const getBroomAddress = () => {
+  return getAddress(addresses.broom)
+}
+
 const routerAddresses: Record<Network, string> = {
   [Network.BSC]: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',
   [Network.BSC_TESTNET]: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',

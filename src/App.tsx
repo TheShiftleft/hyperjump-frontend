@@ -30,6 +30,7 @@ const Analytics = lazy(() => import('./views/Analytics'))
 const Convert = lazy(() => import('./views/Convert/Convert'))
 const Bridge = lazy(() => import('./views/Bridge'))
 const OnRamp = lazy(() => import('./views/OnRamp'))
+const Portfolio = lazy(() => import('./views/Portfolio'))
 
 // This config is required for number formatting
 BigNumber.config({
@@ -79,6 +80,9 @@ const App: React.FC = () => {
             </Route>
             <Route path="/pools">
               <Pools />
+            </Route>
+            <Route path="/portfolio">
+              <Portfolio />
             </Route>
             <Route path="/vaults">
               <Vaults />

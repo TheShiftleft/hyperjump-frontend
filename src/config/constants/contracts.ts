@@ -81,5 +81,9 @@ export default {
   l2BridgeZap: {
     56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
     250: '0xB003e75f7E0B5365e814302192E99b4EE08c0DEd',
-  }
+  },
+  broom: {
+    56: '0xe50E6E669ee4Ac26CAacf681D13BAe961ca4c6f8',
+    250: '0x3A4A1Cf4280d8322AF62c978Ab8F787782589ca2',
+  },
 }

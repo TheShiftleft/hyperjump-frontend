@@ -19,6 +19,7 @@ import {
   getClaimLpRewardsMigratorAddress,
   getSynapseBridgeAddress,
   getL2BridgeZapAddress,
+  getBroomAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -40,7 +41,8 @@ import {
   getClaimLpRewardsMigratorABI,
   getMechMigratorABI,
   getXJumpABI,
-  getMechABI
+  getMechABI,
+  getBroomABI,
 } from 'config/abi'
 import { Pool } from 'state/types'
 import getNetwork from './getNetwork'
@@ -132,4 +134,7 @@ export const getSynapseBridgeContract = (web3?: Web3) => {
 }
 export const getL2BridgeZapContract = (web3?: Web3) => {
   return getContract(L2_BRIDGE_ZAP_ABI.abi, getL2BridgeZapAddress(), web3)
+}
+export const getBroomContract = (web3?: Web3) => {
+  return getContract(getBroomABI(), getBroomAddress(), web3)
 }

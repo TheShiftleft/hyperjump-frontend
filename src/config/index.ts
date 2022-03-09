@@ -240,3 +240,9 @@ const SCANNER_URLS = {
 }
 
 export const SCANNER_URL = SCANNER_URLS[chainId]
+
+export const MORALIS_API_KEY = process.env.REACT_APP_MORALIS_API_KEY;
+export const MORALIS_API_URL = process.env.REACT_APP_MORALIS_API_URL;
+
+export const MORALIS_SERVER_URL = process.env.REACT_APP_MORALIS_SERVER_URL;
+export const MORALIS_APP_ID = process.env.REACT_APP_MORALIS_APP_ID;
