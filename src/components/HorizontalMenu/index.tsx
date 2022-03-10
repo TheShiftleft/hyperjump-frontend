@@ -1,34 +1,141 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { languageList } from 'config/localization/languages'
 import { useTranslation } from 'contexts/Localization'
-import throttle from "lodash/throttle";
+import throttle from 'lodash/throttle'
 import useTheme from 'hooks/useTheme'
 import useAuth from 'hooks/useAuth'
 import Overlay from 'uikit/components/Overlay/Overlay'
 import Flex from 'uikit/components/Box/Flex'
 import { useMatchBreakpoints } from 'uikit/hooks'
-import { getBalanceNumber } from 'utils/formatBalance'
-import { usePriceFarmingTokenUsd, usePriceGovTokenUsd } from 'state/hooks'
-import useTokenBalance, { useBurnedBalance, useTotalSupply } from 'hooks/useTokenBalance'
-import { getFarmingTokenAddress } from 'utils/addressHelpers'
-import useAllEarnings from 'hooks/useAllEarnings'
-import BigNumber from 'bignumber.js'
+import { usePriceFarmingTokenUsd } from 'state/hooks'
 import Logo from 'uikit/widgets/Menu/components/Logo'
 import FarmingTokenPrice from 'uikit/widgets/Menu/components/FarmingTokenPrice'
 import HorizontalPanel from 'uikit/widgets/Menu/components/HorizontalPanel'
 import UserBlock from 'uikit/widgets/Menu/components/UserBlock'
 import { MENU_HEIGHT, SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from 'uikit/widgets/Menu/config'
-import TopBarOptions from 'uikit/widgets/Menu/TopBarOptions'
 import NetworkBlock from 'uikit/widgets/Menu/NetworkBlock'
-import useGovTokenBurnRate from 'hooks/useGovTokenBurnRate'
 import config from './config'
-
 
 interface MenuProps {
   children: any
 }
+
+const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
+  const { account } = useWeb3React()
+  const { login, logout } = useAuth()
+  const { isDark, toggleTheme } = useTheme()
+  const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
+  const { currentLanguage, setLanguage, t } = useTranslation()
+  const links = config(t)
+
+  const { isXl } = useMatchBreakpoints()
+  const isMobile = isXl === false
+  const [isPushed, setIsPushed] = useState(!isMobile)
+
+  const [showMenu, setShowMenu] = useState(true)
+  const refPrevOffset = useRef(window.pageYOffset)
+  const [opacity, setOpacity] = useState(true)
+
+  const [hideMenuButton] = useState(true)
+
+  // Find the home link if provided
+  const homeLink = links.find((link) => link.label === 'Home')
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentOffset = window.pageYOffset
+      const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight
+      const isTopOfPage = currentOffset === 0
+      // Always show the menu when user reach the top
+      if (isTopOfPage) {
+        setShowMenu(true)
+      }
+      // Avoid triggering anything at the bottom because of layout shift
+      else if (!isBottomOfPage) {
+        if (currentOffset < refPrevOffset.current) {
+          // Has scroll up
+          // setShowMenu(true);
+          setOpacity(true)
+        } else {
+          // Has scroll down
+          // setShowMenu(false);
+          setOpacity(false)
+        }
+      }
+      refPrevOffset.current = currentOffset
+    }
+    const throttledHandleScroll = throttle(handleScroll, 200)
+
+    window.addEventListener('scroll', throttledHandleScroll)
+    return () => {
+      window.removeEventListener('scroll', throttledHandleScroll)
+    }
+  }, [])
+
+  return (
+    <Wrapper>
+      <StyledNav showMenu={showMenu} className={opacity ? 'show s-nav' : 'faded s-nav'}>
+        <NavWrapper>
+          <Logo
+            isPushed={isPushed}
+            togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
+            isDark={isDark}
+            href={homeLink?.href ?? '/'}
+            hideMenuButton={hideMenuButton} // enable when using horizontal menu
+          />
+          {!isMobile && (
+            <HorizontalPanel
+              isPushed={isPushed}
+              isMobile={isMobile}
+              showMenu={showMenu}
+              isDark={isDark}
+              toggleTheme={toggleTheme}
+              langs={languageList}
+              setLang={setLanguage}
+              currentLang={currentLanguage.code}
+              farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+              pushNav={setIsPushed}
+              links={links}
+            />
+          )}
+        </NavWrapper>
+        <Flex flexWrap="wrap">
+          <PriceWrapper>
+            <FarmingTokenPrice farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()} />
+          </PriceWrapper>
+          <NetworkBlock />
+          <UserBlock account={account} login={login} logout={logout} />
+        </Flex>
+      </StyledNav>
+
+      <BodyWrapper>
+        {isMobile && (
+          <HorizontalPanel // Duplicate of line #153 to cater mobile navigation menu in the footer
+            isPushed={isPushed}
+            isMobile={isMobile}
+            showMenu={showMenu}
+            isDark={isDark}
+            toggleTheme={toggleTheme}
+            langs={languageList}
+            setLang={setLanguage}
+            currentLang={currentLanguage.code}
+            farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
+            pushNav={setIsPushed}
+            links={links}
+          />
+        )}
+        <Inner isPushed={isPushed} showMenu={showMenu}>
+          {children}
+        </Inner>
+        <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
+      </BodyWrapper>
+    </Wrapper>
+  )
+}
+
+export default HorizontalMenu
 
 const Wrapper = styled.div`
   display: flex;
@@ -106,157 +213,3 @@ const PriceWrapper = styled.div`
   align-self: center;
   margin-right: 10px;
 `
-
-const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
-  const { account } = useWeb3React()
-  const { login, logout } = useAuth()
-  const { isDark, toggleTheme } = useTheme()
-  const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
-  const { currentLanguage, setLanguage, t } = useTranslation()
-  const links = config(t)
-
-  const { isXl } = useMatchBreakpoints()
-  const isMobile = isXl === false
-  const [isPushed, setIsPushed] = useState(!isMobile)
-
-  const [showMenu, setShowMenu] = useState(true)
-  const refPrevOffset = useRef(window.pageYOffset)
-  const [opacity, setOpacity] = useState(true)
-
-  const [hideMenuButton] = useState(true)
-
-  // Find the home link if provided
-  const homeLink = links.find((link) => link.label === 'Home')
-  const farmingTokenBalance = useTokenBalance(getFarmingTokenAddress())
-  const allEarnings = useAllEarnings()
-  const earningsSum = allEarnings.reduce((accum, earning) => {
-    return accum + new BigNumber(earning).div(new BigNumber(10).pow(18)).toNumber()
-  }, 0)
-  const totalSupply = useTotalSupply()
-  const burnedBalance = useBurnedBalance(getFarmingTokenAddress())
-  const farmingTokenSupply = totalSupply ? getBalanceNumber(totalSupply.minus(burnedBalance)) : 0
-
-  const govTokenPriceUsd = usePriceGovTokenUsd()
-  const govTokenBurnRate = useGovTokenBurnRate()
-
-  const govTokenPriceString =
-    govTokenPriceUsd.isNaN() || govTokenPriceUsd.isZero()
-      ? 'Loading'
-      : govTokenPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 2 })
-  const farmingTokenPriceUsdString =
-    farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()
-      ? 'Loading...'
-      : farmingTokenPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 4 })
-  const farmingTokenBalanceString = farmingTokenBalance.balance.isNaN()
-    ? 'Loading...'
-    : getBalanceNumber(farmingTokenBalance.balance).toLocaleString(undefined, { maximumFractionDigits: 4 })
-  const farmingTokenBalanceUsdString =
-    farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()
-      ? 'Loading...'
-      : (getBalanceNumber(farmingTokenBalance.balance) * farmingTokenPriceUsd.toNumber()).toLocaleString(undefined, {
-          maximumFractionDigits: 4,
-        })
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentOffset = window.pageYOffset;
-      const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight;
-      const isTopOfPage = currentOffset === 0;
-      // Always show the menu when user reach the top
-      if (isTopOfPage) {        
-        setShowMenu(true);
-      }      
-      // Avoid triggering anything at the bottom because of layout shift
-      else if (!isBottomOfPage) {
-        if (currentOffset < refPrevOffset.current) {
-          // Has scroll up
-          // setShowMenu(true);
-          setOpacity(true);
-        } else {
-          // Has scroll down
-          // setShowMenu(false);
-          setOpacity(false);
-        }
-      }
-      refPrevOffset.current = currentOffset;
-    };
-    const throttledHandleScroll = throttle(handleScroll, 200);
-
-    window.addEventListener("scroll", throttledHandleScroll);
-    return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
-    };
-  }, []);
-
-  return (
-    <Wrapper>
-      <StyledNav showMenu={showMenu} className={ opacity ? "show s-nav" : "faded s-nav"}>
-        <NavWrapper>
-          <Logo
-            isPushed={isPushed}
-            togglePush={() => setIsPushed((prevState: boolean) => !prevState)}
-            isDark={isDark}
-            href={homeLink?.href ?? '/'}
-            hideMenuButton={hideMenuButton} // enable when using horizontal menu
-          />
-          {!isMobile && <HorizontalPanel
-            isPushed={isPushed}
-            isMobile={isMobile}
-            showMenu={showMenu}
-            isDark={isDark}
-            toggleTheme={toggleTheme}
-            langs={languageList}
-            setLang={setLanguage}
-            currentLang={currentLanguage.code}
-            farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
-            pushNav={setIsPushed}
-            links={links}
-          />}
-        </NavWrapper>
-        <Flex flexWrap="wrap">
-          {/*  <TopBarOptions
-            account={account}
-            login={login}
-            logout={logout}
-            farmingTokenBalance={farmingTokenBalanceString}
-            farmingTokenPriceUsd={farmingTokenPriceUsdString}
-            farmingTokenBalanceUsd={farmingTokenBalanceUsdString}
-            pendingHarvest={earningsSum.toLocaleString(undefined, { maximumFractionDigits: 4 })}
-            farmingTokenSupply={farmingTokenSupply}
-            farmingTokenBurned={getBalanceNumber(burnedBalance)}
-            govTokenPrice={govTokenPriceString}
-            govTokenBurnRate={getBalanceNumber(govTokenBurnRate, 18)}
-          /> */}
-          <PriceWrapper>
-            <FarmingTokenPrice farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()} />
-          </PriceWrapper>
-          
-          <NetworkBlock />
-          <UserBlock account={account} login={login} logout={logout} />
-        </Flex>
-      </StyledNav>
-
-      <BodyWrapper>
-        {isMobile && <HorizontalPanel // Duplicate of line #153 to cater mobile navigation menu in the footer
-          isPushed={isPushed}
-          isMobile={isMobile}
-          showMenu={showMenu}
-          isDark={isDark}
-          toggleTheme={toggleTheme}
-          langs={languageList}
-          setLang={setLanguage}
-          currentLang={currentLanguage.code}
-          farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
-          pushNav={setIsPushed}
-          links={links}
-        />}
-        <Inner isPushed={isPushed} showMenu={showMenu}>
-          {children}
-        </Inner>
-        <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
-      </BodyWrapper>
-    </Wrapper>
-  )
-}
-
-export default HorizontalMenu
