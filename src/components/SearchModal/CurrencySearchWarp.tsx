@@ -74,7 +74,6 @@ export default function CurrencySearchWarp({
     const fixedList = useRef<FixedSizeList>()
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-    // Need modifications
     const otherLpsWithBalance = useOtherLpsCurrency(selectedSwap.name)
 
     // if they input an address, use it

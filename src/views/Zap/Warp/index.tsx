@@ -159,9 +159,16 @@ const Warp = () => {
                                 )}
                             </Button>
                             : outputLP[0] !== PairState.EXISTS ? 
-                                <GreyCard style={{ textAlign: 'center' }}>
-                                    <Text mb="4px">Pair does not exist in HyperJUMP LP</Text>
-                                </GreyCard>
+                                <Button 
+                                    width="100%"
+                                    disabled
+                                    variant='text'
+                                    style={{ textAlign: 'center' }}>
+                                    {lpCurrency === undefined ? 
+                                        'Select an LP pair'
+                                    :
+                                        'Pair does not exist in HyperJUMP LP'}
+                                </Button>
                             :   <Button
                                     width="100%"
                                     disabled={!(zapState === ZapCallbackState.VALID)}
