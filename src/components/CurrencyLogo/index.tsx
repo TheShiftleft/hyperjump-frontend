@@ -7,7 +7,8 @@ import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 // FIXME replace this
-const getTokenLogoURL = (address: string) => `https://tokens.hyperswap.fi/images/${address}.png`
+const getTokenLogoURL = (address: string) =>
+  `https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 
 const StyledBnbLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};
@@ -51,7 +52,9 @@ export default function CurrencyLogo({
   }, [config.baseCurrency, currency, uriLocations])
 
   if (currency === config.baseCurrency) {
-    return <StyledBnbLogo src={`/images/tokens/${config.networkToken.symbol.toLowerCase()}.png`} size={size} style={style} />
+    return (
+      <StyledBnbLogo src={`/images/tokens/${config.networkToken.symbol.toLowerCase()}.png`} size={size} style={style} />
+    )
   }
 
   return <StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />
