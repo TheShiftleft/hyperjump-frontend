@@ -134,19 +134,12 @@ function CurrencyRow({
   style: CSSProperties
   zap: boolean
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
   const { token0, token1 } = pair
   const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(pair.liquidityToken.address)
   const key = pairKey(pair)
-  const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, pairCurrency)
-  const customAdded = useIsUserAddedToken(pairCurrency)
   const balance = useCurrencyBalance(account ?? undefined, pairCurrency)
-  const logo1 = getTokenLogoURL(pair.token0.address)
-  const logo2 = getTokenLogoURL(pair.token1.address)
-  const removeToken = useRemoveUserAddedToken()
-  const addToken = useAddUserToken()
   const uriLocations0 = useHttpLocations(token0 instanceof WrappedTokenInfo ? token0.logoURI : undefined)
   const uriLocations1 = useHttpLocations(token1 instanceof WrappedTokenInfo ? token1.logoURI : undefined)
 
@@ -157,24 +150,24 @@ function CurrencyRow({
           ...uriLocations0,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
           getTokenLogoURL(
-            token0?.symbol.toLowerCase() === 'wftm'
+            token0?.symbol.toLowerCase() === 'ftm'
               ? 'FTM'
               : token0?.symbol.toLowerCase() === 'bnb'
               ? 'BNB'
-              : token0?.address,
-          ),
+              : token0?.address
+          )
         ]
       }
 
       return [
         `/images/tokens/${token0?.address ?? 'token'}.png`,
         getTokenLogoURL(
-          token0?.symbol.toLowerCase() === 'wftm'
+          token0?.symbol.toLowerCase() === 'ftm'
             ? 'FTM'
             : token0?.symbol.toLowerCase() === 'bnb'
             ? 'BNB'
-            : token0?.address,
-        ),
+            : token0?.address
+        )
       ]
     }
     return []
@@ -187,24 +180,24 @@ function CurrencyRow({
           ...uriLocations1,
           `/images/tokens/${token1?.address ?? 'token'}.png`,
           getTokenLogoURL(
-            token1?.symbol.toLowerCase() === 'wftm'
+            token1?.symbol.toLowerCase() === 'ftm'
               ? 'FTM'
               : token1?.symbol.toLowerCase() === 'bnb'
               ? 'BNB'
-              : token1?.address,
-          ),
+              : token1?.address
+          )
         ]
       }
 
       return [
         `/images/tokens/${token1?.address ?? 'token'}.png`,
         getTokenLogoURL(
-          token1?.symbol.toLowerCase() === 'wftm'
+          token1?.symbol.toLowerCase() === 'ftm'
             ? 'FTM'
             : token1?.symbol.toLowerCase() === 'bnb'
             ? 'BNB'
-            : token1?.address,
-        ),
+            : token1?.address
+        )
       ]
     }
     return []

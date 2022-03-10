@@ -55,15 +55,14 @@ export default function CurrencyLogo({
         return [
           ...uriLocations,
           `/images/tokens/${currency?.address ?? 'token'}.png`,
-          getTokenLogoURL(currency.address, lpUrl),
-          ...getTokenLogoUrlWithSymbol(currency.symbol, lpUrl)
+          getTokenLogoURL(currency.address)
         ]
       }
 
-      return [`/images/tokens/${currency?.address ?? 'token'}.png`, getTokenLogoURL(currency.address, lpUrl), ...getTokenLogoUrlWithSymbol(currency.symbol, lpUrl)]
+      return [`/images/tokens/${currency?.address ?? 'token'}.png`, getTokenLogoURL(currency.address)]
     }
     return []
-  }, [config.baseCurrency, currency, uriLocations, lpUrl])
+  }, [config.baseCurrency, currency, uriLocations])
 
   if (currency === config.baseCurrency) {
     return (
