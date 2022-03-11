@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react'
+import { useMemo, useState, useRef } from 'react'
 import Web3 from 'web3'
 import { useWeb3React } from '@web3-react/core'
-import { getWeb3NoAccount } from 'utils/web3'
+import web3NoAccount, { getWeb3NoAccount } from 'utils/web3'
 
 /**
  * Provides a web3 instance using the provider provided by useWallet
@@ -10,15 +10,11 @@ import { getWeb3NoAccount } from 'utils/web3'
  */
 const useWeb3 = () => {
   const { library } = useWeb3React()
-  const proxy = library ? library.provider : library
-  const refEth = useRef(proxy)
-  const [web3, setweb3] = useState(proxy ? new Web3(proxy) : getWeb3NoAccount())
+  const proxy = library ? library.provider : undefined
+  const [web3, setweb3] = useState(web3NoAccount)
 
-  useEffect(() => {
-    if (proxy !== refEth.current) {
-      setweb3(proxy ? new Web3(proxy) : getWeb3NoAccount())
-      refEth.current = proxy
-    }
+  useMemo(() => {
+      setweb3(proxy ? new Web3(proxy) : web3NoAccount)
   }, [proxy])
   return web3
 }
