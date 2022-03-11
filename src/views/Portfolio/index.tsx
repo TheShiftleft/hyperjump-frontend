@@ -7,8 +7,10 @@ import { useGetTokensList } from 'hooks/moralis'
 import React from 'react'
 import styled from 'styled-components'
 import getNetwork from 'utils/getNetwork'
+import Container from 'components/layout/Container'
 import TokenRow from './TokenRow'
 import BroomModal from './BroomModal'
+import WalletLogin from './WalletLogin'
 
 const ButtonBox = styled(Box)`
   text-align: center;
@@ -36,24 +38,34 @@ const Portfolio: React.FC = () => {
   }
 
   return (
-    <>
-      <PageHeader>
-        <Flex justifyContent="center" flexDirection="column">
-          <Text fontSize="24px" textAlign="center">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalVolume)}</Text>
-          <Text color="white" textAlign="center">Net Worth</Text>
-        </Flex>
-      </PageHeader>
-      <Page>
-        {tokens
-          .filter((token) => !token.tokenObj.name.includes('.'))
-          .map((token) => (
-            <TokenRow token={token} />
-          ))}
-        <ButtonBox>
-          <Button onClick={onConvert}>{t('Convert small balances to JUMP')}</Button>
-        </ButtonBox>
-      </Page>
-    </>
+    <Container>
+      {account ? (
+        <>
+          <PageHeader>
+            <Flex justifyContent="center" flexDirection="column">
+              <Text fontSize="24px" textAlign="center">
+                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalVolume)}
+              </Text>
+              <Text color="white" textAlign="center">
+                Net Worth
+              </Text>
+            </Flex>
+          </PageHeader>
+          <Page>
+            {tokens
+              .filter((token) => !token.tokenObj.name.includes('.'))
+              .map((token) => (
+                <TokenRow token={token} />
+              ))}
+            <ButtonBox>
+              <Button onClick={onConvert}>{t('Convert small balances to JUMP')}</Button>
+            </ButtonBox>
+          </Page>
+        </>
+      ) : (
+        <WalletLogin />
+      )}
+    </Container>
   )
 }
 
