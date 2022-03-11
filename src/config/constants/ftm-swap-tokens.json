@@ -3,7 +3,7 @@
   "timestamp": "2021-04-17T18:54:56.113Z",
   "version": { "major": 1, "minor": 13, "patch": 0 },
   "tags": {},
-  "logoURI": "https://tokens.hyperjump.app/images/FTM.png",
+  "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/FTM.png",
   "keywords": ["thugsswap", "streetswap", "hyperswap", "hyperjump", "default"],
   "tokens": [
     {
@@ -12,7 +12,7 @@
       "symbol": "WFTM",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83.png"
     },
     {
       "name": "HyperAurora",
@@ -20,7 +20,7 @@
       "symbol": "AURORA",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xbc2451AaD349b6B43FD05F4F0cC327F8A6bcA2d4.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xbc2451AaD349b6B43FD05F4F0cC327F8A6bcA2d4.png"
     },
     {
       "name": "HyperOrillium",
@@ -28,7 +28,7 @@
       "symbol": "ORI",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x0575f8738EFdA7F512e3654F277C77e80C7d2725.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x0575f8738EFdA7F512e3654F277C77e80C7d2725.png"
     },
     {
       "name": "DAI Stablecoin",
@@ -36,7 +36,7 @@
       "symbol": "DAI",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E.png"
     },
     {
       "name": "Binance Coin",
@@ -44,7 +44,7 @@
       "symbol": "wBNB",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454.png"
     },
     {
       "name": "Staked FTM",
@@ -52,7 +52,7 @@
       "symbol": "sFTM",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x69c744D3444202d35a2783929a0F930f2FBB05ad.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x69c744D3444202d35a2783929a0F930f2FBB05ad.png"
     },
     {
       "name": "ChainLink",
@@ -60,7 +60,7 @@
       "symbol": "LINK",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8.png"
     },
     {
       "name": "USD Coin",
@@ -68,7 +68,7 @@
       "symbol": "USDC",
       "decimals": 6,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75.png"
     },
     {
       "name": "Wrapped Bitcoin",
@@ -76,7 +76,7 @@
       "symbol": "BTC",
       "decimals": 8,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x321162Cd933E2Be498Cd2267a90534A804051b11.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x321162Cd933E2Be498Cd2267a90534A804051b11.png"
     },
     {
       "name": "Aave",
@@ -84,7 +84,7 @@
       "symbol": "AAVE",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x6a07A792ab2965C72a5B8088d3a069A7aC3a993B.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x6a07A792ab2965C72a5B8088d3a069A7aC3a993B.png"
     },
     {
       "name": "Sushi",
@@ -92,7 +92,7 @@
       "symbol": "SUSHI",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xae75A438b2E0cB8Bb01Ec1E1e376De11D44477CC.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xae75A438b2E0cB8Bb01Ec1E1e376De11D44477CC.png"
     },
     {
       "name": "yearn.finance",
@@ -100,7 +100,7 @@
       "symbol": "YFI",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x29b0Da86e484E1C0029B56e817912d778aC0EC69.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x29b0Da86e484E1C0029B56e817912d778aC0EC69.png"
     },
     {
       "name": "Curve DAO",
@@ -108,7 +108,7 @@
       "symbol": "CRV",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x1E4F97b9f9F913c46F1632781732927B9019C68b.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x1E4F97b9f9F913c46F1632781732927B9019C68b.png"
     },
     {
       "name": "Band",
@@ -116,7 +116,7 @@
       "symbol": "BAND",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x46E7628E8b4350b2716ab470eE0bA1fa9e76c6C5.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x46E7628E8b4350b2716ab470eE0bA1fa9e76c6C5.png"
     },
     {
       "name": "Wrapped Ether",
@@ -124,7 +124,7 @@
       "symbol": "ETH",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png"
     },
     {
       "name": "Cream",
@@ -132,7 +132,7 @@
       "symbol": "CREAM",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x657A1861c15A3deD9AF0B6799a195a249ebdCbc6.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x657A1861c15A3deD9AF0B6799a195a249ebdCbc6.png"
     },
     {
       "name": "Synth sUSD",
@@ -140,7 +140,7 @@
       "symbol": "sUSD",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x0E1694483eBB3b74d3054E383840C6cf011e518e.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x0E1694483eBB3b74d3054E383840C6cf011e518e.png"
     },
     {
       "name": "Synthetix Network",
@@ -148,7 +148,7 @@
       "symbol": "SNX",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x56ee926bD8c72B2d5fa1aF4d9E4Cbb515a1E3Adc.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x56ee926bD8c72B2d5fa1aF4d9E4Cbb515a1E3Adc.png"
     },
     {
       "name": "Spice",
@@ -156,7 +156,7 @@
       "symbol": "SFI",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x924828a9Fb17d47D0eb64b57271D10706699Ff11.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x924828a9Fb17d47D0eb64b57271D10706699Ff11.png"
     },
     {
       "name": "Hegic",
@@ -164,7 +164,7 @@
       "symbol": "HEGIC",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x44B26E839eB3572c5E959F994804A5De66600349.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x44B26E839eB3572c5E959F994804A5De66600349.png"
     },
     {
       "name": "BORG",
@@ -172,7 +172,7 @@
       "symbol": "BORG",
       "decimals": 8,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xE9828045632b32E2aaC7f3a4C1511C0d8965576C.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xE9828045632b32E2aaC7f3a4C1511C0d8965576C.png"
     },
     {
       "name": "BORGDAI",
@@ -180,7 +180,7 @@
       "symbol": "BORGDAI",
       "decimals": 9,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x4F16b83e55b92E6F8F7Da6D78Dd19d5a00954864.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x4F16b83e55b92E6F8F7Da6D78Dd19d5a00954864.png"
     },
     {
       "name": "Seven of Nine",
@@ -188,7 +188,7 @@
       "symbol": "SON",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x9A775700694B0AF4B0DEa668f809d453EaC4Cbcd.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x9A775700694B0AF4B0DEa668f809d453EaC4Cbcd.png"
     },
     {
       "name": "Frax",
@@ -196,7 +196,7 @@
       "symbol": "FRAX",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xaf319E5789945197e365E7f7fbFc56B130523B33.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xaf319E5789945197e365E7f7fbFc56B130523B33.png"
     },
     {
       "name": "Cover",
@@ -204,7 +204,7 @@
       "symbol": "COVER",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xB01E8419d842beebf1b70A7b5f7142abbaf7159D.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xB01E8419d842beebf1b70A7b5f7142abbaf7159D.png"
     },
     {
       "name": "Keep3r",
@@ -212,7 +212,7 @@
       "symbol": "KP3R",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x2A5062D22adCFaAfbd5C541d4dA82E4B450d4212.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x2A5062D22adCFaAfbd5C541d4dA82E4B450d4212.png"
     },
     {
       "name": "CzTears",
@@ -220,7 +220,7 @@
       "symbol": "CzTears",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x907f1A48918Bb5DE07c12443CAB0e6EEfCC611BC.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x907f1A48918Bb5DE07c12443CAB0e6EEfCC611BC.png"
     },
     {
       "name": "Popsicle finance",
@@ -228,7 +228,7 @@
       "symbol": "ICE",
       "decimals": 18,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xf16e81dce15B08F326220742020379B855B87DF9.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xf16e81dce15B08F326220742020379B855B87DF9.png"
     },
     {
       "name": "Zoocoin Cash",
@@ -236,7 +236,7 @@
       "symbol": "ZOO",
       "decimals": 0,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x09e145A1D53c0045F41aEEf25D8ff982ae74dD56.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x09e145A1D53c0045F41aEEf25D8ff982ae74dD56.png"
     },
     {
       "name": "eSwapping",
@@ -244,7 +244,7 @@
       "symbol": "ESWAP",
       "decimals": 8,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x735aBE48e8782948a37C7765ECb76b98CdE97B0F.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x735aBE48e8782948a37C7765ECb76b98CdE97B0F.png"
     },
     {
       "name": "renBTC",
@@ -252,7 +252,7 @@
       "symbol": "renBTC",
       "decimals": 8,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xDBf31dF14B66535aF65AaC99C32e9eA844e14501.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xDBf31dF14B66535aF65AaC99C32e9eA844e14501.png"
     },
     {
       "name": "renZEC",
@@ -260,7 +260,7 @@
       "symbol": "renZEC",
       "decimals": 8,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0x31a0D1A199631D244761EEba67e8501296d2E383.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x31a0D1A199631D244761EEba67e8501296d2E383.png"
     },
     {
       "name": "renBCH",
@@ -268,7 +268,7 @@
       "symbol": "renBCH",
       "decimals": 8,
       "chainId": 250,
-      "logoURI": "https://tokens.hyperjump.app/images/0xc3fEd6eB39178A541D274e6Fc748d48f0Ca01CC3.png"
+      "logoURI": "https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xc3fEd6eB39178A541D274e6Fc748d48f0Ca01CC3.png"
     }
   ]
 }

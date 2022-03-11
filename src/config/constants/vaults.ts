@@ -532,7 +532,7 @@ const vaults: Record<Network, VaultConfig[]> = {
       platform: 'Hyperjump',
       assets: ['ORI', 'USDC'],
       callFee: 0.5,
-      addLiquidityUrl: '/add/0x04068da6c83afcfa0e13ba15a6696662335d5b75/0x0575f8738EFdA7F512e3654F277C77e80C7d2725',
+      addLiquidityUrl: '/add/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75/0x0575f8738EFdA7F512e3654F277C77e80C7d2725',
       buyTokenUrl: '/swap?outputCurrency=0x0575f8738EFdA7F512e3654F277C77e80C7d2725',
     },
     {
@@ -555,8 +555,8 @@ const vaults: Record<Network, VaultConfig[]> = {
       platform: 'Hyperjump',
       assets: ['USDC', 'FTM'],
       callFee: 0.5,
-      addLiquidityUrl: '/add/FTM/0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-      buyTokenUrl: '/swap?outputCurrency=0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+      addLiquidityUrl: '/add/FTM/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+      buyTokenUrl: '/swap?outputCurrency=0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
     },
     {
       id: 'hyperjump-dai-usdc',
@@ -579,7 +579,7 @@ const vaults: Record<Network, VaultConfig[]> = {
       platform: 'Hyperjump',
       assets: ['DAI', 'USDC'],
       callFee: 0.5,
-      addLiquidityUrl: '/add/0x04068da6c83afcfa0e13ba15a6696662335d5b75/0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
+      addLiquidityUrl: '/add/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75/0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
       buyTokenUrl: '/swap?outputCurrency=0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
     },
     {
@@ -902,8 +902,8 @@ const vaults: Record<Network, VaultConfig[]> = {
       platform: 'SpookySwap',
       assets: ['USDC', 'FTM'],
       callFee: 0.5,
-      addLiquidityUrl: 'https://spookyswap.finance/add/FTM/0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-      buyTokenUrl: 'https://spookyswap.finance/swap?outputCurrency=0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+      addLiquidityUrl: 'https://spookyswap.finance/add/FTM/0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+      buyTokenUrl: 'https://spookyswap.finance/swap?outputCurrency=0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
     },
     {
       id: 'spooky-aave-wftm',
@@ -1178,8 +1178,8 @@ const vaults: Record<Network, VaultConfig[]> = {
       platform: 'SpiritSwap',
       assets: ['USDC', 'FTM'],
       callFee: 0.5,
-      addLiquidityUrl: 'https://swap.spiritswap.finance/#/add/FTM//0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-      buyTokenUrl: 'https://swap.spiritswap.finance/#/swap?outputCurrency=0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+      addLiquidityUrl: 'https://swap.spiritswap.finance/#/add/FTM//0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+      buyTokenUrl: 'https://swap.spiritswap.finance/#/swap?outputCurrency=0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
     },
     {
       id: 'spirit-bnb-wftm',
@@ -1484,9 +1484,9 @@ const vaults: Record<Network, VaultConfig[]> = {
       assets: ['WILD', 'FTM'],
       callFee: 0.5,
       addLiquidityUrl:
-        'https://dex.zoocoin.cash/pool/add?inputCurrency=FTM&outputCurrency=0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+        'https://dex.zoocoin.cash/pool/add?inputCurrency=FTM&outputCurrency=0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
       buyTokenUrl:
-        'https://dex.zoocoin.cash/orders/market?inputCurrency=FTM&outputCurrency=0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+        'https://dex.zoocoin.cash/orders/market?inputCurrency=FTM&outputCurrency=0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
     },
   ],
 }

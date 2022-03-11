@@ -14,13 +14,13 @@ import {
   getMechContract,
   getClaimLpRewardsMigratorContract,
   getSynapseBridgeContract,
-  getL2BridgeZapContract
+  getL2BridgeZapContract,
 } from 'utils/contractHelpers'
-import { getLotteryAddress, getFarmingTokenAddress, getZapAddress, getSynapseBridgeAddress } from 'utils/addressHelpers'
+import { getLotteryAddress, getFarmingTokenAddress, getSynapseBridgeAddress, getZapAddress } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
 import getMultiChainContract from 'utils/multiChainHelper'
 import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI, getZapABI } from 'config/abi'
-import {L2_BRIDGE_ZAP_ABI} from 'config/abi/L2BridgeZap'
+import { L2_BRIDGE_ZAP_ABI } from 'config/abi/L2BridgeZap'
 import { Contract } from '@ethersproject/contracts'
 import { WRAPPED } from '@hyperjump-defi/sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
@@ -95,7 +95,7 @@ export const usePoolContract = (id: number) => {
 }
 
 export const useSynapseBridgeContract = (chainId: number) => {
-  return useMemo(() => getMultiChainContract(L2_BRIDGE_ZAP_ABI.abi, getSynapseBridgeAddress() ,chainId), [chainId])
+  return useMemo(() => getMultiChainContract(L2_BRIDGE_ZAP_ABI.abi, getSynapseBridgeAddress(), chainId), [chainId])
 }
 
 export const useBridgeConfigInstance = () => {
@@ -109,11 +109,11 @@ export const useL2BridgeZapContract = () => {
 }
 
 export const useMultiChainContract = (tokenAddress: string, chainId: number) => {
-  return useMemo(() => getMultiChainContract(ERC20_ABI, tokenAddress ,chainId), [chainId, tokenAddress])
+  return useMemo(() => getMultiChainContract(ERC20_ABI, tokenAddress, chainId), [chainId, tokenAddress])
 }
 
 export const useMultiChainContractBytes32 = (tokenAddress: string, chainId: number) => {
-  return useMemo(() => getMultiChainContract(ERC20_BYTES32_ABI, tokenAddress ,chainId), [chainId, tokenAddress])
+  return useMemo(() => getMultiChainContract(ERC20_BYTES32_ABI, tokenAddress, chainId), [chainId, tokenAddress])
 }
 
 // returns null on errors

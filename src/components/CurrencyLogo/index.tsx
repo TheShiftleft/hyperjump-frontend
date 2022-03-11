@@ -8,17 +8,19 @@ import Logo from '../Logo'
 
 // FIXME replace this
 const getTokenLogoURL = (address: string, lpUrl?: string) => {
-  if(lpUrl){
+  if (lpUrl) {
     return `${lpUrl}/${address}.png`
   }
-  return `https://tokens.hyperjump.app/images/${address}.png`
+  return `https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 }
 
 const getTokenLogoUrlWithSymbol = (symbol: string, lpUrl?: string) => {
-  if(lpUrl){
+  if (lpUrl) {
     return [`${lpUrl}/${symbol}.png`, `${lpUrl}/${symbol.toUpperCase()}.png`]
   }
-  return [`https://tokens.hyperjump.app/images/${symbol}.png`]
+  return [
+    `https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${symbol}.png`,
+  ]
 }
 
 const StyledBnbLogo = styled.img<{ size: string }>`
@@ -37,7 +39,7 @@ export default function CurrencyLogo({
   currency,
   size = '24px',
   style,
-  lpUrl
+  lpUrl,
 }: {
   currency?: Currency
   size?: string
@@ -55,14 +57,19 @@ export default function CurrencyLogo({
         return [
           ...uriLocations,
           `/images/tokens/${currency?.address ?? 'token'}.png`,
-          getTokenLogoURL(currency.address)
+          getTokenLogoURL(currency.address, lpUrl),
+          ...getTokenLogoUrlWithSymbol(currency.symbol, lpUrl),
         ]
       }
 
-      return [`/images/tokens/${currency?.address ?? 'token'}.png`, getTokenLogoURL(currency.address)]
+      return [
+        `/images/tokens/${currency?.address ?? 'token'}.png`,
+        getTokenLogoURL(currency.address, lpUrl),
+        ...getTokenLogoUrlWithSymbol(currency.symbol, lpUrl),
+      ]
     }
     return []
-  }, [config.baseCurrency, currency, uriLocations])
+  }, [config.baseCurrency, currency, uriLocations, lpUrl])
 
   if (currency === config.baseCurrency) {
     return (

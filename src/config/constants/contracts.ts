@@ -31,7 +31,7 @@ export default {
     56: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
   },
   usdc: {
-    250: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+    250: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
   },
   eth: {
     56: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
@@ -43,7 +43,7 @@ export default {
     250: '0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454',
   },
   wftm: {
-    250: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
+    250: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
   },
   masterChef: {
     56: '0x7A0De9A006129A18AE8d3C4e609fa866EE29A5B3', // think this is the1st deploy abandonded: '0xD651056941566B5376452d4B177b4a961F54D386', // v1: '0x4F1818Ff649498a2441aE1AD29ccF55a8E1C6250',
@@ -85,5 +85,5 @@ export default {
   l2BridgeZap: {
     56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
     250: '0xB003e75f7E0B5365e814302192E99b4EE08c0DEd',
-  }
+  },
 }

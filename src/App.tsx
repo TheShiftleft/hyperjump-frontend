@@ -13,7 +13,6 @@ import Home from './views/Home'
 import Missions from './views/Missions'
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './views/Swap/AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './views/Swap/RemoveLiquidity/redirects'
-import VortexBridge from './views/Swap/VortexBridge'
 import AddLiquidity from './views/Swap/AddLiquidity'
 import Pool from './views/Swap/Pool'
 import PoolFinder from './views/Swap/PoolFinder'
@@ -28,9 +27,9 @@ const Farms = lazy(() => import('./views/Farms'))
 const Vaults = lazy(() => import('./views/Vaults'))
 const Pools = lazy(() => import('./views/Pools'))
 const NotFound = lazy(() => import('./views/NotFound'))
-const Analytics = lazy(() => import('./views/Analytics'))
+// const Analytics = lazy(() => import('./views/Analytics'))
 const Convert = lazy(() => import('./views/Convert/Convert'))
-const Bridge = lazy(() => import('./views/Bridge'))
+const VortexBridge = lazy(() => import('./views/Swap/VortexBridge'))
 const OnRamp = lazy(() => import('./views/OnRamp'))
 
 // This config is required for number formatting
@@ -96,9 +95,9 @@ const App: React.FC = () => {
               <Redirect to="/pools" />
             </Route>
 
-            <Route path="/analytics">
+            {/*  <Route path="/analytics">
               <Analytics />
-            </Route>
+            </Route> */}
 
             {/* 404 */}
             <Route component={NotFound} />

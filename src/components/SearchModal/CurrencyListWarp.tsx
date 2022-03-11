@@ -50,10 +50,19 @@ function pairKey(pair: Pair): string {
     : ''
 }
 
-const getTokenLogoURL = (address: string) => {
+const getTokenLogoURL = (address: string, lpUrl?: string) => {
+  if(lpUrl){
+    return `${lpUrl}/${address}.png`
+  }
   return `https://tokens.hyperjump.app/images/${address}.png`
 }
 
+const getTokenLogoUrlWithSymbol = (symbol: string, lpUrl?: string) => {
+  if(lpUrl){
+    return [`${lpUrl}/${symbol}.png`,`${lpUrl}/${symbol.toUpperCase()}.png`]
+  }
+  return[`https://tokens.hyperjump.app/images/${symbol}.png`]
+}
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
@@ -152,6 +161,7 @@ function CurrencyRow({
   const { account, chainId } = useActiveWeb3React()
   const token0 = lp.tokens[0]
   const token1 = lp.tokens[1]
+  const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(lp.liquidityToken.address)
   const key = lp.liquidityToken.address
   const { balance } = lp
@@ -164,28 +174,30 @@ function CurrencyRow({
           ...uriLocations0,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
           getTokenLogoURL(
-            token0?.symbol.toLowerCase() === 'ftm'
+            token0?.symbol.toLowerCase() === 'wftm'
               ? 'FTM'
               : token0?.symbol.toLowerCase() === 'bnb'
               ? 'BNB'
-              : token0?.address
-          )
+              : token0?.address,
+          ),
+          ...getTokenLogoUrlWithSymbol(token0.symbol, tokenLogoUrl)
         ]
       }
 
       return [
         `/images/tokens/${token0?.address ?? 'token'}.png`,
         getTokenLogoURL(
-          token0?.symbol.toLowerCase() === 'ftm'
+          token0?.symbol.toLowerCase() === 'wftm'
             ? 'FTM'
             : token0?.symbol.toLowerCase() === 'bnb'
             ? 'BNB'
-            : token0?.address
-        )
+            : token0?.address,
+        ),
+        ...getTokenLogoUrlWithSymbol(token0.symbol, tokenLogoUrl)
       ]
     }
     return []
-  }, [token0, uriLocations0])
+  }, [token0, uriLocations0, tokenLogoUrl])
 
   const srcs1 = useMemo(() => {
     if (token1 instanceof Token) {
@@ -194,28 +206,30 @@ function CurrencyRow({
           ...uriLocations1,
           `/images/tokens/${token1?.address ?? 'token'}.png`,
           getTokenLogoURL(
-            token1?.symbol.toLowerCase() === 'ftm'
+            token1?.symbol.toLowerCase() === 'wftm'
               ? 'FTM'
               : token1?.symbol.toLowerCase() === 'bnb'
               ? 'BNB'
-              : token1?.address
-          )
+              : token1?.address,
+          ),
+          ...getTokenLogoUrlWithSymbol(token1.symbol, tokenLogoUrl)
         ]
       }
 
       return [
         `/images/tokens/${token1?.address ?? 'token'}.png`,
         getTokenLogoURL(
-          token1?.symbol.toLowerCase() === 'ftm'
+          token1?.symbol.toLowerCase() === 'wftm'
             ? 'FTM'
             : token1?.symbol.toLowerCase() === 'bnb'
             ? 'BNB'
-            : token1?.address
-        )
+            : token1?.address,
+        ),
+        ...getTokenLogoUrlWithSymbol(token1.symbol, tokenLogoUrl),
       ]
     }
     return []
-  }, [token1, uriLocations1])
+  }, [token1, uriLocations1, tokenLogoUrl])
 
   // only show add or remove buttons if not on selected list
   return (
@@ -243,7 +257,7 @@ function CurrencyRow({
       </LogoContainer>
 
       <Column>
-        <Text title={`${token0.name} - ${token1.name}`}>{lp?.liquidityToken?.symbol}</Text>
+        <Text title={`${token0.name} - ${token1.name}`}>{pairSymbol}</Text>
       </Column>
       <TokenTags currency={pairCurrency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
