@@ -12,7 +12,7 @@ type ApiResponse = {
   }
 }
 
-const api = 'https://api.hyperswap.fi/tickers'
+const api = 'https://api.hyperjump.app/tickers'
 
 const useGetPriceData = () => {
   const [data, setData] = useState<ApiResponse | null>(null)
