@@ -47,6 +47,43 @@ const ConnectButton = styled(Button)`
   padding: 30px;
 `
 
+const StyledInput = styled(Input)`
+  width: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 30px;
+  padding-bottom: 25px;
+  border-style: none;
+`
+const WalletPasteBox = styled(Box)`
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 12px;
+  align-items: stretch;
+  display: flex;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: ${({ theme }) => theme.colors.primary};
+`
+const GoPasteButton = styled(Button)`
+  padding: 30px;
+  font-weight: 700;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  border-sytle: none;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: 0px;
+`
 const Separator = styled.div`
   width: 100%;
   margin-top: 24px;
@@ -81,7 +118,11 @@ const WalletLogin = (props) => {
       <ConnectButton onClick={onPresentConnectModal} {...props}>
         {t('Connect Your Wallet')}
       </ConnectButton>
-
+      <Separator />
+      <WalletPasteBox>
+        <StyledInput placeholder={t('Paste your wallet address')} />
+        <GoPasteButton>GO</GoPasteButton>
+      </WalletPasteBox>
       <HelpLink href="https://docs.hyperjump.app/get-started/connection-guide" external>
         <HelpIcon color="primary" mr="6px" />
         Learn how to connect
