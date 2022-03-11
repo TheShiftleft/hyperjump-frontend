@@ -22,21 +22,22 @@ import useToast from 'hooks/useToast'
 import { WrappedTokenInfo } from 'state/lists/hooks'
 import useHttpLocations from 'hooks/useHttpLocations'
 import useI18n from 'hooks/useI18n'
+import getNetwork from 'utils/getNetwork'
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
 `
 
-const getTokenLogoURL = (address: string) => `https://tokens.hyperswap.fi/images/${address}.png`
+const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 
 const Zap = () => {
+  const { config } = getNetwork()
   const { toastSuccess, toastError } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
-  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } =
-    useDerivedZapInfo()
+  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } = useDerivedZapInfo()
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
     [Field.INPUT]: parsedAmount,
@@ -67,7 +68,7 @@ const Zap = () => {
           ...uriLocations0,
           `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
           getTokenLogoURL(
-            token0?.token?.symbol.toLowerCase() === 'wftm'
+            token0?.token?.symbol.toLowerCase() === 'ftm'
               ? 'FTM'
               : token0?.token?.symbol.toLowerCase() === 'bnb'
               ? 'BNB'
@@ -79,7 +80,7 @@ const Zap = () => {
       return [
         `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
         getTokenLogoURL(
-          token0?.token?.symbol.toLowerCase() === 'wftm'
+          token0?.token?.symbol.toLowerCase() === 'ftm'
             ? 'FTM'
             : token0?.token?.symbol.toLowerCase() === 'bnb'
             ? 'BNB'
@@ -97,7 +98,7 @@ const Zap = () => {
           ...uriLocations1,
           `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
           getTokenLogoURL(
-            token1?.token?.symbol.toLowerCase() === 'wftm'
+            token1?.token?.symbol.toLowerCase() === 'ftm'
               ? 'FTM'
               : token1?.token?.symbol.toLowerCase() === 'bnb'
               ? 'BNB'
@@ -109,7 +110,7 @@ const Zap = () => {
       return [
         `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
         getTokenLogoURL(
-          token1?.token?.symbol.toLowerCase() === 'wftm'
+          token1?.token?.symbol.toLowerCase() === 'ftm'
             ? 'FTM'
             : token1?.token?.symbol.toLowerCase() === 'bnb'
             ? 'BNB'
@@ -225,7 +226,7 @@ const Zap = () => {
                 showMaxButton={false}
                 onUserInput={handleTypeOutput}
                 disabledNumericalInput
-                hideInput={!formattedAmounts[Field.OUTPUT]}
+                hideInput={currencyInput === config.baseCurrency}
                 id="zap-currency-input"
                 pairToken
               />

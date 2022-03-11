@@ -32,7 +32,7 @@ const Warp = () => {
     const {typedValue} = useWarpState()
     const { toastSuccess, toastError } = useToast()
     const [modalOpen, setModalOpen] = useState(false)
-    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP, outputCurrency} = useDerivedWarpInfo()
+    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP} = useDerivedWarpInfo()
     const { onUserInput, onCurrencySelect, onLPSelect, onSwapSelect } = useWarpActionHandlers()
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(lpBalance)
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
@@ -132,14 +132,14 @@ const Warp = () => {
                                 label={TranslateString(1207,'To HyperJUMP LP')}
                                 value=''
                                 showMaxButton={false}
-                                pair={outputLP[1]}
+                                lp={lpInput}
                                 onUserInput={handleTypeInput}
-                                currency={outputCurrency}
+                                currency={currencyOutput}
                                 disableCurrencySelect
                                 hideInput
                                 zap
                                 disabledNumericalInput
-                                id="zap-currency-input"
+                                id="warp-currency-output"
                             />
                             {showApproval ?
                             <Button

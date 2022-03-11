@@ -42,8 +42,6 @@ export function useOtherLpsCurrency(defiName: string): LPToken[] {
         () => {
             return lps.map((lp): {liquidityToken: Token, tokens: [Token, Token]} => {
                 const dec = new BigNumber(lp.decimals).toString().lastIndexOf('0')
-                const dec0 = Number(lp.lp0.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0')
-                const dec1 = Number(lp.lp1.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0')
                 const lpAddress = web3.utils.toChecksumAddress(lp.address)
                 const lp0 = web3.utils.toChecksumAddress(lp.lp0.address)
                 const lp1 = web3.utils.toChecksumAddress(lp.lp1.address)
@@ -53,8 +51,11 @@ export function useOtherLpsCurrency(defiName: string): LPToken[] {
                     return((p0 === lp0 || p0 === lp1) && (p1 === lp0 || p1 === lp1))
                 })
                 if(p){
-                    const tokens: [Token, Token] = [new Token(lp.chainId, lp0, dec0 < 0 ? 0 : dec0, lp.lp0.oracleId, lp.lp0.oracleId), new Token(lp.chainId, lp1, dec1 < 0 ? 0 : dec1, lp.lp1.oracleId, lp.lp1.oracleId)]
-                    const liquidityToken = new Token(lp.chainId, lpAddress, dec, '', lp.name)
+                    const dec0 = p.quoteToken.address[config.id] === lp0 ? Number(lp.lp0.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0') : Number(lp.lp1.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0')
+                    const dec1 = p.quoteToken.address[config.id] === lp1 ? Number(lp.lp1.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0') : Number(lp.lp0.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0')
+                    const tokens: [Token, Token] = [ new Token(lp?.chainId, web3.utils.toChecksumAddress(p?.token?.address[config.id]), p?.token?.decimals ?? dec0, p?.token?.symbol, p?.token?.symbol),
+                                                     new Token(lp?.chainId, web3.utils.toChecksumAddress(p?.quoteToken?.address[config.id]), p?.quoteToken?.decimals ?? dec1, p?.quoteToken?.symbol, p?.quoteToken?.symbol)]
+                    const liquidityToken = new Token(lp.chainId, lpAddress, dec, p.lpSymbol, lp.name)
                     return { liquidityToken, tokens }
                 }
                 return {liquidityToken: undefined, tokens: [undefined, undefined]}

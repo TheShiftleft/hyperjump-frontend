@@ -50,19 +50,8 @@ function pairKey(pair: Pair): string {
     : ''
 }
 
-const getTokenLogoURL = (address: string, lpUrl?: string) => {
-  if(lpUrl){
-    return `${lpUrl}/${address}.png`
-  }
-  return `https://tokens.hyperjump.app/images/${address}.png`
-}
+const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 
-const getTokenLogoUrlWithSymbol = (symbol: string, lpUrl?: string) => {
-  if(lpUrl){
-    return [`${lpUrl}/${symbol}.png`,`${lpUrl}/${symbol.toUpperCase()}.png`]
-  }
-  return[`https://tokens.hyperjump.app/images/${symbol}.png`]
-}
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
@@ -146,90 +135,60 @@ function CurrencyRow({
   onSelect,
   isSelected,
   otherSelected,
-  style,
-  warp,
-  tokenLogoUrl
+  style
 }: {
   lp: LPToken
   onSelect: () => void
   isSelected?: boolean
   otherSelected?: boolean
   style: CSSProperties
-  warp: boolean,
-  tokenLogoUrl?: string
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
+  const { config } = getNetwork()
   const token0 = lp.tokens[0]
   const token1 = lp.tokens[1]
-  const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(lp.liquidityToken.address)
   const key = lp.liquidityToken.address
   const { balance } = lp
   const uriLocations0 = useHttpLocations(token0 instanceof WrappedTokenInfo ? token0.logoURI : undefined)
   const uriLocations1 = useHttpLocations(token1 instanceof WrappedTokenInfo ? token1.logoURI : undefined)
   const srcs0 = useMemo(() => {
+    if (token0 === config.baseCurrency) return []
     if (token0 instanceof Token) {
       if (token0 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations0,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token0?.symbol.toLowerCase() === 'wftm'
-              ? 'FTM'
-              : token0?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token0?.address,
-          ),
-          ...getTokenLogoUrlWithSymbol(token0.symbol, tokenLogoUrl)
+          getTokenLogoURL(token0?.address)
         ]
       }
 
       return [
         `/images/tokens/${token0?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token0?.symbol.toLowerCase() === 'wftm'
-            ? 'FTM'
-            : token0?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token0?.address,
-        ),
-        ...getTokenLogoUrlWithSymbol(token0.symbol, tokenLogoUrl)
+        getTokenLogoURL(token0?.address)
       ]
     }
     return []
-  }, [token0, uriLocations0, tokenLogoUrl])
+  }, [token0, uriLocations0, config])
 
   const srcs1 = useMemo(() => {
+    if (token1 === config.baseCurrency) return []
     if (token1 instanceof Token) {
       if (token1 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations1,
           `/images/tokens/${token1?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token1?.symbol.toLowerCase() === 'wftm'
-              ? 'FTM'
-              : token1?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token1?.address,
-          ),
-          ...getTokenLogoUrlWithSymbol(token1.symbol, tokenLogoUrl)
+          getTokenLogoURL(token1?.address)
         ]
       }
 
       return [
         `/images/tokens/${token1?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token1?.symbol.toLowerCase() === 'wftm'
-            ? 'FTM'
-            : token1?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token1?.address,
-        ),
-        ...getTokenLogoUrlWithSymbol(token1.symbol, tokenLogoUrl),
+        getTokenLogoURL(token1?.address)
       ]
     }
     return []
-  }, [token1, uriLocations1, tokenLogoUrl])
+  }, [token1, uriLocations1, config])
 
   // only show add or remove buttons if not on selected list
   return (
@@ -257,7 +216,7 @@ function CurrencyRow({
       </LogoContainer>
 
       <Column>
-        <Text title={`${token0.name} - ${token1.name}`}>{pairSymbol}</Text>
+        <Text title={`${token0.name} - ${token1.name}`}>{lp?.liquidityToken?.symbol}</Text>
       </Column>
       <TokenTags currency={pairCurrency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>
@@ -275,8 +234,7 @@ export default function CurrencyListWarp({
   fixedListRef,
   showETH,
   warp,
-  selectedLP,
-  selectedSwap
+  selectedLP
 }: CurrencyListWarpProps) {
   const { config } = getNetwork()
 
@@ -291,10 +249,10 @@ export default function CurrencyListWarp({
       const isSelected = Boolean(selectedLP && lp.liquidityToken.address === selectedLP.liquidityToken.address)
       const handleSelect = () => onLPSelect(lp)
       return (
-        <CurrencyRow key={index} style={style} lp={lp} isSelected={isSelected} onSelect={handleSelect} warp={warp} tokenLogoUrl={selectedSwap.imageUrl} />
+        <CurrencyRow key={index} style={style} lp={lp} isSelected={isSelected} onSelect={handleSelect} />
       )
     },
-    [warp, selectedLP, onLPSelect, selectedSwap],
+    [selectedLP, onLPSelect]
   )
 
   const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])

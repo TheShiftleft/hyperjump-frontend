@@ -125,7 +125,6 @@ export function useDerivedWarpInfo(): {
   parsedAmount: CurrencyAmount,
   selectedSwap: OtherSwapConfig,
   outputLP: [PairState, Pair],
-  outputCurrency : Currency
 } {
   const {
     typedValue,
@@ -141,7 +140,7 @@ export function useDerivedWarpInfo(): {
   const lpBalance = lpInput?.balance
   const parsedAmount = tryParseAmount(typedValue, lpCurrency ?? undefined)
   const pair = usePair(lpInput?.tokens[0], lpInput?.tokens[1])
-  const outputCurrency = pair[1]?.liquidityToken
+  const currencyOutput = pair[1]?.liquidityToken
 
-  return {lpInput, lpCurrency, currencyOutput: outputCurrency, lpBalance, parsedAmount, selectedSwap: swapSelected, outputLP: pair, outputCurrency}
+  return {lpInput, lpCurrency, currencyOutput, lpBalance, parsedAmount, selectedSwap: swapSelected, outputLP: pair}
 }
