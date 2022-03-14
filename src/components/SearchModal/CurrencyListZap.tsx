@@ -149,26 +149,16 @@ function CurrencyRow({
       if (token0 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations0,
+          `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token0?.symbol.toLowerCase() === 'ftm'
-              ? 'FTM'
-              : token0?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token0?.address
-          )
+          getTokenLogoURL(token0?.address)
         ]
       }
 
       return [
+        `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
         `/images/tokens/${token0?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token0?.symbol.toLowerCase() === 'ftm'
-            ? 'FTM'
-            : token0?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token0?.address
-        )
+        getTokenLogoURL(token0?.address)
       ]
     }
     return []
@@ -180,26 +170,16 @@ function CurrencyRow({
       if (token1 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations1,
+          `/images/tokens/${token1.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token1.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
           `/images/tokens/${token1?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token1?.symbol.toLowerCase() === 'ftm'
-              ? 'FTM'
-              : token1?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token1?.address
-          )
+          getTokenLogoURL(token1?.address)
         ]
       }
 
       return [
+        `/images/tokens/${token1.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token1.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
         `/images/tokens/${token1?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token1?.symbol.toLowerCase() === 'ftm'
-            ? 'FTM'
-            : token1?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token1?.address
-        )
+        getTokenLogoURL(token1?.address)
       ]
     }
     return []
