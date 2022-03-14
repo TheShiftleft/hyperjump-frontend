@@ -10,7 +10,8 @@ import { RefreshContextProvider } from 'contexts/RefreshContext'
 import { ToastsProvider } from 'contexts/ToastsContext'
 import store from 'state'
 import { ApolloProvider } from 'react-apollo'
-import { NetworkContextName } from './config'
+import { MoralisProvider } from 'react-moralis'
+import { NetworkContextName, MORALIS_APP_ID, MORALIS_SERVER_URL } from './config'
 /* import { client } from './views/Analytics/apollo/client'
 import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
 import ApplicationContextProvider from './contexts/Analytics/Application'
@@ -26,31 +27,33 @@ const Providers: React.FC = ({ children }) => {
     /*     <ApolloProvider client={client}> */
     <Web3ReactProvider getLibrary={getLibrarySwap}>
       <Web3ProviderNetwork getLibrary={getLibrarySwap}>
-        <Provider store={store}>
-          <ToastsProvider>
-            <HelmetProvider>
-              <ThemeContextProvider>
-                <LanguageProvider>
-                  <RefreshContextProvider>
-                    {/* <LocalStorageContextProvider>
-                        <ApplicationContextProvider>
-                          <TokenDataContextProvider>
-                            <GlobalDataContextProvider>
-                              <PairDataContextProvider>
-                                <UserContextProvider> */}
-                    <ModalProvider>{children}</ModalProvider>
-                    {/*         </UserContextProvider>
-                              </PairDataContextProvider>
-                            </GlobalDataContextProvider>
-                          </TokenDataContextProvider>
-                        </ApplicationContextProvider>
-                      </LocalStorageContextProvider> */}
-                  </RefreshContextProvider>
-                </LanguageProvider>
-              </ThemeContextProvider>
-            </HelmetProvider>
-          </ToastsProvider>
-        </Provider>
+        <MoralisProvider appId={MORALIS_APP_ID} serverUrl={MORALIS_SERVER_URL}>
+          <Provider store={store}>
+            <ToastsProvider>
+              <HelmetProvider>
+                <ThemeContextProvider>
+                  <LanguageProvider>
+                    <RefreshContextProvider>
+                      {/* <LocalStorageContextProvider>
+                          <ApplicationContextProvider>
+                            <TokenDataContextProvider>
+                              <GlobalDataContextProvider>
+                                <PairDataContextProvider>
+                                  <UserContextProvider> */}
+                      <ModalProvider>{children}</ModalProvider>
+                      {/*         </UserContextProvider>
+                                </PairDataContextProvider>
+                              </GlobalDataContextProvider>
+                            </TokenDataContextProvider>
+                          </ApplicationContextProvider>
+                        </LocalStorageContextProvider> */}
+                    </RefreshContextProvider>
+                  </LanguageProvider>
+                </ThemeContextProvider>
+              </HelmetProvider>
+            </ToastsProvider>
+          </Provider>
+        </MoralisProvider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>
     /*     </ApolloProvider> */
