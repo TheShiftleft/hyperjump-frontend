@@ -125,14 +125,10 @@ export function useDerivedWarpInfo(): {
   parsedAmount: CurrencyAmount,
   selectedSwap: OtherSwapConfig,
   outputLP: [PairState, Pair],
-  outputCurrency : Currency
 } {
-  const { account } = useActiveWeb3React()
   const {
-    field,
     typedValue,
     [Field.INPUT]: { lpId: inputLpId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
     selectedSwap
   } = useWarpState();
   const swapList = useOtherSwapList()
@@ -140,11 +136,11 @@ export function useDerivedWarpInfo(): {
   const lpTokens = useOtherLpsCurrency(selectedSwap)
   const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
   ,[lpTokens,inputLpId])
-  const lpCurrency = useCurrency(inputLpId)
+  const lpCurrency = lpInput?.liquidityToken
   const lpBalance = lpInput?.balance
   const parsedAmount = tryParseAmount(typedValue, lpCurrency ?? undefined)
   const pair = usePair(lpInput?.tokens[0], lpInput?.tokens[1])
-  const outputCurrency = pair[1]?.liquidityToken
+  const currencyOutput = pair[1]?.liquidityToken
 
-  return {lpInput, lpCurrency, currencyOutput: outputCurrency, lpBalance, parsedAmount, selectedSwap: swapSelected, outputLP: pair, outputCurrency}
+  return {lpInput, lpCurrency, currencyOutput, lpBalance, parsedAmount, selectedSwap: swapSelected, outputLP: pair}
 }

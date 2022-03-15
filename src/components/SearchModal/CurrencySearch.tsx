@@ -56,7 +56,6 @@ export function CurrencySearch({
   onChangeList,
   zap
 }: CurrencySearchProps) {
-  const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
   const { config } = getNetwork()
@@ -178,7 +177,7 @@ export function CurrencySearch({
         <SearchInput
           type="text"
           id="token-search-input"
-          placeholder={t('type token name here to search')}
+          placeholder='type token name here to search'
           value={searchQuery}
           ref={inputRef as RefObject<HTMLInputElement>}
           onChange={handleInput}

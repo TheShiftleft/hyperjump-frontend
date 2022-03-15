@@ -1,9 +1,33 @@
 import { MenuEntry } from 'uikit'
 import { ContextApi } from 'contexts/Localization/types'
+import ChainId from 'utils/getChain'
+import bridgeNetworks from 'config/constants/bridgeNetworks'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
 
+
 const { config: networkConfig } = getNetwork()
+
+let outputChainId
+let inputCurrency
+let outputCurrency
+Object.keys(bridgeNetworks)
+.forEach(function eachKey(key) {
+  if(bridgeNetworks[key].chainId !== networkConfig.id){
+    if(ChainId.BSC_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
+      outputChainId = bridgeNetworks[key].chainId
+      outputCurrency = bridgeNetworks[key].tokens[0].address
+    }else if(ChainId.FTM_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
+      outputChainId = bridgeNetworks[key].chainId
+      outputCurrency = bridgeNetworks[key].tokens[0].address
+    }
+    
+  }else{
+    inputCurrency = bridgeNetworks[key].tokens[0].address
+  }
+});
+
+
 
 const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
   {
@@ -30,21 +54,15 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
         target: '_self',
       },
       {
-        label: t('Vortex Bridge'),
-        // icon: 'BridgeIcon',
-        href: '/bridge',
-        target: '_self',
-      },
-      {
         label: t('Buy Crypto'),
         //        icon: 'ConvertIcon',
         href: '/onramp',
         target: '_self',
       },
       {
-        label: t('Convert & Claim'),
-        //        icon: 'ConvertIcon',
-        href: '/convert',
+        label: t('Vortex Bridge'),
+        // icon: 'BridgeIcon',
+        href: `/bridge?outputChainId=${outputChainId}&inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`,
         target: '_self',
       },
     ],
@@ -126,7 +144,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('Contracts'),
-        href: networkConfig.contractsLink,
+        href: 'https://github.com/HyperJump-DeFi/HyperJump-Contracts',
         target: '_blank',
       },
       {

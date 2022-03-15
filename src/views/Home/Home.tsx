@@ -90,15 +90,6 @@ const Home: React.FC = () => {
           </HeadingFlex>
           <ShipLogo src="/images/plane.png" />
         </Flex>
-       {/*  <Column>
-          <Welcome />
-        </Column>
-        <Column>
-          <JumpConverter />
-        </Column>
-        <Column>
-          <LpRewardsClaimer />
-        </Column> */}
         <Column>
           <FarmingTokenStats />
           <GovTokenStats />

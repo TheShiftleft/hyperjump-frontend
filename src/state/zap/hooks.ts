@@ -123,12 +123,12 @@ export function useDerivedZapInfo(): {
   const pairToken = allV2PairsWithLiquidity.find(pair => pair.liquidityToken.address === outputPairId)
   const [,pairOutput] = usePair(pairToken?.token0, pairToken?.token1)
   const totalSupply = useTotalSupply(pairOutput?.liquidityToken)
-  const pairCurrency = useCurrency(outputPairId)
+  const pairCurrency = pairToken?.liquidityToken
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     currencyInput ?? undefined
   ])
   const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
-  let estimate = useEstimateZapInToken(currencyInput, pairToken, parsedAmount)
+  let estimate = useEstimateZapInToken(currencyInput ?? undefined, pairToken, parsedAmount)
   const estimates = useMemo(() => {
     return estimate && parsedAmount && (currencyInput?.symbol !== 'BNB' && currencyInput?.symbol !== 'FTM') ? [
       new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),

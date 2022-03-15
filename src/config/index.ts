@@ -152,7 +152,7 @@ export const ETH = new Token(
 
 const fDAI = new Token(ChainId.FTM_MAINNET, '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E', 18, 'DAI', 'Dai Token')
 const ORI = new Token(ChainId.FTM_MAINNET, '0x0575f8738EFdA7F512e3654F277C77e80C7d2725', 18, 'ORI', 'HyperOri')
-const fUSDC = new Token(ChainId.FTM_MAINNET, '0x04068da6c83afcfa0e13ba15a6696662335d5b75', 8, 'USDC', 'USDC Token')
+const fUSDC = new Token(ChainId.FTM_MAINNET, '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75', 8, 'USDC', 'USDC Token')
 const fUSDT = new Token(ChainId.FTM_MAINNET, '0x55d398326f99059fF775485246999027B3197955', 18, 'USDT', 'Tether USD')
 
 const WRAPPED_ONLY: ChainTokenList = {

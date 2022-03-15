@@ -21,7 +21,7 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
           {TranslateString(1142, 'Zap')}
         </ButtonMenuItem>
         <ButtonMenuItem id="warp-nav-link" to="/warp" as={Link}>
-          {TranslateString(262, 'Warp(s00n)')}
+          {TranslateString(262, 'Warp')}
         </ButtonMenuItem>
       </ButtonMenu>
     </StyledNav>

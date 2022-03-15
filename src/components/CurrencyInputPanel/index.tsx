@@ -146,7 +146,7 @@ export default function CurrencyInputPanel({
             </RowBetween>
           </LabelRow>
         )}
-        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect} hideInput>
+        <InputRow style={hideInput ? { borderRadius: '8px' } : {}} selected={disableCurrencySelect} hideInput>
           {!hideInput && (
             <>
               <NumericalInput
@@ -181,11 +181,13 @@ export default function CurrencyInputPanel({
               ) : null}
               {pair ? (
                 <Text id="pair">
-                  {pair?.token0?.symbol}:{pair?.token1?.symbol}
+                  {pair?.token0?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : pair?.token0?.symbol.toLowerCase() === 'wftm' ? 'FTM' : pair?.token0?.symbol}:
+                  {pair?.token1?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : pair?.token1?.symbol.toLowerCase() === 'wftm' ? 'FTM' : pair?.token1?.symbol}
                 </Text>
               ) : lp ? (
                 <Text id="lp">
-                  {lp?.tokens[0]?.symbol}:{lp?.tokens[1]?.symbol}
+                  {lp?.tokens[0]?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : lp?.tokens[0]?.symbol.toLowerCase() === 'wftm' ? 'FTM' : lp?.tokens[0]?.symbol}:
+                  {lp?.tokens[1]?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : lp?.tokens[1]?.symbol.toLowerCase() === 'wftm' ? 'FTM' : lp?.tokens[1]?.symbol}
                 </Text>
               ) : (
                 <Text id="pair">
@@ -194,7 +196,7 @@ export default function CurrencyInputPanel({
                       currency.symbol.length - 5,
                       currency.symbol.length
                     )}`
-                    : currency?.symbol) || TranslateString(1196, 'Select a currency')}
+                    : currency?.symbol) || TranslateString(1196, 'Select a token')}
                 </Text>
               )}
               {!disableCurrencySelect && <ChevronDownIcon />}

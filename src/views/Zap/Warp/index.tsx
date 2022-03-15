@@ -23,14 +23,16 @@ import useOtherSwapList from 'hooks/useOtherSwapList'
 import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { GreyCard } from 'components/Card'
 import { PairState } from 'data/Reserves'
+import useI18n from 'hooks/useI18n'
 import DefiSelect from './DefiSelect'
 
 const Warp = () => {
     useWarpDefaultState()
-    const { account } = useActiveWeb3React()
+    const TranslateString = useI18n()
+    const {typedValue} = useWarpState()
     const { toastSuccess, toastError } = useToast()
     const [modalOpen, setModalOpen] = useState(false)
-    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP, outputCurrency} = useDerivedWarpInfo()
+    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP} = useDerivedWarpInfo()
     const { onUserInput, onCurrencySelect, onLPSelect, onSwapSelect } = useWarpActionHandlers()
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(lpBalance)
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
@@ -71,7 +73,8 @@ const Warp = () => {
     const handleInputLPSelect = useCallback(
         (lp: LPToken) => {
             onLPSelect(Field.INPUT, lp)
-        }, [onLPSelect],
+            onUserInput(Field.INPUT, maxAmountSpend(lp.balance).toExact())
+        }, [onLPSelect, onUserInput],
     )
 
     const handleMaxInput = useCallback(() => {
@@ -104,8 +107,8 @@ const Warp = () => {
                                 }}
                             />
                             <CurrencyInputPanel
-                                label='From'
-                                value={parsedAmount ? parsedAmount?.toSignificant(6) : maxAmountInput ? maxAmountInput.toSignificant(6) : ''}
+                                label={TranslateString(76,'From')}
+                                value={typedValue ?? ''}
                                 showMaxButton={!atMaxAmountInput}
                                 onMax={handleMaxInput}
                                 currency={lpCurrency}
@@ -126,16 +129,17 @@ const Warp = () => {
                                 </IconButton>
                             </AutoColumn>
                             <CurrencyInputPanel
-                                label='To HyperJUMP LP'
+                                label={TranslateString(1207,'To HyperJUMP LP')}
                                 value=''
                                 showMaxButton={false}
-                                pair={outputLP[1]}
+                                lp={lpInput}
                                 onUserInput={handleTypeInput}
-                                currency={outputCurrency}
+                                currency={currencyOutput}
                                 disableCurrencySelect
+                                hideInput
                                 zap
                                 disabledNumericalInput
-                                id="zap-currency-input"
+                                id="warp-currency-output"
                             />
                             {showApproval ?
                             <Button
@@ -155,16 +159,23 @@ const Warp = () => {
                                 )}
                             </Button>
                             : outputLP[0] !== PairState.EXISTS ? 
-                                <GreyCard style={{ textAlign: 'center' }}>
-                                    <Text mb="4px">Pair does not exist in HyperJUMP LP</Text>
-                                </GreyCard>
+                                <Button 
+                                    width="100%"
+                                    disabled
+                                    variant='text'
+                                    style={{ textAlign: 'center' }}>
+                                    {lpCurrency === undefined ? 
+                                        'Select an LP pair'
+                                    :
+                                        'Pair does not exist in HyperJUMP LP'}
+                                </Button>
                             :   <Button
                                     width="100%"
                                     disabled={!(zapState === ZapCallbackState.VALID)}
                                     variant='primary'
                                     onClick={() => handleZapCallback()}
                                     >
-                                    Warp
+                                    {TranslateString(1209,'Warp')}
                                 </Button>
                             }
                         </AutoColumn>

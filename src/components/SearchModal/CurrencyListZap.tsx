@@ -30,7 +30,7 @@ function pairKey(pair: Pair): string {
     : ''
 }
 
-const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
+const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
@@ -124,91 +124,66 @@ function CurrencyRow({
   onSelect,
   isSelected,
   otherSelected,
-  style,
-  zap,
+  style
 }: {
   pair: Pair
   onSelect: () => void
   isSelected?: boolean
   otherSelected?: boolean
   style: CSSProperties
-  zap: boolean
 }) {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
+  const { config } = getNetwork()
   const { token0, token1 } = pair
-  const pairSymbol = `${token0.symbol.toUpperCase()}-${token1.symbol.toUpperCase()}`
+  const pairSymbol = `${token0.symbol.toUpperCase() === "WFTM" ? "FTM" : token0.symbol.toUpperCase() === "WBNB" ? "BNB" : token0.symbol.toUpperCase()}-
+                      ${token1.symbol.toUpperCase() === "WFTM" ? "FTM" : token1.symbol.toUpperCase() === "WBNB" ? "BNB" : token1.symbol.toUpperCase()}`
   const pairCurrency = useCurrency(pair.liquidityToken.address)
   const key = pairKey(pair)
-  const selectedTokenList = useSelectedTokenList()
-  const isOnSelectedList = isTokenOnList(selectedTokenList, pairCurrency)
-  const customAdded = useIsUserAddedToken(pairCurrency)
   const balance = useCurrencyBalance(account ?? undefined, pairCurrency)
-  const logo1 = getTokenLogoURL(pair.token0.address)
-  const logo2 = getTokenLogoURL(pair.token1.address)
-  const removeToken = useRemoveUserAddedToken()
-  const addToken = useAddUserToken()
   const uriLocations0 = useHttpLocations(token0 instanceof WrappedTokenInfo ? token0.logoURI : undefined)
   const uriLocations1 = useHttpLocations(token1 instanceof WrappedTokenInfo ? token1.logoURI : undefined)
 
   const srcs0 = useMemo(() => {
+    if (token0 === config.baseCurrency) return []
     if (token0 instanceof Token) {
       if (token0 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations0,
+          `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token0?.symbol.toLowerCase() === 'wftm'
-              ? 'FTM'
-              : token0?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token0?.address,
-          ),
+          getTokenLogoURL(token0?.address)
         ]
       }
 
       return [
+        `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
         `/images/tokens/${token0?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token0?.symbol.toLowerCase() === 'wftm'
-            ? 'FTM'
-            : token0?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token0?.address,
-        ),
+        getTokenLogoURL(token0?.address)
       ]
     }
     return []
-  }, [token0, uriLocations0])
+  }, [token0, uriLocations0, config])
 
   const srcs1 = useMemo(() => {
+    if (token1 === config.baseCurrency) return []
     if (token1 instanceof Token) {
       if (token1 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations1,
+          `/images/tokens/${token1.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token1.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
           `/images/tokens/${token1?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token1?.symbol.toLowerCase() === 'wftm'
-              ? 'FTM'
-              : token1?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token1?.address,
-          ),
+          getTokenLogoURL(token1?.address)
         ]
       }
 
       return [
+        `/images/tokens/${token1.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token1.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
         `/images/tokens/${token1?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token1?.symbol.toLowerCase() === 'wftm'
-            ? 'FTM'
-            : token1?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token1?.address,
-        ),
+        getTokenLogoURL(token1?.address)
       ]
     }
     return []
-  }, [token1, uriLocations1])
+  }, [token1, uriLocations1, config])
 
   // only show add or remove buttons if not on selected list
   return (
@@ -278,10 +253,10 @@ export default function CurrencyListZap({
       const isSelected = Boolean(selectedPair && pair.liquidityToken.address === selectedPair.liquidityToken.address)
       const handleSelect = () => onPairSelect(pair)
       return (
-        <CurrencyRow key={index} style={style} pair={pair} isSelected={isSelected} onSelect={handleSelect} zap={zap} />
+        <CurrencyRow key={index} style={style} pair={pair} isSelected={isSelected} onSelect={handleSelect} />
       )
     },
-    [onPairSelect, zap, selectedPair],
+    [onPairSelect, selectedPair],
   )
 
   const itemKey = useCallback((index: number, data: any) => pairKey(data[index]), [])

@@ -9,7 +9,7 @@ const tokens: Record<string, Token> = {
   wftm: {
     symbol: 'WFTM',
     address: {
-      250: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
+      250: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
       56: '0xad29abb318791d579433d831ed122afeaf29dcfe',
     },
     decimals: 18,
@@ -915,7 +915,7 @@ const tokens: Record<string, Token> = {
     symbol: 'USDC',
     address: {
       56: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-      250: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+      250: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
     },
     decimals: 6,
     projectLink: 'https://www.centre.io/usdc',

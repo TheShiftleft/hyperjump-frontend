@@ -157,25 +157,17 @@ export default function NetworkBridgeInputPanel({
             }}
           >
             <Aligner>
-              {pair ? (
-                <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
-              ) : currency ? (
+              {currency ? (
                 <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
               ) : null}
-              {pair ? (
-                <Text id="pair">
-                  {pair?.token0.symbol}:{pair?.token1.symbol}
-                </Text>
-              ) : (
-                <Text id="pair">
-                  {(currency && currency.symbol && currency.symbol.length > 20
-                    ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
-                      currency.symbol.length - 5,
-                      currency.symbol.length
-                    )}`
-                    : currency?.symbol) || (bridgeTokensOnly ? TranslateString(1196, 'Select a Token') : TranslateString(1196, 'Select a currency'))}
-                </Text>
-              )}
+              <Text id="pair">
+                {(currency && currency.symbol && currency.symbol.length > 20
+                  ? `${currency.symbol.slice(0, 4)}...${currency.symbol.slice(
+                    currency.symbol.length - 5,
+                    currency.symbol.length
+                  )}`
+                  : currency?.symbol) || (bridgeTokensOnly ? TranslateString(1196, 'Select a Token') : TranslateString(1196, 'Select a currency'))}
+              </Text>
               {!disableCurrencySelect && <ChevronDownIcon />}
             </Aligner>
           </CurrencySelect>

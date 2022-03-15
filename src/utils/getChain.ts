@@ -1,0 +1,16 @@
+
+enum ChainId {
+  BSC_MAINNET = 56,
+  BSC_TESTNET = 97,
+  FTM_MAINNET = 250,
+  FTM_TESTNET = 4002,
+  ETH = 1,
+  POLYGON = 137,
+  BOBA = 288,
+  MOONRIVER = 1285,
+  ARBITRUM = 42161,
+  AVALANCHE = 43114,
+  HARMONY = 1666600000,
+}
+
+export default ChainId;
