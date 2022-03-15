@@ -1,15 +1,14 @@
-import { Pair, Token } from '@hyperjump-defi/sdk'
+import { Token } from '@hyperjump-defi/sdk'
 import axios from 'axios'
-import BigNumber from 'bignumber.js'
 import { LPToken } from 'components/SearchModal/CurrencyListWarp'
 import warpLps from 'config/constants/warpLps'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useRef, useState } from 'react'
 import { useTokenBalances } from 'state/wallet/hooks'
 import getNetwork from 'utils/getNetwork'
-import { PairState, usePairs } from 'data/Reserves'
 import zapPairs from 'config/constants/zap'
 import { useOtherLPComparator } from 'components/SearchModal/sortingOtherLPs'
+import { toNumber } from 'lodash'
 import useWeb3 from './useWeb3'
 
 export default function useOtherLps(defiName: string) {
@@ -25,54 +24,57 @@ export default function useOtherLps(defiName: string) {
                 setLps(response.data)
             }
         }
-
         fetchData()
     },[otherLPs, defiName])
-    
     return Lps
 }
 
-export function useOtherLpsCurrency(defiName: string): LPToken[] {
+export function useFilterLpAvailableToHyper(defiName: string) {
     const lps = useOtherLps(defiName)
     const web3 = useWeb3()
     const { config } = getNetwork()
     const pairs = zapPairs[config.network]
-    const { account } = useActiveWeb3React()
-    const tokenPairsWithLiquidityTokens = useMemo(
-        () => {
-            return lps.map((lp): {liquidityToken: Token, tokens: [Token, Token]} => {
-                const dec = new BigNumber(lp.decimals).toString().lastIndexOf('0')
-                const lpAddress = web3.utils.toChecksumAddress(lp.address)
+    return useMemo(() => {
+        return pairs.map(pair => {
+            const pair0 = web3.utils.toChecksumAddress(pair.quoteToken.address[config.id])
+            const pair1 = web3.utils.toChecksumAddress(pair.token.address[config.id])
+            return lps.find(lp => {
                 const lp0 = web3.utils.toChecksumAddress(lp.lp0.address)
                 const lp1 = web3.utils.toChecksumAddress(lp.lp1.address)
-                const p = pairs.find((pair) => {
-                    const p0 = web3.utils.toChecksumAddress(pair.quoteToken.address[config.id])
-                    const p1 = web3.utils.toChecksumAddress(pair.token.address[config.id])
-                    return((p0 === lp0 || p0 === lp1) && (p1 === lp0 || p1 === lp1))
-                })
-                if(p){
-                    const dec0 = p.quoteToken.address[config.id] === lp0 ? Number(lp.lp0.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0') : Number(lp.lp1.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0')
-                    const dec1 = p.quoteToken.address[config.id] === lp1 ? Number(lp.lp1.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0') : Number(lp.lp0.decimals).toLocaleString('fullwide', {useGrouping:false}).lastIndexOf('0')
-                    const tokens: [Token, Token] = [ new Token(lp?.chainId, web3.utils.toChecksumAddress(p?.token?.address[config.id]), p?.token?.decimals ?? dec0, p?.token?.symbol, p?.token?.symbol),
-                                                     new Token(lp?.chainId, web3.utils.toChecksumAddress(p?.quoteToken?.address[config.id]), p?.quoteToken?.decimals ?? dec1, p?.quoteToken?.symbol, p?.quoteToken?.symbol)]
-                    const liquidityToken = new Token(lp.chainId, lpAddress, dec, p.lpSymbol, lp.name)
-                    return { liquidityToken, tokens }
-                }
-                return {liquidityToken: undefined, tokens: [undefined, undefined]}
-            }).filter(data => (data.liquidityToken !== undefined && data.tokens[0] !== undefined && data.tokens[1] !== undefined))
-        },
-        [lps, web3, config, pairs],
-    )
-    const balances = useTokenBalances(account,tokenPairsWithLiquidityTokens.map(({liquidityToken}) => liquidityToken))
-    const otherLpsWithBalance = useMemo(() => {
-        return tokenPairsWithLiquidityTokens.map((lp) => {
-            return {...lp, balance: balances[lp.liquidityToken.address]}
-        })
-    }, [balances, tokenPairsWithLiquidityTokens])
+                return ((pair0 === lp0 || pair0 === lp1) && (pair1 === lp0 || pair1 === lp1))
+            })
+        }).filter(data => data !== undefined)
+    },[lps, web3, config, pairs])
+}
 
-    const checkPairs = usePairs(otherLpsWithBalance.map(({tokens}) => tokens))
-    const validPairs: LPToken[] = checkPairs.map((checkPair, index) => checkPair[0] === PairState.EXISTS ? otherLpsWithBalance[index] : undefined).filter(value => value !== undefined)
+export function useOtherLpsCurrency(defiName: string): LPToken[] {
+    const web3 = useWeb3()
+    const filtered = useFilterLpAvailableToHyper(defiName)
+    const tokenPairsWithLiquidityTokens = useMemo(
+        () => {
+            return filtered.map((lp): {liquidityToken: Token, tokens: [Token, Token]} => {
+                const dec = toNumber(lp?.decimals.toLowerCase().split('e').pop())
+                const lpAddress = web3.utils.toChecksumAddress(lp.address)
+                const tokens: [Token, Token] = [ new Token(lp?.chainId, web3.utils.toChecksumAddress(lp?.lp0?.address), toNumber(lp?.lp0?.decimals.toLowerCase().split('e').pop()), lp?.lp0?.oracleId, lp?.lp0?.oracleId),
+                                                    new Token(lp?.chainId, web3.utils.toChecksumAddress(lp?.lp1?.address), toNumber(lp?.lp1?.decimals.toLowerCase().split('e').pop()), lp?.lp1?.oracleId, lp?.lp1?.oracleId)]
+                const liquidityToken = new Token(lp.chainId, lpAddress, dec, lp.lpSymbol, lp.name)
+                return { liquidityToken, tokens }
+            })
+        },
+        [web3, filtered],
+    )
     const lpComparator = useOtherLPComparator(false)
-    const sorted = validPairs.sort(lpComparator)
+    const sorted = tokenPairsWithLiquidityTokens.sort(lpComparator)
     return sorted
+}
+
+export function useLpBalances(lps: {liquidityToken: Token, tokens: [Token, Token]}[]) {
+    const { account } = useActiveWeb3React()
+    const balances =  useTokenBalances(account, lps.map(({liquidityToken}) => liquidityToken))
+    return useMemo(() => {
+            return lps.map((lp) => {
+                return {...lp, balance: balances[lp.liquidityToken.address]}
+            })
+        }, [balances, lps])
+    
 }

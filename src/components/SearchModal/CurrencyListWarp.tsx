@@ -1,31 +1,25 @@
-import { Currency, CurrencyAmount, currencyEquals, Token, Pair, TokenAmount } from '@hyperjump-defi/sdk'
+import { Currency, CurrencyAmount, Token, Pair, TokenAmount } from '@hyperjump-defi/sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
-import { Text, Image } from 'uikit'
+import { Text } from 'uikit'
 import getNetwork from 'utils/getNetwork'
-import { PairConfig } from 'config/constants/types'
 import Logo from 'components/Logo'
 import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { useActiveWeb3React } from '../../hooks'
-import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
-import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
+import { WrappedTokenInfo } from '../../state/lists/hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { LinkStyledButton } from '../Shared'
-import { useCurrency, useIsUserAddedToken, useToken } from '../../hooks/Tokens'
+import { useCurrency } from '../../hooks/Tokens'
 import Column from '../Column'
 import { RowFixed } from '../Row'
-import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
-import { FadedSpan, MenuItem } from './styleds'
+import { MenuItem } from './styleds'
 import Loader from '../Loader'
-import { isAddress, isTokenOnList } from '../../utils'
 
 
 export interface LPToken {
     liquidityToken: Token
-    balance: TokenAmount
+    balance?: TokenAmount
     tokens: [Token, Token]
 }
 
@@ -149,7 +143,7 @@ function CurrencyRow({
   const token1 = lp.tokens[1]
   const pairCurrency = useCurrency(lp.liquidityToken.address)
   const key = lp.liquidityToken.address
-  const { balance } = lp
+  const {balance} = lp
   const uriLocations0 = useHttpLocations(token0 instanceof WrappedTokenInfo ? token0.logoURI : undefined)
   const uriLocations1 = useHttpLocations(token1 instanceof WrappedTokenInfo ? token1.logoURI : undefined)
   const srcs0 = useMemo(() => {

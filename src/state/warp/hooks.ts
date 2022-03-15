@@ -1,17 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import getNetwork from 'utils/getNetwork'
-import { getAddress } from 'utils/addressHelpers'
-import zapPairs from 'config/constants/zap'
 import { BNB, Currency, CurrencyAmount, FANTOM, Pair, Token } from '@hyperjump-defi/sdk'
-import { useCurrency, useToken } from 'hooks/Tokens'
-import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { PairState, usePair, usePairs } from 'data/Reserves'
-import { useCurrencyBalances, useTokenBalance } from 'state/wallet/hooks'
+import { PairState, usePair } from 'data/Reserves'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import { tryParseAmount } from 'state/swap/hooks'
 import {maxAmountSpend} from 'utils/maxAmountSpend'
 import { LPToken } from 'components/SearchModal/CurrencyListWarp'
-import useOtherLps, { useOtherLpsCurrency } from 'hooks/useOtherLps'
+import { useFilterLpAvailableToHyper, useOtherLpsCurrency } from 'hooks/useOtherLps'
 import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import useOtherSwapList from 'hooks/useOtherSwapList'
 import { Field, replaceWarpState, typeInput, selectLP, selectCurrency, selectSwap } from './actions'
@@ -75,16 +71,20 @@ export function useWarpDefaultState(): {
     inputLpId: string | undefined,
     outputCurrencyId: string | undefined} | undefined
     {
-    const { config } = getNetwork()
-    const { chainId, account } = useActiveWeb3React()
+    const { chainId } = getNetwork()
     const {field} = useWarpState()
+    const { account } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const swapList = useOtherSwapList()
     const swapId = Object.keys(swapList)[0]
-    const input = useOtherLpsCurrency(swapId)
-    const inputLpId = input[0]?.liquidityToken?.address
-    const maxInput = maxAmountSpend(input[0]?.balance)?.toExact()
-    const outputCurrencyId = getAddress(config.farmingToken.address);
+    const input = useFilterLpAvailableToHyper(swapId)
+    const inputLpId = input[0]?.address
+    const lpTokens = useOtherLpsCurrency(swapId)
+    const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
+    ,[lpTokens,inputLpId])
+    const lpCurrency = lpInput?.liquidityToken
+    const lpBalance = useCurrencyBalance(account ?? undefined, lpCurrency ?? undefined)
+    const maxInput = maxAmountSpend(lpBalance)?.toSignificant(6)
     const [result, setResult ] = useState<{
       field: Field | undefined,
       typedValue: string | undefined,
@@ -93,7 +93,7 @@ export function useWarpDefaultState(): {
       outputCurrencyId: string | undefined} | undefined
       >()
 
-    useEffect(() => {
+    useMemo(() => {
         if (!chainId) return
     
         dispatch(
@@ -102,7 +102,7 @@ export function useWarpDefaultState(): {
             typedValue: maxInput,
             inputLpId,
             swapId,
-            outputCurrencyId
+            outputCurrencyId: ''
           })
         )
     
@@ -110,9 +110,9 @@ export function useWarpDefaultState(): {
           typedValue: maxInput,
           inputLpId,
           swapId,
-          outputCurrencyId})
+          outputCurrencyId: ''})
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [dispatch, chainId, maxInput])
+      }, [dispatch, chainId, inputLpId, swapId, maxInput])
     
       return result
 }
@@ -131,13 +131,14 @@ export function useDerivedWarpInfo(): {
     [Field.INPUT]: { lpId: inputLpId },
     selectedSwap
   } = useWarpState();
+  const { account } = useActiveWeb3React()
   const swapList = useOtherSwapList()
   const swapSelected = swapList[selectedSwap]
   const lpTokens = useOtherLpsCurrency(selectedSwap)
   const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
   ,[lpTokens,inputLpId])
   const lpCurrency = lpInput?.liquidityToken
-  const lpBalance = lpInput?.balance
+  const lpBalance = useCurrencyBalance(account ?? undefined, lpCurrency ?? undefined)
   const parsedAmount = tryParseAmount(typedValue, lpCurrency ?? undefined)
   const pair = usePair(lpInput?.tokens[0], lpInput?.tokens[1])
   const currencyOutput = pair[1]?.liquidityToken

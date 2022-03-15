@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
-import { CardBody, ArrowDownIcon, Button, IconButton, Text, useModal } from 'uikit'
+import React, { useCallback, useMemo, useState } from 'react'
+import { CardBody, ArrowDownIcon, Button, IconButton } from 'uikit'
 import Container from 'components/Container'
 import { AutoColumn } from 'components/Column'
 import AppBody from 'components/Zap/AppBody'
@@ -7,7 +7,6 @@ import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import CardNav from 'components/Zap/CardNav'
 import PageHeader from 'components/Zap/PageHeader'
 import { Wrapper } from 'components/Zap/styled'
-import { useCurrency } from 'hooks/Tokens'
 import Loader from 'components/Loader'
 import { useDerivedWarpInfo, useWarpActionHandlers, useWarpDefaultState, useWarpState } from 'state/warp/hooks'
 import useToast from 'hooks/useToast'
@@ -18,10 +17,7 @@ import { ApprovalState, useApproveCallbackFromZap } from 'hooks/useApproveCallba
 import { LPToken } from 'components/SearchModal/CurrencyListWarp'
 import { useZapAcross, ZapCallbackState } from 'hooks/useZap'
 import { AutoRow } from 'components/Row'
-import { useActiveWeb3React } from 'hooks'
-import useOtherSwapList from 'hooks/useOtherSwapList'
 import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionModal'
-import { GreyCard } from 'components/Card'
 import { PairState } from 'data/Reserves'
 import useI18n from 'hooks/useI18n'
 import DefiSelect from './DefiSelect'
@@ -33,11 +29,11 @@ const Warp = () => {
     const { toastSuccess, toastError } = useToast()
     const [modalOpen, setModalOpen] = useState(false)
     const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP} = useDerivedWarpInfo()
-    const { onUserInput, onCurrencySelect, onLPSelect, onSwapSelect } = useWarpActionHandlers()
+    const { onUserInput, onLPSelect, onSwapSelect } = useWarpActionHandlers()
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(lpBalance)
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
     const [approval, approveCallback] = useApproveCallbackFromZap(lpBalance)
-    const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
+    const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(approval === ApprovalState.PENDING)
     const showApproval = useMemo(() => { return approval === ApprovalState.NOT_APPROVED || approval === ApprovalState.PENDING || (approvalSubmitted && approval === ApprovalState.APPROVED)}, [approval, approvalSubmitted]) 
     const { callback: zapCallback, error: swapCallbackError, state: zapState} = useZapAcross(
         lpInput,
@@ -146,13 +142,16 @@ const Warp = () => {
                                 width="100%"
                                 disabled={false}
                                 variant='primary'
-                                onClick={approveCallback}
+                                onClick={() => {
+                                    approveCallback()
+                                    setApprovalSubmitted(true)
+                                }}
                             >
-                                {approval === ApprovalState.PENDING ? (
+                                {approval === ApprovalState.PENDING && approvalSubmitted ? (
                                     <AutoRow gap="6px" justify="center">
                                     Approving <Loader stroke="white" />
                                     </AutoRow>
-                                ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
+                                ) : approval === ApprovalState.APPROVED ? (
                                     'Approved'
                                 ) : (
                                     `Approve ${lpInput?.tokens[0]?.symbol}-${lpInput?.tokens[1]?.symbol}`

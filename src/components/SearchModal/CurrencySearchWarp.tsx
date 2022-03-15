@@ -1,24 +1,17 @@
-import { Currency, Token, Pair } from '@hyperjump-defi/sdk'
+import { Currency } from '@hyperjump-defi/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Text, CloseIcon } from 'uikit'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import useI18n from 'hooks/useI18n'
-import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { usePair, usePairs } from 'data/Reserves'
 import getNetwork from 'utils/getNetwork'
-import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
-import zapPairs from 'config/constants/zap'
-import { usePairContract, useTokenContract } from 'hooks/useContract'
-import { useOtherLpsCurrency } from 'hooks/useOtherLps'
-import { useTokenBalance, useTokenBalances } from 'state/wallet/hooks'
+import { useLpBalances, useOtherLpsCurrency } from 'hooks/useOtherLps'
 import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { useActiveWeb3React } from '../../hooks'
 import { AppState } from '../../state'
-import { useAllTokens, useToken } from '../../hooks/Tokens'
+import { useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
 import { LinkStyledButton } from '../Shared'
 import { isAddress } from '../../utils'
@@ -26,13 +19,9 @@ import Card from '../Card'
 import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
-import CommonBases from './CommonBases'
 import CurrencyListWarp, {LPToken} from './CurrencyListWarp'
-import { filterPairs } from './filteringPairs'
 import { filterOtherLPs } from './filteringOtherLPs'
 import SortButton from './SortButton'
-import { useTokenComparator } from './sorting'
-import { usePairComparator } from './sortingPairs'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 import { useOtherLPComparator } from './sortingOtherLPs'
 
@@ -67,15 +56,14 @@ export default function CurrencySearchWarp({
   selectedLP,
   selectedSwap
 }: CurrencySearchProps) {
-    const { chainId, account } = useActiveWeb3React()
     const theme = useContext(ThemeContext)
     const { config } = getNetwork()
 
     const fixedList = useRef<FixedSizeList>()
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-    const otherLpsWithBalance = useOtherLpsCurrency(selectedSwap.name)
-
+    const otherLps = useOtherLpsCurrency(selectedSwap.name)
+    const otherLpsWithBalance = useLpBalances(otherLps)
     // if they input an address, use it
     const isAddressSearch = isAddress(searchQuery)
     const searchToken = useToken(searchQuery)
