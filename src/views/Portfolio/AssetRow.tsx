@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Image, Checkbox, Heading, Text, Button, Flex, useModal } from 'uikit'
+import { Image, Checkbox, Heading, Text, Button, Flex } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount } from '@hyperjump-defi/sdk'
@@ -8,18 +8,19 @@ import { TokenProps } from 'hooks/moralis'
 
 import { getBroomAddress } from 'utils/addressHelpers'
 import { Token } from 'graphql'
-import BroomModal from './BroomModal'
+import { height } from 'styled-system'
 
 export interface TokenRowProps {
   token: TokenProps
   selectTokens?: (token, isSelected, approval, approvalCallback) => void
   isModal?: boolean
+  totalvolume: number
 }
 
 const CellInner = styled.div`
   padding-top: 24px;
-  // margin-left: -24px;
-  // margin-right: -24px;
+  //   margin-left: -24px;
+  //   margin-right: -24px;
   font-size: 16px;
   align-items: center;
   display: flex;
@@ -28,7 +29,7 @@ const CellInner = styled.div`
 `
 
 const Label = styled(Heading)`
-  color: ${({ theme }) => theme.colors.primary};
+  color: white;
   text-align: right;
   font-weight: 700px;
 `
@@ -50,10 +51,9 @@ const StyledRow = styled.div`
   color: white;
   width: 100%;
 `
-const ConvertRow = styled.div`
+const ProgressBarRow = styled.div`
   display: flex;
-  align-items: right;
-  justify-content: right;
+
   cursor: pointer;
   color: white;
   width: 100%;
@@ -94,18 +94,52 @@ const StyledButton = styled(Button)`
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  margin-top: 5px;
 `
+
+interface ProgressBarProps {
+  progress?: number
+}
+
+const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
+  const { t } = useTranslation()
+
+  const ProgressParent = styled.div`
+    width: 100%;
+    background-color: rgba(2, 5, 11, 0.7);
+    border-color: 2px solid ${({ theme }) => theme.colors.primary};
+    border-radius: 10px;
+  `
+
+  const ProgressChild = styled.div`
+    height: 100%;
+    width: ${progress}%;
+
+    background-color: ${({ theme }) => theme.colors.primary};
+    border-radius: 10px;
+  `
+  const ProgressSpan = styled.span`
+    padding: 5px;
+    color: white;
+    font-weight: 700;
+  `
+
+  return (
+    <ProgressParent>
+      <ProgressChild>
+        <ProgressSpan />
+      </ProgressChild>
+    </ProgressParent>
+  )
+}
 
 interface CellLayoutProps {
   label?: string
 }
-
-const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
+const CellLayout: React.FC<CellLayoutProps> = ({ label, children }) => {
   const { t } = useTranslation()
   return (
     <div>
-      {label && <Label>{label}</Label>}
+      {label && <Label>{label} </Label>}
       <ContentContainer>
         <Heading>{children}</Heading>
       </ContentContainer>
@@ -113,65 +147,49 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
   )
 }
 
-const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
+const AssetRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { t } = useTranslation()
   const [isSelected, setIsSelected] = useState(false)
 
   const broomAddress = getBroomAddress()
 
-  const { token, isModal, selectTokens } = props
+  const { token, isModal, selectTokens, totalvolume } = props
 
   const [approval, approveCallback] = useApproveCallback(
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
     broomAddress,
   )
 
-  useEffect(() => {
-    if (isModal) {
-      selectTokens(token, isSelected, approval, approveCallback)
-    }
-  }, [isModal, isSelected, selectTokens, token, approval, approveCallback])
+  //   useEffect(() => {
+  //     if (isModal) {
+  //       selectTokens(token, isSelected, approval, approveCallback)
+  //     }
+  //   }, [isModal, isSelected, selectTokens, token, approval, approveCallback])
 
-  // const [onPresentBroomModal] = useModal(<BroomModal tokens={token} />)
+  //   const handleRenderRow = () => {
+  const assetpercentage = (token.volume / totalvolume) * 100
 
-  // const onConvert = () => {
-  //   onPresentBroomModal()
-  // }
-
-  // const handleRenderRow = () => {
   return (
     <>
       <StyledRow>
-        {/* {isModal && (
-          <CellInner style={{ width: 50 }}>
-            <StyledCheckbox checked={isSelected} onChange={() => setIsSelected(!isSelected)} scale="sm" />
-          </CellInner>
-        )} */}
         <CellInner>
-          <IconImage src={token.logo} alt="icon" width={40} height={40} mr="8px" />
-          <CellLayout label={token.tokenObj.name}>
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(token.price)}
-          </CellLayout>
+          <CellLayout label={`${token.tokenObj.name} WALLET`} />
         </CellInner>
         <CellInner />
         <CellInner>
           <CellLayout
-            label={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(token.volume)}
-          >
-            {new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 }).format(token.amount)}
-          </CellLayout>
+            label={`${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(assetpercentage)} %`}
+          />
         </CellInner>
       </StyledRow>
-      {token.price < 10 && (
-        <ConvertRow>
-          <StyledButton>Convert</StyledButton>
-        </ConvertRow>
-      )}
+      <ProgressBarRow>
+        <ProgressBar progress={assetpercentage} />
+      </ProgressBarRow>
     </>
   )
-  // }
+  //   }
 
-  // return <StyledRowContainer>{handleRenderRow()}</StyledRowContainer>
+  //   return <StyledRowContainer>{handleRenderRow()}</StyledRowContainer>
 }
 
-export default TokenRow
+export default AssetRow
