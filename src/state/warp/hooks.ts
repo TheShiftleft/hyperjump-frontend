@@ -10,6 +10,7 @@ import { LPToken } from 'components/SearchModal/CurrencyListWarp'
 import { useFilterLpAvailableToHyper, useOtherLpsCurrency } from 'hooks/useOtherLps'
 import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import useOtherSwapList from 'hooks/useOtherSwapList'
+import useWeb3 from 'hooks/useWeb3'
 import { Field, replaceWarpState, typeInput, selectLP, selectCurrency, selectSwap } from './actions'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
@@ -25,6 +26,7 @@ export function useWarpActionHandlers(): {
   onSwapSelect: (field: Field, swap: OtherSwapConfig) => void
 } {
   const dispatch = useDispatch<AppDispatch>()
+  const web3 = useWeb3()
 
   const onCurrencySelect = useCallback(
     (field: Field, currency: Currency) => {
@@ -48,9 +50,10 @@ export function useWarpActionHandlers(): {
 
   const onLPSelect = useCallback(
     (field: Field, lp: LPToken) => {
-      dispatch(selectLP({field, lpId: lp.liquidityToken.address}))
+      const lpId = web3.utils.toChecksumAddress(lp.liquidityToken.address)
+      dispatch(selectLP({field, lpId }))
     },
-    [dispatch]
+    [dispatch, web3]
   )
 
   const onSwapSelect = useCallback(
@@ -72,13 +75,14 @@ export function useWarpDefaultState(): {
     outputCurrencyId: string | undefined} | undefined
     {
     const { chainId } = getNetwork()
+    const web3 = useWeb3()
     const {field} = useWarpState()
     const { account } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const swapList = useOtherSwapList()
     const swapId = Object.keys(swapList)[0]
     const input = useFilterLpAvailableToHyper(swapId)
-    const inputLpId = input[0]?.address
+    const inputLpId = web3.utils.toChecksumAddress(input[0]?.address)
     const lpTokens = useOtherLpsCurrency(swapId)
     const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
     ,[lpTokens,inputLpId])

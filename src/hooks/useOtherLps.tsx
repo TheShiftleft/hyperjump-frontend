@@ -55,9 +55,11 @@ export function useOtherLpsCurrency(defiName: string): LPToken[] {
             return filtered.map((lp): {liquidityToken: Token, tokens: [Token, Token]} => {
                 const dec = toNumber(lp?.decimals.toLowerCase().split('e').pop())
                 const lpAddress = web3.utils.toChecksumAddress(lp.address)
+                const symbol = `${lp?.lp0?.oracleId.toLowerCase() === 'wbnb' ? 'BNB' : lp?.lp0?.oracleId.toLowerCase() === 'wftm' ? 'FTM' : lp?.lp0?.oracleId}-
+                                ${lp?.lp1?.oracleId.toLowerCase() === 'wbnb' ? 'BNB' : lp?.lp1?.oracleId.toLowerCase() === 'wftm' ? 'FTM' : lp?.lp1?.oracleId}`
                 const tokens: [Token, Token] = [ new Token(lp?.chainId, web3.utils.toChecksumAddress(lp?.lp0?.address), toNumber(lp?.lp0?.decimals.toLowerCase().split('e').pop()), lp?.lp0?.oracleId, lp?.lp0?.oracleId),
                                                     new Token(lp?.chainId, web3.utils.toChecksumAddress(lp?.lp1?.address), toNumber(lp?.lp1?.decimals.toLowerCase().split('e').pop()), lp?.lp1?.oracleId, lp?.lp1?.oracleId)]
-                const liquidityToken = new Token(lp.chainId, lpAddress, dec, lp.lpSymbol, lp.name)
+                const liquidityToken = new Token(lp.chainId, lpAddress, dec, symbol, lp.name)
                 return { liquidityToken, tokens }
             })
         },

@@ -166,7 +166,15 @@ const Warp = () => {
                                     {lpCurrency === undefined ? 
                                         'Select an LP pair'
                                     :
-                                        'Pair does not exist in HyperJUMP LP'}
+                                    outputLP[0] === PairState.LOADING ?
+                                        <AutoRow gap="6px" justify="center">
+                                            Loading Pair <Loader stroke="white" />
+                                        </AutoRow>
+                                    :
+                                    outputLP[0] === PairState.NOT_EXISTS ?
+                                    'Pair does not exist in HyperJUMP LP'
+                                    :
+                                    'Invalid Pair'}
                                 </Button>
                             :   <Button
                                     width="100%"
