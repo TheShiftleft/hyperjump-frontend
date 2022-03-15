@@ -196,7 +196,7 @@ const WalletTable: React.FC = () => {
   //   })
 
   const tokens = useGetTokensList(account)
-  console.log(tokens)
+  //   console.log(tokens)
 
   let totalVolume = 0
   tokens.forEach((token) => {
@@ -236,7 +236,7 @@ const WalletTable: React.FC = () => {
           {tokens
             .filter((token) => !token.tokenObj.name.includes('.'))
             .map((token) => (
-              <TokenRow token={token} />
+              <TokenRow key={token.tokenObj.address} token={token} />
             ))}
         </ColumnTable>
         <TableLine />
@@ -247,7 +247,7 @@ const WalletTable: React.FC = () => {
           {tokens
             .filter((token) => !token.tokenObj.name.includes('.'))
             .map((token) => (
-              <AssetRow token={token} totalvolume={totalVolume} />
+              <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
             ))}
         </ColumnTable>
       </Table>
