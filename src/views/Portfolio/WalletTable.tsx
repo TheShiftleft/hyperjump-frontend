@@ -196,7 +196,6 @@ const WalletTable: React.FC = () => {
   //   })
 
   const tokens = useGetTokensList(account)
-  console.log(tokens)
 
   let totalVolume = 0
   tokens.forEach((token) => {
