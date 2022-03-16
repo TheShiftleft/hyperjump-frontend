@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Image, Checkbox, Heading, Text, Button, Flex, useModal } from 'uikit'
+import { Image, Checkbox, Heading, Button, useModal } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
 
 import { getBroomAddress } from 'utils/addressHelpers'
-import { Token } from 'graphql'
-import BroomModal from './BroomModal'
+
+import ConvertModal from './ConvertModal'
 
 export interface TokenRowProps {
   token: TokenProps
@@ -132,11 +132,11 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     }
   }, [isModal, isSelected, selectTokens, token, approval, approveCallback])
 
-  // const [onPresentBroomModal] = useModal(<BroomModal tokens={token} />)
+  const [onPresentConvertModal] = useModal(<ConvertModal selectedtoken={token} />)
 
-  // const onConvert = () => {
-  //   onPresentBroomModal()
-  // }
+  const onConvert = () => {
+    onPresentConvertModal()
+  }
 
   // const handleRenderRow = () => {
   return (
@@ -164,7 +164,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
       </StyledRow>
       {token.price < 10 && (
         <ConvertRow>
-          <StyledButton>Convert</StyledButton>
+          <StyledButton onClick={onConvert}>Convert</StyledButton>
         </ConvertRow>
       )}
     </>

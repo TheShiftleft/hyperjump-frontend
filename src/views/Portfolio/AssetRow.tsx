@@ -10,10 +10,9 @@ import { getBroomAddress } from 'utils/addressHelpers'
 import { Token } from 'graphql'
 import { height } from 'styled-system'
 
-export interface TokenRowProps {
+export interface AssetRowProps {
   token: TokenProps
-  selectTokens?: (token, isSelected, approval, approvalCallback) => void
-  isModal?: boolean
+
   totalvolume: number
 }
 
@@ -145,18 +144,18 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label, children }) => {
   )
 }
 
-const AssetRow: React.FunctionComponent<TokenRowProps> = (props) => {
-  const { t } = useTranslation()
-  const [isSelected, setIsSelected] = useState(false)
+const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
+  //   const { t } = useTranslation()
+  //   const [isSelected, setIsSelected] = useState(false)
 
-  const broomAddress = getBroomAddress()
+  //   const broomAddress = getBroomAddress()
 
-  const { token, isModal, selectTokens, totalvolume } = props
+  const { token, totalvolume } = props
 
-  const [approval, approveCallback] = useApproveCallback(
-    new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
-    broomAddress,
-  )
+  //   const [approval, approveCallback] = useApproveCallback(
+  //     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
+  //     broomAddress,
+  //   )
 
   //   useEffect(() => {
   //     if (isModal) {
