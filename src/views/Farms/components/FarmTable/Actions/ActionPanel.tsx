@@ -206,6 +206,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     hour12: true
   })
 
+  const liquidityUrlPathParts = getLiquidityUrlPathParts({
+    quoteTokenAddress: farm.quoteToken.address,
+    tokenAddress: farm.token.address,
+  })
+  const addLUrl = `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
+
   return (
     <Container expanded={expanded}>
       <DetailsContainer>
@@ -215,9 +221,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {isActive && (
                 <StakeContainer>
                   <StyledLinkExternal
-                    href={`${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${
-                      getAddress(token.address)
-                    }`}
+                    href={addLUrl}
                   >
                     {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
                   </StyledLinkExternal>
