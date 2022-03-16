@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { ChainId } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
@@ -77,10 +77,14 @@ const FarmingTokenStats = () => {
         </Flex>
 
         <Text color="primary">Market Cap</Text>
-        <Heading mb="10px">{farmingTokenMarketCap && <CardValue value={farmingTokenMarketCap} />}</Heading>
+        <Heading mb="10px">
+          {farmingTokenMarketCap ? <CardValue value={farmingTokenMarketCap} /> : <CardValue value={0} />}
+        </Heading>
 
         <Text color="primary">Total Supply</Text>
-        <Heading mb="10px">{farmingTokenTotalSupply && <CardValue value={farmingTokenTotalSupply} />}</Heading>
+        <Heading mb="10px">
+          {farmingTokenTotalSupply ? <CardValue value={farmingTokenTotalSupply} /> :  <CardValue value={0} />}
+        </Heading>
         <Text color="primary">Total Circulating Supply</Text>
         <Heading mb="10px">
           {farmingTokenTotalCirculatingSupply && <CardValue value={farmingTokenTotalCirculatingSupply} />}({' '}
