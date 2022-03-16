@@ -8,7 +8,6 @@ declare module 'styled-components' {
 }
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://rsms.me/inter/inter.css');
   @supports (font-variation-settings: normal) {
     html { font-family: 'Inter var', sans-serif; }
   }

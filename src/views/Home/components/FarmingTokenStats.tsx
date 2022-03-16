@@ -51,8 +51,8 @@ const FarmingTokenStats = () => {
       : 'swap?inputCurrency=BNB&outputCurrency=0x78de9326792ce1d6eca0c978753c6953cdeedd73'
 
   // make dynamic later, maybe add to api? -- mech
-  const tokenPerBlockBSC = '1.583940258751902587'
-  const tokenPerBlockFTM = '1.585489599188229325'
+  const tokenPerBlockBSC = 1.583940258751902587
+  const tokenPerBlockFTM = 1.585489599188229325
 
   const localEmissionRate = chainId === 56 ? tokenPerBlockBSC : tokenPerBlockFTM
 
