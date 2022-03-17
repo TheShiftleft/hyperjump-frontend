@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from 'react'
+import { useMemo, useState } from 'react'
 import Web3 from 'web3'
 import { useWeb3React } from '@web3-react/core'
 import web3NoAccount, { getWeb3NoAccount } from 'utils/web3'
