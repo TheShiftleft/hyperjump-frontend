@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import Web3 from 'web3'
 import { useWeb3React } from '@web3-react/core'
 import { getWeb3NoAccount } from 'utils/web3'
@@ -12,9 +12,9 @@ const useWeb3 = () => {
   const { library } = useWeb3React()
   const proxy = library ? library.provider : library
   const refEth = useRef(proxy)
-  const [web3, setweb3] = useState(proxy ? new Web3(proxy) : getWeb3NoAccount())
+  const [web3, setweb3] = useState(getWeb3NoAccount())
 
-  useEffect(() => {
+  useMemo(() => {
     if (proxy !== refEth.current) {
       setweb3(proxy ? new Web3(proxy) : getWeb3NoAccount())
       refEth.current = proxy
