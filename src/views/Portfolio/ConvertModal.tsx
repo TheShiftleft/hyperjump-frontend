@@ -100,19 +100,19 @@ const ConvertModal: React.FC<ConvertModalProps> = ({
   const [step, setStep] = useState(1)
   const [selectedTokens, setSelectedTokens] = useState([])
 
-  //   const selectTokens = (token, isSelected, approval, approvalCallback) => {
-  //     const sts = selectedTokens
-  //     const index = sts.findIndex((st) => st.tokenObj.address === token.tokenObj.address)
-  //     if (isSelected) {
-  //       if (index === -1) {
-  //         sts.push({ ...token, approval, approvalCallback })
-  //         setSelectedTokens(sts)
-  //       }
-  //     } else if (index > -1) {
-  //       sts.splice(index, 1)
-  //       setSelectedTokens(sts)
-  //     }
-  //   }
+  const selectTokens = (token, isSelected, approval, approvalCallback) => {
+    const sts = selectedTokens
+    const index = sts.findIndex((st) => st.tokenObj.address === token.tokenObj.address)
+    if (isSelected) {
+      if (index === -1) {
+        sts.push({ ...token, approval, approvalCallback })
+        setSelectedTokens(sts)
+      }
+    } else if (index > -1) {
+      sts.splice(index, 1)
+      setSelectedTokens(sts)
+    }
+  }
   const onSelectTokens = () => {
     setStep(2)
     console.log(selectedTokens)
@@ -129,6 +129,17 @@ const ConvertModal: React.FC<ConvertModalProps> = ({
   return (
     <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
       {step === 1 && (
+        <Box>
+          <TokenContainer>
+            <TokenRow token={selectedtoken} isModal selectTokens={selectTokens} />
+          </TokenContainer>
+
+          <ButtonBox>
+            <Button onClick={onSelectTokens}>{t('Select Tokens')}</Button>
+          </ButtonBox>
+        </Box>
+      )}
+      {step === 2 && (
         <Box>
           <Text fontSize="18px" marginBottom="30px">
             To convert small balances, you will need to sign <br /> wallet transaction.
@@ -199,7 +210,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({
           </ButtonBox>
         </Box>
       )}
-      {step === 2 && (
+      {step === 3 && (
         <Box>
           <TokenContainer>
             <TokenRow token={selectedtoken} />

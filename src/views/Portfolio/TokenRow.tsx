@@ -142,11 +142,11 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   return (
     <>
       <StyledRow>
-        {/* {isModal && (
+        {isModal && (
           <CellInner style={{ width: 50 }}>
             <StyledCheckbox checked={isSelected} onChange={() => setIsSelected(!isSelected)} scale="sm" />
           </CellInner>
-        )} */}
+        )}
         <CellInner>
           <IconImage src={token.logo} alt="icon" width={40} height={40} mr="8px" />
           <CellLayout label={token.tokenObj.name}>
@@ -162,7 +162,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
           </CellLayout>
         </CellInner>
       </StyledRow>
-      {token.price < 10 && (
+      {token.price < 10 && !isModal && (
         <ConvertRow>
           <StyledButton onClick={onConvert}>Convert</StyledButton>
         </ConvertRow>
