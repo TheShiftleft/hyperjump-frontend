@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Text, Image, useMatchBreakpoints } from 'uikit'
+import { useAllTokens, useToken } from 'hooks/Tokens'
 
 export interface FarmProps {
   label: string
@@ -38,11 +39,15 @@ const Container = styled.div`
 
 const Farm: React.FunctionComponent<FarmProps> = ({ image, label }) => {
   const { isXs, isSm } = useMatchBreakpoints()
+  const allTokens = useAllTokens()
+  const token = useToken()
 
   const img_split = image.split('-')
   const primaryImg = img_split[0]
   const secondaryImg = img_split[1]
 
+  console.log('allTokens', allTokens)
+  
   return (
     <Container>
       {img_split.length > 0
