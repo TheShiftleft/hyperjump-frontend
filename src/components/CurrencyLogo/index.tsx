@@ -1,4 +1,5 @@
 import { Currency, Token } from '@hyperjump-defi/sdk'
+import { getAddress } from 'ethers/lib/utils'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import getNetwork from 'utils/getNetwork'
@@ -8,7 +9,7 @@ import Logo from '../Logo'
 
 // FIXME replace this
 const getTokenLogoURL = (address: string) =>
-  `https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
+  `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 
 const StyledBnbLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};

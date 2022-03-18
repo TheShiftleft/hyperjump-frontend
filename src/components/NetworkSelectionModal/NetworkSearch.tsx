@@ -52,7 +52,6 @@ export function NetworkSearch({
   isOpen,
   onChangeList,
 }: NetworkSearchProps) {
-  const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
   const { config } = getNetwork()

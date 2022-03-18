@@ -8,7 +8,7 @@ import Logo from '../Logo'
 import { BridgeNetwork } from '../NetworkSelectionModal/types'
 // FIXME replace this
 const getTokenLogoURL = (address: string) =>
-  `https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
+  `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
 
 const StyledBnbLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};

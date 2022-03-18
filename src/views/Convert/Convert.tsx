@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Flex, Heading } from 'uikit'
+import { Flex, Heading, SubHeader } from 'uikit'
 import Page from 'components/layout/Page'
 import getNetwork from 'utils/getNetwork'
 import JumpConverter from './components/JumpConverter'
@@ -18,17 +18,17 @@ const Convert: React.FC = () => {
           <HeadingFlex flexDirection="column" alignItems="center">
             <MainHeading>
               Convert your
-              <Heading color="primary" ml="5px" mr="5px">
+              <SubHeader color="primary" ml="5px" mr="5px">
                 ${oldFarmingToken}
-              </Heading>
+              </SubHeader>
               and
-              <Heading color="primary" ml="5px" mr="5px">
+              <SubHeader color="primary" ml="5px" mr="5px">
                 $MECHs
-              </Heading>
+              </SubHeader>
               to
-              <Heading color="primary" ml="5px" mr="5px">
+              <SubHeader color="primary" ml="5px" mr="5px">
                 $JUMP
-              </Heading>
+              </SubHeader>
             </MainHeading>
           </HeadingFlex>
           <ShipLogo src="/images/plane.png" />
