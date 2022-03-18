@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import { Link, Text, useMatchBreakpoints, Flex } from 'uikit'
+import { Link as ReactLink } from 'react-router-dom'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import { getScannerAddressUrl } from 'utils/bscscan'
@@ -40,7 +41,7 @@ const collapseAnimation = keyframes`
   }
 `
 
-const Container = styled.div<{ expanded }>`
+const Container = styled.td<{ expanded }>`
   animation: ${({ expanded }) =>
     expanded
       ? css`
@@ -65,13 +66,24 @@ const Container = styled.div<{ expanded }>`
 const StyledLinkExternal = styled(Link)`
   font-weight: 400;
 `
-const TimeContainer = styled.text`
+const TimeContainer = styled(Text)`
   color: ${({ theme }) => theme.colors.text};
   font-size: 0.8rem;
   font-family: 'Oswald';
 `
 
-const TimeTitle = styled.text`
+const RedirectLink = styled(ReactLink)`
+  font-weight: 400;
+  display: flex;
+  color: ${({ theme }) => theme.colors.primary};
+  align-items: center;
+  width: fit-content;
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+const TimeTitle = styled(Text)`
   color: ${({ theme }) => theme.colors.blue};
   font-size: 0.9rem;
 `
@@ -206,6 +218,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
     hour12: true
   })
 
+  const liquidityUrlPathParts = getLiquidityUrlPathParts({
+    quoteTokenAddress: farm.quoteToken.address,
+    tokenAddress: farm.token.address,
+  })
+  const addLUrl = `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
+
   return (
     <Container expanded={expanded}>
       <DetailsContainer>
@@ -214,13 +232,12 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <Flex flexDirection="column" flex="1">
               {isActive && (
                 <StakeContainer>
-                  <StyledLinkExternal
-                    href={`${BASE_ADD_LIQUIDITY_URL}/${getAddress(quoteToken.address)}/${
-                      getAddress(token.address)
-                    }`}
+                  <RedirectLink
+                    as={ReactLink}
+                    to={addLUrl}
                   >
                     {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
-                  </StyledLinkExternal>
+                  </RedirectLink>
                 </StakeContainer>
               )}
               <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
