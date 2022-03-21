@@ -57,15 +57,20 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
             return { ...list.tags[tagId], id: tagId }
           })
           ?.filter((x): x is TagInfo => Boolean(x)) ?? []
-      const token = new WrappedTokenInfo(tokenInfo, tags)
-      if (tokenMap[token.chainId][token.address] !== undefined) throw Error('Duplicate tokens.')
-      return {
-        ...tokenMap,
-        [token.chainId]: {
-          ...tokenMap[token.chainId],
-          [token.address]: token,
-        },
+      if(tokenInfo.address){
+        const token = new WrappedTokenInfo(tokenInfo, tags)
+        return {
+          ...tokenMap,
+          [token.chainId]: {
+            ...tokenMap[token.chainId],
+            [token.address]: token,
+          },
+        }
       }
+      return {
+        ...tokenMap
+      }
+      
     },
     { ...EMPTY_LIST },
   )
