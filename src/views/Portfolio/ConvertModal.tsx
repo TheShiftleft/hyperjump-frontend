@@ -3,18 +3,24 @@ import styled from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import getNetwork from 'utils/getNetwork'
 import { ApprovalState } from 'hooks/useApproveCallback'
-import { useBroomContract } from 'hooks/useContract'
+
 import { TokenProps } from 'hooks/moralis'
 import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
-import TokenRow from './TokenRow'
+import { getRouterAddress } from 'utils/addressHelpers'
+import { useBroomSweep } from 'hooks/useBroom'
 
 interface ConvertModalProps {
   onDismiss?: () => void
   selectedtoken?: TokenProps
-  router?: string
-  connector?: string
   amounts?: number[]
-  amountsOutMin?: number[]
+  selectTokens: ConvertTokenProps
+}
+
+interface ConvertTokenProps {
+  token: TokenProps
+  isSelected: boolean
+  approval: number
+  approvalCallback?: () => Promise<void>
 }
 
 const StyledRow = styled.div`
@@ -83,63 +89,24 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
   )
 }
 
-const ConvertModal: React.FC<ConvertModalProps> = ({
-  onDismiss,
-  selectedtoken,
-  router,
-  connector,
-  amounts,
-  amountsOutMin,
-}) => {
+const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens }) => {
   const { t } = useTranslation()
-  const { config } = getNetwork()
-
-  const broomContract = useBroomContract()
-  console.log(broomContract)
 
   const [step, setStep] = useState(1)
-  const [selectedTokens, setSelectedTokens] = useState([])
 
-  const selectTokens = (token, isSelected, approval, approvalCallback) => {
-    const sts = selectedTokens
-    const index = sts.findIndex((st) => st.tokenObj.address === token.tokenObj.address)
-    if (isSelected) {
-      if (index === -1) {
-        sts.push({ ...token, approval, approvalCallback })
-        setSelectedTokens(sts)
-      }
-    } else if (index > -1) {
-      sts.splice(index, 1)
-      setSelectedTokens(sts)
-    }
-  }
   const onSelectTokens = () => {
-    setStep(2)
-    console.log(selectedTokens)
+    setStep(1)
   }
 
   const onApprove = () => {
-    selectedTokens.forEach((st) => {
-      if ([ApprovalState.NOT_APPROVED, ApprovalState.UNKNOWN].includes(st.approval)) {
-        st.approvalCallback()
-      }
-    })
+    if ([ApprovalState.NOT_APPROVED, ApprovalState.UNKNOWN].includes(selectTokens.approval)) {
+      selectTokens.approvalCallback()
+    }
   }
 
   return (
     <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
       {step === 1 && (
-        <Box>
-          <TokenContainer>
-            <TokenRow token={selectedtoken} isModal selectTokens={selectTokens} />
-          </TokenContainer>
-
-          <ButtonBox>
-            <Button onClick={onSelectTokens}>{t('Select Tokens')}</Button>
-          </ButtonBox>
-        </Box>
-      )}
-      {step === 2 && (
         <Box>
           <Text fontSize="18px" marginBottom="30px">
             To convert small balances, you will need to sign <br /> wallet transaction.
@@ -198,26 +165,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({
           </Box>
 
           <ButtonBox>
-            <Button onClick={onApprove} disabled={selectedTokens.every((st) => st.approval === ApprovalState.APPROVED)}>
-              {t('Approve')}
-            </Button>
-            <Button
-              onClick={onSelectTokens}
-              disabled={selectedTokens.some((st) => st.approval !== ApprovalState.APPROVED)}
-            >
-              {t('Convert')}
-            </Button>
-          </ButtonBox>
-        </Box>
-      )}
-      {step === 3 && (
-        <Box>
-          <TokenContainer>
-            <TokenRow token={selectedtoken} />
-          </TokenContainer>
-
-          <ButtonBox>
-            <Button onClick={onSelectTokens}>{t('Select Tokens')}</Button>
+            {selectTokens.approval !== ApprovalState.APPROVED ? (
+              <Button onClick={onApprove}>{t('Approve')}</Button>
+            ) : (
+              <Button onClick={}>{t('Convert')}</Button>
+            )}
           </ButtonBox>
         </Box>
       )}

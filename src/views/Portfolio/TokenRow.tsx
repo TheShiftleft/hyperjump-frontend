@@ -118,21 +118,31 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const [isSelected, setIsSelected] = useState(false)
 
   const broomAddress = getBroomAddress()
+  // console.log(broomAddress)
 
-  const { token, isModal, selectTokens } = props
+  const { token } = props
 
   const [approval, approveCallback] = useApproveCallback(
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
     broomAddress,
   )
 
-  useEffect(() => {
-    if (isModal) {
-      selectTokens(token, isSelected, approval, approveCallback)
-    }
-  }, [isModal, isSelected, selectTokens, token, approval, approveCallback])
+  const selectedToken = { token, approval, isSelected: true, approvalCallback: approveCallback }
+  // const [selectedTokens, setSelectedTokens] = useState([])
 
-  const [onPresentConvertModal] = useModal(<ConvertModal selectedtoken={token} />)
+  // const sts = selectedTokens
+  // const index = sts.findIndex((st) => st.tokenObj.address === token.tokenObj.address)
+  // if (isSelected) {
+  //   if (index === -1) {
+  //     sts.push({ ...token, approval, approveCallback })
+  //     setSelectedTokens(sts)
+  //   }
+  // } else if (index > -1) {
+  //   sts.splice(index, 1)
+  //   setSelectedTokens(sts)
+  // }
+
+  const [onPresentConvertModal] = useModal(<ConvertModal selectedtoken={token} selectTokens={selectedToken} />)
 
   const onConvert = () => {
     onPresentConvertModal()
@@ -142,11 +152,6 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   return (
     <>
       <StyledRow>
-        {isModal && (
-          <CellInner style={{ width: 50 }}>
-            <StyledCheckbox checked={isSelected} onChange={() => setIsSelected(!isSelected)} scale="sm" />
-          </CellInner>
-        )}
         <CellInner>
           <IconImage src={token.logo} alt="icon" width={40} height={40} mr="8px" />
           <CellLayout label={token.tokenObj.name}>
@@ -162,7 +167,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
           </CellLayout>
         </CellInner>
       </StyledRow>
-      {token.price < 10 && !isModal && (
+      {token.price < 10 && (
         <ConvertRow>
           <StyledButton onClick={onConvert}>Convert</StyledButton>
         </ConvertRow>
