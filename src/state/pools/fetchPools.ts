@@ -52,7 +52,6 @@ export const fetchPoolsBlockLimits = async (pools: Pool[]) => {
       }
     })
   } catch (e) {
-    console.error(e)
     return []
   }
 }

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <!-- GTAG -->
+    <!-- Google Tag Manager -->
     <script>
       ;(function (w, d, s, l, i) {
         w[l] = w[l] || []
@@ -11,10 +10,13 @@
           j = d.createElement(s),
           dl = l != 'dataLayer' ? '&l=' + l : ''
         j.async = true
-        j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=%27+i+dl'
         f.parentNode.insertBefore(j, f)
-      })(window, document, 'script', 'dataLayer', '%REACT_APP_GTAG%')
+      })(window, document, 'script', 'dataLayer', 'GTM-KLN4WCQ')
     </script>
+    <!-- End Google Tag Manager -->
+    <meta name="facebook-domain-verification" content="x61sothycblekcyf6vcmcg6lbom2to" />
+    <meta charset="utf-8" />
     <!-- Links -->
     <link rel="preconnect" href="%REACT_APP_NODE_1%" />
     <link rel="preconnect" href="%REACT_APP_NODE_2%" />
@@ -43,15 +45,16 @@
     <meta name="twitter:title" content="HyperJump - Gamify DeFi" />
   </head>
   <body>
-    <!-- GTAG (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
     <noscript>
       <iframe
-        src="https://www.googletagmanager.com/ns.html?id=%REACT_APP_GTAG%"
+        src="https://www.googletagmanager.com/ns.html?id=GTM-KLN4WCQ"
         height="0"
         width="0"
         style="display: none; visibility: hidden"
       ></iframe>
     </noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
