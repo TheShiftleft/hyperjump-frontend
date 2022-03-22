@@ -134,66 +134,66 @@ const WalletTable: React.FC = () => {
   const { account } = useWeb3React()
   const { config } = getNetwork()
 
-  //   const testtokens = [
-  //     {
-  //       tokenObj: {
-  //         decimals: 18,
-  //         symbol: 'SPIRIT',
-  //         name: 'SpiritSwap Token',
-  //         chainId: 56,
-  //         address: '0x5Cc61A78F164885776AA610fb0FE1257df78E59B',
-  //       },
-  //       logo: 'https://assets.coingecko.com/coins/images/15118/small/4mY2Biy9_400x400.jpg?1619753382',
-  //       amount: 0.000352588792428512,
-  //       volume: 2.0,
-  //       price: 10.002343213,
+  // const testtokens = [
+  //   {
+  //     tokenObj: {
+  //       decimals: 18,
+  //       symbol: 'SPIRIT',
+  //       name: 'SpiritSwap Token',
+  //       chainId: 56,
+  //       address: '0x5Cc61A78F164885776AA610fb0FE1257df78E59B',
   //     },
-  //     {
-  //       tokenObj: {
-  //         decimals: 18,
-  //         symbol: 'WFTM',
-  //         name: 'Wrapped Fantom',
-  //         chainId: 56,
-  //         address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
-  //       },
-  //       logo: 'https://assets.coingecko.com/coins/images/16036/small/Fantom.png?1622679930',
-  //       amount: 1,
-  //       volume: 1.097692515715209,
-  //       price: 1.097692515715209,
+  //     logo: 'https://assets.coingecko.com/coins/images/15118/small/4mY2Biy9_400x400.jpg?1619753382',
+  //     amount: 0.000352588792428512,
+  //     volume: 2.0,
+  //     price: 10.002343213,
+  //   },
+  //   {
+  //     tokenObj: {
+  //       decimals: 18,
+  //       symbol: 'WFTM',
+  //       name: 'Wrapped Fantom',
+  //       chainId: 56,
+  //       address: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
   //     },
-  //     {
-  //       tokenObj: {
-  //         decimals: 6,
-  //         symbol: 'USDC',
-  //         name: 'USD Coin',
-  //         chainId: 56,
-  //         address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
-  //       },
-  //       logo: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
-  //       amount: 0.199143,
-  //       volume: 0.19963181690724344,
-  //       price: 1.002454602507964,
+  //     logo: 'https://assets.coingecko.com/coins/images/16036/small/Fantom.png?1622679930',
+  //     amount: 1,
+  //     volume: 1.097692515715209,
+  //     price: 1.097692515715209,
+  //   },
+  //   {
+  //     tokenObj: {
+  //       decimals: 6,
+  //       symbol: 'USDC',
+  //       name: 'USD Coin',
+  //       chainId: 56,
+  //       address: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
   //     },
-  //   ]
-  //   const tokens = []
-  //   testtokens.forEach((token) => {
-  //     const tokenObj = new Token(
-  //       token.tokenObj.chainId,
-  //       token.tokenObj.address,
-  //       parseInt(token.tokenObj.decimals.toString()),
-  //       token.tokenObj.symbol,
-  //       token.tokenObj.name,
-  //     )
-  //     const newToken: TokenProps = {
-  //       tokenObj,
-  //       logo: token.logo,
+  //     logo: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+  //     amount: 0.199143,
+  //     volume: 0.19963181690724344,
+  //     price: 1.002454602507964,
+  //   },
+  // ]
+  // const tokens = []
+  // testtokens.forEach((token) => {
+  //   const tokenObj = new Token(
+  //     token.tokenObj.chainId,
+  //     token.tokenObj.address,
+  //     parseInt(token.tokenObj.decimals.toString()),
+  //     token.tokenObj.symbol,
+  //     token.tokenObj.name,
+  //   )
+  //   const newToken: TokenProps = {
+  //     tokenObj,
+  //     logo: token.logo,
 
-  //       amount: token.amount,
-  //       volume: token.volume,
-  //       price: token.price,
-  //     }
-  //     tokens.push(newToken)
-  //   })
+  //     amount: token.amount,
+  //     volume: token.volume,
+  //     price: token.price,
+  //   }
+  //   tokens.push(newToken)
+  // })
 
   const tokens = useGetTokensList(account)
 
@@ -235,7 +235,7 @@ const WalletTable: React.FC = () => {
           {tokens
             .filter((token) => !token.tokenObj.name.includes('.'))
             .map((token) => (
-              <TokenRow token={token} />
+              <TokenRow key={token.tokenObj.address} token={token} />
             ))}
         </ColumnTable>
         <TableLine />
@@ -246,7 +246,7 @@ const WalletTable: React.FC = () => {
           {tokens
             .filter((token) => !token.tokenObj.name.includes('.'))
             .map((token) => (
-              <AssetRow token={token} totalvolume={totalVolume} />
+              <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
             ))}
         </ColumnTable>
       </Table>

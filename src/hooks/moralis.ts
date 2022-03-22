@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 
-import { useMoralis } from "react-moralis";
+import { useMoralis } from 'react-moralis'
 
 import getNetwork from 'utils/getNetwork'
-import { MORALIS_API_URL, MORALIS_API_KEY } from 'config';
-import Moralis from 'moralis';
-import { ChainId, Token } from '@hyperjump-defi/sdk';
+import { MORALIS_API_URL, MORALIS_API_KEY } from 'config'
+import Moralis from 'moralis'
+import { ChainId, Token } from '@hyperjump-defi/sdk'
 
 export interface TokenProps {
   tokenObj: Token
-  logo: string,
-  amount: number,
-  volume: number,
+  logo: string
+  amount: number
+  volume: number
   price: number
 }
 
@@ -24,27 +24,29 @@ export const useGetTokensList = (account) => {
     const fetchData = async () => {
       try {
         const network = config.name === 'BSC' ? 'bsc' : 'fantom'
-        const result = await Moralis.Web3API.account.getTokenBalances({chain: network, address: account})
+
+        const result = await Moralis.Web3API.account.getTokenBalances({ chain: network, address: account })
 
         const tokens = []
-        result.forEach(async token => {
-          const { name, logo, symbol, balance, token_address, decimals } = token
-          const price = await Moralis.Web3API.token.getTokenPrice({chain: network, address: token_address});
-          let newLogo = logo;
-          if (!newLogo) {
-            newLogo = await getTokenLogo(name, config.network)
+        result.forEach(async (token) => {
+          if (!token.name.includes('.')) {
+            const { name, logo, symbol, balance, token_address, decimals } = token
+            const price = await Moralis.Web3API.token.getTokenPrice({ chain: network, address: token_address })
+
+            let newLogo = logo
+
+            if (logo === null) {
+              let coinid = await searchToken(symbol)
+              newLogo = await getTokenLogo(coinid, config.network)
+            }
+
+            const amount = parseInt(balance) / 10 ** parseInt(decimals)
+            const volume = price.usdPrice * amount
+            const tokenObj = new Token(ChainId.BSC_MAINNET, token_address, parseInt(decimals), symbol, name)
+            const newToken: TokenProps = { tokenObj, logo: newLogo, amount, volume, price: price.usdPrice }
+
+            tokens.push(newToken)
           }
-          const amount = parseInt(balance) / 10 ** parseInt(decimals)
-          const volume = price.usdPrice * amount
-          const tokenObj = new Token(
-            ChainId.BSC_MAINNET,
-            token_address,
-            parseInt(decimals),
-            symbol,
-            name,
-          )
-          const newToken : TokenProps = { tokenObj, logo: newLogo, amount, volume, price: price.usdPrice };
-          tokens.push(newToken)
         })
         // const nativeBalance = await Moralis.Web3API.account.getNativeBalance({chain: 'bsc', address: account})
         // const nativePrice = await Moralis.Web3API.token.getTokenPrice({chain: network});
@@ -55,7 +57,7 @@ export const useGetTokensList = (account) => {
         //   token_address: null,
         //   decimals: 18,
         //   amount: parseInt(nativeBalance.balance) / 10 ** 18,
-        //   volume: 
+        //   volume:
         // })
 
         setData(tokens)
@@ -85,7 +87,7 @@ async function getTokenPrice(address, network) {
   }
 }
 
-async function getTokenLogo(name, network) {
+export async function getTokenLogo(name, network) {
   try {
     const response = await fetch(
       `https://api.coingecko.com/api/v3/coins/${name.toLowerCase().replace(' token', '').replace(/\s/g, '-')}`,
@@ -95,6 +97,24 @@ async function getTokenLogo(name, network) {
     )
     const responseData = await response.json()
     return responseData.image.small
+  } catch (error) {
+    console.error('Unable to fetch data:', error)
+    return ''
+  }
+}
+
+export async function searchToken(name) {
+  try {
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/search?query=${name.toLowerCase().trim().replace(/-/g, ' ').split(' ')[0]}`,
+
+      {
+        headers: { 'X-API-Key': MORALIS_API_KEY },
+      },
+    )
+    const responseData = await response.json()
+
+    return responseData.coins[0].id
   } catch (error) {
     console.error('Unable to fetch data:', error)
     return ''

@@ -10,10 +10,9 @@ import { getBroomAddress } from 'utils/addressHelpers'
 import { Token } from 'graphql'
 import { height } from 'styled-system'
 
-export interface TokenRowProps {
+export interface AssetRowProps {
   token: TokenProps
-  selectTokens?: (token, isSelected, approval, approvalCallback) => void
-  isModal?: boolean
+
   totalvolume: number
 }
 
@@ -95,7 +94,25 @@ const StyledButton = styled(Button)`
   flex-direction: column;
   cursor: pointer;
 `
+const ProgressParent = styled.div`
+  width: 100%;
+  background-color: rgba(2, 5, 11, 0.7);
+  border-color: 2px solid ${({ theme }) => theme.colors.primary};
+  border-radius: 10px;
+`
 
+const ProgressChild = styled.div<{ linewidth: string }>`
+  height: 100%;
+  width: ${(props) => props.linewidth}%;
+
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: 10px;
+`
+const ProgressSpan = styled.span`
+  padding: 5px;
+  color: white;
+  font-weight: 700;
+`
 interface ProgressBarProps {
   progress?: number
 }
@@ -103,29 +120,9 @@ interface ProgressBarProps {
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   const { t } = useTranslation()
 
-  const ProgressParent = styled.div`
-    width: 100%;
-    background-color: rgba(2, 5, 11, 0.7);
-    border-color: 2px solid ${({ theme }) => theme.colors.primary};
-    border-radius: 10px;
-  `
-
-  const ProgressChild = styled.div`
-    height: 100%;
-    width: ${progress}%;
-
-    background-color: ${({ theme }) => theme.colors.primary};
-    border-radius: 10px;
-  `
-  const ProgressSpan = styled.span`
-    padding: 5px;
-    color: white;
-    font-weight: 700;
-  `
-
   return (
     <ProgressParent>
-      <ProgressChild>
+      <ProgressChild linewidth={progress.toString()}>
         <ProgressSpan />
       </ProgressChild>
     </ProgressParent>
@@ -147,18 +144,18 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label, children }) => {
   )
 }
 
-const AssetRow: React.FunctionComponent<TokenRowProps> = (props) => {
-  const { t } = useTranslation()
-  const [isSelected, setIsSelected] = useState(false)
+const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
+  //   const { t } = useTranslation()
+  //   const [isSelected, setIsSelected] = useState(false)
 
-  const broomAddress = getBroomAddress()
+  //   const broomAddress = getBroomAddress()
 
-  const { token, isModal, selectTokens, totalvolume } = props
+  const { token, totalvolume } = props
 
-  const [approval, approveCallback] = useApproveCallback(
-    new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
-    broomAddress,
-  )
+  //   const [approval, approveCallback] = useApproveCallback(
+  //     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
+  //     broomAddress,
+  //   )
 
   //   useEffect(() => {
   //     if (isModal) {
