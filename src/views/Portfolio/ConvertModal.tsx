@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import getNetwork from 'utils/getNetwork'
@@ -7,7 +7,7 @@ import { ApprovalState } from 'hooks/useApproveCallback'
 import { TokenProps } from 'hooks/moralis'
 import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
 import { getRouterAddress } from 'utils/addressHelpers'
-import { useBroomSweep } from 'hooks/useBroom'
+import { BroomCallbackState, useBroomSweep } from 'hooks/useBroom'
 
 interface ConvertModalProps {
   onDismiss?: () => void
@@ -89,7 +89,7 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
   )
 }
 
-const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens }) => {
+const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens, amounts }) => {
   const { t } = useTranslation()
 
   const [step, setStep] = useState(1)
@@ -103,6 +103,22 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
       selectTokens.approvalCallback()
     }
   }
+
+  // Lagyan mo dito bro ng params sa useBroomSweep
+  const {state: broomState, callback: broomCallback} = useBroomSweep()
+
+  const handleBroomCallback = useCallback(() => {
+    if(broomState !== BroomCallbackState.INVALID){
+      broomCallback()
+      .then(result => {
+        console.log('result', result)
+      })
+      .catch(e => {
+        console.error(e)
+      })
+    }
+    
+  }, [broomCallback, broomState])
 
   return (
     <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
@@ -168,7 +184,9 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
             {selectTokens.approval !== ApprovalState.APPROVED ? (
               <Button onClick={onApprove}>{t('Approve')}</Button>
             ) : (
-              <Button onClick={}>{t('Convert')}</Button>
+              <Button onClick={() => {
+                handleBroomCallback()
+              }}>{t('Convert')}</Button>
             )}
           </ButtonBox>
         </Box>

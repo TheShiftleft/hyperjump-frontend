@@ -18,11 +18,11 @@ export enum BroomCallbackState {
 }
 
 export function useBroomSweep(amount?: number, tokens?: Array<string>, decimals?: number) {
-  const { config } = getNetwork()
+  const { config, chainId } = getNetwork()
 
   const broomContract = useBroomContract()
   const router = getRouterAddress()
-  const connector = config.name === 'BSC' ? contract.wbnb[56] : contract.wftm[250]
+  const connector = config.wrappedNetworkToken.address[chainId] 
   const amountsOutmin = 0
   const amountToProcess = amount ? new BigNumber(amount).multipliedBy(BIG_TEN.pow(decimals)) : undefined
 
