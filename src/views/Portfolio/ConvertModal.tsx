@@ -105,19 +105,20 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   }
 
   // Lagyan mo dito bro ng params sa useBroomSweep
-  const {state: broomState, callback: broomCallback} = useBroomSweep()
+  const { state: broomState, callback: broomCallback } = useBroomSweep(selectTokens.token.amount, 
+    selectTokens.token.tokenObj.address,
+  )
 
   const handleBroomCallback = useCallback(() => {
-    if(broomState !== BroomCallbackState.INVALID){
+    if (broomState !== BroomCallbackState.INVALID) {
       broomCallback()
-      .then(result => {
-        console.log('result', result)
-      })
-      .catch(e => {
-        console.error(e)
-      })
+        .then((result) => {
+          console.log('result', result)
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     }
-    
   }, [broomCallback, broomState])
 
   return (
@@ -184,9 +185,13 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
             {selectTokens.approval !== ApprovalState.APPROVED ? (
               <Button onClick={onApprove}>{t('Approve')}</Button>
             ) : (
-              <Button onClick={() => {
-                handleBroomCallback()
-              }}>{t('Convert')}</Button>
+              <Button
+                onClick={() => {
+                  handleBroomCallback()
+                }}
+              >
+                {t('Convert')}
+              </Button>
             )}
           </ButtonBox>
         </Box>

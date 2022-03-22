@@ -17,16 +17,22 @@ export enum BroomCallbackState {
   PENDING,
 }
 
-export function useBroomSweep(amount?: number, tokens?: Array<string>, decimals?: number) {
+export function useBroomSweep(amount?: number, tokens?: string) {
   const { config, chainId } = getNetwork()
 
   const broomContract = useBroomContract()
   const router = getRouterAddress()
-  const connector = config.wrappedNetworkToken.address[chainId] 
+  const connector = config.wrappedNetworkToken.address[chainId]
   const amountsOutmin = 0
-  const amountToProcess = amount ? new BigNumber(amount).multipliedBy(BIG_TEN.pow(decimals)) : undefined
+  const amountToProcess = amount ? new BigNumber(amount).multipliedBy(BIG_TEN.pow(17)) : undefined
 
   return useMemo(() => {
+    const token = []
+    const amounts = []
+    const amountsmin = []
+    amountsmin.push(amountsOutmin)
+    amounts.push(amountToProcess.toString())
+    token.push(tokens)
     if (!broomContract || !router || !amountToProcess || !connector || !tokens || !amount) {
       return {
         state: BroomCallbackState.INVALID,
@@ -38,10 +44,10 @@ export function useBroomSweep(amount?: number, tokens?: Array<string>, decimals?
     return {
       state: BroomCallbackState.VALID,
       callback: async () => {
-        const broomSweep = await broomContract.sweep(router, connector, tokens, amountToProcess, amountsOutmin)
+        const broomSweep = await broomContract.sweep(router, connector, token, amounts, amountsmin)
         return broomSweep
       },
       error: null,
     }
-  }, [router, broomContract, connector, tokens, amountToProcess, amount, amountsOutmin])
+  }, [router, broomContract, connector, amountToProcess, amount, amountsOutmin, tokens])
 }
