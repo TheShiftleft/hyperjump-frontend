@@ -199,7 +199,7 @@ const Swap = () => {
       }
 
       if (modalCountdownSecondsRemaining <= 0) {
-        window.location.href = 'https://swap.hyperjump.fi/'
+        window.location.href = 'https://swap.hyperjump.app/'
       }
 
       return () => {
@@ -427,7 +427,7 @@ const Swap = () => {
                 <AutoRow justify={isExpertMode ? 'space-between' : 'center'} style={{ padding: '0 1rem' }}>
                   <ArrowWrapper clickable>
                     <PlusContainer>
-                      <ZapSVG height="50px" width="50px"/>
+                      <ZapSVG height="50px" width="50px" />
                     </PlusContainer>
                   </ArrowWrapper>
                   {recipient === null && !showWrap && isExpertMode ? (
@@ -496,7 +496,7 @@ const Swap = () => {
                 </Card>
               )}
             </AutoColumn>
-            <BottomGrouping>{!account ? <ConnectWalletButton width="100%" /> : <ZapSlider/>}</BottomGrouping>
+            <BottomGrouping>{!account ? <ConnectWalletButton width="100%" /> : <ZapSlider />}</BottomGrouping>
           </CardBody>
         </Wrapper>
       </AppBody>

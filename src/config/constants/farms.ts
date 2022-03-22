@@ -5,15 +5,6 @@ import { FarmConfig } from './types'
 const farms: Record<Network, FarmConfig[]> = {
   [Network.BSC_TESTNET]: [
     {
-      pid: 0,
-      lpSymbol: 'JUMP',
-      lpAddresses: {
-        97: '0x2c9a2fA5d93c7A4CFfBB45e94f05Fd9eF58A5CE2',
-      },
-      token: tokens.jump,
-      quoteToken: tokens.wbnb,
-    },
-    {
       pid: 1,
       lpSymbol: 'JUMP-BNB',
       lpAddresses: {
@@ -43,13 +34,13 @@ const farms: Record<Network, FarmConfig[]> = {
   ],
   [Network.BSC]: [
     /**
-     * These 3 farms (PID 0, 1, 3) should always be at the top of the list.
+     * These 3 farms (PID  1,2, 3) should always be at the top of the list.
      */
     {
       pid: 0,
-      lpSymbol: 'JUMP',
+      lpSymbol: 'xJUMP',
       lpAddresses: {
-        56: '0x130025eE738A66E691E6A7a62381CB33c6d9Ae83',
+        56: '0x522650de53e79ead931e4eb3537b12d7fe06697d',
       },
       token: tokens.jump,
       quoteToken: tokens.wbnb,
@@ -65,15 +56,6 @@ const farms: Record<Network, FarmConfig[]> = {
     },
     {
       pid: 2,
-      lpSymbol: 'JUMP-BUSD',
-      lpAddresses: {
-        56: '0x2ed207F0f273A773A890F74Dc17DEf2E6E1f42e3',
-      },
-      token: tokens.jump,
-      quoteToken: tokens.busd,
-    },
-    {
-      pid: 3,
       lpSymbol: 'HYPR-BNB',
       lpAddresses: {
         56: '0x3701cfe08a3f0b629dbcaeceba773a8b4f0044e3',
@@ -82,7 +64,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 4,
+      pid: 3,
       lpSymbol: 'BUSD-BNB',
       lpAddresses: {
         56: '0xf2e4e3f9b58b3edac88ad11d689a23f3119a782d',
@@ -90,9 +72,8 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.busd,
       quoteToken: tokens.wbnb,
     },
-    // pid 6 is xjump, 5 is wrong deployment
     {
-      pid: 7,
+      pid: 4,
       lpSymbol: 'ADA-BNB',
       lpAddresses: {
         56: '0x700693fbfb05ac9ee4928959591f38490711539c',
@@ -101,7 +82,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 8,
+      pid: 5,
       lpSymbol: 'BTCB-BNB',
       lpAddresses: {
         56: '0xdfb193940e1317f38e91568fdb05efe18ee4a3c7',
@@ -110,16 +91,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 9,
-      lpSymbol: 'BUSD-BTCB',
-      lpAddresses: {
-        56: '0x10ee95172e77069Cf8B72bc9ae0eEa1661F6015D',
-      },
-      token: tokens.btcb,
-      quoteToken: tokens.busd,
-    },
-    {
-      pid: 10,
+      pid: 6,
       lpSymbol: 'ETH-BNB',
       lpAddresses: {
         56: '0x75115c644f9661a761a333ba0a38e42b1649f143',
@@ -128,16 +100,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 11,
-      lpSymbol: 'ETH-BUSD',
-      lpAddresses: {
-        56: '0x6407f7a9b9e6c1e398c10a20da2fe17f89131cf0',
-      },
-      token: tokens.eth,
-      quoteToken: tokens.busd,
-    },
-    {
-      pid: 12,
+      pid: 7,
       lpSymbol: 'FTM-BNB',
       lpAddresses: {
         56: '0xC6CA7790B1fB1f2d8097dC429c31Ca150A2762d8',
@@ -146,7 +109,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 13,
+      pid: 8,
       lpSymbol: 'GLCH-BNB',
       lpAddresses: {
         56: '0xBe9F5945606fae18D64348E64435D4CC49d3eBCe',
@@ -155,7 +118,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wbnb,
     },
     {
-      pid: 14,
+      pid: 9,
       lpSymbol: 'AVAX-BNB',
       lpAddresses: {
         56: '0x92265995F20747e55B8d6d6FBEcf5dF507447c83',
@@ -163,17 +126,26 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.avax,
       quoteToken: tokens.wbnb,
     },
+    {
+      pid: 12,
+      lpSymbol: 'SOL-BNB',
+      lpAddresses: {
+        56: '0xC30011d6dd82E9980004565C53c186D0a1a96017',
+      },
+      token: tokens.sol,
+      quoteToken: tokens.wbnb,
+    },
+    {
+      pid: 13,
+      lpSymbol: 'DAI-BUSD',
+      lpAddresses: {
+        56: '0xF0945Bb76B23BE86021197A8C555d5967b574d32',
+      },
+      token: tokens.dai,
+      quoteToken: tokens.busd,
+    },
   ],
   [Network.FANTOM]: [
-    {
-      pid: 0,
-      lpSymbol: 'JUMP',
-      lpAddresses: {
-        250: '0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73',
-      },
-      token: tokens.jump,
-      quoteToken: tokens.wftm,
-    },
     {
       pid: 1,
       lpSymbol: 'JUMP-FTM',
@@ -185,15 +157,6 @@ const farms: Record<Network, FarmConfig[]> = {
     },
     {
       pid: 2,
-      lpSymbol: 'JUMP-USDC',
-      lpAddresses: {
-        250: '0x33685A26B47a1778B412Df224e99964Ca87C59BD',
-      },
-      token: tokens.usdc,
-      quoteToken: tokens.jump,
-    },
-    {
-      pid: 3,
       lpSymbol: 'AURORA-FTM',
       lpAddresses: {
         250: '0x483d07bc99cdd1df66f64ae0a769a70725c46fa4',
@@ -201,8 +164,9 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.aurora,
       quoteToken: tokens.wftm,
     },
+
     {
-      pid: 4,
+      pid: 3,
       lpSymbol: 'USDC-FTM',
       lpAddresses: {
         250: '0x50cc648e45b84d68405ba0707e94c507b08e593d',
@@ -210,18 +174,8 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.usdc,
       quoteToken: tokens.wftm,
     },
-    /* {
-      jump staking pool using xjump
-      pid: 5,
-      lpSymbol: 'JUMP',
-      lpAddresses: {
-        250: '0x5621Ca989428CF105784164b84D500f4a6bEc889',
-      },
-      token: tokens.jump,
-      quoteToken: tokens.jump,
-    }, */
     {
-      pid: 6,
+      pid: 4,
       lpSymbol: 'USDC-DAI',
       lpAddresses: {
         250: '0xD7Ee3fd59a2d8082B56319f858fceaD9a902C0A1',
@@ -230,7 +184,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.usdc,
     },
     {
-      pid: 7,
+      pid: 5,
       lpSymbol: 'CRV-FTM',
       lpAddresses: {
         250: '0x7785698f2aa354558c77a0186be0dfd2a9b2452d',
@@ -239,7 +193,7 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wftm,
     },
     {
-      pid: 8,
+      pid: 6,
       lpSymbol: 'BNB-FTM',
       lpAddresses: {
         250: '0x55c5B2868eae98f38C8c6b84435eD90B400466f9',
@@ -248,12 +202,30 @@ const farms: Record<Network, FarmConfig[]> = {
       quoteToken: tokens.wftm,
     },
     {
-      pid: 9,
-      lpSymbol: 'DAI-FTM',
+      pid: 7,
+      lpSymbol: 'SUSHI-FTM',
       lpAddresses: {
-        250: '0x6d898d98818e670c695e374ed77cd1753cf109dd',
+        250: '0xf9f979b0283031c4afa4d668626779363b5fe510',
       },
-      token: tokens.dai,
+      token: tokens.sushi,
+      quoteToken: tokens.wftm,
+    },
+    {
+      pid: 8,
+      lpSymbol: 'MIM-FTM',
+      lpAddresses: {
+        250: '0x90b28d674e53860ba1d560180cd7f561341ebc45',
+      },
+      token: tokens.mim,
+      quoteToken: tokens.wftm,
+    },
+    {
+      pid: 9,
+      lpSymbol: 'AVAX-FTM',
+      lpAddresses: {
+        250: '0x37cC74ACd40569f0B639bfb4cdA0Fea07a21F3E0',
+      },
+      token: tokens.avax,
       quoteToken: tokens.wftm,
     },
     {
@@ -265,50 +237,22 @@ const farms: Record<Network, FarmConfig[]> = {
       token: tokens.ice,
       quoteToken: tokens.wftm,
     },
-    // 11 is mim error
-    {
-      pid: 12,
-      lpSymbol: 'SUSHI-FTM',
-      lpAddresses: {
-        250: '0xf9f979b0283031c4afa4d668626779363b5fe510',
-      },
-      token: tokens.sushi,
-      quoteToken: tokens.wftm,
-    },
     {
       pid: 13,
-      lpSymbol: 'USDC-ICE',
+      lpSymbol: 'ETH-FTM',
       lpAddresses: {
-        250: '0x2e037324b04043e80ca788e0c008bfc772b5ee32',
+        250: '0xc81a9cE5Be68dF6A52F82D83398420D8A1C245c2',
       },
-      token: tokens.ice,
-      quoteToken: tokens.usdc,
+      token: tokens.eth,
+      quoteToken: tokens.wftm,
     },
     {
       pid: 14,
-      lpSymbol: 'JUMP-DAI',
+      lpSymbol: 'BTC-FTM',
       lpAddresses: {
-        250: '0x60529abad498054eacaaca1b7ffed2ce4cfcb10b',
+        250: '0x9a2B08B7620B8c387d96f9C1DC315aFD93651F5e',
       },
-      token: tokens.dai,
-      quoteToken: tokens.jump,
-    },
-    {
-      pid: 15,
-      lpSymbol: 'MIM-FTM',
-      lpAddresses: {
-        250: '0x90b28d674e53860ba1d560180cd7f561341ebc45',
-      },
-      token: tokens.mim,
-      quoteToken: tokens.wftm,
-    },
-    {
-      pid: 16,
-      lpSymbol: 'AVAX-FTM',
-      lpAddresses: {
-        250: '0x37cC74ACd40569f0B639bfb4cdA0Fea07a21F3E0',
-      },
-      token: tokens.avax,
+      token: tokens.btc,
       quoteToken: tokens.wftm,
     },
   ],

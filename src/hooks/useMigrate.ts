@@ -6,8 +6,7 @@ export const useMigrate = (account) => {
   const rewardMigratorContract = useRewardMigrator()
 
   const handleMigrate = useCallback(async () => {
-    const txHash = await migrate(rewardMigratorContract, account)
-    return txHash
+    await migrate(rewardMigratorContract, account)
   }, [account, rewardMigratorContract])
 
   return { onMigrate: handleMigrate }

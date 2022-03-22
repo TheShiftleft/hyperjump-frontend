@@ -25,29 +25,6 @@ import { ViewMode } from './components/ToggleView/ToggleView'
 import getAprData from './helpers'
 import MechConverter from './components/MechConverter'
 
-const CardLayout = styled(FlexLayout)`
-  justify-content: center;
-`
-
-const PoolControls = styled(Flex)`
-  flex-direction: column;
-  margin-bottom: 24px;
-  ${({ theme }) => theme.mediaQueries.md} {
-    flex-direction: row;
-  }
-`
-
-const SearchSortContainer = styled(Flex)`
-  gap: 10px;
-  justify-content: space-between;
-`
-
-const ControlStretch = styled(Flex)`
-  > div {
-    flex: 1;
-  }
-`
-
 const NUMBER_OF_POOLS_VISIBLE = 12
 
 const Pools: React.FC = () => {
@@ -196,7 +173,7 @@ const Pools: React.FC = () => {
               <ControlStretch>
                 <Select
                   options={[
-                /*     {
+                    /*     {
                       label: t('Hot'),
                       value: 'hot',
                     }, */
@@ -241,3 +218,26 @@ const Pools: React.FC = () => {
 }
 
 export default Pools
+
+const CardLayout = styled(FlexLayout)`
+  justify-content: center;
+`
+
+const PoolControls = styled(Flex)`
+  flex-direction: column;
+  margin-bottom: 24px;
+  ${({ theme }) => theme.mediaQueries.md} {
+    flex-direction: row;
+  }
+`
+
+const SearchSortContainer = styled(Flex)`
+  gap: 10px;
+  justify-content: space-between;
+`
+
+const ControlStretch = styled(Flex)`
+  > div {
+    flex: 1;
+  }
+`

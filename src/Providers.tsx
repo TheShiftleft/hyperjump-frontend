@@ -9,15 +9,14 @@ import { LanguageProvider } from 'contexts/Localization'
 import { RefreshContextProvider } from 'contexts/RefreshContext'
 import { ToastsProvider } from 'contexts/ToastsContext'
 import store from 'state'
-import { ApolloProvider } from 'react-apollo'
 import { NetworkContextName } from './config'
-/* import { client } from './views/Analytics/apollo/client'
-import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
-import ApplicationContextProvider from './contexts/Analytics/Application'
-import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
-import GlobalDataContextProvider from './contexts/Analytics/GlobalData'
-import PairDataContextProvider, { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
-import UserContextProvider from './contexts/Analytics/User' */
+// import { client } from './views/Analytics/apollo/client'
+// import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
+// import ApplicationContextProvider from './contexts/Analytics/Application'
+// import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
+// import GlobalDataContextProvider from './contexts/Analytics/GlobalData'
+// import PairDataContextProvider, { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
+// import UserContextProvider from './contexts/Analytics/User' 
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -32,19 +31,19 @@ const Providers: React.FC = ({ children }) => {
               <ThemeContextProvider>
                 <LanguageProvider>
                   <RefreshContextProvider>
-                    {/* <LocalStorageContextProvider>
-                        <ApplicationContextProvider>
-                          <TokenDataContextProvider>
-                            <GlobalDataContextProvider>
-                              <PairDataContextProvider>
-                                <UserContextProvider> */}
+                    {/*   <LocalStorageContextProvider>
+                      <ApplicationContextProvider>
+                        <TokenDataContextProvider>
+                          <GlobalDataContextProvider>
+                            <PairDataContextProvider>
+                              <UserContextProvider> */}
                     <ModalProvider>{children}</ModalProvider>
-                    {/*         </UserContextProvider>
-                              </PairDataContextProvider>
-                            </GlobalDataContextProvider>
-                          </TokenDataContextProvider>
-                        </ApplicationContextProvider>
-                      </LocalStorageContextProvider> */}
+                    {/*  </UserContextProvider>
+                            </PairDataContextProvider>
+                          </GlobalDataContextProvider>
+                        </TokenDataContextProvider>
+                      </ApplicationContextProvider>
+                    </LocalStorageContextProvider> */}
                   </RefreshContextProvider>
                 </LanguageProvider>
               </ThemeContextProvider>

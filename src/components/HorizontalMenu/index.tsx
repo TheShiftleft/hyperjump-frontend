@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
-import { languageList } from 'config/localization/languages'
-import { useTranslation } from 'contexts/Localization'
+// import { languageList } from 'config/localization/languages'
+// import { useTranslation } from 'contexts/Localization'
 import throttle from 'lodash/throttle'
 import useTheme from 'hooks/useTheme'
 import useAuth from 'hooks/useAuth'
@@ -10,13 +10,14 @@ import Overlay from 'uikit/components/Overlay/Overlay'
 import Flex from 'uikit/components/Box/Flex'
 import { useMatchBreakpoints } from 'uikit/hooks'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
+import BigNumber from 'bignumber.js'
 import Logo from 'uikit/widgets/Menu/components/Logo'
 import FarmingTokenPrice from 'uikit/widgets/Menu/components/FarmingTokenPrice'
 import HorizontalPanel from 'uikit/widgets/Menu/components/HorizontalPanel'
 import UserBlock from 'uikit/widgets/Menu/components/UserBlock'
 import { MENU_HEIGHT, SIDEBAR_WIDTH_REDUCED, SIDEBAR_WIDTH_FULL } from 'uikit/widgets/Menu/config'
 import NetworkBlock from 'uikit/widgets/Menu/NetworkBlock'
-import config from './config'
+import menuConfig from './config'
 
 interface MenuProps {
   children: any
@@ -27,8 +28,8 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
-  const { currentLanguage, setLanguage, t } = useTranslation()
-  const links = config(t)
+  // const { currentLanguage, setLanguage, t } = useTranslation()
+  const links = menuConfig()
 
   const { isXl } = useMatchBreakpoints()
   const isMobile = isXl === false
@@ -44,24 +45,27 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const homeLink = links.find((link) => link.label === 'Home')
 
   useEffect(() => {
+    let isMounted = true
     const handleScroll = () => {
       const currentOffset = window.pageYOffset
       const isBottomOfPage = window.document.body.clientHeight === currentOffset + window.innerHeight
       const isTopOfPage = currentOffset === 0
       // Always show the menu when user reach the top
-      if (isTopOfPage) {
-        setShowMenu(true)
-      }
-      // Avoid triggering anything at the bottom because of layout shift
-      else if (!isBottomOfPage) {
-        if (currentOffset < refPrevOffset.current) {
-          // Has scroll up
-          // setShowMenu(true);
-          setOpacity(true)
-        } else {
-          // Has scroll down
-          // setShowMenu(false);
-          setOpacity(false)
+      if (isMounted) {
+        if (isTopOfPage) {
+          setShowMenu(true)
+        }
+        // Avoid triggering anything at the bottom because of layout shift
+        else if (!isBottomOfPage) {
+          if (currentOffset < refPrevOffset.current) {
+            // Has scroll up
+            // setShowMenu(true);
+            setOpacity(true)
+          } else {
+            // Has scroll down
+            // setShowMenu(false);
+            setOpacity(false)
+          }
         }
       }
       refPrevOffset.current = currentOffset
@@ -71,6 +75,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
     window.addEventListener('scroll', throttledHandleScroll)
     return () => {
       window.removeEventListener('scroll', throttledHandleScroll)
+      isMounted = false
     }
   }, [])
 
@@ -92,9 +97,9 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
               showMenu={showMenu}
               isDark={isDark}
               toggleTheme={toggleTheme}
-              langs={languageList}
-              setLang={setLanguage}
-              currentLang={currentLanguage.code}
+              /*  langs={languageList} */
+              /*  setLang={setLanguage} */
+              /*  currentLang={currentLanguage.code} */
               farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
               pushNav={setIsPushed}
               links={links}
@@ -118,16 +123,16 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
             showMenu={showMenu}
             isDark={isDark}
             toggleTheme={toggleTheme}
-            langs={languageList}
-            setLang={setLanguage}
-            currentLang={currentLanguage.code}
+            /*             langs={languageList}           */
+            /* setLang={setLanguage} */
+            /*  currentLang={currentLanguage.code} */
             farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
             pushNav={setIsPushed}
             links={links}
           />
         )}
         <Inner isPushed={isPushed} showMenu={showMenu}>
-          {children}
+          <> {children}</>
         </Inner>
         <MobileOnlyOverlay show={isPushed} onClick={() => setIsPushed(false)} role="presentation" />
       </BodyWrapper>

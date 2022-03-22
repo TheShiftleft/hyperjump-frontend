@@ -5,8 +5,7 @@ import { DEFAULT_TOKEN_DECIMAL } from 'config'
 import { ethers } from 'ethers'
 import { Contract } from 'web3-eth-contract'
 import { BIG_TEN, BIG_ZERO } from './bigNumber'
-
-const { config } = getNetwork()
+import { getMasterchef20Contract } from './contractHelpers'
 
 export const approve = async (lpContract, masterChefContract, account) => {
   return lpContract.methods
@@ -14,11 +13,29 @@ export const approve = async (lpContract, masterChefContract, account) => {
     .send({ from: account })
 }
 
-/* const stakingMethod: Record<Network, string> = {
-  [Network.BSC]: 'deposit',
-  [Network.BSC_TESTNET]: 'depost',
-  [Network.FANTOM]: 'deposit',
-} */
+export const getFarm20MigrationPoolInfo = async (pid: number): Promise<BigNumber[]> => {
+  const contract = getMasterchef20Contract()
+  try {
+    const poolInfo: BigNumber[] = contract.methods.poolInfo(pid).call()
+    return poolInfo
+  } catch (e) {
+    return []
+  }
+}
+
+export const getMasterChef20UserInfos = async (poolLength: number, owner: string): Promise<any> => {
+  const contract = getMasterchef20Contract()
+  let promises = []
+  for (let pid = 0; pid < poolLength; pid++) {
+    promises.push(contract.methods.userInfo(pid, owner).call())
+  }
+  try {
+    const poolsInfo = await Promise.all(promises)
+    return poolsInfo
+  } catch (e) {
+    return []
+  }
+}
 
 export const stake = async (masterChefContract, pid, amount, account) => {
   /*  if (pid === 0) {
@@ -68,14 +85,7 @@ const leaveStakingMethod: Record<Network, string> = {
 } */
 
 export const unstake = async (masterChefContract, pid, amount, account) => {
-  /*  if (pid === 0) {
-    return masterChefContract.methods
-      .withdraw('0', new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
-      .send({ from: account })
-      .on('transactionHash', (tx) => {
-        return tx.transactionHash
-      })
-  } */
+  // mech: removed the pid 0 check as we dont use it.
   return masterChefContract.methods
     .withdraw(pid, new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
     .send({ from: account })

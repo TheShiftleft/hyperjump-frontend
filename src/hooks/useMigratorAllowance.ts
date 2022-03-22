@@ -17,11 +17,13 @@ const useMigratorAllowance = () => {
   }, [account, rewardMigratorAddress, oldFarmingToken])
 
   useEffect(() => {
-    if (account && rewardMigratorAddress && oldFarmingToken) {
+    let isMounted = true
+    if (isMounted && account && rewardMigratorAddress && oldFarmingToken) {
       fetchAllowance()
     }
-    let refreshInterval = setInterval(fetchAllowance, 10000)
-    return () => clearInterval(refreshInterval)
+    return () => {
+      isMounted = false
+    }
   }, [account, rewardMigratorAddress, oldFarmingToken, fetchAllowance])
 
   return allowance

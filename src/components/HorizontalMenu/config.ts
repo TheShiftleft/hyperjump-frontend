@@ -5,65 +5,55 @@ import bridgeNetworks from 'config/constants/bridgeNetworks'
 import getNetwork from 'utils/getNetwork'
 import { getAddress } from 'utils/addressHelpers'
 
-
 const { config: networkConfig } = getNetwork()
 
 let outputChainId
 let inputCurrency
 let outputCurrency
-Object.keys(bridgeNetworks)
-.forEach(function eachKey(key) {
-  if(bridgeNetworks[key].chainId !== networkConfig.id){
-    if(ChainId.BSC_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
+Object.keys(bridgeNetworks).forEach(function eachKey(key) {
+  if (bridgeNetworks[key].chainId !== networkConfig.id) {
+    if (ChainId.BSC_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET) {
       outputChainId = bridgeNetworks[key].chainId
       outputCurrency = bridgeNetworks[key].tokens[0].address
-    }else if(ChainId.FTM_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
+    } else if (ChainId.FTM_MAINNET === networkConfig.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET) {
       outputChainId = bridgeNetworks[key].chainId
       outputCurrency = bridgeNetworks[key].tokens[0].address
     }
-    
-  }else{
+  } else {
     inputCurrency = bridgeNetworks[key].tokens[0].address
   }
-});
+})
 
-
-
-const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
+const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
   {
     label: 'Swap',
     icon: 'TradeIcon',
     items: [
       {
-        label: t('Trade'),
-        //        icon: 'TradeIcon',
+        label: 'Trade',
         href: `/swap?inputCurrency=${networkConfig.baseCurrency.symbol}&outputCurrency=${getAddress(
           networkConfig.farmingToken.address,
         )}`,
         target: '_self',
       },
       {
-        label: t('Liquidity'),
-        //        icon: 'ConvertIcon',
+        label: 'Liquidity',
         href: '/pool',
         target: '_self',
       },
       {
-        label: t('Convert & Claim'),
-        //        icon: 'ConvertIcon',
-        href: '/convert',
+        label: 'Zap & Warp',
+        href: '/zap',
         target: '_self',
       },
       {
-        label: t('Buy Crypto'),
-        //        icon: 'ConvertIcon',
-        href: '/onramp',
-        target: '_self',
-      },
-      {
-        label: t('Vortex Bridge'),
-        // icon: 'BridgeIcon',
+        label: 'Vortex Bridge',
         href: `/bridge?outputChainId=${outputChainId}&inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`,
+        target: '_self',
+      },
+      {
+        label: 'Buy Crypto',
+        href: '/onramp',
         target: '_self',
       },
     ],
@@ -73,21 +63,19 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     icon: 'FarmIcon',
     items: [
       {
-        label: t('Asteroid Farm'),
-        //        icon: 'FarmIcon',
+        label: 'Asteroid Farm',
         href: '/farms',
         target: '_self',
       },
       {
-        label: t('Mech Staking'),
-        //        icon: 'PoolIcon',
+        label: 'Mech Staking',
         href: '/pools',
         target: '_self',
       },
     ],
   },
   {
-    label: t('Star Vaults'),
+    label: 'Star Vaults',
     icon: 'VaultIcon',
     href: '/vaults',
     target: '_self',
@@ -97,70 +85,80 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     icon: 'TrophyIcon',
     items: [
       {
-        label: t('Moonbet Casino'),
-        //        icon: 'TrophyIcon',
+        label: 'Moonbet Casino',
         href: 'https://play.hyperjump.app/',
         target: '_blank',
       },
       {
-        label: t('Galactic Lottery'),
-        //        icon: 'TrophyIcon',
+        label: 'Galactic Lottery',
         href: '/lottery',
         target: '_self',
       },
       {
-        label: t('HyperHeist'),
-        //        icon: 'HomeIcon',
-        href: 'https://hyperjump.fi/hyperheist/',
+        label: 'HyperHeist',
+        href: 'https://hyperjump.app/hyperheist/',
         target: '_blank',
       },
     ],
   },
 
   {
-    label: t('More'),
+    label: 'More',
     icon: 'MoreIcon',
     items: [
       {
-        label: t('Voting'),
-        //   icon: 'ProposalIcon',
+        label: 'Voting',
         href: networkConfig.votingLink,
         target: '_blank',
       },
       {
-        label: t('Analytics'),
-        //    icon: 'InfoIcon',
+        label: 'Analytics',
         href: `${networkConfig.infoLink}/overview`,
         target: '_blank',
       },
       {
-        label: t('GitHub'),
+        label: 'Migrations',
+        href: '/migrations',
+        target: '_self',
+      },
+      {
+        label: 'GitHub',
         href: 'https://github.com/HyperJump-DeFi',
         target: '_blank',
       },
       {
-        label: t('Docs'),
+        label: 'Docs',
         href: 'https://docs.hyperjump.app/',
         target: '_blank',
       },
       {
-        label: t('Contracts'),
+        label: 'Contracts',
         href: 'https://github.com/HyperJump-DeFi/HyperJump-Contracts',
         target: '_blank',
       },
       {
-        label: t('UnRekt'),
+        label: 'UnRekt',
         href: 'https://unrekt.hyperjump.app/',
         target: '_blank',
       },
       {
-        label: t('BSC V1 APP'),
+        label: 'BSC V1 APP',
         href: 'https://bscv1.hyperjump.app/',
         target: '_blank',
       },
       {
-        label: t('FTM V1 APP'),
+        label: 'FTM V1 APP',
         href: 'https://ftm-v1.hyperjump.app/',
+        target: '_blank',
+      },
+      {
+        label: 'BSC Farmv2.0 APP',
+        href: 'https://bscfarm2.hyperjump.app/',
+        target: '_blank',
+      },
+      {
+        label: 'FTM Farmv2.0 APP',
+        href: 'https://ftmfarmv2.hyperjump.app/',
         target: '_blank',
       },
     ],

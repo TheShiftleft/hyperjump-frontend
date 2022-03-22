@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { LotteryStatus, LotteryTicket } from 'config/constants/types'
@@ -6,7 +7,6 @@ import { getLotteryAddress } from 'utils/addressHelpers'
 import multicall from 'utils/multicall'
 import { LotteryRound, LotteryRoundUserTickets, LotteryResponse } from 'state/types'
 import { getLotteryContract, getFarmingTokenContract } from 'utils/contractHelpers'
-import { useMemo } from 'react'
 import { ethersToSerializedBigNumber } from 'utils/bigNumber'
 import { NUM_ROUNDS_TO_FETCH_FROM_NODES } from 'config/constants/lottery'
 
@@ -31,7 +31,9 @@ const processViewLotterySuccessResponse = (response, lotteryId: string): Lottery
   } = response
 
   const statusKey = Object.keys(LotteryStatus)[status]
-  const serializedFarmingTokenPerBracket = farmingTokenPerBracket.map((farmingTokenInBracket) => ethersToSerializedBigNumber(farmingTokenInBracket))
+  const serializedFarmingTokenPerBracket = farmingTokenPerBracket.map((farmingTokenInBracket) =>
+    ethersToSerializedBigNumber(farmingTokenInBracket),
+  )
   const serializedCountWinnersPerBracket = countWinnersPerBracket.map((winnersInBracket) =>
     ethersToSerializedBigNumber(winnersInBracket),
   )
@@ -76,7 +78,7 @@ const processViewLotteryErrorResponse = (lotteryId: string): LotteryResponse => 
 
 export const fetchLottery = async (lotteryId: string): Promise<LotteryResponse> => {
   try {
-   // console.log(lotteryContract.methods)
+    // console.log(lotteryContract.methods)
     const lotteryData = await lotteryContract.methods.viewLottery(lotteryId).call()
     return processViewLotterySuccessResponse(lotteryData, lotteryId)
   } catch (error) {
@@ -129,7 +131,7 @@ export const getRoundIdsArray = (currentLotteryId: string): string[] => {
   const currentIdAsInt = parseInt(currentLotteryId, 10)
   const roundIds = []
   for (let i = 0; i < NUM_ROUNDS_TO_FETCH_FROM_NODES; i++) {
-    if ((currentIdAsInt - i) < 0) break
+    if (currentIdAsInt - i < 0) break
     roundIds.push(currentIdAsInt - i)
   }
   return roundIds.map((roundId) => roundId.toString())

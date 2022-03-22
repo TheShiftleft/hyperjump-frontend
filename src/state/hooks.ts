@@ -73,7 +73,6 @@ export const usePollBlockNumber = () => {
 }
 
 // Farms
-
 export const useFarms = (): ChainFarmsState => {
   const farms = useSelector((state: State) => state.farms[state.application.chainId])
   return farms
@@ -150,6 +149,7 @@ export const useFetchPublicPoolsData = () => {
   const farmsConfig = useSelector((state: State) => state.farms[state.application.chainId].data)
 
   useEffect(() => {
+    let isMounted = true
     const fetchPoolsPublicData = async () => {
       try {
         const pids = farmsConfig.filter((farmConfig) => farmConfig.pid !== null).map((farmToFetch) => farmToFetch.pid)
@@ -158,7 +158,9 @@ export const useFetchPublicPoolsData = () => {
           dispatch(fetchFarmsPublicDataAsync(pids)),
           web3.eth.getBlockNumber(),
         ])
-        dispatch(fetchPoolsPublicDataAsync(blockNumber))
+        if (isMounted) {
+          dispatch(fetchPoolsPublicDataAsync(blockNumber))
+        }
       } catch (e) {
         console.error(e)
       }
@@ -166,15 +168,22 @@ export const useFetchPublicPoolsData = () => {
 
     fetchPoolsPublicData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, slowRefresh, web3])
+    return () => {
+      isMounted = false
+    }
+  }, [dispatch, slowRefresh, web3, farmsConfig])
 }
 
 export const usePools = (account): { pools: Pool[]; userDataLoaded: boolean } => {
   const { fastRefresh } = useRefresh()
   const dispatch = useAppDispatch()
   useEffect(() => {
-    if (account) {
+    let isMounted = true
+    if (account && isMounted) {
       dispatch(fetchPoolsUserDataAsync(account))
+    }
+    return () => {
+      isMounted = false
     }
   }, [account, dispatch, fastRefresh])
 

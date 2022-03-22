@@ -24,6 +24,14 @@ export enum PoolCategory {
   'AUTO' = 'Auto',
 }
 
+export interface PairConfig {
+  pid: number
+  lpSymbol: string
+  lpAddresses: Address
+  token: Token
+  quoteToken: Token
+}
+
 export interface FarmConfig {
   pid: number
   lpSymbol: string

@@ -6,7 +6,7 @@ const Attribution = () => (
       Github
     </a>{' '}
     |{' '}
-    <a href="https://swap.hyperjump.fi" rel="noopener noreferrer" target="_blank">
+    <a href="https://swap.hyperjump.app" rel="noopener noreferrer" target="_blank">
       HyperSwap
     </a>{' '}
     |{' '}

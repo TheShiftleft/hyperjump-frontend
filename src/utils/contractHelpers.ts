@@ -7,6 +7,7 @@ import web3NoAccount from 'utils/web3'
 import {
   getAddress,
   getMasterChefAddress,
+  getMasterChef20Address,
   getGovTokenAddress,
   getFarmingTokenAddress,
   getMulticallAddress,
@@ -15,9 +16,11 @@ import {
   getMechMigratorAddress,
   getOldFarmingTokenAddress,
   getXJumpAddress,
+  getXJumpAddress20,
   getMechAddress,
   getClaimLpRewardsMigratorAddress,
   getSynapseBridgeAddress,
+  getZapAddress,
   getL2BridgeZapAddress,
 } from 'utils/addressHelpers'
 
@@ -25,8 +28,8 @@ import {
 import bep20Abi from 'config/abi/erc20.json'
 import erc721Abi from 'config/abi/erc721.json'
 import lpTokenAbi from 'config/abi/lpToken.json'
-import {SYNAPSE_BRIDGE_ABI} from 'config/abi/synapseBridge'
-import {L2_BRIDGE_ZAP_ABI} from 'config/abi/L2BridgeZap'
+import { SYNAPSE_BRIDGE_ABI } from 'config/abi/synapseBridge'
+import { L2_BRIDGE_ZAP_ABI } from 'config/abi/L2BridgeZap'
 import { DEFAULT_GAS_PRICE } from 'config'
 import {
   getFarmingTokenABI,
@@ -40,9 +43,11 @@ import {
   getClaimLpRewardsMigratorABI,
   getMechMigratorABI,
   getXJumpABI,
-  getMechABI
+  getMechABI,
+  getZapABI,
 } from 'config/abi'
 import { Pool } from 'state/types'
+import BigNumber from 'bignumber.js'
 import getNetwork from './getNetwork'
 
 export const getAllowance = async (contract: Contract, owner: string, spender: string): Promise<string> => {
@@ -71,12 +76,15 @@ export const getDefaultGasPrice = () => {
 
 const getContract = (abi: any, address: string, web3?: Web3, account?: string) => {
   const _web3 = web3 ?? web3NoAccount
-
   return new _web3.eth.Contract(abi as unknown as AbiItem, address) // , {
 }
 
 export const getXJumpContract = (web3?: Web3) => {
   return getContract(getXJumpABI(), getXJumpAddress(), web3)
+}
+
+export const getXJumpContract20 = (web3?: Web3) => {
+  return getContract(getXJumpABI(), getXJumpAddress20(), web3)
 }
 
 export const getMigratorContract = (web3?: Web3) => {
@@ -106,6 +114,7 @@ export const getPoolContract = (pool: Pool, web3?: Web3) => {
 export const getFarmingTokenContract = (web3?: Web3) => {
   return getContract(getFarmingTokenABI(), getFarmingTokenAddress(), web3)
 }
+
 export const getOldFarmingTokenContract = (web3?: Web3) => {
   return getContract(getFarmingTokenABI(), getOldFarmingTokenAddress(), web3)
 }
@@ -114,6 +123,9 @@ export const getMechContract = (web3?: Web3) => {
 }
 export const getMasterchefContract = (web3?: Web3) => {
   return getContract(getMasterChefABI(), getMasterChefAddress(), web3)
+}
+export const getMasterchef20Contract = (web3?: Web3) => {
+  return getContract(getMasterChefABI(), getMasterChef20Address(), web3)
 }
 export const getGovTokenContract = (web3?: Web3) => {
   return getContract(getGovTokenABI(), getGovTokenAddress(), web3)
@@ -130,6 +142,11 @@ export const getLotteryContract = (web3?: Web3) => {
 export const getSynapseBridgeContract = (web3?: Web3) => {
   return getContract(SYNAPSE_BRIDGE_ABI.abi, getSynapseBridgeAddress(), web3)
 }
+
+export const getZapContract = (web3?: Web3) => {
+  return getContract(getZapABI(), getZapAddress(), web3)
+}
+
 export const getL2BridgeZapContract = (web3?: Web3) => {
   return getContract(L2_BRIDGE_ZAP_ABI.abi, getL2BridgeZapAddress(), web3)
 }
