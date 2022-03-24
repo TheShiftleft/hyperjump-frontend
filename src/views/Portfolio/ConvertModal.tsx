@@ -1,13 +1,20 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import getNetwork from 'utils/getNetwork'
 import { ApprovalState } from 'hooks/useApproveCallback'
-
+import { Currency, CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
 import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
 import { getRouterAddress } from 'utils/addressHelpers'
 import { BroomCallbackState, useBroomSweep } from 'hooks/useBroom'
+import { useBroomContract } from 'hooks/useContract'
+import { Field } from 'state/swap/actions'
+import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
+import { WrappedTokenInfo } from 'state/lists/hooks'
+import TradePrice from 'components/swap/TradePrice'
+import { useCurrency } from 'hooks/Tokens'
 
 interface ConvertModalProps {
   onDismiss?: () => void
@@ -91,11 +98,112 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
 
 const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens, amounts }) => {
   const { t } = useTranslation()
+  const { config } = getNetwork()
 
   const [step, setStep] = useState(1)
 
   const onSelectTokens = () => {
     setStep(1)
+  }
+  const [limitValidity, setLimitValidity] = useState({ valid: true, error: '' })
+  const [limitPrice, setLimitPrice] = useState('')
+  const [showInverted, setShowInverted] = useState<boolean>(false)
+
+  const defaultFromCurrency = {
+    decimals: selectTokens.token.tokenObj.decimals,
+    symbol: selectTokens.token.tokenObj.symbol,
+    name: selectTokens.token.tokenObj.symbol,
+    chainId: selectTokens.token.tokenObj.chainId,
+    address: selectTokens.token.tokenObj.address,
+  }
+
+  const defaultToCurrency = useMemo(() => {
+    return {
+      decimals: config.farmingToken.decimals,
+      symbol: config.farmingToken.symbol,
+      name: 'HyperJump',
+      chainId: config.baseCurrency.symbol === 'FTM' ? 250 : 56,
+      address:
+        config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
+    }
+  }, [
+    config.farmingToken.decimals,
+    config.farmingToken.symbol,
+    config.baseCurrency.symbol,
+    config.farmingToken.address,
+  ])
+
+  const ToCurrency = new Token(
+    config.baseCurrency.symbol === 'FTM' ? 250 : 56,
+    config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
+    config.farmingToken.decimals,
+    config.farmingToken.symbol,
+    'HyperJump',
+  )
+  const DefaultToCurrency = ToCurrency
+
+  const { independentField, typedValue, recipient } = useSwapState()
+
+  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+
+  currencies[Field.INPUT] = new WrappedTokenInfo(defaultFromCurrency, [])
+  currencies[Field.OUTPUT] = new WrappedTokenInfo(defaultToCurrency, [])
+
+  const FromCurrency = selectTokens.token.tokenObj
+  const inputvalue = selectTokens.token.amount.toString()
+
+  // console.log(DefaultToCurrency, selectTokens.token.tokenObj)
+
+  const handleInputSelect = useCallback(() => {
+    onCurrencySelection(Field.INPUT, FromCurrency)
+  }, [onCurrencySelection, FromCurrency])
+
+  useEffect(() => {
+    handleInputSelect()
+  }, [handleInputSelect, FromCurrency])
+
+  const handleOutputSelect = useCallback(() => {
+    onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
+  }, [onCurrencySelection, DefaultToCurrency])
+
+  useEffect(() => {
+    handleOutputSelect()
+  }, [handleOutputSelect, DefaultToCurrency])
+
+  const handleTypeInput = useCallback(() => {
+    onUserInput(Field.INPUT, inputvalue)
+  }, [onUserInput, inputvalue])
+
+  useEffect(() => {
+    handleTypeInput()
+  }, [handleTypeInput, inputvalue])
+
+  const {
+    wrapType,
+    execute: onWrap,
+    inputError: wrapInputError,
+  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
+
+  const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
+  const trade = showWrap ? undefined : v2Trade
+
+  const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
+
+  const parsedAmounts = showWrap
+    ? {
+        [Field.INPUT]: parsedAmount,
+        [Field.OUTPUT]: parsedAmount,
+      }
+    : {
+        [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
+        [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+      }
+  const formattedAmounts = {
+    [independentField]: typedValue,
+    [dependentField]: showWrap
+      ? parsedAmounts[independentField]?.toExact() ?? ''
+      : parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   }
 
   const onApprove = () => {
@@ -104,10 +212,14 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     }
   }
 
-  // Lagyan mo dito bro ng params sa useBroomSweep
-  const { state: broomState, callback: broomCallback } = useBroomSweep(selectTokens.token.amount, 
+  const [count, setCount] = useState(0)
+
+  const { state: broomState, callback: broomCallback } = useBroomSweep(
+    selectTokens.token.amount,
     selectTokens.token.tokenObj.address,
   )
+
+  const totalestimateJump = Number(formattedAmounts[Field.INPUT]) * Number(trade?.executionPrice.toSignificant(6))
 
   const handleBroomCallback = useCallback(() => {
     if (broomState !== BroomCallbackState.INVALID) {
@@ -124,7 +236,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   return (
     <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
       {step === 1 && (
-        <Box>
+        <>
           <Text fontSize="18px" marginBottom="30px">
             To convert small balances, you will need to sign <br /> wallet transaction.
           </Text>
@@ -132,10 +244,14 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
           <Box>
             <StyledRow>
               <CellInner>
-                <Text>Approve ETH</Text>
+                <Text> {selectTokens.approval !== ApprovalState.APPROVED ? 'Approve ETH' : 'Approved ETH'}</Text>
               </CellInner>
 
-              <CellLayout label="0.0002 BNB">≈ $0.10</CellLayout>
+              <CellLayout
+                label={new Intl.NumberFormat('en-US', { minimumFractionDigits: 6 }).format(selectedtoken.amount)}
+              >
+                ≈ {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(selectedtoken.volume)}
+              </CellLayout>
             </StyledRow>
 
             <StyledRow>
@@ -143,8 +259,16 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 <Text>Estimated conversion cost</Text>
               </CellInner>
 
-              <CellLayout label="0.0038 BNB">≈ $1.77</CellLayout>
+              <CellLayout>≈ $0.001</CellLayout>
             </StyledRow>
+            <TradePrice
+              price={trade?.executionPrice}
+              limit={limitPrice}
+              showInverted={showInverted}
+              setShowInverted={setShowInverted}
+              setLimitPrice={setLimitPrice}
+              setLimitValidity={setLimitValidity}
+            />
           </Box>
 
           <Box>
@@ -157,7 +281,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 <Text>You will get approximately</Text>
               </CellInner>
 
-              <CellLayout label="10.87 JUMP">≈ $1.40</CellLayout>
+              <CellLayout label="10.87 JUMP">≈ {new Intl.NumberFormat('en-US').format(totalestimateJump)}</CellLayout>
             </StyledRow>
 
             <StyledRow>
@@ -194,7 +318,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
               </Button>
             )}
           </ButtonBox>
-        </Box>
+        </>
       )}
     </Modal>
   )
