@@ -145,39 +145,34 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const { independentField, typedValue, recipient } = useSwapState()
 
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
+
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
 
-  currencies[Field.INPUT] = new WrappedTokenInfo(defaultFromCurrency, [])
-  currencies[Field.OUTPUT] = new WrappedTokenInfo(defaultToCurrency, [])
+  // currencies[Field.INPUT] = new WrappedTokenInfo(defaultFromCurrency, [])
+  // currencies[Field.OUTPUT] = new WrappedTokenInfo(defaultToCurrency, [])
 
   const FromCurrency = selectTokens.token.tokenObj
   const inputvalue = selectTokens.token.amount.toString()
 
   // console.log(DefaultToCurrency, selectTokens.token.tokenObj)
 
-  const handleInputSelect = useCallback(() => {
-    onCurrencySelection(Field.INPUT, FromCurrency)
-  }, [onCurrencySelection, FromCurrency])
+  // const handleInputSelect = useCallback(() => {
+  //   onCurrencySelection(Field.INPUT, FromCurrency)
+  // }, [onCurrencySelection, FromCurrency])
 
-  useEffect(() => {
-    handleInputSelect()
-  }, [handleInputSelect, FromCurrency])
+  // const handleOutputSelect = useCallback(() => {
+  //   onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
+  // }, [onCurrencySelection, DefaultToCurrency])
 
-  const handleOutputSelect = useCallback(() => {
-    onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
-  }, [onCurrencySelection, DefaultToCurrency])
+  // const handleTypeInput = useCallback(() => {
+  //   onUserInput(Field.INPUT, inputvalue)
+  // }, [onUserInput, inputvalue])
 
-  useEffect(() => {
-    handleOutputSelect()
-  }, [handleOutputSelect, DefaultToCurrency])
-
-  const handleTypeInput = useCallback(() => {
-    onUserInput(Field.INPUT, inputvalue)
-  }, [onUserInput, inputvalue])
-
-  useEffect(() => {
-    handleTypeInput()
-  }, [handleTypeInput, inputvalue])
+  // useEffect(() => {
+  //   handleTypeInput()
+  //   handleInputSelect()
+  //   handleOutputSelect()
+  // }, [handleTypeInput, handleInputSelect, handleOutputSelect])
 
   const {
     wrapType,

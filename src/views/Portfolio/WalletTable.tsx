@@ -220,6 +220,7 @@ const WalletTable: React.FC = () => {
           </NetWorthHeading>
           <Text color="primary">Net Worth</Text>
         </NetWorthBox>
+        {/* To change to subheader */}
         <WalletTableHeading>
           <Heading color="primary" ml="5px" mr="5px">
             DeFi
