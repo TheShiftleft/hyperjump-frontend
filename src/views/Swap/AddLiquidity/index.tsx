@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, currencyEquals, Network, TokenAmount, WRAPPED } from '@hyperjump-defi/sdk'
 import { Button, CardBody, AddIcon, Text as UIKitText } from 'uikit'
-import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, useHistory } from 'react-router-dom'
 import { LightCard } from 'components/Card'
 import { AutoColumn, ColumnCenter } from 'components/Column'
 import TransactionConfirmationModal, { ConfirmationModalContent } from 'components/TransactionConfirmationModal'
@@ -44,14 +44,14 @@ const routerMethods: Record<Network, string> = {
   [Network.FANTOM]: 'addLiquidityFTM',
 }
 
-export default function AddLiquidity({
+const AddLiquidity = ({
   match: {
     params: { currencyIdA, currencyIdB },
-  },
-  history,
-}: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
+  }
+}) => {
   const { account, library } = useWeb3React()
   const { config, chainId } = getNetwork()
+  const history = useHistory()
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
   const TranslateString = useI18n()
@@ -459,3 +459,5 @@ export default function AddLiquidity({
     </Container>
   )
 }
+
+export default AddLiquidity

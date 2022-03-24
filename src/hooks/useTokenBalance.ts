@@ -111,9 +111,12 @@ export const useBurnedBalance = (tokenAddress: string) => {
 
   useEffect(() => {
     const fetchBalance = async () => {
-      const contract = getFarmingTokenContract(web3)
-      const res = await contract.methods[totalBurnedMethod[config.network]]().call()
-      setBalance(new BigNumber(res))
+      if(config.network === Network.FTM){
+        const contract = getFarmingTokenContract(web3)
+        const res = await contract.methods[totalBurnedMethod[config.network]]().call()
+        setBalance(new BigNumber(res))
+      }
+      setBalance(BIG_ZERO)
     }
 
     fetchBalance()
