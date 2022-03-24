@@ -23,7 +23,7 @@ const StyledGovTokenStats = styled(Card)`
 
   &::after {
     content: '';
-    background-image: url('/images/tokens/HYPR.png');
+    background-image: url('/images/tokens/0x03d6bd3d48f956d783456695698c407a46ecd54d.png');
     background-repeat: no-repeat;
     top: 0;
     left: 0;

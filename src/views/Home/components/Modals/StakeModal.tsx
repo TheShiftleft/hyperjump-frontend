@@ -112,7 +112,7 @@ const StakeModal: React.FC<StakeModalProps> = ({
   }
 
   const chain_id = config.id
-  const stakingTokenImg = stakingToken.address[chain_id]
+  const stakingTokenImg = stakingToken?.address[chain_id]
 
   return (
     <Modal title={isRemovingStake ? t('Unstake') : t('Stake in Pool')} onDismiss={onDismiss}>

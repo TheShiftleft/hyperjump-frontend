@@ -46,8 +46,8 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, farmImage, tok
   const searchPrimaryTokenIconName = filterTokens(Object.values(allTokens), primaryImg)
   const searchSecondTokenIconName = filterTokens(Object.values(allTokens), secondaryImg)
 
-  const primaryImgName = searchPrimaryTokenIconName[0].address
-  const secondaryImgName = searchSecondTokenIconName[0].address  
+  const primaryImgName = searchPrimaryTokenIconName[0]?.address
+  const secondaryImgName = searchSecondTokenIconName[0]?.address  
 
   return (
     <Wrapper flexDirection="column" justifyContent="space-between" alignItems="center" mb="12px">

@@ -2,6 +2,10 @@ import { Currency, Token } from '@hyperjump-defi/sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import getNetwork from 'utils/getNetwork'
+
+import { useAllTokens } from 'hooks/Tokens'
+import { filterTokens } from '../../views/Farms/components/filtering'
+
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
@@ -34,6 +38,11 @@ export default function CurrencyLogo({
   const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
 
   const { config } = getNetwork()
+
+  const allTokens = useAllTokens()
+  const searchTokenIconName = filterTokens(Object.values(allTokens), config.networkToken?.symbol.toLowerCase())
+  const netWorkTokenIconImg = searchTokenIconName[0]?.address
+
   const srcs: string[] = useMemo(() => {
     if (currency === config.baseCurrency) return []
 
@@ -53,7 +62,7 @@ export default function CurrencyLogo({
 
   if (currency === config.baseCurrency) {
     return (
-      <StyledBnbLogo src={`/images/tokens/${config.networkToken.symbol.toLowerCase()}.png`} size={size} style={style} />
+      <StyledBnbLogo src={`/images/tokens/${netWorkTokenIconImg}.png`} size={size} style={style} />
     )
   }
 
