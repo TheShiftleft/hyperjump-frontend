@@ -45,13 +45,13 @@ const CellInner = styled.div`
   padding-right: 8px;
 `
 
-const StyledRow = styled.div`
+const StyledRow = styled.td`
   display: flex;
   justify-content: space-between;
   cursor: pointer;
 `
 
-const StyledRowContainer = styled.div`
+const StyledRowContainer = styled.tr`
   border-radius: ${({ theme }) => theme.radii.card};
   border: 2px solid ${({ theme }) => theme.colors.primary};
   background-color: rgba(13, 29, 54, 0.4);

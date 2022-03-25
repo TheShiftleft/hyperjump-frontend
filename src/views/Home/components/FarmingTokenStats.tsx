@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { ChainId } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
@@ -77,10 +77,14 @@ const FarmingTokenStats = () => {
         </Flex>
 
         <Text color="primary">Market Cap</Text>
-        <Heading mb="10px">{farmingTokenMarketCap && <CardValue value={farmingTokenMarketCap} />}</Heading>
+        <Heading mb="10px">
+          {farmingTokenMarketCap ? <CardValue value={farmingTokenMarketCap} /> : <CardValue value={0} />}
+        </Heading>
 
         <Text color="primary">Total Supply</Text>
-        <Heading mb="10px">{farmingTokenTotalSupply && <CardValue value={farmingTokenTotalSupply} />}</Heading>
+        <Heading mb="10px">
+          {farmingTokenTotalSupply ? <CardValue value={farmingTokenTotalSupply} /> :  <CardValue value={0} />}
+        </Heading>
         <Text color="primary">Total Circulating Supply</Text>
         <Heading mb="10px">
           {farmingTokenTotalCirculatingSupply && <CardValue value={farmingTokenTotalCirculatingSupply} />}({' '}
@@ -115,7 +119,7 @@ const FarmingTokenStats = () => {
         <Text color="primary">{config.name} Emission Rate</Text>
         <Flex justifyContent="space-between">
           <Heading mb="10px">
-            <CardValue decimals={3} value={localEmissionRate} postfix="/ SECOND" />
+            <CardValue decimals={3} value={Number(localEmissionRate)} postfix="/ SECOND" />
           </Heading>
           <MetamaskButton
             onClick={() =>

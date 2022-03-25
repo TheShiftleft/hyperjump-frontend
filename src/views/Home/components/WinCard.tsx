@@ -97,7 +97,7 @@ const WinCard = () => {
                   Hyper Pot this Round
                 </Text>
                 <Heading scale="lg">
-                  <Heading scale="lg">Next lottery starting soon...</Heading>
+                  Next lottery starting soon...
                 </Heading>
               </Flex>
 

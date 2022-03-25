@@ -3,11 +3,12 @@ import styled from 'styled-components'
 import { Image, Checkbox, Heading, Button, useModal } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
-import { JSBI, TokenAmount } from '@hyperjump-defi/sdk'
+import { JSBI, TokenAmount, Token } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
-
+import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { getBroomAddress } from 'utils/addressHelpers'
-
+import getNetwork from 'utils/getNetwork'
+import { Field } from 'state/swap/actions'
 import ConvertModal from './ConvertModal'
 
 export interface TokenRowProps {
@@ -116,6 +117,7 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
 const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { t } = useTranslation()
   const [isSelected, setIsSelected] = useState(false)
+  const { config } = getNetwork()
 
   const broomAddress = getBroomAddress()
   // console.log(broomAddress)
@@ -126,6 +128,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
     broomAddress,
   )
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
 
   const selectedToken = { token, approval, isSelected: true, approvalCallback: approveCallback }
   // const [selectedTokens, setSelectedTokens] = useState([])
@@ -141,11 +144,22 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   //   sts.splice(index, 1)
   //   setSelectedTokens(sts)
   // }
+  const ToCurrency = new Token(
+    config.baseCurrency.symbol === 'FTM' ? 250 : 56,
+    config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
+    config.farmingToken.decimals,
+    config.farmingToken.symbol,
+    'HyperJump',
+  )
+  const DefaultToCurrency = ToCurrency
 
   const [onPresentConvertModal] = useModal(<ConvertModal selectedtoken={token} selectTokens={selectedToken} />)
 
   const onConvert = () => {
     onPresentConvertModal()
+    onCurrencySelection(Field.INPUT, selectedToken.token.tokenObj)
+    onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
+    onUserInput(Field.INPUT, selectedToken.token.amount.toString())
   }
 
   // const handleRenderRow = () => {
