@@ -209,7 +209,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     if (broomState !== BroomCallbackState.INVALID) {
       broomCallback()
         .then((result) => {
-          console.log('result', result)
+          console.info('result', result)
         })
         .catch((e) => {
           console.error(e)
