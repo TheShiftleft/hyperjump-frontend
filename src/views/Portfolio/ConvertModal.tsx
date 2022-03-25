@@ -222,7 +222,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
   const totalestimateJump = Number(formattedAmounts[Field.INPUT]) * Number(trade?.executionPrice.toSignificant(6))
   const estimateconvcost = realizedLPFee
-    ? Number(realizedLPFee.toSignificant(4)) * Number(selectedtoken.price.toFixed(2))
+    ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price.toFixed(2))
     : 0
 
   const handleBroomCallback = useCallback(() => {
@@ -254,7 +254,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
               <CellLayout
                 label={new Intl.NumberFormat('en-US', { minimumFractionDigits: 6 }).format(selectedtoken.amount)}
               >
-                ≈ {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(selectedtoken.volume)}
+                ≈{' '}
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                }).format(selectedtoken.volume)}
               </CellLayout>
             </StyledRow>
 
@@ -263,9 +267,16 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 <Text>Estimated conversion cost</Text>
               </CellInner>
               <CellLayout
-                label={realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
+                label={realizedLPFee ? `${realizedLPFee.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
               >
-                ≈ ${realizedLPFee ? estimateconvcost : 0}
+                ≈{' '}
+                {realizedLPFee
+                  ? new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                      minimumFractionDigits: 10,
+                    }).format(estimateconvcost)
+                  : 0}
               </CellLayout>
             </StyledRow>
             <TradePrice
@@ -291,7 +302,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
               <CellLayout
                 label={
                   selectedCurrencyBalance
-                    ? `${selectedCurrencyBalance.toSignificant(4)}${selectedCurrencyBalance.currency.symbol}`
+                    ? `${selectedCurrencyBalance.toSignificant(6)}${selectedCurrencyBalance.currency.symbol}`
                     : '-'
                 }
               >
