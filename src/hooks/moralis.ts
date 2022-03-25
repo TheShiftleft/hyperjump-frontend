@@ -48,18 +48,7 @@ export const useGetTokensList = (account) => {
             tokens.push(newToken)
           }
         })
-        // const nativeBalance = await Moralis.Web3API.account.getNativeBalance({chain: 'bsc', address: account})
-        // const nativePrice = await Moralis.Web3API.token.getTokenPrice({chain: network});
-        // tokens.push({
-        //   name: network === 'bsc' ? 'BNB' : 'FTM',
-        //   symbol: network === 'bsc' ? 'BNB' : 'FTM',
-        //   balance: nativeBalance.balance,
-        //   token_address: null,
-        //   decimals: 18,
-        //   amount: parseInt(nativeBalance.balance) / 10 ** 18,
-        //   volume:
-        // })
-
+       
         setData(tokens)
       } catch (error) {
         console.error('Unable to fetch data:', error)

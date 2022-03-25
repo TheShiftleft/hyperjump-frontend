@@ -145,25 +145,8 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label, children }) => {
 }
 
 const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
-  //   const { t } = useTranslation()
-  //   const [isSelected, setIsSelected] = useState(false)
-
-  //   const broomAddress = getBroomAddress()
 
   const { token, totalvolume } = props
-
-  //   const [approval, approveCallback] = useApproveCallback(
-  //     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
-  //     broomAddress,
-  //   )
-
-  //   useEffect(() => {
-  //     if (isModal) {
-  //       selectTokens(token, isSelected, approval, approveCallback)
-  //     }
-  //   }, [isModal, isSelected, selectTokens, token, approval, approveCallback])
-
-  //   const handleRenderRow = () => {
   const assetpercentage = (token.volume / totalvolume) * 100
 
   return (
@@ -184,9 +167,7 @@ const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
       </ProgressBarRow>
     </>
   )
-  //   }
 
-  //   return <StyledRowContainer>{handleRenderRow()}</StyledRowContainer>
 }
 
 export default AssetRow

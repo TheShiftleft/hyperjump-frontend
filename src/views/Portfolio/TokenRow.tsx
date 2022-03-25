@@ -131,19 +131,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
 
   const selectedToken = { token, approval, isSelected: true, approvalCallback: approveCallback }
-  // const [selectedTokens, setSelectedTokens] = useState([])
-
-  // const sts = selectedTokens
-  // const index = sts.findIndex((st) => st.tokenObj.address === token.tokenObj.address)
-  // if (isSelected) {
-  //   if (index === -1) {
-  //     sts.push({ ...token, approval, approveCallback })
-  //     setSelectedTokens(sts)
-  //   }
-  // } else if (index > -1) {
-  //   sts.splice(index, 1)
-  //   setSelectedTokens(sts)
-  // }
+  
   const ToCurrency = new Token(
     config.baseCurrency.symbol === 'FTM' ? 250 : 56,
     config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
@@ -162,7 +150,6 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     onUserInput(Field.INPUT, selectedToken.token.amount.toString())
   }
 
-  // const handleRenderRow = () => {
   return (
     <>
       <StyledRow>
@@ -188,9 +175,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
       )}
     </>
   )
-  // }
-
-  // return <StyledRowContainer>{handleRenderRow()}</StyledRowContainer>
+ 
 }
 
 export default TokenRow

@@ -157,26 +157,6 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
   const inputvalue = selectTokens.token.amount.toString()
 
-  // console.log(DefaultToCurrency, selectTokens.token.tokenObj)
-
-  // const handleInputSelect = useCallback(() => {
-  //   onCurrencySelection(Field.INPUT, FromCurrency)
-  // }, [onCurrencySelection, FromCurrency])
-
-  // const handleOutputSelect = useCallback(() => {
-  //   onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
-  // }, [onCurrencySelection, DefaultToCurrency])
-
-  // const handleTypeInput = useCallback(() => {
-  //   onUserInput(Field.INPUT, inputvalue)
-  // }, [onUserInput, inputvalue])
-
-  // useEffect(() => {
-  //   handleTypeInput()
-  //   handleInputSelect()
-  //   handleOutputSelect()
-  // }, [handleTypeInput, handleInputSelect, handleOutputSelect])
-
   const {
     wrapType,
     execute: onWrap,
@@ -188,7 +168,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
   const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies[Field.OUTPUT] ?? undefined)
-  // console.log(selectedCurrencyBalance)
+  
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const parsedAmounts = showWrap
