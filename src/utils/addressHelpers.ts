@@ -6,14 +6,18 @@ import tokens from 'config/constants/tokens'
 import { Address } from 'config/constants/types'
 import getNetwork from './getNetwork'
 
-export const getLotteryAddress = () => {
-  const { config } = getNetwork()
-  return getAddress(addresses.lottery)
-}
 
 export const getAddress = (address: Address): string => {
   const { chainId } = getNetwork()
   return address[chainId] ? address[chainId] : address[ChainId.BSC_MAINNET]
+}
+
+export const getActionInitiatorsAddress = () => {
+  return getAddress(addresses.actionInitiators)
+}
+
+export const getLotteryAddress = () => {
+  return getAddress(addresses.lottery)
 }
 
 export const getZapTokens = () => {

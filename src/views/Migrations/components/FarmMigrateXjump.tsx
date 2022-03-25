@@ -4,7 +4,9 @@ import { Button, Heading, Text } from 'uikit'
 import { BigNumber } from 'bignumber.js'
 import getNetwork from 'utils/getNetwork'
 import { DEFAULT_TOKEN_DECIMAL } from 'config'
+import useGeneralMigratorAllowance from 'hooks/useGeneralMigratorAllowance'
 import { useFarmingTokenContract } from 'hooks/useContract'
+import useToast from 'hooks/useToast'
 import { useSousUnstake20 } from 'hooks/useUnstake'
 import { useSousApprove } from 'hooks/useApprove'
 import { useSousStake } from 'hooks/useStake'
@@ -13,42 +15,55 @@ const FarmMigratorActionXjump = ({ pid, stakedBalance }) => {
   const [pendingTx, setPendingTx] = useState<boolean>(false)
   const [migrationStatusText, setMigrationStatusText] = useState<string>('Not Migrated')
   const [poolIsMigrated, setPoolIsMigrated] = useState<boolean>(false)
-  const { config } = getNetwork()
+  const { config, chainId } = getNetwork()
 
   const farmingTokenContract = useFarmingTokenContract()
-  const xJumpPool21 = config.wrappedFarmingTokenPid // current pids, both should be 0 in farm 2.1.... NOT
+  const xJumpPool21 = config.wrappedFarmingTokenPid // current pids
+  const xJumpAddress = config.wrappedFarmingToken.address[chainId]
+
+  const allowance = useGeneralMigratorAllowance(farmingTokenContract, xJumpAddress)
+  const needsApproval = !allowance?.gt(stakedBalance)
 
   const { onSousUnstake } = useSousUnstake20(pid, false)
   const { handleApprove: onApprove } = useSousApprove(farmingTokenContract, config.wrappedFarmingTokenPid, 'JUMP')
   const { onStake } = useSousStake(xJumpPool21, false)
+  const { toastSuccess, toastError } = useToast()
 
   //  useUnstake is passed decimal numbers from the farm so we need to convert first
   const formattedAmount = new BigNumber(stakedBalance).dividedBy(DEFAULT_TOKEN_DECIMAL).toString()
 
   const handleUnstake = async (amount: string) => {
     try {
-      await onSousUnstake(amount, 18)
-      setMigrationStatusText('Unstaked.')
+      await onSousUnstake(amount, 18) // 18 is decimals
+      setMigrationStatusText('Unstaked from origin pool.')
+      toastSuccess(`Unstake`, 'Withdrew from origin farm.')
     } catch (e) {
       console.error(e)
+      toastError(`Unstake`, 'ERROR!')
     }
   }
 
   const handleApprove = async () => {
-    try {
-      await onApprove()
-      setMigrationStatusText('Approved pool.')
-    } catch (e) {
-      console.error(e)
+    if (needsApproval) {
+      try {
+        await onApprove()
+        setMigrationStatusText('Approved destination pool.')
+        toastSuccess(`Approve`, 'Destination pool is approved!')
+      } catch (e) {
+        console.error(e)
+        toastError(`Approve`, 'ERROR!')
+      }
     }
   }
 
   const handleStake = async (amount: string) => {
     try {
-      await onStake(amount, 18)
-      setMigrationStatusText('Deposited.')
+      await onStake(amount, 18) // 18 decimals
+      setMigrationStatusText('Deposited in destination pool.')
+      toastSuccess(`Deposit`, 'Deposited in destination farm!')
     } catch (e) {
       console.error(e)
+      toastError(`Stake`, 'ERROR!')
     }
   }
 

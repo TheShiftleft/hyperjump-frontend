@@ -5,7 +5,7 @@ import { PoolCategory, PoolConfig } from './types'
 const pools: Record<Network, PoolConfig[]> = {
   [Network.BSC]: [
     {
-      sousId: 11,
+      sousId: 14,
       stakingToken: tokens.jump,
       earningToken: tokens.jump,
       contractAddress: {

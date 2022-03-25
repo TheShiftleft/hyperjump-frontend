@@ -11,7 +11,7 @@ const networks = [
     farmingTokenUsdFarmPid: 1,
     farmingTokenNetworkTokenFarmPid: 1,
     govTokenNetworkTokenFarmPid: 2,
-    wrappedFarmingTokenPid: 11,
+    wrappedFarmingTokenPid: 14,
     coreFarms: [1, 2, 3],
     farmingToken: tokens.jump,
     govToken: tokens.hypr,

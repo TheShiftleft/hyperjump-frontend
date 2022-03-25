@@ -29,7 +29,7 @@ const StyledLogo = styled(Logo)<{ size: string }>`
   height: ${({ size }) => size};
 `
 
-const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
+const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
 
 const Zap = () => {
   const { config } = getNetwork()
@@ -37,7 +37,8 @@ const Zap = () => {
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
-  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } = useDerivedZapInfo()
+  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } =
+    useDerivedZapInfo()
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
     [Field.INPUT]: parsedAmount,
@@ -149,8 +150,12 @@ const Zap = () => {
   }, [approval, approvalSubmitted])
 
   useEffect(() => {
-    if (approval === ApprovalState.PENDING) {
+    let isMounted = true
+    if (approval === ApprovalState.PENDING && isMounted) {
       setApprovalSubmitted(true)
+    }
+    return () => {
+      isMounted = false
     }
   }, [approval, approvalSubmitted])
 

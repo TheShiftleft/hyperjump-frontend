@@ -147,6 +147,15 @@ const farms: Record<Network, FarmConfig[]> = {
   ],
   [Network.FANTOM]: [
     {
+      pid: 0,
+      lpSymbol: 'xJUMP',
+      lpAddresses: {
+        250: '0xfD44AE75b934335262654600006E93594129CAA9',
+      },
+      token: tokens.jump,
+      quoteToken: tokens.wftm,
+    },
+    {
       pid: 1,
       lpSymbol: 'JUMP-FTM',
       lpAddresses: {

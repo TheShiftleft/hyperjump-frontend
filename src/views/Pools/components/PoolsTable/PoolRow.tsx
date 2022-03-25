@@ -45,7 +45,6 @@ const PoolRow: React.FC<PoolRowProps> = ({ pool, account, userDataLoaded }) => {
   const toggleExpanded = () => {
     setExpanded((prev) => !prev)
   }
-
   return (
     <StyledRowContainer>
       <StyledRow role="row" onClick={toggleExpanded}>

@@ -18,6 +18,7 @@ import {
   getClaimLpRewardsMigratorContract,
   getSynapseBridgeContract,
   getL2BridgeZapContract,
+  getActionInitiatorContract,
 } from 'utils/contractHelpers'
 import { getLotteryAddress, getSynapseBridgeAddress, getZapAddress } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
@@ -205,4 +206,9 @@ export const useXJump = () => {
 export const useXJump20 = () => {
   const web3 = useWeb3()
   return useMemo(() => getXJumpContract20(web3), [web3])
+}
+
+export const useActionInitiators = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getActionInitiatorContract(web3), [web3])
 }

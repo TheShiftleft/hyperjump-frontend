@@ -122,14 +122,11 @@ const Pools: React.FC = () => {
 
   const cardLayout = (
     <CardLayout>
-      {poolsToShow().map((pool) =>
-        pool.sousId === 0 ? null : ( // <MechPoolCard key={pool.sousId} pool={pool} account={account} />
-          <PoolCard key={pool.sousId} pool={pool} account={account} />
-        ),
-      )}
+      {poolsToShow().map((pool) => (
+        <PoolCard key={pool.sousId} pool={pool} account={account} />
+      ))}
     </CardLayout>
   )
-
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
 
   return (

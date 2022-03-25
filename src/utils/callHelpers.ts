@@ -13,6 +13,19 @@ export const approve = async (lpContract, masterChefContract, account) => {
     .send({ from: account })
 }
 
+export const isWithdrawInitiator = async (actionInitiatorsContract, withdrawInitiator, account) => {
+  return actionInitiatorsContract.methods.withdrawInitiator(withdrawInitiator, account).call()
+}
+
+export const setWithdrawInitiator = async (actionInitiatorsContract, withdrawInitiator, account) => {
+  return actionInitiatorsContract.methods
+    .registerWithdrawInitiator(withdrawInitiator, true)
+    .send({ from: account })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash
+    })
+}
+
 export const getFarm20MigrationPoolInfo = async (pid: number): Promise<BigNumber[]> => {
   const contract = getMasterchef20Contract()
   try {
@@ -38,15 +51,6 @@ export const getMasterChef20UserInfos = async (poolLength: number, owner: string
 }
 
 export const stake = async (masterChefContract, pid, amount, account) => {
-  /*  if (pid === 0) {
-    return masterChefContract.methods
-      .deposit(0, new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
-      .send({ from: account })
-      .on('transactionHash', (tx) => {
-        return tx.transactionHash
-      })
-  } */
-
   return masterChefContract.methods
     .deposit(pid, new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
     .send({ from: account })
@@ -76,16 +80,7 @@ export const sousStakeBnb = async (sousChefContract, amount, account) => {
     })
 }
 
-// no longer in use
-/* 
-const leaveStakingMethod: Record<Network, string> = {
-  [Network.BSC]: 'withdraw',
-  [Network.BSC_TESTNET]: 'withdraw',
-  [Network.FANTOM]: 'withdraw',
-} */
-
 export const unstake = async (masterChefContract, pid, amount, account) => {
-  // mech: removed the pid 0 check as we dont use it.
   return masterChefContract.methods
     .withdraw(pid, new BigNumber(amount).times(DEFAULT_TOKEN_DECIMAL).toString())
     .send({ from: account })
@@ -94,7 +89,7 @@ export const unstake = async (masterChefContract, pid, amount, account) => {
     })
 }
 
-export const sousUnstake = async (sousChefContract, amount, decimals, account) => {
+export const sousUnstake = async (sousChefContract, amount, decimals = 18, account) => {
   return sousChefContract.methods
     .withdraw(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString())
     .send({ from: account })
@@ -113,15 +108,6 @@ export const sousEmergencyUnstake = async (sousChefContract, account) => {
 }
 
 export const harvest = async (masterChefContract, pid, account) => {
-  /*   if (pid === 0) {
-    return masterChefContract.methods
-      .withdraw('0', '0')
-      .send({ from: account })
-      .on('transactionHash', (tx) => {
-        return tx.transactionHash
-      })
-  } */
-
   return masterChefContract.methods
     .deposit(pid, '0')
     .send({ from: account })

@@ -84,7 +84,7 @@ const FarmV20Migrator = () => {
             </Heading>
           </Flex>
           <Flex flexDirection="column" alignItems="flex-end">
-            {account && canMigrate && (
+            {account && (
               <MigrateButton
                 onClick={async () => {
                   setGotPoolsInfo(false)

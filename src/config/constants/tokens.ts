@@ -36,7 +36,7 @@ const tokens: Record<string, Token> = {
   xjump: {
     symbol: 'xJUMP',
     address: {
-      56: '0x46e34440cEd0b55f38B662C7F8B142ac0c7d2D4d', // for farm 2.1
+      56: '0x3876720eF21Cd7036B8A247a695cb82D5319e588', // for farm 2.1
       250: '0xfD44AE75b934335262654600006E93594129CAA9', // 2.1
     },
     decimals: 18,

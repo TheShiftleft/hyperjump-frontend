@@ -32,30 +32,22 @@ const useTokenBalance = (tokenAddress: string) => {
   const { fastRefresh } = useRefresh()
 
   useEffect(() => {
-    let isMounted = true
     const fetchBalance = async () => {
       const contract = getBep20Contract(tokenAddress, web3)
       try {
         const res = await contract.methods.balanceOf(account).call()
-        if (isMounted) {
-          setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
-        }
+        setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
       } catch (e) {
         console.error(e)
-        if (isMounted) {
-          setBalanceState((prev) => ({
-            ...prev,
-            fetchStatus: FAILED,
-          }))
-        }
+        setBalanceState((prev) => ({
+          ...prev,
+          fetchStatus: FAILED,
+        }))
       }
     }
 
     if (account) {
       fetchBalance()
-    }
-    return () => {
-      isMounted = false
     }
   }, [account, tokenAddress, web3, fastRefresh, SUCCESS, FAILED])
 
@@ -110,12 +102,6 @@ export const useGovTokenTotalSupply = () => {
   return totalSupply
 }
 
-const totalBurnedMethod: Record<Network, string> = {
-  [Network.BSC]: 'totalBurned',
-  [Network.BSC_TESTNET]: 'totalBurned',
-  [Network.FANTOM]: 'totalBurned',
-}
-
 export const useBurnedBalance = (tokenAddress: string) => {
   const [balance, setBalance] = useState(BIG_ZERO)
   const { slowRefresh } = useRefresh()
@@ -126,7 +112,7 @@ export const useBurnedBalance = (tokenAddress: string) => {
     const fetchBalance = async () => {
       if (config.network === Network.FTM) {
         const contract = getFarmingTokenContract(web3)
-        const res = await contract.methods[totalBurnedMethod[config.network]]().call()
+        const res = await contract.methods.totalBurned().call()
         setBalance(new BigNumber(res))
       }
       setBalance(BIG_ZERO)
@@ -161,20 +147,13 @@ export const useGovTokenBurnRate = (tokenAddress: string) => {
   const web3 = useWeb3()
 
   useEffect(() => {
-    let isMounted = true
     const fetchBalance = async () => {
       const contract = getGovTokenContract(web3)
       const res = await contract.methods.currentBurnPercent().call()
-      if (isMounted) {
-        setRate(new BigNumber(res))
-      }
+      setRate(new BigNumber(res))
     }
 
     fetchBalance()
-
-    return () => {
-      isMounted = false
-    }
   }, [web3, tokenAddress, slowRefresh])
 
   return rate

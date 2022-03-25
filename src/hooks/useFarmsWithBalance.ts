@@ -44,7 +44,6 @@ const useFarmsWithBalance = () => {
       try {
         const rawResults = await multicall(getMasterChefABI(), calls)
         const results = farmsToFetch.map((farm, index) => ({ ...farm, balance: new BigNumber(rawResults[index]) }))
-
         if (isMounted) {
           setFarmsWithBalances(results)
         }
@@ -56,11 +55,11 @@ const useFarmsWithBalance = () => {
     if (account) {
       fetchBalances()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => {
       isMounted = false
     }
-  }, [account, config.network, fastRefresh, farmsToFetch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, config.network, fastRefresh])
 
   return farmsWithBalances
 }

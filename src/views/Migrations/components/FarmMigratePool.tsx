@@ -47,14 +47,15 @@ const FarmMigratorPool = ({ pid, name, stakedBalance, lpToken }) => {
     let isMounted = true
     if (!depositPid) {
       const findDepositPid = async () => {
-        const despositPidFound = await farms[config.network].filter((pool) => {
+        const depositPidFound = await farms[config.network].filter((pool) => {
           if (pool.lpAddresses[chainId] === lpToken) {
             return pool
           }
           return false
         })[0]?.pid
+
         if (isMounted) {
-          setDepositPid(despositPidFound)
+          setDepositPid(depositPidFound)
         }
       }
       findDepositPid()

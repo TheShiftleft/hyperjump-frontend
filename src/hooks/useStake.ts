@@ -22,8 +22,6 @@ const useStake = (pid: number) => {
 export const useSousStake = (sousId: number, isUsingBnb = false) => {
   const dispatch = useAppDispatch()
   const { account } = useWeb3React()
-  const { config } = getNetwork()
-  const masterChefContract = useMasterchef()
   const sousChefContract = usePoolContract(sousId)
 
   const handleStake = useCallback(

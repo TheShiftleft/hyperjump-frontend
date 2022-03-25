@@ -22,6 +22,7 @@ import {
   getSynapseBridgeAddress,
   getZapAddress,
   getL2BridgeZapAddress,
+  getActionInitiatorsAddress,
 } from 'utils/addressHelpers'
 
 // ABI
@@ -35,6 +36,7 @@ import {
   getFarmingTokenABI,
   getGovTokenABI,
   getMasterChefABI,
+  getMasterChef20ABI,
   getMulticallABI,
   getPoolABI,
   getVaultABI,
@@ -45,6 +47,7 @@ import {
   getXJumpABI,
   getMechABI,
   getZapABI,
+  getActionInitiatorsABI,
 } from 'config/abi'
 import { Pool } from 'state/types'
 import BigNumber from 'bignumber.js'
@@ -77,6 +80,9 @@ export const getDefaultGasPrice = () => {
 const getContract = (abi: any, address: string, web3?: Web3, account?: string) => {
   const _web3 = web3 ?? web3NoAccount
   return new _web3.eth.Contract(abi as unknown as AbiItem, address) // , {
+}
+export const getActionInitiatorContract = (web3?: Web3) => {
+  return getContract(getActionInitiatorsABI(), getActionInitiatorsAddress(), web3)
 }
 
 export const getXJumpContract = (web3?: Web3) => {
@@ -125,7 +131,7 @@ export const getMasterchefContract = (web3?: Web3) => {
   return getContract(getMasterChefABI(), getMasterChefAddress(), web3)
 }
 export const getMasterchef20Contract = (web3?: Web3) => {
-  return getContract(getMasterChefABI(), getMasterChef20Address(), web3)
+  return getContract(getMasterChef20ABI(), getMasterChef20Address(), web3)
 }
 export const getGovTokenContract = (web3?: Web3) => {
   return getContract(getGovTokenABI(), getGovTokenAddress(), web3)
