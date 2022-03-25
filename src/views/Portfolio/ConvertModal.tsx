@@ -8,13 +8,16 @@ import { TokenProps } from 'hooks/moralis'
 import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
 import { getRouterAddress } from 'utils/addressHelpers'
 import { BroomCallbackState, useBroomSweep } from 'hooks/useBroom'
-import { useBroomContract } from 'hooks/useContract'
+// import { useBroomContract } from 'hooks/useContract'
 import { Field } from 'state/swap/actions'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { WrappedTokenInfo } from 'state/lists/hooks'
 import TradePrice from 'components/swap/TradePrice'
 import { useCurrency } from 'hooks/Tokens'
+import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
+import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { useActiveWeb3React } from '../../hooks'
 
 interface ConvertModalProps {
   onDismiss?: () => void
@@ -99,7 +102,7 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
 const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens, amounts }) => {
   const { t } = useTranslation()
   const { config } = getNetwork()
-
+  const { account } = useActiveWeb3React()
   const [step, setStep] = useState(1)
 
   const onSelectTokens = () => {
@@ -147,11 +150,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
-
-  // currencies[Field.INPUT] = new WrappedTokenInfo(defaultFromCurrency, [])
-  // currencies[Field.OUTPUT] = new WrappedTokenInfo(defaultToCurrency, [])
-
   const FromCurrency = selectTokens.token.tokenObj
+
+  currencies[Field.INPUT] = FromCurrency
+  currencies[Field.OUTPUT] = DefaultToCurrency
+
   const inputvalue = selectTokens.token.amount.toString()
 
   // console.log(DefaultToCurrency, selectTokens.token.tokenObj)
@@ -183,6 +186,9 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
 
+  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies[Field.OUTPUT] ?? undefined)
+  // console.log(selectedCurrencyBalance)
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const parsedAmounts = showWrap
@@ -215,6 +221,9 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   )
 
   const totalestimateJump = Number(formattedAmounts[Field.INPUT]) * Number(trade?.executionPrice.toSignificant(6))
+  const estimateconvcost = realizedLPFee
+    ? Number(realizedLPFee.toSignificant(4)) * Number(selectedtoken.price.toFixed(2))
+    : 0
 
   const handleBroomCallback = useCallback(() => {
     if (broomState !== BroomCallbackState.INVALID) {
@@ -253,8 +262,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
               <CellInner>
                 <Text>Estimated conversion cost</Text>
               </CellInner>
-
-              <CellLayout>≈ $0.001</CellLayout>
+              <CellLayout
+                label={realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
+              >
+                ≈ ${realizedLPFee ? estimateconvcost : 0}
+              </CellLayout>
             </StyledRow>
             <TradePrice
               price={trade?.executionPrice}
@@ -276,7 +288,15 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 <Text>You will get approximately</Text>
               </CellInner>
 
-              <CellLayout label="10.87 JUMP">≈ {new Intl.NumberFormat('en-US').format(totalestimateJump)}</CellLayout>
+              <CellLayout
+                label={
+                  selectedCurrencyBalance
+                    ? `${selectedCurrencyBalance.toSignificant(4)}${selectedCurrencyBalance.currency.symbol}`
+                    : '-'
+                }
+              >
+                ≈ {new Intl.NumberFormat('en-US').format(totalestimateJump)}
+              </CellLayout>
             </StyledRow>
 
             <StyledRow>

@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { ChainId, Token } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
 import Container from 'components/layout/Container'
+import { SubHeader } from 'uikit/components/SubHeader'
 import TokenRow from './TokenRow'
 import BroomModal from './BroomModal'
 import WalletLogin from './WalletLogin'
@@ -222,9 +223,9 @@ const WalletTable: React.FC = () => {
         </NetWorthBox>
         {/* To change to subheader */}
         <WalletTableHeading>
-          <Heading color="primary" ml="5px" mr="5px">
+          <SubHeader color="primary" ml="5px" mr="5px">
             DeFi
-          </Heading>
+          </SubHeader>
           Investments
         </WalletTableHeading>
       </PageHeader>
