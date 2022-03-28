@@ -12,8 +12,7 @@ const bridgeTokens = [
       [ChainId.BSC_MAINNET]: 18,
       [ChainId.FTM_MAINNET]: 18,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73.png',
   },
   {
     name: 'USD Circle',
@@ -22,7 +21,7 @@ const bridgeTokens = [
       [ChainId.ETH]: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       [ChainId.BSC_MAINNET]: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
       [ChainId.POLYGON]: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-      [ChainId.FTM_MAINNET]: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
+      [ChainId.FTM_MAINNET]: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
       [ChainId.BOBA]: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
       [ChainId.ARBITRUM]: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
       [ChainId.AVALANCHE]: '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664',
@@ -38,8 +37,7 @@ const bridgeTokens = [
       [ChainId.ARBITRUM]: 6,
       [ChainId.HARMONY]: 6,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d.png',
   },
   {
     name: 'USD Tether',
@@ -64,8 +62,7 @@ const bridgeTokens = [
       [ChainId.AVALANCHE]: 6,
       [ChainId.HARMONY]: 6,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x55d398326f99059fF775485246999027B3197955.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x55d398326f99059fF775485246999027B3197955.png',
   },
   {
     name: 'Dai',
@@ -86,8 +83,7 @@ const bridgeTokens = [
       [ChainId.AVALANCHE]: 18,
       [ChainId.HARMONY]: 18,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3.png',
   },
   {
     name: 'Binance USD',
@@ -98,8 +94,7 @@ const bridgeTokens = [
     decimals: {
       [ChainId.BSC_MAINNET]: 18,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0xe9e7cea3dedca5984780bafc599bd69add087d56.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0xe9e7cea3dedca5984780bafc599bd69add087d56.png',
   },
   {
     name: 'TerraUSD',
@@ -110,8 +105,7 @@ const bridgeTokens = [
     decimals: {
       [ChainId.BSC_MAINNET]: 18,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x23396cF899Ca06c4472205fC903bDB4de249D6fC.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x23396cF899Ca06c4472205fC903bDB4de249D6fC.png',
   },
   {
     name: 'Wrapped ETH',
@@ -122,8 +116,7 @@ const bridgeTokens = [
     decimals: {
       [ChainId.FTM_MAINNET]: 18,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png',
   },
   {
     name: 'Synapse',
@@ -197,8 +190,7 @@ const bridgeTokens = [
     decimals: {
       [ChainId.ETH]: 18,
     },
-    logoURI:
-      'https://https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png',
+    logoURI: 'https://tokens.hyperjump.app/images/0x74b23882a30290451A17c44f4F05243b6b58C76d.png',
   },
   {
     name: 'Highstreet',

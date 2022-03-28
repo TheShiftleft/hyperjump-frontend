@@ -18,6 +18,7 @@ import PageHeader from 'components/PageHeader'
 import { OptionProps } from 'components/Select/Select'
 import ViewControls from 'components/ViewControls'
 import getNetwork from 'utils/getNetwork'
+import VersionBar from 'components/VersionBar'
 import FarmCard, { FarmWithStakedValue } from './components/FarmCard/FarmCard'
 import Table from './components/FarmTable/FarmTable'
 import { RowProps } from './components/FarmTable/Row'
@@ -343,6 +344,7 @@ const Farms: React.FC = () => {
         />
         {renderContent()}
         <div ref={loadMoreRef} />
+        <VersionBar />
       </Page>
     </>
   )

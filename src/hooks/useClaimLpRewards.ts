@@ -6,8 +6,7 @@ export const useClaimLpRewards = (account) => {
   const claimLpRewardsMigratorContract = useClaimLpRewardsMigrator()
 
   const handleClaim = useCallback(async () => {
-    const txHash = await claimLpRewards(claimLpRewardsMigratorContract, account)
-    return txHash
+    await claimLpRewards(claimLpRewardsMigratorContract, account)
   }, [account, claimLpRewardsMigratorContract])
 
   return { onClaim: handleClaim }

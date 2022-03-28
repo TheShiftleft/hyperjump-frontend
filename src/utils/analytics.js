@@ -26,39 +26,22 @@ const Decimal = toFormat(_Decimal)
 BigNumber.set({ EXPONENTIAL_AT: 50 })
 dayjs.extend(utc)
 
-
 export function getTimeframe(timeWindow) {
   const utcEndTime = dayjs.utc()
   // based on window, get starttime
   let utcStartTime
   switch (timeWindow) {
     case timeframeOptions.WEEK:
-      utcStartTime =
-        utcEndTime
-          .subtract(1, 'week')
-          .endOf('day')
-          .unix() - 1
+      utcStartTime = utcEndTime.subtract(1, 'week').endOf('day').unix() - 1
       break
     case timeframeOptions.MONTH:
-      utcStartTime =
-        utcEndTime
-          .subtract(1, 'month')
-          .endOf('day')
-          .unix() - 1
+      utcStartTime = utcEndTime.subtract(1, 'month').endOf('day').unix() - 1
       break
     case timeframeOptions.ALL_TIME:
-      utcStartTime =
-        utcEndTime
-          .subtract(1, 'year')
-          .endOf('day')
-          .unix() - 1
+      utcStartTime = utcEndTime.subtract(1, 'year').endOf('day').unix() - 1
       break
     default:
-      utcStartTime =
-        utcEndTime
-          .subtract(1, 'year')
-          .startOf('year')
-          .unix() - 1
+      utcStartTime = utcEndTime.subtract(1, 'year').startOf('year').unix() - 1
       break
   }
   return utcStartTime
@@ -67,13 +50,13 @@ export function getTimeframe(timeWindow) {
 export function getPoolLink(token0Address, token1Address = null, remove = false) {
   if (!token1Address) {
     return (
-      `https://swap.hyperjump.fi/#/` +
+      `https://swap.hyperjump.app/#/` +
       (remove ? `remove` : `add`) +
       `/${token0Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token0Address}/${'BNB'}`
     )
   } else {
     return (
-      `https://swap.hyperjump.fi/#/` +
+      `https://swap.hyperjump.app/#/` +
       (remove ? `remove` : `add`) +
       `/${token0Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token0Address}/${
         token1Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token1Address
@@ -84,28 +67,30 @@ export function getPoolLink(token0Address, token1Address = null, remove = false)
 
 export function getSwapLink(token0Address, token1Address = null) {
   if (!token1Address) {
-    return `https://swap.hyperjump.fi/#/swap?inputCurrency=${token0Address}`
+    return `https://swap.hyperjump.app/#/swap?inputCurrency=${token0Address}`
   } else {
-    return `https://swap.hyperjump.fi/#/swap?inputCurrency=${
+    return `https://swap.hyperjump.app/#/swap?inputCurrency=${
       token0Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token0Address
     }&outputCurrency=${token1Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token1Address}`
   }
 }
 
 export function getAstroLink(pairAddress, token0Symbol, token1Symbol) {
-  return `https://www.chartex.pro/?symbol=BSC_HYPERJUMP%3A${token0Symbol === 'BNB' ? 'WBNB' : token0Symbol}%2F${token1Symbol === 'BNB' ? 'WBNB' : token1Symbol}.${pairAddress}`
+  return `https://www.chartex.pro/?symbol=BSC_HYPERJUMP%3A${token0Symbol === 'BNB' ? 'WBNB' : token0Symbol}%2F${
+    token1Symbol === 'BNB' ? 'WBNB' : token1Symbol
+  }.${pairAddress}`
 }
 
 export function localNumber(val) {
   return Numeral(val).format('0,0')
 }
 
-export const toNiceDate = date => {
+export const toNiceDate = (date) => {
   let x = dayjs.utc(dayjs.unix(date)).format('MMM DD')
   return x
 }
 
-export const toWeeklyDate = date => {
+export const toWeeklyDate = (date) => {
   const formatted = dayjs.utc(dayjs.unix(date))
   date = new Date(formatted)
   const day = new Date(formatted).getDay()
@@ -117,18 +102,9 @@ export const toWeeklyDate = date => {
 
 export function getTimestampsForChanges() {
   const utcCurrentTime = dayjs()
-  const t1 = utcCurrentTime
-    .subtract(1, 'day')
-    .startOf('minute')
-    .unix()
-  const t2 = utcCurrentTime
-    .subtract(2, 'day')
-    .startOf('minute')
-    .unix()
-  const tWeek = utcCurrentTime
-    .subtract(1, 'week')
-    .startOf('minute')
-    .unix()
+  const t1 = utcCurrentTime.subtract(1, 'day').startOf('minute').unix()
+  const t2 = utcCurrentTime.subtract(2, 'day').startOf('minute').unix()
+  const tWeek = utcCurrentTime.subtract(1, 'week').startOf('minute').unix()
   return [t1, t2, tWeek]
 }
 
@@ -145,11 +121,11 @@ export async function splitQuery(query, localClient, vars, list, skipCount = 100
     let sliced = list.slice(skip, end)
     let result = await localClient.query({
       query: query(...vars, sliced),
-      fetchPolicy: 'cache-first'
+      fetchPolicy: 'cache-first',
     })
     fetchedData = {
       ...fetchedData,
-      ...result.data
+      ...result.data,
     }
     if (Object.keys(result.data).length < skipCount || skip + skipCount > list.length) {
       allFound = true
@@ -171,9 +147,9 @@ export async function getBlockFromTimestamp(timestamp) {
     query: GET_BLOCK,
     variables: {
       timestampFrom: timestamp,
-      timestampTo: timestamp + 600
+      timestampTo: timestamp + 600,
     },
-    fetchPolicy: 'cache-first'
+    fetchPolicy: 'cache-first',
   })
   return result?.data?.blocks?.[0]?.number
 }
@@ -198,7 +174,7 @@ export async function getBlocksFromTimestamps(timestamps, skipCount = 500) {
       if (fetchedData[t].length > 0) {
         blocks.push({
           timestamp: t.split('t')[1],
-          number: fetchedData[t][0]['number']
+          number: fetchedData[t][0]['number'],
         })
       }
     }
@@ -213,7 +189,7 @@ export async function getLiquidityTokenBalanceOvertime(account, timestamps) {
   // get historical share values with time travel queries
   let result = await client.query({
     query: SHARE_VALUE(account, blocks),
-    fetchPolicy: 'cache-first'
+    fetchPolicy: 'cache-first',
   })
 
   let values = []
@@ -222,7 +198,7 @@ export async function getLiquidityTokenBalanceOvertime(account, timestamps) {
     if (timestamp) {
       values.push({
         timestamp,
-        balance: 0
+        balance: 0,
       })
     }
   }
@@ -247,7 +223,7 @@ export async function getShareValueOverTime(pairAddress, timestamps) {
   // get historical share values with time travel queries
   let result = await client.query({
     query: SHARE_VALUE(pairAddress, blocks),
-    fetchPolicy: 'cache-first'
+    fetchPolicy: 'cache-first',
   })
 
   let values = []
@@ -267,7 +243,7 @@ export async function getShareValueOverTime(pairAddress, timestamps) {
         roiUsd: values && values[0] ? sharePriceUsd / values[0]['sharePriceUsd'] : 1,
         bnbPrice: 0,
         token0PriceUSD: 0,
-        token1PriceUSD: 0
+        token1PriceUSD: 0,
       })
     }
   }
@@ -302,9 +278,9 @@ export function getTimestampRange(timestamp_from, period_length, periods) {
   return timestamps
 }
 
-export const toNiceDateYear = date => dayjs.utc(dayjs.unix(date)).format('MMMM DD, YYYY')
+export const toNiceDateYear = (date) => dayjs.utc(dayjs.unix(date)).format('MMMM DD, YYYY')
 
-export const isAddress = value => {
+export const isAddress = (value) => {
   try {
     return ethers.utils.getAddress(value.toLowerCase())
   } catch {
@@ -312,22 +288,22 @@ export const isAddress = value => {
   }
 }
 
-export const toK = num => {
+export const toK = (num) => {
   return Numeral(num).format('0.[00]a')
 }
 
-export const setThemeColor = theme => document.documentElement.style.setProperty('--c-token', theme || '#333333')
+export const setThemeColor = (theme) => document.documentElement.style.setProperty('--c-token', theme || '#333333')
 
-export const Big = number => new BigNumber(number)
+export const Big = (number) => new BigNumber(number)
 
 export const urls = {
-  showTransaction: tx => `https://bscscan.com/tx/${tx}/`,
-  showAddress: address => `https://bscscan.com/address/${address}/`,
-  showToken: address => `https://bscscan.com/token/${address}/`,
-  showBlock: block => `https://bscscan.com/block/${block}/`
+  showTransaction: (tx) => `https://bscscan.com/tx/${tx}/`,
+  showAddress: (address) => `https://bscscan.com/address/${address}/`,
+  showToken: (address) => `https://bscscan.com/token/${address}/`,
+  showBlock: (block) => `https://bscscan.com/block/${block}/`,
 }
 
-export const formatTime = unix => {
+export const formatTime = (unix) => {
   const now = dayjs()
   const timestamp = dayjs.unix(unix)
 
@@ -347,7 +323,7 @@ export const formatTime = unix => {
   }
 }
 
-export const formatNumber = num => {
+export const formatNumber = (num) => {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
@@ -355,7 +331,7 @@ export const formatNumber = num => {
 var priceFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
-  minimumFractionDigits: 2
+  minimumFractionDigits: 2,
 })
 
 export const toSignificant = (number, significantDigits) => {

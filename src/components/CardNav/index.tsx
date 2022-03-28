@@ -21,23 +21,20 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
     let _outputChainId
     let _inputCurrency
     let _outputCurrency
-    Object.keys(bridgeNetworks)
-      .forEach(function eachKey(key) { 
-        if(bridgeNetworks[key].chainId !== config.id){
-          if(ChainId.BSC_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET ){
-            _outputChainId = bridgeNetworks[key].chainId
-            _outputCurrency = bridgeNetworks[key].tokens[0].address
-          }else if(ChainId.FTM_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET ){
-            _outputChainId = bridgeNetworks[key].chainId
-            _outputCurrency = bridgeNetworks[key].tokens[0].address
-          }
-        }else{
-          _inputCurrency = bridgeNetworks[key].tokens[0].address
+    Object.keys(bridgeNetworks).forEach(function eachKey(key) {
+      if (bridgeNetworks[key].chainId !== config.id) {
+        if (ChainId.BSC_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.FTM_MAINNET) {
+          _outputChainId = bridgeNetworks[key].chainId
+          _outputCurrency = bridgeNetworks[key].tokens[0].address
+        } else if (ChainId.FTM_MAINNET === config.id && bridgeNetworks[key].chainId === ChainId.BSC_MAINNET) {
+          _outputChainId = bridgeNetworks[key].chainId
+          _outputCurrency = bridgeNetworks[key].tokens[0].address
         }
-            
-        
-      });
-      return [_outputChainId, _outputCurrency, _inputCurrency]
+      } else {
+        _inputCurrency = bridgeNetworks[key].tokens[0].address
+      }
+    })
+    return [_outputChainId, _outputCurrency, _inputCurrency]
   }, [config])
 
   return (
@@ -55,9 +52,9 @@ function Nav({ activeIndex = 0 }: { activeIndex?: number }) {
         <ButtonMenuItem id="pool-nav-link" to="/pool" as={Link}>
           {TranslateString(262, 'Liquidity')}
         </ButtonMenuItem>
-        <ButtonMenuItem 
-          id="bridge-nav-link" 
-          to={`/bridge?outputChainId=${outputChainId}&inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`} 
+        <ButtonMenuItem
+          id="bridge-nav-link"
+          to={`/bridge?outputChainId=${outputChainId}&inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`}
           as={Link}
         >
           {TranslateString(262, 'Bridge')}
