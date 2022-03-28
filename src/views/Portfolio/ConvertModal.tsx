@@ -5,7 +5,7 @@ import getNetwork from 'utils/getNetwork'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { Currency, CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
-import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
+import { Modal, Button, Box, Text, Flex, Image, Skeleton } from 'uikit'
 import { getRouterAddress } from 'utils/addressHelpers'
 import { BroomCallbackState, useBroomSweep } from 'hooks/useBroom'
 // import { useBroomContract } from 'hooks/useContract'
@@ -15,6 +15,7 @@ import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { WrappedTokenInfo } from 'state/lists/hooks'
 import TradePrice from 'components/swap/TradePrice'
 import { useCurrency } from 'hooks/Tokens'
+import useToast from 'hooks/useToast'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -108,6 +109,8 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const onSelectTokens = () => {
     setStep(1)
   }
+
+  const { toastSuccess, toastError } = useToast()
   const [limitValidity, setLimitValidity] = useState({ valid: true, error: '' })
   const [limitPrice, setLimitPrice] = useState('')
   const [showInverted, setShowInverted] = useState<boolean>(false)
@@ -168,7 +171,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
   const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies[Field.OUTPUT] ?? undefined)
-  
+  const selectTokenBalance = useCurrencyBalance(account ?? undefined, currencies[Field.INPUT] ?? undefined)
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const parsedAmounts = showWrap
@@ -189,33 +192,57 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
   const onApprove = () => {
     if ([ApprovalState.NOT_APPROVED, ApprovalState.UNKNOWN].includes(selectTokens.approval)) {
-      selectTokens.approvalCallback()
+      selectTokens
+        .approvalCallback()
+        .then((result) => {
+          console.info('result', result)
+          toastSuccess(
+            `${t('Approved')}!`,
+            t('Your %symbol% balances have been approved for conversion', { symbol: tokenSymbol }),
+          )
+        })
+        .catch((e) => {
+          toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+        })
     }
   }
 
   const [count, setCount] = useState(0)
 
   const { state: broomState, callback: broomCallback } = useBroomSweep(
-    selectTokens.token.amount,
+    selectTokenBalance,
     selectTokens.token.tokenObj.address,
+    selectTokens.token.tokenObj.decimals,
   )
 
   const totalestimateJump = Number(formattedAmounts[Field.INPUT]) * Number(trade?.executionPrice.toSignificant(6))
   const estimateconvcost = realizedLPFee
     ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price.toFixed(2))
     : 0
-
+  const tokenSymbol = selectedtoken.tokenObj.symbol
   const handleBroomCallback = useCallback(() => {
     if (broomState !== BroomCallbackState.INVALID) {
       broomCallback()
         .then((result) => {
+          toastSuccess(
+            `${t('Converted')}!`,
+            t('Your %symbol% balances have been converted into JUMP', { symbol: tokenSymbol }),
+          )
           console.info('result', result)
+          onDismiss()
         })
         .catch((e) => {
-          console.error(e)
+          if (e.code === 4001) {
+            toastError(t('Rejected'), t(e.message))
+          }
+
+          if (e.code === -32603) {
+            toastError(t(e.message), t(e.data.message))
+          }
+          // toastSuccess(t(e.message), t(e.data.message))
         })
     }
-  }, [broomCallback, broomState])
+  }, [broomCallback, broomState, toastSuccess, toastError, t, onDismiss, tokenSymbol])
 
   return (
     <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
@@ -232,12 +259,17 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
               </CellInner>
 
               <CellLayout
-                label={new Intl.NumberFormat('en-US', { minimumFractionDigits: 6 }).format(selectedtoken.amount)}
+                label={
+                  selectTokenBalance
+                    ? `${selectTokenBalance.toSignificant(6)} ${selectTokenBalance.currency.symbol}`
+                    : '-'
+                }
               >
                 ≈{' '}
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'USD',
+                  minimumFractionDigits: 6,
                 }).format(selectedtoken.volume)}
               </CellLayout>
             </StyledRow>
