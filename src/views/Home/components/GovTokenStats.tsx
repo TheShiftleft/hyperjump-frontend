@@ -16,6 +16,73 @@ import BurnCardValue from './BurnCardValue'
 const { config } = getNetwork()
 const govToken = ` ${config.govToken.symbol}`
 
+const GovTokenStats = () => {
+  const { t } = useTranslation()
+  const totalSupply = useGovTokenTotalSupply()
+
+  const burnedBalance = getBalanceNumber(useGovTokenBurnedBalance(getGovTokenAddress()))
+  const hyprSupply = totalSupply ? getBalanceNumber(totalSupply) : 0
+  const hyprBurnRate = getBalanceNumber(useGovTokenBurnRate(getGovTokenAddress()))
+  const hyprPriceUsd = usePriceGovTokenUsd()
+  const hyprPriceString =
+    hyprPriceUsd.isNaN() || hyprPriceUsd.isZero()
+      ? 'Loading'
+      : hyprPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 2 })
+  const hyprMarketCap =
+    (hyprPriceUsd.isNaN() || hyprPriceUsd.isZero()) && hyprSupply !== 0 ? 0 : hyprPriceUsd.toNumber() * hyprSupply
+
+  const tokenAddress = getGovTokenAddress()
+  const imageSrc = `/images/tokens/${config.govToken.symbol.toLowerCase()}.png`
+
+  return (
+    <StyledGovTokenStats>
+      <CardBody>
+        <Flex justifyContent="space-between" mb="20px">
+          <Flex flexDirection="column">
+            <Heading scale="xl">
+              <HeadingColor>
+                {govToken} {t(' STATS')}
+              </HeadingColor>
+            </Heading>
+            <Heading scale="lg">{govToken}</Heading>
+          </Flex>
+          <Flex flexDirection="column" alignItems="flex-end">
+            <Heading mt="5px" mb="5px">
+              $ {hyprPriceString}
+            </Heading>
+            <NavLink to="/swap?inputCurrency=BNB&outputCurrency=0x03D6BD3d48F956D783456695698C407A46ecD54d">
+              <BuyButton>Buy Now</BuyButton>
+            </NavLink>
+          </Flex>
+        </Flex>
+
+        <Text color="primary">Market Cap</Text>
+        <Heading mb="10px">{hyprMarketCap && <CardValue value={hyprMarketCap} />}</Heading>
+
+        <Text color="primary">Current Supply</Text>
+        <Heading mb="10px">{hyprSupply && <CardValue value={hyprSupply} />}</Heading>
+
+        <Text color="primary">Supply Burned</Text>
+        <Heading mb="10px">
+          <BurnCardValue decimals={0} value={burnedBalance} supply={hyprSupply} />
+        </Heading>
+
+        <Text color="primary">Current {govToken} Burn Rate</Text>
+        <Flex justifyContent="space-between">
+          <Heading mb="10px">
+            <CardValue decimals={2} value={hyprBurnRate} postfix="%" />
+          </Heading>
+          <MetamaskButton
+            onClick={() => registerToken(tokenAddress, config.govToken.symbol, config.govToken.decimals, imageSrc)}
+          />
+        </Flex>
+      </CardBody>
+    </StyledGovTokenStats>
+  )
+}
+
+export default GovTokenStats
+
 const StyledGovTokenStats = styled(Card)`
   background-color: ${({ theme }) => theme.colors.background};
   background-color: rgba(2, 5, 11, 0.7);
@@ -71,69 +138,3 @@ const MetamaskButton = styled(Button)`
     color: black;
   }
 `
-
-const GovTokenStats = () => {
-  const { t } = useTranslation()
-  const totalSupply = useGovTokenTotalSupply()
-
-  const burnedBalance = getBalanceNumber(useGovTokenBurnedBalance(getGovTokenAddress()))
-  const hyprSupply = totalSupply ? getBalanceNumber(totalSupply) : 0
-  const hyprBurnRate = getBalanceNumber(useGovTokenBurnRate(getGovTokenAddress()))
-  const hyprPriceUsd = usePriceGovTokenUsd()
-  const hyprPriceString =
-    hyprPriceUsd.isNaN() || hyprPriceUsd.isZero()
-      ? 'Loading'
-      : hyprPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 2 })
-  const hyprMarketCap =
-    (hyprPriceUsd.isNaN() || hyprPriceUsd.isZero()) && hyprSupply !== 0 ? 0 : hyprPriceUsd.toNumber() * hyprSupply
-
-  const tokenAddress = getGovTokenAddress();
-  const imageSrc = `/images/tokens/${config.govToken.symbol.toLowerCase()}.png`
-
-    
-  return (
-    <StyledGovTokenStats>
-      <CardBody>
-        <Flex justifyContent="space-between" mb="20px">
-          <Flex flexDirection="column">
-            <Heading scale="xl">
-              <HeadingColor>
-                {govToken} {t(' STATS')}
-              </HeadingColor>
-            </Heading>
-            <Heading scale="lg">{govToken}</Heading>
-          </Flex>
-          <Flex flexDirection="column" alignItems="flex-end">
-            <Heading mt="5px" mb="5px">
-              $ {hyprPriceString}
-            </Heading>
-            <NavLink to="/swap?inputCurrency=BNB&outputCurrency=0x03D6BD3d48F956D783456695698C407A46ecD54d">
-              <BuyButton>Buy Now</BuyButton>
-            </NavLink>
-          </Flex>
-        </Flex>
-
-        <Text color="primary">Market Cap</Text>
-        <Heading mb="10px">{hyprMarketCap && <CardValue value={hyprMarketCap} />}</Heading>
-
-        <Text color="primary">Current Supply</Text>
-        <Heading mb="10px">{hyprSupply && <CardValue value={hyprSupply} />}</Heading>
-
-        <Text color="primary">Supply Burned</Text>
-        <Heading mb="10px">
-          <BurnCardValue decimals={0} value={burnedBalance} supply={hyprSupply} />
-        </Heading>
-
-        <Text color="primary">Current {govToken} Burn Rate</Text>
-        <Flex justifyContent="space-between">
-          <Heading mb="10px">
-            <CardValue decimals={2} value={hyprBurnRate} postfix="%" />
-          </Heading>
-          <MetamaskButton onClick={() => registerToken(tokenAddress, config.govToken.symbol, config.govToken.decimals, imageSrc)}/>
-        </Flex>
-      </CardBody>
-    </StyledGovTokenStats>
-  )
-}
-
-export default GovTokenStats
