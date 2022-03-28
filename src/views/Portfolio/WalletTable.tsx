@@ -19,6 +19,17 @@ const ButtonBox = styled(Box)`
   text-align: center;
   margin: 50px 0;
 `
+const NoTokenBox = styled(Card)`
+  padding: 50px;
+  flex-direction: column;
+  display: flex;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  justify-content: center;
+  background-color: transparent;
+  border-radius: 50px;
+  align-items: center;
+`
 const NetWorthBox = styled(Card)`
   padding: 30px;
   flex-direction: column;
@@ -161,30 +172,35 @@ const WalletTable: React.FC = () => {
           Investments
         </WalletTableHeading>
       </PageHeader>
-
-      <Table>
-        <ColumnTable>
-          <Flex flexDirection="column" alignItems="center">
-            <WalletTableHeading>Wallet</WalletTableHeading>
-          </Flex>
-          {tokens
-            .filter((token) => !token.tokenObj.name.includes('.'))
-            .map((token) => (
-              <TokenRow key={token.tokenObj.address} token={token} />
-            ))}
-        </ColumnTable>
-        <TableLine />
-        <ColumnTable>
-          <Flex flexDirection="column" alignItems="center">
-            <WalletTableHeading>Asset Allocation</WalletTableHeading>
-          </Flex>
-          {tokens
-            .filter((token) => !token.tokenObj.name.includes('.'))
-            .map((token) => (
-              <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
-            ))}
-        </ColumnTable>
-      </Table>
+      {tokens.length > 0 ? (
+        <Table>
+          <ColumnTable>
+            <Flex flexDirection="column" alignItems="center">
+              <WalletTableHeading>Wallet</WalletTableHeading>
+            </Flex>
+            {tokens
+              .filter((token) => !token.tokenObj.name.includes('.'))
+              .map((token) => (
+                <TokenRow key={token.tokenObj.address} token={token} />
+              ))}
+          </ColumnTable>
+          <TableLine />
+          <ColumnTable>
+            <Flex flexDirection="column" alignItems="center">
+              <WalletTableHeading>Asset Allocation</WalletTableHeading>
+            </Flex>
+            {tokens
+              .filter((token) => !token.tokenObj.name.includes('.'))
+              .map((token) => (
+                <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
+              ))}
+          </ColumnTable>
+        </Table>
+      ) : (
+        <NoTokenBox>
+          <WalletTableHeading>No Available Tokens to Convert</WalletTableHeading>
+        </NoTokenBox>
+      )}
 
       {/* <ButtonBox>
         <Button onClick={onConvert}>{t('Convert small balances to JUMP')}</Button>
