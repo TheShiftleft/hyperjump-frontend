@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Modal, Text, Flex, Image, Button, Slider, BalanceInput, AutoRenewIcon } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useSousStake } from 'hooks/useStake'
@@ -7,6 +7,10 @@ import useToast from 'hooks/useToast'
 import BigNumber from 'bignumber.js'
 import { getFullDisplayBalance, formatNumber, getDecimalAmount } from 'utils/formatBalance'
 import { Pool } from 'state/types'
+import { useSousApprove } from 'hooks/useApprove'
+import { BIG_ZERO } from 'utils/bigNumber'
+import { useERC20 } from 'hooks/useContract'
+import { getAddress } from 'utils/addressHelpers'
 import PercentageButton from './PercentageButton'
 
 interface StakeModalProps {
@@ -26,6 +30,14 @@ const StakeModal: React.FC<StakeModalProps> = ({
 }) => {
   const { sousId, stakingToken, userData, stakingLimit, earningToken } = pool
   const { t } = useTranslation()
+  const allowance = userData?.allowance ? new BigNumber(userData.allowance) : BIG_ZERO
+  const needsApproval = !allowance.gt(0)
+  const stakingTokenContract = useERC20(stakingToken.address ? getAddress(stakingToken.address) : '')
+  const { handleApprove, requestedApproval } = useSousApprove(
+    stakingTokenContract,
+    sousId,
+    earningToken.symbol,
+  )
   const { onStake } = useSousStake(sousId, false)
   const { onUnstake } = useSousUnstake(sousId, pool.enableEmergencyWithdraw)
   const { toastSuccess, toastError } = useToast()
@@ -41,6 +53,12 @@ const StakeModal: React.FC<StakeModalProps> = ({
   }
 
   const usdValueStaked = stakeAmount && formatNumber(new BigNumber(stakeAmount).times(stakingTokenPrice).toNumber())
+
+  const handleApproveCallback = useCallback(() => {
+    handleApprove().then(() => {
+      onDismiss()
+    })
+  }, [handleApprove, onDismiss])
 
   useEffect(() => {
     if (stakingLimit.gt(0) && !isRemovingStake) {
@@ -109,6 +127,33 @@ const StakeModal: React.FC<StakeModalProps> = ({
     }
   }
 
+  const StakeButton: React.FC  = () => {
+    if(needsApproval) {
+      return (
+      <Button 
+        disabled={requestedApproval}
+        isLoading={requestedApproval}
+        endIcon={requestedApproval ? <AutoRenewIcon spin color="currentColor" /> : null}
+        onClick={handleApproveCallback}
+        mt="24px"
+      >
+        {requestedApproval ? t('Approving') : t('Approve')}
+      </Button>
+      )
+    }
+    return (
+        <Button
+          isLoading={pendingTx}
+          endIcon={pendingTx ? <AutoRenewIcon spin color="currentColor" /> : null}
+          onClick={handleConfirmClick}
+          disabled={!stakeAmount || parseFloat(stakeAmount) === 0 || hasReachedStakeLimit}
+          mt="24px"
+        >
+          {pendingTx ? t('Confirming') : t('Confirm')}
+        </Button>
+    )
+  }
+
   return (
     <Modal title={isRemovingStake ? t('Unstake') : t('Stake in Pool')} onDismiss={onDismiss}>
       <Flex alignItems="center" justifyContent="space-between" mb="8px">
@@ -152,15 +197,7 @@ const StakeModal: React.FC<StakeModalProps> = ({
         <PercentageButton onClick={() => handleChangePercent(75)}>75%</PercentageButton>
         <PercentageButton onClick={() => handleChangePercent(100)}>{t('Max')}</PercentageButton>
       </Flex>
-      <Button
-        isLoading={pendingTx}
-        endIcon={pendingTx ? <AutoRenewIcon spin color="currentColor" /> : null}
-        onClick={handleConfirmClick}
-        disabled={!stakeAmount || parseFloat(stakeAmount) === 0 || hasReachedStakeLimit}
-        mt="24px"
-      >
-        {pendingTx ? t('Confirming') : t('Confirm')}
-      </Button>
+      <StakeButton />
     </Modal>
   )
 }

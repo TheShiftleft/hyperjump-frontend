@@ -102,6 +102,7 @@ export const useSousApprove = (lpContract: Contract, sousId, earningTokenSymbol)
       }
     } catch (e) {
       console.error(e)
+      setRequestedApproval(false)
       toastError(t('Error'), e?.message)
     }
   }, [account, dispatch, lpContract, sousChefContract, sousId, earningTokenSymbol, t, toastError, toastSuccess])
