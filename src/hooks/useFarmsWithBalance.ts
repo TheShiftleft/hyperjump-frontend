@@ -33,6 +33,7 @@ const useFarmsWithBalance = () => {
   const farmsToFetch = farmsConfig.filter((farmConfig) => farmConfig.pid !== null)
 
   useEffect(() => {
+    let isMounted = true
     const fetchBalances = async () => {
       const calls = farmsToFetch.map((farm) => ({
         address: getMasterChefAddress(),
@@ -43,8 +44,9 @@ const useFarmsWithBalance = () => {
       try {
         const rawResults = await multicall(getMasterChefABI(), calls)
         const results = farmsToFetch.map((farm, index) => ({ ...farm, balance: new BigNumber(rawResults[index]) }))
-
-        setFarmsWithBalances(results)
+        if (isMounted) {
+          setFarmsWithBalances(results)
+        }
       } catch (e) {
         console.error(e)
       }
@@ -52,6 +54,9 @@ const useFarmsWithBalance = () => {
 
     if (account) {
       fetchBalances()
+    }
+    return () => {
+      isMounted = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.network, fastRefresh])

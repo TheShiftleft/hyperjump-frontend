@@ -3,25 +3,6 @@ import { useTranslation } from 'contexts/Localization'
 import React from 'react'
 import styled from 'styled-components'
 
-const Wrapper = styled(CardHeader)<{ isFinished?: boolean; background?: string }>`
-  background: none;
-  border-radius: ${({ theme }) => `${theme.radii.card} ${theme.radii.card} 0 0`};
-`
-
-interface StyledTitleProps {
-  isFinished?: boolean
-}
-
-const CardTitle = styled.div<StyledTitleProps>`
-  color: ${({ theme }) => theme.colors.primary};
-  opacity: ${({ isFinished }) => (isFinished ? '0.5' : '1')};
-  font-family: Oswald;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 1.1;
-  margin-left: 8px;
-`
-
 const StyledCardHeader: React.FC<{
   tokenLink: string
   earningTokenSymbol: string
@@ -69,3 +50,22 @@ const StyledCardHeader: React.FC<{
 }
 
 export default StyledCardHeader
+
+const Wrapper = styled(CardHeader)<{ isFinished?: boolean; background?: string }>`
+  background: none;
+  border-radius: ${({ theme }) => `${theme.radii.card} ${theme.radii.card} 0 0`};
+`
+
+interface StyledTitleProps {
+  isFinished?: boolean
+}
+
+const CardTitle = styled.div<StyledTitleProps>`
+  color: ${({ theme }) => theme.colors.primary};
+  opacity: ${({ isFinished }) => (isFinished ? '0.5' : '1')};
+  font-family: Oswald;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.1;
+  margin-left: 8px;
+`

@@ -11,12 +11,6 @@ import EarnAssetCard from 'views/Home/components/EarnAssetCard'
 import EarnAPRCard from 'views/Home/components/EarnAPRCard'
 import FarmingTokenStakingCard from 'views/Home/components/FarmingTokenStakingCard'
 import WinCard from 'views/Home/components/WinCard'
-import JumpConverter from 'views/Convert/components/JumpConverter'
-import MechConverter from 'views/Convert/components/MechConverter'
-import LpRewardsClaimer from 'views/Convert/components/LpRewardsClaimer'
-import Welcome from 'views/Home/components/Welcome'
-import V1Links from 'views/Home/components/V1Links'
-import { useAllTokens } from 'hooks/Tokens'
 
 const Container = styled(Flex)`
   grid-gap: 16px;
@@ -91,15 +85,6 @@ const Home: React.FC = () => {
           </HeadingFlex>
           <ShipLogo src="/images/plane.png" />
         </Flex>
-       {/*  <Column>
-          <Welcome />
-        </Column>
-        <Column>
-          <JumpConverter />
-        </Column>
-        <Column>
-          <LpRewardsClaimer />
-        </Column> */}
         <Column>
           <FarmingTokenStats />
           <GovTokenStats />

@@ -17,6 +17,7 @@ import { Pool } from 'state/types'
 import styled from 'styled-components'
 import { latinise } from 'utils/latinise'
 import getNetwork from 'utils/getNetwork'
+import VersionBar from 'components/VersionBar'
 import PoolCard from './components/PoolCard'
 import MechPoolCard from './components/MechPoolCard'
 import PoolsTable from './components/PoolsTable/PoolsTable'
@@ -24,29 +25,6 @@ import PoolTabButtons from './components/PoolTabButtons'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import getAprData from './helpers'
 import MechConverter from './components/MechConverter'
-
-const CardLayout = styled(FlexLayout)`
-  justify-content: center;
-`
-
-const PoolControls = styled(Flex)`
-  flex-direction: column;
-  margin-bottom: 24px;
-  ${({ theme }) => theme.mediaQueries.md} {
-    flex-direction: row;
-  }
-`
-
-const SearchSortContainer = styled(Flex)`
-  gap: 10px;
-  justify-content: space-between;
-`
-
-const ControlStretch = styled(Flex)`
-  > div {
-    flex: 1;
-  }
-`
 
 const NUMBER_OF_POOLS_VISIBLE = 12
 
@@ -145,14 +123,11 @@ const Pools: React.FC = () => {
 
   const cardLayout = (
     <CardLayout>
-      {poolsToShow().map((pool) =>
-        pool.sousId === 0 ? null : ( // <MechPoolCard key={pool.sousId} pool={pool} account={account} />
-          <PoolCard key={pool.sousId} pool={pool} account={account} />
-        ),
-      )}
+      {poolsToShow().map((pool) => (
+        <PoolCard key={pool.sousId} pool={pool} account={account} />
+      ))}
     </CardLayout>
   )
-
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
 
   return (
@@ -196,7 +171,7 @@ const Pools: React.FC = () => {
               <ControlStretch>
                 <Select
                   options={[
-                /*     {
+                    /*     {
                       label: t('Hot'),
                       value: 'hot',
                     }, */
@@ -235,9 +210,33 @@ const Pools: React.FC = () => {
         {viewMode === ViewMode.CARD ? cardLayout : tableLayout}
         <div ref={loadMoreRef} />
         {/* <HelpButton /> */}
+        <VersionBar />
       </Page>
     </>
   )
 }
 
 export default Pools
+
+const CardLayout = styled(FlexLayout)`
+  justify-content: center;
+`
+
+const PoolControls = styled(Flex)`
+  flex-direction: column;
+  margin-bottom: 24px;
+  ${({ theme }) => theme.mediaQueries.md} {
+    flex-direction: row;
+  }
+`
+
+const SearchSortContainer = styled(Flex)`
+  gap: 10px;
+  justify-content: space-between;
+`
+
+const ControlStretch = styled(Flex)`
+  > div {
+    flex: 1;
+  }
+`
