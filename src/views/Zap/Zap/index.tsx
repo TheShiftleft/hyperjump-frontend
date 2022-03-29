@@ -203,7 +203,10 @@ const Zap = () => {
       <CardNav />
       <AppBody>
         <Wrapper id="zap-page" color="transparent">
-          <PageHeader title="Zap" description="Zap into our LP tokens" />
+          <PageHeader
+            title="Zap"
+            description="Zap into our LP tokens: Please note that there is a risk of loss if zapping into a low liquidity LP"
+          />
           <CardBody p="12px">
             <AutoColumn gap="md">
               <CurrencyInputPanel
