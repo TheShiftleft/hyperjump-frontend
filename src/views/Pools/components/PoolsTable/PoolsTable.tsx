@@ -10,25 +10,6 @@ interface PoolsTableProps {
   userDataLoaded: boolean
   account: string
 }
-
-const StyledTable = styled.div`
-  > div:not(:last-child) {
-    border-bottom: 2px solid ${({ theme }) => theme.colors.primary};
-  }
-`
-
-const StyledTableBorder = styled.div`
-  padding: 1px 1px 3px 1px;
-  background-size: 400% 400%;
-`
-
-const ScrollButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 5px;
-  padding-bottom: 5px;
-`
-
 const PoolsTable: React.FC<PoolsTableProps> = ({ pools, userDataLoaded, account }) => {
   const { t } = useTranslation()
   const tableWrapperEl = useRef<HTMLDivElement>(null)
@@ -57,3 +38,21 @@ const PoolsTable: React.FC<PoolsTableProps> = ({ pools, userDataLoaded, account 
 }
 
 export default PoolsTable
+
+const StyledTable = styled.div`
+  > div:not(:last-child) {
+    border-bottom: 2px solid ${({ theme }) => theme.colors.primary};
+  }
+`
+
+const StyledTableBorder = styled.div`
+  padding: 1px 1px 3px 1px;
+  background-size: 400% 400%;
+`
+
+const ScrollButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+`

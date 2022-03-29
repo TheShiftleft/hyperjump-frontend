@@ -3,7 +3,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { Trade, TokenAmount, CurrencyAmount } from '@hyperjump-defi/sdk'
 import { useCallback, useMemo } from 'react'
 import getNetwork from 'utils/getNetwork'
-import { getRouterAddress, getSynapseBridgeAddress } from 'utils/addressHelpers'
+import { getRouterAddress, getL2BridgeZapAddress, getZapAddress } from 'utils/addressHelpers'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/actions'
 import { useTransactionAdder, useHasPendingApproval } from '../state/transactions/hooks'
@@ -114,5 +114,13 @@ export function useApproveCallbackFromBridge(parsedAmount?: CurrencyAmount | und
     () => (parsedAmount ?? undefined ? parsedAmount : undefined),
     [parsedAmount],
   )
-  return useApproveCallback(amountToApprove, getSynapseBridgeAddress())
+  return useApproveCallback(amountToApprove, getL2BridgeZapAddress())
+}
+
+export function useApproveCallbackFromZap(amount?: CurrencyAmount | undefined) {
+  const amountToApprove = useMemo(
+    () => (amount ?? undefined),
+    [amount]
+  )
+  return useApproveCallback(amountToApprove, getZapAddress())
 }

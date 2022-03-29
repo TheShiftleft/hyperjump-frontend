@@ -26,8 +26,8 @@ const FarmingTokenHarvestBalance = () => {
   const [stakedOnly, setStakedOnly] = usePersistState(false, { localStorageKey: 'hyper_pool_staked' })
   const showFinishedPools = location.pathname.includes('history')
   const earningsSum = allEarnings.reduce((accum, earning) => {
-  const earningNumber = new BigNumber(earning)
-  const { config } = getNetwork()
+    const earningNumber = new BigNumber(earning)
+    const { config } = getNetwork()
     if (earningNumber.eq(0)) {
       return accum
     }
@@ -58,12 +58,12 @@ const FarmingTokenHarvestBalance = () => {
   }
 
   const poolsData = poolsToShow()
-  const earnings  = poolsData[0]?.userData ? new BigNumber(poolsData[0].userData.pendingReward) : BIG_ZERO
+  const earnings = poolsData[0]?.userData ? new BigNumber(poolsData[0].userData.pendingReward) : BIG_ZERO
   const earningToken = poolsData[0]?.earningToken ? poolsData[0]?.earningToken : BIG_ZERO
   const earningTokenPrice = poolsData[0]?.earningTokenPrice ? poolsData[0]?.earningTokenPrice : BIG_ZERO
 
-   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
-   const earningsDollarValue = new BigNumber(formatNumber(earningTokenDollarBalance)).toNumber()
+  const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
+  const earningsDollarValue = new BigNumber(formatNumber(earningTokenDollarBalance)).toNumber()
 
   const earningTokenBalance = getBalanceNumber(earnings, 18)
   const hasEarnings = earnings.gt(0)

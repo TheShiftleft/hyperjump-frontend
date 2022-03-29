@@ -73,7 +73,6 @@ export const usePollBlockNumber = () => {
 }
 
 // Farms
-
 export const useFarms = (): ChainFarmsState => {
   const farms = useSelector((state: State) => state.farms[state.application.chainId])
   return farms

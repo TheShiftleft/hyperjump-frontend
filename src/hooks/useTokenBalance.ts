@@ -10,7 +10,6 @@ import useWeb3 from './useWeb3'
 import useRefresh from './useRefresh'
 import useLastUpdated from './useLastUpdated'
 
-
 type UseTokenBalanceState = {
   balance: BigNumber
   fetchStatus: FetchStatus
@@ -81,26 +80,26 @@ export const useGovTokenTotalSupply = () => {
   const [totalSupply, setTotalSupply] = useState<BigNumber>()
 
   useEffect(() => {
+    let isMounted = true
     async function fetchTotalSupply() {
       const govTokenContract = getGovTokenContract()
       try {
         const supply = await govTokenContract.methods.totalSupply().call()
-        setTotalSupply(new BigNumber(supply))
+        if (isMounted) {
+          setTotalSupply(new BigNumber(supply))
+        }
       } catch (e) {
         console.error(e)
       }
     }
 
     fetchTotalSupply()
+    return () => {
+      isMounted = false
+    }
   }, [slowRefresh])
 
   return totalSupply
-}
-
-const totalBurnedMethod: Record<Network, string> = {
-  [Network.BSC]: 'totalBurned',
-  [Network.BSC_TESTNET]: 'totalBurned',
-  [Network.FANTOM]: 'totalBurned',
 }
 
 export const useBurnedBalance = (tokenAddress: string) => {
@@ -111,9 +110,12 @@ export const useBurnedBalance = (tokenAddress: string) => {
 
   useEffect(() => {
     const fetchBalance = async () => {
-      const contract = getFarmingTokenContract(web3)
-      const res = await contract.methods[totalBurnedMethod[config.network]]().call()
-      setBalance(new BigNumber(res))
+      if (config.network === Network.FTM) {
+        const contract = getFarmingTokenContract(web3)
+        const res = await contract.methods.totalBurned().call()
+        setBalance(new BigNumber(res))
+      }
+      setBalance(BIG_ZERO)
     }
 
     fetchBalance()

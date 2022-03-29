@@ -62,7 +62,7 @@ export const initialState: UserState = {
   userExpertMode: false,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
-  tokens: {},
+  tokens: JSON.parse(localStorage.getItem('userAddedTokens')) ?? {},
   pairs: {},
   timestamp: currentTimestamp(),
   audioPlay: true,
@@ -108,11 +108,13 @@ export default createReducer(initialState, (builder) =>
     .addCase(addSerializedToken, (state, { payload: { serializedToken } }) => {
       state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {}
       state.tokens[serializedToken.chainId][serializedToken.address] = serializedToken
+      localStorage.setItem('userAddedTokens', JSON.stringify({[serializedToken.chainId]: state.tokens[serializedToken.chainId]}))
       state.timestamp = currentTimestamp()
     })
     .addCase(removeSerializedToken, (state, { payload: { address, chainId } }) => {
       state.tokens[chainId] = state.tokens[chainId] || {}
       delete state.tokens[chainId][address]
+      localStorage.setItem('userAddedTokens', JSON.stringify({[chainId]: state.tokens[chainId]}))
       state.timestamp = currentTimestamp()
     })
     .addCase(addSerializedPair, (state, { payload: { serializedPair } }) => {

@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux'
 
 const StyledFarmStakingCard = styled(Card)`
   flex: 1;
-  background-color: rgba(2,5,11,0.7);
+  background-color: rgba(2, 5, 11, 0.7);
   border-radius: ${({ theme }) => theme.radii.card};
   height: 100%;
 
@@ -24,8 +24,8 @@ const StyledFarmStakingCard = styled(Card)`
   }
 
   &::after {
-    content: "";
-    background-image: url("jump.png");
+    content: '';
+    background-image: url('jump.png');
     background-repeat: no-repeat;
     top: 0;
     left: 0;
@@ -59,18 +59,24 @@ const EarnAPRCard = () => {
 
   // Fetch farm data once to get the max APR
   useEffect(() => {
+    let isMounted = true
     const fetchFarmData = async () => {
       try {
-        const pids = farmsConfig.filter(farmConfig => farmConfig.pid !== null).map((farmToFetch) => farmToFetch.pid)
+        const pids = farmsConfig.filter((farmConfig) => farmConfig.pid !== null).map((farmToFetch) => farmToFetch.pid)
         await dispatch(fetchFarmsPublicDataAsync(pids))
       } finally {
-        setIsFetchingFarmData(false)
+        if (isMounted) {
+          setIsFetchingFarmData(false)
+        }
       }
     }
 
     fetchFarmData()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, setIsFetchingFarmData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      isMounted = false
+    }
+  }, [dispatch, setIsFetchingFarmData, farmsConfig])
 
   const highestApr = useMemo(() => {
     if (farmingTokenPriceUsd.gt(0)) {
@@ -101,7 +107,6 @@ const EarnAPRCard = () => {
             {earnUpTo}
           </Heading>
 
-          
           <Heading>
             {highestApr && !isFetchingFarmData ? (
               `UP TO ${highestApr}% APR`
@@ -110,13 +115,11 @@ const EarnAPRCard = () => {
             )}
           </Heading>
           <Flex justifyContent="space-between" marginTop="auto">
-            <Text color="primary">
-              {InFarms}
-            </Text>
+            <Text color="primary">{InFarms}</Text>
           </Flex>
           <Flex mt="-15px" ml="auto" alignItems="center">
             <Text>EARN</Text>
-            <ArrowIcon src="images/dashboard/arrow.png"/>
+            <ArrowIcon src="images/dashboard/arrow.png" />
           </Flex>
         </AssetCardBody>
       </NavLink>

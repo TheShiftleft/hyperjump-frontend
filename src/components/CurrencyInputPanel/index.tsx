@@ -4,17 +4,20 @@ import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
 import useI18n from 'hooks/useI18n'
+import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { RowBetween } from '../Row'
+import { LPToken } from '../SearchModal/CurrencyListWarp'
 import { Input as NumericalInput } from '../NumericalInput'
 import { useActiveWeb3React } from '../../hooks'
 
-const InputRow = styled.div<{ selected: boolean }>`
+const InputRow = styled.div<{ selected: boolean, hideInput?: boolean }>`
   display: flex;
   flex-flow: row nowrap;
+  ${({hideInput}) => hideInput ? 'justify-content: right': ''};
   align-items: center;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
 `
@@ -74,15 +77,24 @@ interface CurrencyInputPanelProps {
   showMaxButton: boolean
   label?: string
   onCurrencySelect?: (currency: Currency) => void
+  onPairSelect?: (pair: Pair) => void
+  onLPSelect?: (lp: LPToken) => void
   currency?: Currency | null
   disableCurrencySelect?: boolean
   hideBalance?: boolean
   pair?: Pair | null
+  lp?: LPToken | null
   hideInput?: boolean
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
   disabledNumericalInput?: boolean
+  zap?: boolean
+  warp?: boolean
+  pairToken?: boolean
+  hideLabel?: boolean
+  lpUrl?: string,
+  selectedSwap?: OtherSwapConfig | null
 }
 export default function CurrencyInputPanel({
   value,
@@ -91,15 +103,23 @@ export default function CurrencyInputPanel({
   showMaxButton,
   label,
   onCurrencySelect,
+  onPairSelect,
+  onLPSelect,
   currency,
   disableCurrencySelect = false,
   hideBalance = false,
   pair = null, // used for double token logo
+  lp = null, // used for LPs of other swap/defi
   hideInput = false,
   otherCurrency,
   id,
   showCommonBases,
-  disabledNumericalInput = false
+  disabledNumericalInput = false,
+  zap,
+  warp,
+  pairToken,
+  hideLabel,
+  selectedSwap
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
@@ -112,7 +132,7 @@ export default function CurrencyInputPanel({
   return (
     <InputPanel id={id}>
       <Container hideInput={hideInput}>
-        {!hideInput && (
+        {!hideLabel && (
           <LabelRow>
             <RowBetween>
               <Text fontSize="14px">{translatedLabel}</Text>
@@ -126,7 +146,7 @@ export default function CurrencyInputPanel({
             </RowBetween>
           </LabelRow>
         )}
-        <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
+        <InputRow style={hideInput ? { borderRadius: '8px' } : {}} selected={disableCurrencySelect} hideInput>
           {!hideInput && (
             <>
               <NumericalInput
@@ -154,14 +174,20 @@ export default function CurrencyInputPanel({
             }}
           >
             <Aligner>
-              {pair ? (
-                <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={16} margin />
+              {pair || lp? (
+                <DoubleCurrencyLogo lpUrl={selectedSwap?.imageUrl} currency0={pair ? pair.token0 : lp?.tokens[0]} currency1={pair ? pair.token1 : lp?.tokens[1]} size={24} margin />
               ) : currency ? (
                 <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
               ) : null}
               {pair ? (
                 <Text id="pair">
-                  {pair?.token0.symbol}:{pair?.token1.symbol}
+                  {pair?.token0?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : pair?.token0?.symbol.toLowerCase() === 'wftm' ? 'FTM' : pair?.token0?.symbol}:
+                  {pair?.token1?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : pair?.token1?.symbol.toLowerCase() === 'wftm' ? 'FTM' : pair?.token1?.symbol}
+                </Text>
+              ) : lp ? (
+                <Text id="lp">
+                  {lp?.tokens[0]?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : lp?.tokens[0]?.symbol.toLowerCase() === 'wftm' ? 'FTM' : lp?.tokens[0]?.symbol}:
+                  {lp?.tokens[1]?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : lp?.tokens[1]?.symbol.toLowerCase() === 'wftm' ? 'FTM' : lp?.tokens[1]?.symbol}
                 </Text>
               ) : (
                 <Text id="pair">
@@ -170,7 +196,7 @@ export default function CurrencyInputPanel({
                       currency.symbol.length - 5,
                       currency.symbol.length
                     )}`
-                    : currency?.symbol) || TranslateString(1196, 'Select a currency')}
+                    : currency?.symbol) || TranslateString(1196, 'Select a token')}
                 </Text>
               )}
               {!disableCurrencySelect && <ChevronDownIcon />}
@@ -178,14 +204,22 @@ export default function CurrencyInputPanel({
           </CurrencySelect>
         </InputRow>
       </Container>
-      {!disableCurrencySelect && onCurrencySelect && (
+      {!disableCurrencySelect && (onCurrencySelect || onPairSelect || onLPSelect) && (
         <CurrencySearchModal
           isOpen={modalOpen}
           onDismiss={handleDismissSearch}
           onCurrencySelect={onCurrencySelect}
+          onPairSelect={onPairSelect}
+          onLPSelect={onLPSelect}
           selectedCurrency={currency}
+          selectedPair={pair}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
+          zap={zap}
+          warp={warp}
+          pair={pairToken}
+          selectedSwap={selectedSwap}
+          selectedLP={lp}
         />
       )}
     </InputPanel>

@@ -6,11 +6,12 @@ import ApplicationUpdater from './state/application/updater'
 import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import ToastListener from './components/ToastListener'
-import { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
-import { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
-import { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
+// import { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
+// import { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
+// import { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
 import App from './App'
 
+/* 
 function AnalyticsUpdaters() {
   return (
     <>
@@ -20,13 +21,14 @@ function AnalyticsUpdaters() {
     </>
   )
 }
+ */
 
 ReactDOM.render(
   <React.StrictMode>
     <Providers>
       <>
         <ListsUpdater />
-        <AnalyticsUpdaters />
+        {/* <AnalyticsUpdaters /> */}
         <ApplicationUpdater />
         <TransactionUpdater />
         <MulticallUpdater />

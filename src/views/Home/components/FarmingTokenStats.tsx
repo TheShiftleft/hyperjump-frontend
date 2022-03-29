@@ -1,40 +1,35 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { ChainId } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { Card, CardBody, Heading, Text, Button, Flex } from 'uikit'
 import styled from 'styled-components'
-import { getBalanceNumber } from 'utils/formatBalance'
-import { useTotalSupply, useBurnedBalance } from 'hooks/useTokenBalance'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
-import { useTranslation } from 'contexts/Localization'
 import { getFarmingTokenAddress } from 'utils/addressHelpers'
 import { registerToken } from 'utils/wallet'
 import { useGetCirculatingSupplyStats } from 'hooks/api'
-import { NETWORK_URL } from 'config'
-import pools from 'config/constants/pools'
 import getNetwork from 'utils/getNetwork'
 import CardValue from './CardValue'
 import BurnCardValue from './BurnCardValue'
 
 const FarmingTokenStats = () => {
-  const { t } = useTranslation()
-  const circulatingSupplyData = useGetCirculatingSupplyStats()
-
-  const burnedBalance = getBalanceNumber(useBurnedBalance(getFarmingTokenAddress()))
-  const farmingTokenTotalSupply = circulatingSupplyData ? circulatingSupplyData.ftm.totalSupply : 0 //  - burnedBalance : 0
-  const farmingTokenTotalCirculatingSupply = circulatingSupplyData ? circulatingSupplyData.totalCirculatingSupply : 0 //  - burnedBalance : 0
-  const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
-
-  const farmingTokenPriceUsdString =
-    farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()
-      ? 'Loading...'
-      : farmingTokenPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 4 })
-  const farmingTokenMarketCap =
-    (farmingTokenPriceUsd.isNaN() || farmingTokenPriceUsd.isZero()) && farmingTokenTotalSupply !== 0
-      ? 0
-      : farmingTokenPriceUsd.toNumber() * farmingTokenTotalSupply
   const { config, chainId } = getNetwork()
+
+  const circulatingSupplyData = useGetCirculatingSupplyStats()
+  // we dont  have burn data from bsc yet
+  const burnedBalance = circulatingSupplyData ? circulatingSupplyData.ftm.totalBurned : 0
+  const farmingTokenTotalSupply: number = circulatingSupplyData ? circulatingSupplyData.ftm.totalSupply : 0
+  const farmingTokenTotalCirculatingSupply = circulatingSupplyData ? circulatingSupplyData.totalCirculatingSupply : 0
+
+  const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
+  const farmingTokenPriceUsdString = farmingTokenPriceUsd.gt(0)
+    ? farmingTokenPriceUsd.toNumber().toLocaleString(undefined, { maximumFractionDigits: 4 })
+    : '0'
+
+  const farmingTokenMarketCap =
+    farmingTokenPriceUsd.gt(0) && farmingTokenTotalSupply > 0
+      ? farmingTokenPriceUsd.toNumber() * farmingTokenTotalSupply
+      : 0
 
   const localCirculatingSupply = circulatingSupplyData
     ? chainId === ChainId.BSC_MAINNET
@@ -49,11 +44,11 @@ const FarmingTokenStats = () => {
       ? '/swap?inputCurrency=BNB&outputCurrency=0x130025eE738A66E691E6A7a62381CB33c6d9Ae83'
       : 'swap?inputCurrency=BNB&outputCurrency=0x78de9326792ce1d6eca0c978753c6953cdeedd73'
 
-  // make dynamic later -- mech
-  const tokenPerBlockBSC = '1.583940258751902587'
-  const tokenPerBlockFTM = '1.585489599188229325'
+  // make dynamic later, maybe add to api? -- mech
+  const tokenPerBlockBSC = 1.583940258751902587
+  const tokenPerBlockFTM = 1.585489599188229325
 
-  const localEmissionRate = chainId === 56 ? tokenPerBlockBSC : tokenPerBlockFTM
+  const localEmissionRate = chainId ? (chainId === 56 ? tokenPerBlockBSC : tokenPerBlockFTM) : 0
 
   return (
     <StyledFarmingTokenStats>
@@ -61,7 +56,7 @@ const FarmingTokenStats = () => {
         <Flex justifyContent="space-between" mb="20px">
           <Flex flexDirection="column">
             <Heading scale="xl">
-              <HeadingColor>{t(`${config.farmingToken.symbol} STATS`)}</HeadingColor>
+              <HeadingColor>{`${config.farmingToken.symbol} STATS`}</HeadingColor>
             </Heading>
             <Heading scale="lg">${config.farmingToken.symbol}</Heading>
           </Flex>
@@ -74,12 +69,15 @@ const FarmingTokenStats = () => {
             </NavLink>
           </Flex>
         </Flex>
-
         <Text color="primary">Market Cap</Text>
-        <Heading mb="10px">{farmingTokenMarketCap && <CardValue value={farmingTokenMarketCap} />}</Heading>
+        <Heading mb="10px">
+          {farmingTokenMarketCap ? <CardValue value={farmingTokenMarketCap} /> : <CardValue value={0} />}
+        </Heading>
 
         <Text color="primary">Total Supply</Text>
-        <Heading mb="10px">{farmingTokenTotalSupply && <CardValue value={farmingTokenTotalSupply} />}</Heading>
+        <Heading mb="10px">
+          {farmingTokenTotalSupply ? <CardValue value={farmingTokenTotalSupply} /> : <CardValue value={0} />}
+        </Heading>
         <Text color="primary">Total Circulating Supply</Text>
         <Heading mb="10px">
           {farmingTokenTotalCirculatingSupply && <CardValue value={farmingTokenTotalCirculatingSupply} />}({' '}
@@ -91,18 +89,19 @@ const FarmingTokenStats = () => {
             : 0}
           % )
         </Heading>
-
         <>
           <Text color="primary">{config.name} Circulating Supply</Text>
           <Heading mb="10px">
             {localCirculatingSupply && <CardValue value={localCirculatingSupply} />} ({' '}
             {localCirculatingSupply && farmingTokenTotalCirculatingSupply
-              ? new BigNumber(localCirculatingSupply).div(farmingTokenTotalCirculatingSupply).multipliedBy(100).toFixed(2)
+              ? new BigNumber(localCirculatingSupply)
+                  .div(farmingTokenTotalCirculatingSupply)
+                  .multipliedBy(100)
+                  .toFixed(2)
               : 0}
             % )
           </Heading>
         </>
-
         <Text color="primary">Total {config.farmingToken.symbol} Burned</Text>
         <Heading mb="10px">
           <BurnCardValue decimals={0} value={burnedBalance} supply={farmingTokenTotalSupply + burnedBalance} />
@@ -111,7 +110,7 @@ const FarmingTokenStats = () => {
         <Text color="primary">{config.name} Emission Rate</Text>
         <Flex justifyContent="space-between">
           <Heading mb="10px">
-            <CardValue decimals={3} value={localEmissionRate} postfix="/ SECOND" />
+            <CardValue decimals={3} value={Number(localEmissionRate)} postfix="/ SECOND" />
           </Heading>
           <MetamaskButton
             onClick={() =>

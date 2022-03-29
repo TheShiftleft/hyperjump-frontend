@@ -9,18 +9,32 @@ interface Props extends PanelProps, PushedProps {
   isMobile: boolean
 }
 
+const RootPanel = styled.div<{ isMobile: boolean }>``
+const Panel: React.FC<Props> = (props) => {
+  const { isPushed, showMenu, isMobile } = props
+  return (
+    <RootPanel isMobile={isMobile}>
+      <StyledPanel isPushed={isPushed} showMenu={showMenu} isMobile={isMobile}>
+        <HorizontalPanelBody {...props} />
+      </StyledPanel>
+    </RootPanel>
+  )
+}
+
+export default Panel
+
 const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile: boolean }>`
   position: ${({ isMobile }) => (!isMobile ? 'relative' : 'fixed')};
   padding-top: 0;
   ${({ isMobile }) => (!isMobile ? 'top: 12px; left: 20px; ' : 'bottom: 0; background-color: rgba(13, 29, 54, 1)')};
-  
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-shrink: 0;
-  
+
   transition: padding-top 0.2s, width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border:none;
+  border: none;
   z-index: 11;
   overflow: ${({ isPushed }) => (isPushed ? 'initial' : 'hidden')};
   width: 100%;
@@ -32,19 +46,3 @@ const StyledPanel = styled.div<{ isPushed: boolean; showMenu: boolean; isMobile:
     //width: ${({ isPushed }) => `${isPushed ? SIDEBAR_WIDTH_FULL : SIDEBAR_WIDTH_REDUCED}px`};
   }
 `
-
-const RootPanel = styled.div<{ isMobile: boolean }>`
-  
-`
-const Panel: React.FC<Props> = (props) => {
-  const { isPushed, showMenu, isMobile } = props
-  return (
-    <RootPanel isMobile={isMobile} >
-      <StyledPanel isPushed={isPushed} showMenu={showMenu} isMobile={isMobile}>
-        <HorizontalPanelBody {...props} />
-      </StyledPanel>
-    </RootPanel>
-  )
-}
-
-export default Panel

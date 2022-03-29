@@ -13,44 +13,6 @@ import Countdown from '../../Lottery/components/Countdown'
 const { config } = getNetwork()
 const rewardToken = ` ${config.farmingToken.symbol}`
 
-const StyledFarmStakingCard = styled(Card)`
-  background-color: rgba(2, 5, 11, 0.7);
-  border-radius: 50px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-
-  &::after {
-    content: '';
-    background-image: url('images/dashboard/roullete.png');
-    background-repeat: no-repeat;
-    background-size: 250px auto;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-position: right -50px top -10px;
-    position: absolute;
-    z-index: -1;
-  }
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    margin: 0;
-    max-width: none;
-  }
-`
-
-const EarningsButton = styled(Button)`
-  border-radius: 5px;
-  color: black;
-  font-size: 18px;
-  padding: 10px 7px;
-  margin-left: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`
-
 const WinCard = () => {
   useFetchLottery()
   const { t } = useTranslation()
@@ -77,16 +39,16 @@ const WinCard = () => {
           </Flex>
 
           {status === LotteryStatus.OPEN && (
-              <>
-                <Flex flexDirection="column">
-                  <Countdown
-                      nextEventTime={nextEventTime}
-                      postCountdownText={postCountdownText}
-                      preCountdownText={preCountdownText}
-                    />
-                </Flex>
-              </>
-            )}
+            <>
+              <Flex flexDirection="column">
+                <Countdown
+                  nextEventTime={nextEventTime}
+                  postCountdownText={postCountdownText}
+                  preCountdownText={preCountdownText}
+                />
+              </Flex>
+            </>
+          )}
         </Flex>
 
         <Flex justifyContent="space-between" alignItems="flex-end">
@@ -97,7 +59,7 @@ const WinCard = () => {
                   Hyper Pot this Round
                 </Text>
                 <Heading scale="lg">
-                  <Heading scale="lg">Next lottery starting soon...</Heading>
+                  Next lottery starting soon...
                 </Heading>
               </Flex>
 
@@ -189,3 +151,41 @@ const WinCard = () => {
 }
 
 export default WinCard
+
+const StyledFarmStakingCard = styled(Card)`
+  background-color: rgba(2, 5, 11, 0.7);
+  border-radius: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+
+  &::after {
+    content: '';
+    background-image: url('images/dashboard/roullete.png');
+    background-repeat: no-repeat;
+    background-size: 250px auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-position: right -50px top -10px;
+    position: absolute;
+    z-index: -1;
+  }
+
+  ${({ theme }) => theme.mediaQueries.lg} {
+    margin: 0;
+    max-width: none;
+  }
+`
+
+const EarningsButton = styled(Button)`
+  border-radius: 5px;
+  color: black;
+  font-size: 18px;
+  padding: 10px 7px;
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`

@@ -1,53 +1,34 @@
+import tokens from './tokens'
+
+// tokens moved to the bottom, they now use the addresses from the token list
+
 export default {
-  alloy: {
-    97: '0xC5FD6F3eB1f63082Daee9e09E17D870005962309',
-    56: '0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd',
-  },
-  jump: {
-    56: '0x130025eE738A66E691E6A7a62381CB33c6d9Ae83',
-    97: '0x2c9a2fA5d93c7A4CFfBB45e94f05Fd9eF58A5CE2',
-    250: '0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73',
-  },
-  xjump: {
-    56: '0x522650de53e79ead931e4eb3537b12d7fe06697d',
-    250: '0x5621Ca989428CF105784164b84D500f4a6bEc889',
-  },
-  hypr: {
-    97: '0x03D6BD3d48F956D783456695698C407A46ecD54d',
-    56: '0x03d6bd3d48f956d783456695698c407a46ecd54d',
-  },
-  ori: {
-    250: '0x0575f8738EFdA7F512e3654F277C77e80C7d2725',
-  },
-  aurora: {
-    250: '0xbc2451AaD349b6B43FD05F4F0cC327F8A6bcA2d4',
-  },
-  mech: {
-    97: '0xcba0FA601C44509e671283d071c600EFA7EdDC6a',
-    56: '0x3ae713C662B8852D686e718E0762631A4CB84954',
-    250: '0x85c85647e1A79c2b8bc3Ed2B6a1DdE326eeC66c5',
-  },
-  busd: {
-    56: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-  },
-  usdc: {
-    250: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
-  },
-  eth: {
-    56: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
-    97: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
-  },
-  wbnb: {
-    97: '0xae13d989dac2f0debff460ac112a837c89baa7cd',
-    56: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-    250: '0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454',
-  },
-  wftm: {
-    250: '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
-  },
+  // masterchefs 2.1 - current version
   masterChef: {
-    56: '0x7A0De9A006129A18AE8d3C4e609fa866EE29A5B3', // think this is the1st deploy abandonded: '0xD651056941566B5376452d4B177b4a961F54D386', // v1: '0x4F1818Ff649498a2441aE1AD29ccF55a8E1C6250',
-    250: '0x2E03284727Ff6E50BB00577381059a11e5Bb01dE', // v2 first '0x846d5bDFc435dC68010F11873Fc6a0b08273e00F', // v1 :'0x90Df158ff7c31aD1d81ddDb1D8ab9d0eCBCeDa20',
+    56: '0x1985CD7aF3B410Cfe87B59EAF8A0833816729c49',
+    250: '0xb0AA3a0458BD85F859345e2251C7665C5f7A9d18',
+  },
+  masterChef20: {
+    56: '0x7A0De9A006129A18AE8d3C4e609fa866EE29A5B3',
+    250: '0x2E03284727Ff6E50BB00577381059a11e5Bb01dE',
+  },
+  actionInitiators: {
+    56: '0x559C93cf64005DfdA3e417E7C866a7F40F52C6C6',
+    250: '0xF24B855689F315037dE778C83F5bB7B25Cc4a674',
+  },
+  // distribution system
+  mainDistributor: {
+    250: '0xFeDd479723B03350cff007fe0DB19D1C6F179457',
+  },
+  localFarmTokenDistributor: {
+    56: '0x2B4618996faD3eE7Bc9Ba8c98969A8eaf01B5E20',
+    250: '0xD27D38694aadb487AEa67dB70fcEbB411A7Ac3ae',
+  },
+  ftmToBscBridgeDistributor: { 250: '0x863130381c476a3dAbcd6F287Ab967fE4c3a7D13' },
+  // other utility contracts
+  burnContract: {
+    56: '0xFD5b495D6ce1a98102a14A7443928FC1B31a200D',
+    250: '0x7AfCA69dCD68a8b36764ccE35B89A76450ccA411',
   },
   multiCall: {
     56: '0x1282fE78d092E6077B05FeE27f239b49b2725978',
@@ -59,12 +40,10 @@ export default {
     250: '0x1e8763f80E57209E26300b3002bbAEAd7CEA3Bd1', // '0x98fA02eC9Feafe8ABf3AD71693BC5D562aa38f95',
     97: '',
   },
+  // TODO: rename this migrator to correctly reflect which migration
   migrator: {
     56: '0x55Bf73Afcf2622E979aEE0831AC624B40c0DD297', // '0xAA1504c878B158906B78A471fD6bDbf328688aeB',
     250: '0xA256f0D2e12bE9404C9CCd33FB430648F7243bc2', // '0x1e2339616899A3130C72C62D35DC2b2B23598949',
-  },
-  mainDistributor: {
-    250: '0xA565037058DF44F336e01683E096CDDe45cFE5c2',
   },
   synapse: {
     56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
@@ -77,5 +56,60 @@ export default {
   hyperJumpClaimLpRewards: {
     56: '0xF153911d912de1f4FE576FbE4Ab29C075d656B58',
     250: '0x2B4618996faD3eE7Bc9Ba8c98969A8eaf01B5E20',
-  }
+  },
+  zap: {
+    56: '0xDFb9F73fb56D5AACeDF0D1D650a3614d21AcfDeB',
+    250: '0x61D791390ed5067E43BBd9760d26Ed2E57d24523',
+  },
+  l2BridgeZap: {
+    56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
+    250: '0xB003e75f7E0B5365e814302192E99b4EE08c0DEd',
+  },
+  // tokens
+  alloy: {
+    56: tokens.alloy.address[56],
+  },
+  jump: {
+    56: tokens.jump.address[56],
+    250: tokens.jump.address[250],
+  },
+  // old xJump from farm 2.0
+  xjump20: {
+    56: tokens.xjump20.address[56],
+    250: tokens.xjump20.address[250],
+  },
+  // new xJump for Farm 2.1
+  xjump: {
+    56: tokens.xjump.address[56],
+    250: tokens.xjump.address[250],
+  },
+  ori: {
+    250: tokens.ori.address[250],
+  },
+  aurora: {
+    250: tokens.aurora.address[250],
+  },
+  mech: {
+    56: tokens.mech.address[56],
+    250: tokens.mech.address[250],
+  },
+  busd: {
+    56: tokens.busd.address[56],
+  },
+  usdc: {
+    56: tokens.usdc.address[56],
+    250: tokens.usdc.address[250],
+  },
+  eth: {
+    56: tokens.eth.address[56],
+    250: tokens.eth.address[250],
+  },
+  wbnb: {
+    56: tokens.wbnb.address[56],
+    250: tokens.wbnb.address[250],
+  },
+  wftm: {
+    56: tokens.wftm.address[56],
+    250: tokens.wftm.address[250],
+  },
 }

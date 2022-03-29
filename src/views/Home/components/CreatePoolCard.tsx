@@ -3,6 +3,34 @@ import styled from 'styled-components'
 import { Heading, Card, CardBody, Button, Flex, Link } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 
+const CreatePoolCard = () => {
+  const { t } = useTranslation()
+
+  return (
+    <StyledFarmStakingCard>
+      <CardBody>
+        <Flex justifyContent="space-between" alignItems="flex-end">
+          <HeadingText>
+            WANT TO
+            <HeadingColor> CREATE A POOL </HeadingColor>
+            FOR YOUR TOKEN?
+          </HeadingText>
+          <ButtonContainer>
+            <Link
+              external
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdqRqH9chWa2cd6Hg3nmuVzvRixUohOVov26R70LoxOwomRbA/viewform?vc=0&c=0&w=1&flr=0"
+            >
+              <ApplyButton>APPLY NOW</ApplyButton>
+            </Link>
+          </ButtonContainer>
+        </Flex>
+      </CardBody>
+    </StyledFarmStakingCard>
+  )
+}
+
+export default CreatePoolCard
+
 const StyledFarmStakingCard = styled(Card)`
   background-color: rgba(2, 5, 11, 0.7);
   border-radius: ${({ theme }) => theme.radii.card};
@@ -39,31 +67,3 @@ const ApplyButton = styled(Button)`
   padding: 5px 3px !important;
   color: black;
 `
-
-const CreatePoolCard = () => {
-  const { t } = useTranslation()
-
-  return (
-    <StyledFarmStakingCard>
-      <CardBody>
-        <Flex justifyContent="space-between" alignItems="flex-end">
-          <HeadingText>
-            WANT TO
-            <HeadingColor> CREATE A POOL </HeadingColor>
-            FOR YOUR TOKEN?
-          </HeadingText>
-          <ButtonContainer>
-            <Link
-              external
-              href="https://docs.google.com/forms/d/e/1FAIpQLSdqRqH9chWa2cd6Hg3nmuVzvRixUohOVov26R70LoxOwomRbA/viewform?vc=0&c=0&w=1&flr=0"
-            >
-              <ApplyButton>APPLY NOW</ApplyButton>
-            </Link>
-          </ButtonContainer>
-        </Flex>
-      </CardBody>
-    </StyledFarmStakingCard>
-  )
-}
-
-export default CreatePoolCard

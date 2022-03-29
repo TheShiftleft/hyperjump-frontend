@@ -8,12 +8,12 @@ import { getFarmingTokenABI, getPoolABI } from 'config/abi'
 
 const limitMethods: Record<Network, any> = {
   [Network.BSC]: {
-    start: 'startTime',
-    end: '_bonusEndBlock',
+    start: 'startBlock',
+    end: 'bonusEndBlock',
   },
   [Network.BSC_TESTNET]: {
-    start: 'startTime',
-    end: 'bonusEndTime',
+    start: 'startBlock',
+    end: 'bonusEndBlock',
   },
   [Network.FANTOM]: {
     start: 'startTime',
@@ -52,7 +52,6 @@ export const fetchPoolsBlockLimits = async (pools: Pool[]) => {
       }
     })
   } catch (e) {
-    console.error(e)
     return []
   }
 }
