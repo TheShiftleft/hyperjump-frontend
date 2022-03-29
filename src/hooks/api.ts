@@ -18,18 +18,23 @@ export const useGetBscStats = () => {
   const { config } = getNetwork()
 
   useEffect(() => {
+    let isMounted = true
     const fetchData = async () => {
       try {
         const response = await fetch(`https://vaultsapi.hyperjump.app/tvl`)
         const responseData: ApiResponse = await response.json()
-
-        setData(responseData)
+        if (isMounted) {
+          setData(responseData)
+        }
       } catch (error) {
         console.error('Unable to fetch data:', error)
       }
     }
 
     fetchData()
+    return () => {
+      isMounted = false
+    }
   }, [config.network, setData])
 
   return data
@@ -61,18 +66,24 @@ export const useGetCirculatingSupplyStats = () => {
   const { config } = getNetwork()
 
   useEffect(() => {
+    let isMounted = true
     const fetchData = async () => {
       try {
         const response = await fetch(`https://vaultsapi.hyperjump.app/circulating_supply`)
         const responseData: CirculatingSupplyApiResponse = await response.json()
 
-        setData(responseData)
+        if (isMounted) {
+          setData(responseData)
+        }
       } catch (error) {
         console.error('Unable to fetch data:', error)
       }
     }
 
     fetchData()
+    return () => {
+      isMounted = false
+    }
   }, [config.network, setData])
 
   return data

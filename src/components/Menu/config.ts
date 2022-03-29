@@ -46,7 +46,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
   {
     label: t('HyperHeist'),
     icon: 'HomeIcon',
-    href: 'https://hyperjump.fi/hyperheist/',
+    href: 'https://hyperjump.app/hyperheist/',
   },
   {
     label: t('Voting'),
@@ -79,7 +79,7 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
       },
       {
         label: t('UnRekt'),
-        href: 'https://unrekt.hyperjump.fi/',
+        href: 'https://unrekt.hyperjump.app/',
         target: '_blank',
       },
     ],

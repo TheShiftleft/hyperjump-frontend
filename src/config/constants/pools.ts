@@ -3,6 +3,36 @@ import tokens from './tokens'
 import { PoolCategory, PoolConfig } from './types'
 
 const pools: Record<Network, PoolConfig[]> = {
+  [Network.BSC]: [
+    {
+      sousId: 14,
+      stakingToken: tokens.jump,
+      earningToken: tokens.jump,
+      contractAddress: {
+        56: tokens.xjump.address[56], // xjump 2.1 contract
+      },
+      poolCategory: PoolCategory.CORE,
+      harvest: true,
+      tokenPerBlock: '1.583940258751902587',
+      sortOrder: 1,
+      isFinished: false,
+    },
+  ],
+  [Network.FANTOM]: [
+    {
+      sousId: 12,
+      stakingToken: tokens.jump,
+      earningToken: tokens.jump,
+      contractAddress: {
+        250: tokens.xjump.address[250], // xjump 2.1 contract
+      },
+      poolCategory: PoolCategory.CORE,
+      harvest: true,
+      tokenPerBlock: '1.585489599188229325',
+      sortOrder: 1,
+      isFinished: false,
+    },
+  ],
   [Network.BSC_TESTNET]: [
     {
       sousId: 0,
@@ -14,64 +44,6 @@ const pools: Record<Network, PoolConfig[]> = {
       poolCategory: PoolCategory.CORE,
       harvest: true,
       tokenPerBlock: '3.141592653589793238',
-      sortOrder: 1,
-      isFinished: false,
-    },
-  ],
-  [Network.BSC]: [
-    /*  {
-      // we dont use pid 0, instead use pid 6 for xjump
-      sousId: 0,
-      stakingToken: tokens.jump,
-      earningToken: tokens.jump,
-      contractAddress: {
-        56: '0x130025eE738A66E691E6A7a62381CB33c6d9Ae83',
-      },
-      poolCategory: PoolCategory.CORE,
-      harvest: true,
-      tokenPerBlock: '3.141592653589793238',
-      sortOrder: 1,
-      isFinished: false,
-    }, */
-    {
-      sousId: 6,
-      stakingToken: tokens.jump,
-      earningToken: tokens.jump,
-      contractAddress: {
-        56: '0x522650de53e79ead931e4eb3537b12d7fe06697d', // xjump contract
-      },
-      poolCategory: PoolCategory.CORE,
-      harvest: true,
-      tokenPerBlock: '1.583940258751902587',
-      sortOrder: 1,
-      isFinished: false,
-    },
-  ],
-  [Network.FANTOM]: [
-    // we dont use pid 0, instead use pid 5 for xjump
-    /* {
-      sousId: 0,
-      stakingToken: tokens.jump,
-      earningToken: tokens.jump,
-      contractAddress: {
-        250: '0x2E03284727Ff6E50BB00577381059a11e5Bb01dE', // farm contract
-      },
-      poolCategory: PoolCategory.CORE,
-      harvest: true,
-      tokenPerBlock: '1.585489599188229325',
-      sortOrder: 1,
-      isFinished: false,
-    }, */
-    {
-      sousId: 5,
-      stakingToken: tokens.jump,
-      earningToken: tokens.jump,
-      contractAddress: {
-        250: '0x5621Ca989428CF105784164b84D500f4a6bEc889', // xjump contract
-      },
-      poolCategory: PoolCategory.CORE,
-      harvest: true,
-      tokenPerBlock: '1.585489599188229325',
       sortOrder: 1,
       isFinished: false,
     },

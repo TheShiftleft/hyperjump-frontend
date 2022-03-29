@@ -13,49 +13,11 @@ import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
 import { useMasterchef, usePoolContract } from 'hooks/useContract'
 import UnlockButton from 'components/UnlockButton'
 import getNetwork from 'utils/getNetwork'
-
 import { useSousHarvest } from 'hooks/useHarvest'
-
 import StakeModal from './Modals/StakeModal'
 import NotEnoughTokensModal from './Modals/NotEnoughTokensModal'
-
 import FarmingTokenHarvestBalance from './FarmingTokenHarvestBalance'
 import FarmingTokenWalletBalance from './FarmingTokenWalletBalance'
-
-const StyledFarmingTokenStakingCard = styled(Card)`
-  background-color: rgba(2, 5, 11, 0.7);
-  border-radius: 50px;
-  min-height: 200px;
-
-  &::after {
-    content: '';
-    background-image: url('jump.png');
-    background-repeat: no-repeat;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-position: right -120px bottom -140px;
-    position: absolute;
-    z-index: -1;
-  }
-`
-
-const CardButton = styled(Button)`
-  border-radius: 5px;
-  max-height: 25px;
-  padding: 5px 5px !important;
-  color: black;
-
-  :disabled {
-    color: black;
-  }
-`
-
-const HeadingColor = styled.div`
-  color: ${({ theme }) => theme.colors.primary};
-  font-family: Bebas neue, cursive;
-`
 
 const FarmingTokenStakingCard = () => {
   useFetchPublicPoolsData()
@@ -128,7 +90,6 @@ const FarmingTokenStakingCard = () => {
                 </Heading>
                 <Text color="primary">{config.farmingToken.symbol} to Harvest</Text>
               </Flex>
-
               <CardButton
                 id="harvest-all"
                 onClick={harvestAllFarms}
@@ -137,7 +98,6 @@ const FarmingTokenStakingCard = () => {
                 HARVEST ALL
               </CardButton>
             </Flex>
-
             <Flex justifyContent="space-between" alignItems="flex-end">
               <Flex flexDirection="column">
                 <Heading>
@@ -146,6 +106,15 @@ const FarmingTokenStakingCard = () => {
                 <Text color="primary">{config.farmingToken.symbol} in Wallet</Text>
               </Flex>
               <CardButton onClick={stakingTokenBalance.gt(0) ? onStake : onPresentTokenRequired}>STAKE JUMP</CardButton>
+            </Flex>
+            <br />
+            <Flex justifyContent="space-between" alignItems="flex-end">
+              <Flex flexDirection="column">
+                <Text>Migrate your farm pools</Text>
+              </Flex>
+              <NavLink to="migrations">
+                <CardButton>MIGRATE FARM</CardButton>
+              </NavLink>
             </Flex>
           </>
         ) : (
@@ -157,3 +126,38 @@ const FarmingTokenStakingCard = () => {
 }
 
 export default FarmingTokenStakingCard
+
+const StyledFarmingTokenStakingCard = styled(Card)`
+  background-color: rgba(2, 5, 11, 0.7);
+  border-radius: 50px;
+  min-height: 200px;
+
+  &::after {
+    content: '';
+    background-image: url('jump.png');
+    background-repeat: no-repeat;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-position: right -120px bottom -140px;
+    position: absolute;
+    z-index: -1;
+  }
+`
+
+const CardButton = styled(Button)`
+  border-radius: 5px;
+  max-height: 25px;
+  padding: 5px 5px !important;
+  color: black;
+
+  :disabled {
+    color: black;
+  }
+`
+
+const HeadingColor = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
+  font-family: Bebas neue, cursive;
+`
