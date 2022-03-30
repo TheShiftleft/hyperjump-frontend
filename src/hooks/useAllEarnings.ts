@@ -24,6 +24,7 @@ const useAllEarnings = () => {
   const { config } = getNetwork()
 
   useEffect(() => {
+    let mounted = true
     const fetchAllBalances = async () => {
       const calls = farmsToFetch.map((farm) => ({
         address: getMasterChefAddress(),
@@ -33,7 +34,9 @@ const useAllEarnings = () => {
 
       try {
         const res = await multicall(getMasterChefABI(), calls)
-        setBalance(res)
+        if(mounted) {
+          setBalance(res)
+        }
       } catch (e) {
         console.error(e)
       }
@@ -41,6 +44,10 @@ const useAllEarnings = () => {
 
     if (account) {
       fetchAllBalances()
+    }
+    
+    return () => {
+      mounted = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.network, fastRefresh])

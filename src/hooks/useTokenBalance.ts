@@ -32,11 +32,14 @@ const useTokenBalance = (tokenAddress: string) => {
   const { fastRefresh } = useRefresh()
 
   useEffect(() => {
+    let mounted = true
     const fetchBalance = async () => {
       const contract = getBep20Contract(tokenAddress, web3)
       try {
         const res = await contract.methods.balanceOf(account).call()
-        setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
+        if(mounted) {
+          setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
+        }
       } catch (e) {
         console.error(e)
         setBalanceState((prev) => ({
@@ -48,6 +51,9 @@ const useTokenBalance = (tokenAddress: string) => {
 
     if (account) {
       fetchBalance()
+    }
+    return () => {
+      mounted = false
     }
   }, [account, tokenAddress, web3, fastRefresh, SUCCESS, FAILED])
 
@@ -129,13 +135,20 @@ export const useGovTokenBurnedBalance = (tokenAddress: string) => {
   const web3 = useWeb3()
 
   useEffect(() => {
+    let isMounted = true
     const fetchBalance = async () => {
       const contract = getGovTokenContract(web3)
       const res = await contract.methods.totalBurn().call()
-      setBalance(new BigNumber(res))
+      if(isMounted){
+        setBalance(new BigNumber(res))
+      }
     }
 
     fetchBalance()
+
+    return () => {
+      isMounted = false
+    }
   }, [web3, tokenAddress, slowRefresh])
 
   return balance
@@ -147,13 +160,19 @@ export const useGovTokenBurnRate = (tokenAddress: string) => {
   const web3 = useWeb3()
 
   useEffect(() => {
+    let mounted = true
     const fetchBalance = async () => {
       const contract = getGovTokenContract(web3)
       const res = await contract.methods.currentBurnPercent().call()
-      setRate(new BigNumber(res))
+      if(mounted){
+        setRate(new BigNumber(res))
+      }
     }
 
     fetchBalance()
+    return () => {
+      mounted = false
+    }
   }, [web3, tokenAddress, slowRefresh])
 
   return rate

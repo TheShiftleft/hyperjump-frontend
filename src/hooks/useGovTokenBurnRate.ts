@@ -10,13 +10,19 @@ const useGovTokenBurnRate = () => {
   const web3 = useWeb3()
 
   useEffect(() => {
+    let mounted = true
     const govTokenContract = getGovTokenContract(web3)
     const fetchBurnRate = async () => {
       const res = await govTokenContract.methods.currentBurnPercent().call()
-      setBurnRate(new BigNumber(res))
+      if(mounted){
+        setBurnRate(new BigNumber(res))
+      }
     }
 
     fetchBurnRate()
+    return () => {
+      mounted = false
+    }
   }, [slowRefresh, web3])
 
   return burnRate

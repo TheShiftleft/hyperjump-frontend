@@ -160,10 +160,13 @@ const Farms: React.FC = () => {
   ])
 
   useEffect(() => {
+    let mounted = true
     const showMoreFarms = (entries) => {
       const [entry] = entries
       if (entry.isIntersecting) {
-        setNumberOfFarmsVisible((farmsCurrentlyVisible) => farmsCurrentlyVisible + NUMBER_OF_FARMS_VISIBLE)
+        if(mounted){
+          setNumberOfFarmsVisible((farmsCurrentlyVisible) => farmsCurrentlyVisible + NUMBER_OF_FARMS_VISIBLE)
+        }
       }
     }
 
@@ -173,7 +176,13 @@ const Farms: React.FC = () => {
         threshold: 1,
       })
       loadMoreObserver.observe(loadMoreRef.current)
-      setObserverIsSet(true)
+      if(mounted){
+        setObserverIsSet(true)
+      }
+    }
+
+    return () => {
+      mounted = false
     }
   }, [farmsStakedMemoized, observerIsSet])
 

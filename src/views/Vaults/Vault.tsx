@@ -31,13 +31,13 @@ const Vaults: React.FC = () => {
   const { config } = getNetwork()
 
   const vaultsState = vaults.map((vault, i) => {
-    const price = prices[vault.oracle][vault.oracleId] || 0
-    const walletBalance = new BigNumber(balances[vault.name].tokenBalance)
-    const sharesBalance = new BigNumber(balances[vault.earnedToken].tokenBalance)
-    const amountDeposited = sharesBalance.multipliedBy(new BigNumber(vault.pricePerFullShare))
+    const price = prices[vault?.oracle][vault?.oracleId] || 0
+    const walletBalance = new BigNumber(balances[vault?.name]?.tokenBalance)
+    const sharesBalance = new BigNumber(balances[vault?.earnedToken]?.tokenBalance)
+    const amountDeposited = sharesBalance.multipliedBy(new BigNumber(vault?.pricePerFullShare))
     const allowance = new BigNumber(allowances[i])
-    const apy = new BigNumber(apys[vault.id])
-    const tvl = new BigNumber(vault.tvl).multipliedBy(price).dividedBy(BIG_TEN.pow(vault.tokenDecimals))
+    const apy = new BigNumber(apys[vault?.id])
+    const tvl = new BigNumber(vault?.tvl).multipliedBy(price).dividedBy(BIG_TEN.pow(vault?.tokenDecimals))
     return {
       vault,
       apy,
@@ -56,9 +56,9 @@ const Vaults: React.FC = () => {
   const isInactive = pathname.includes('history')
   const isActive = !isInactive && !isArchived
 
-  const [activeVaults, inactiveVaults] = partition(vaultsState, (vault) => vault.vault.status === 'active')
-  const stakedOnlyVaults = activeVaults.filter((vault) => vault.amountDeposited.isGreaterThan(0))
-  const stakedInactiveVaults = inactiveVaults.filter((vault) => vault.amountDeposited.isGreaterThan(0))
+  const [activeVaults, inactiveVaults] = partition(vaultsState, (vault) => vault?.vault?.status === 'active')
+  const stakedOnlyVaults = activeVaults.filter((vault) => vault?.amountDeposited.isGreaterThan(0))
+  const stakedInactiveVaults = inactiveVaults.filter((vault) => vault?.amountDeposited.isGreaterThan(0))
 
   const [stakedOnly, setStakedOnly] = useState(!isActive)
   useEffect(() => {
