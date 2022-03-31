@@ -10,11 +10,13 @@ import { getBroomAddress } from 'utils/addressHelpers'
 import getNetwork from 'utils/getNetwork'
 import { Field } from 'state/swap/actions'
 import ConvertModal from './ConvertModal'
+import CurrencyLogo from '../../components/CurrencyLogo/index'
 
 export interface TokenRowProps {
   token: TokenProps
   selectTokens?: (token, isSelected, approval, approvalCallback) => void
   isModal?: boolean
+  align?: string
 }
 
 const CellInner = styled.div`
@@ -28,9 +30,9 @@ const CellInner = styled.div`
   justify-content: space-between;
 `
 
-const Label = styled(Heading)`
+const Label = styled(Heading)<{ align: string }>`
   color: ${({ theme }) => theme.colors.primary};
-  text-align: right;
+  text-align: ${(props) => props.align};
   font-weight: 700px;
 `
 
@@ -39,7 +41,7 @@ const ContentContainer = styled.div`
   display: flex;
 
   margin-top: 5px;
-  text-align: justify;
+  text-align: right;
   justify-content: space-between;
 `
 
@@ -100,13 +102,14 @@ const StyledButton = styled(Button)`
 
 interface CellLayoutProps {
   label?: string
+  align?: string
 }
 
-const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
+const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, align }) => {
   const { t } = useTranslation()
   return (
     <div>
-      {label && <Label>{label}</Label>}
+      {label && <Label align={align}>{label}</Label>}
       <ContentContainer>
         <Heading>{children}</Heading>
       </ContentContainer>
@@ -131,7 +134,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
 
   const selectedToken = { token, approval, isSelected: true, approvalCallback: approveCallback }
-  
+
   const ToCurrency = new Token(
     config.baseCurrency.symbol === 'FTM' ? 250 : 56,
     config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
@@ -139,13 +142,22 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     config.farmingToken.symbol,
     'HyperJump',
   )
+
+  const FromCurrency = new Token(
+    config.baseCurrency.symbol === 'FTM' ? 250 : 56,
+    selectedToken.token.tokenObj.address,
+    selectedToken.token.tokenObj.decimals,
+    selectedToken.token.tokenObj.symbol,
+    selectedToken.token.tokenObj.name,
+  )
+  const DefaultFromCurrency = FromCurrency
   const DefaultToCurrency = ToCurrency
 
   const [onPresentConvertModal] = useModal(<ConvertModal selectedtoken={token} selectTokens={selectedToken} />)
 
   const onConvert = () => {
     onPresentConvertModal()
-    onCurrencySelection(Field.INPUT, selectedToken.token.tokenObj)
+    onCurrencySelection(Field.INPUT, DefaultFromCurrency)
     onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
     onUserInput(Field.INPUT, selectedToken.token.amount.toString())
   }
@@ -155,27 +167,35 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
       <StyledRow>
         <CellInner>
           <IconImage src={token.logo} alt="icon" width={40} height={40} mr="8px" />
-          <CellLayout label={token.tokenObj.name}>
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(token.price)}
+          <CellLayout label={token.tokenObj.name} align="left">
+            {token.price
+              ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 6 }).format(
+                  token.price,
+                )
+              : '-'}
           </CellLayout>
         </CellInner>
         <CellInner />
         <CellInner>
           <CellLayout
-            label={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(token.volume)}
+            align="right"
+            label={
+              token.volume
+                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(token.volume)
+                : '-'
+            }
           >
-            {new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 }).format(token.amount)}
+            {token.amount ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 }).format(token.amount) : '-'}
           </CellLayout>
         </CellInner>
       </StyledRow>
-      {token.price < 10 && (
+      {token.volume < 10 && (
         <ConvertRow>
           <StyledButton onClick={onConvert}>Convert</StyledButton>
         </ConvertRow>
       )}
     </>
   )
- 
 }
 
 export default TokenRow

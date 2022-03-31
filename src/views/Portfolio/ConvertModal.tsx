@@ -115,13 +115,29 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const [limitPrice, setLimitPrice] = useState('')
   const [showInverted, setShowInverted] = useState<boolean>(false)
 
-  const defaultFromCurrency = {
-    decimals: selectTokens.token.tokenObj.decimals,
-    symbol: selectTokens.token.tokenObj.symbol,
-    name: selectTokens.token.tokenObj.symbol,
-    chainId: selectTokens.token.tokenObj.chainId,
-    address: selectTokens.token.tokenObj.address,
-  }
+  const FromCurrency = new Token(
+    config.baseCurrency.symbol === 'FTM' ? 250 : 56,
+    selectTokens.token.tokenObj.address,
+    selectTokens.token.tokenObj.decimals,
+    selectTokens.token.tokenObj.symbol,
+    selectTokens.token.tokenObj.name,
+  )
+
+  const defaultFromCurrency = useMemo(() => {
+    return {
+      decimals: selectTokens.token.tokenObj.decimals,
+      symbol: selectTokens.token.tokenObj.symbol,
+      name: selectTokens.token.tokenObj.name,
+      chainId: selectTokens.token.tokenObj.chainId,
+      address: selectTokens.token.tokenObj.address,
+    }
+  }, [
+    selectTokens.token.tokenObj.decimals,
+    selectTokens.token.tokenObj.symbol,
+    selectTokens.token.tokenObj.name,
+    selectTokens.token.tokenObj.chainId,
+    selectTokens.token.tokenObj.address,
+  ])
 
   const defaultToCurrency = useMemo(() => {
     return {
@@ -147,16 +163,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     'HyperJump',
   )
   const DefaultToCurrency = ToCurrency
+  const DefaultFromCurrency = FromCurrency
 
   const { independentField, typedValue, recipient } = useSwapState()
 
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-
-  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
-  const FromCurrency = selectTokens.token.tokenObj
-
-  currencies[Field.INPUT] = FromCurrency
-  currencies[Field.OUTPUT] = DefaultToCurrency
+  const { v2Trade, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
 
   const inputvalue = selectTokens.token.amount.toString()
 
@@ -164,12 +175,12 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     wrapType,
     execute: onWrap,
     inputError: wrapInputError,
-  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
+  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], inputvalue)
 
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
-  const trade = showWrap ? undefined : v2Trade
+  const trade = v2Trade
 
-  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
+  const { realizedLPFee } = computeTradePriceBreakdown(trade)
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies[Field.OUTPUT] ?? undefined)
   const selectTokenBalance = useCurrencyBalance(account ?? undefined, currencies[Field.INPUT] ?? undefined)
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT

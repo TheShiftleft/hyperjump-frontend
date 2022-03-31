@@ -1,10 +1,11 @@
 import { Button, Flex, Box, Text, useModal, Heading, Card } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
+import React from 'react'
 import Page from 'components/layout/Page'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
 import { useGetTokensList } from 'hooks/moralis'
-import React from 'react'
+
 import styled from 'styled-components'
 import { ChainId, Token } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
@@ -160,7 +161,7 @@ const WalletTable: React.FC = () => {
       <PageHeader>
         <NetWorthBox>
           <NetWorthHeading>
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalVolume)}
+            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalVolume || 0)}
           </NetWorthHeading>
           <Text color="primary">Net Worth</Text>
         </NetWorthBox>

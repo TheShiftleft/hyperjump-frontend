@@ -145,7 +145,6 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label, children }) => {
 }
 
 const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
-
   const { token, totalvolume } = props
   const assetpercentage = (token.volume / totalvolume) * 100
 
@@ -158,16 +157,19 @@ const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
         <CellInner />
         <CellInner>
           <CellLayout
-            label={`${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(assetpercentage)} %`}
+            label={`${
+              assetpercentage
+                ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(assetpercentage)
+                : ''
+            } %`}
           />
         </CellInner>
       </StyledRow>
       <ProgressBarRow>
-        <ProgressBar progress={assetpercentage} />
+        <ProgressBar progress={assetpercentage || 0} />
       </ProgressBarRow>
     </>
   )
-
 }
 
 export default AssetRow
