@@ -37,7 +37,8 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
   const { onStake } = useSousStake(sousId, false)
   const earningTokenBalance = getBalanceNumber(earnings, earningToken.decimals)
   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
-  const hasEarnings = earnings.toNumber() > 0
+  const hasEarnings = earnings.gt(0)
+  const earningsMinimumChecker = earningTokenBalance >= 0.001
   const [pendingTx, setPendingTx] = useState(false)
 
   const handleCompound = async () => {
@@ -104,10 +105,10 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
           )}
         </Flex>
         <Flex flexDirection="column">
-          <Button disabled={!hasEarnings} className="col-staked-btn" isLoading={isPending} onClick={handleCollect}>
+          <Button disabled={!(hasEarnings && earningsMinimumChecker)} className="col-staked-btn" isLoading={isPending} onClick={handleCollect}>
             {t('Collect')}
           </Button>
-          <Button className="col-staked-btn" disabled={!hasEarnings} isLoading={isPending} onClick={handleCompound}>
+          <Button className="col-staked-btn" disabled={!(hasEarnings && earningsMinimumChecker)} isLoading={isPending} onClick={handleCompound}>
             {t('Compound')}
           </Button>
         </Flex>
