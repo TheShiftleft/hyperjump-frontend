@@ -96,7 +96,7 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
       },
       {
         label: 'HyperHeist',
-        href: 'https://hyperjump.app/hyperheist/',
+        href: 'https://hyperheist.hyperjump.app/',
         target: '_blank',
       },
     ],
