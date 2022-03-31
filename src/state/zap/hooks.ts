@@ -11,6 +11,7 @@ import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useEstimateZapInToken } from 'hooks/useZap'
 import { useTotalSupply } from 'data/TotalSupply'
 import { wrappedCurrencyAmount } from 'utils/wrappedCurrency'
+import { useGetLpPrices } from 'hooks/api'
 import { AppDispatch, AppState } from '../index'
 import { useCurrency } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
@@ -147,6 +148,9 @@ export function useDerivedZapInfo(): {
     }
     return undefined
   }, [ chainId, pairOutput, totalSupply, estimates])
+  console.log('liquidityMinted', liquidityMinted)
+  const lpPrices = useGetLpPrices()
+  console.log('lpPrices',lpPrices)
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0]
   }
