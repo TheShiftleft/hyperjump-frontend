@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react'
-
-import { useMoralis } from 'react-moralis'
 import getNetwork from 'utils/getNetwork'
 import { MORALIS_API_URL, MORALIS_API_KEY } from 'config'
 import Moralis from 'moralis'
-import { ChainId, Token, Pair } from '@hyperjump-defi/sdk'
+import { Token } from '@hyperjump-defi/sdk'
 import { getAddress } from '@ethersproject/address'
-import { chain } from 'lodash'
-import { usePair, usePairs } from '../data/Reserves'
-import { isAddress } from '../utils'
+import { isAddress } from 'utils'
 
 export interface TokenProps {
   tokenObj: Token
@@ -31,6 +27,7 @@ export const useGetTokensList = (account) => {
         const result = await Moralis.Web3API.account.getTokenBalances({ chain: network, address: account })
 
         const tokens = []
+
         result.forEach(async (token) => {
           if (!token.name.includes('.')) {
             const { name, logo, symbol, balance, token_address, decimals } = token
@@ -38,20 +35,18 @@ export const useGetTokensList = (account) => {
             //   chain: network,
             //   address: token_address,
             // })
+            const tokenAddress = isAddress(token_address)
 
-            // const tokenAddress = isAddress(token_address)
-
-            const price = await getTokenPrice(token_address, config.network)
             let newLogo = logo
             if (logo === null) {
-              newLogo = await getTokenLogoImage(getAddress(token_address))
+              newLogo = await getTokenLogoImage(tokenAddress)
             }
 
+            const price = await getTokenPrice(tokenAddress, network)
             const amount = parseInt(balance) / 10 ** parseInt(decimals)
             const volume = price.usdPrice * amount
             const tokenObj = new Token(config.id, getAddress(token_address), parseInt(decimals), symbol, name)
             const newToken: TokenProps = { tokenObj, logo: newLogo, amount, volume, price: price.usdPrice }
-
             tokens.push(newToken)
           }
         })
@@ -94,7 +89,6 @@ async function getTokenLogoImage(address) {
 
 export async function getTokenLogo(name, network) {
   try {
-    console.log(name)
     const response = await fetch(
       `https://api.coingecko.com/api/v3/coins/${name.toLowerCase().replace(' token', '').replace(/\s/g, '-')}`,
       {

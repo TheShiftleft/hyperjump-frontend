@@ -1,22 +1,17 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import getNetwork from 'utils/getNetwork'
 import { ApprovalState } from 'hooks/useApproveCallback'
-import { Currency, CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
-import { Modal, Button, Box, Text, Flex, Image, Skeleton } from 'uikit'
-import { getRouterAddress } from 'utils/addressHelpers'
+import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
 import { BroomCallbackState, useBroomSweep } from 'hooks/useBroom'
-// import { useBroomContract } from 'hooks/useContract'
 import { Field } from 'state/swap/actions'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
-import { WrappedTokenInfo } from 'state/lists/hooks'
 import TradePrice from 'components/swap/TradePrice'
-import { useCurrency } from 'hooks/Tokens'
 import useToast from 'hooks/useToast'
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown } from '../../utils/prices'
+import { computeTradePriceBreakdown } from '../../utils/prices'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
 
@@ -72,11 +67,6 @@ const ContentContainer = styled.div`
   align-items: center;
 `
 
-const TokenContainer = styled.div`
-  height: 500px;
-  overflow-y: auto;
-`
-
 const ButtonBox = styled(Flex)`
   margin-top: 20px;
   align-items: center;
@@ -100,87 +90,22 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
   )
 }
 
-const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens, amounts }) => {
+const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens }) => {
   const { t } = useTranslation()
-  const { config } = getNetwork()
+
   const { account } = useActiveWeb3React()
-  const [step, setStep] = useState(1)
-
-  const onSelectTokens = () => {
-    setStep(1)
-  }
-
+  const [step] = useState(1)
   const { toastSuccess, toastError } = useToast()
-  const [limitValidity, setLimitValidity] = useState({ valid: true, error: '' })
   const [limitPrice, setLimitPrice] = useState('')
   const [showInverted, setShowInverted] = useState<boolean>(false)
-
-  const FromCurrency = new Token(
-    config.baseCurrency.symbol === 'FTM' ? 250 : 56,
-    selectTokens.token.tokenObj.address,
-    selectTokens.token.tokenObj.decimals,
-    selectTokens.token.tokenObj.symbol,
-    selectTokens.token.tokenObj.name,
-  )
-
-  const defaultFromCurrency = useMemo(() => {
-    return {
-      decimals: selectTokens.token.tokenObj.decimals,
-      symbol: selectTokens.token.tokenObj.symbol,
-      name: selectTokens.token.tokenObj.name,
-      chainId: selectTokens.token.tokenObj.chainId,
-      address: selectTokens.token.tokenObj.address,
-    }
-  }, [
-    selectTokens.token.tokenObj.decimals,
-    selectTokens.token.tokenObj.symbol,
-    selectTokens.token.tokenObj.name,
-    selectTokens.token.tokenObj.chainId,
-    selectTokens.token.tokenObj.address,
-  ])
-
-  const defaultToCurrency = useMemo(() => {
-    return {
-      decimals: config.farmingToken.decimals,
-      symbol: config.farmingToken.symbol,
-      name: 'HyperJump',
-      chainId: config.baseCurrency.symbol === 'FTM' ? 250 : 56,
-      address:
-        config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
-    }
-  }, [
-    config.farmingToken.decimals,
-    config.farmingToken.symbol,
-    config.baseCurrency.symbol,
-    config.farmingToken.address,
-  ])
-
-  const ToCurrency = new Token(
-    config.baseCurrency.symbol === 'FTM' ? 250 : 56,
-    config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56],
-    config.farmingToken.decimals,
-    config.farmingToken.symbol,
-    'HyperJump',
-  )
-  const DefaultToCurrency = ToCurrency
-  const DefaultFromCurrency = FromCurrency
-
-  const { independentField, typedValue, recipient } = useSwapState()
-
-  const { v2Trade, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
-
+  const { independentField, typedValue } = useSwapState()
+  const { v2Trade, parsedAmount, currencies } = useDerivedSwapInfo()
   const inputvalue = selectTokens.token.amount.toString()
-
-  const {
-    wrapType,
-    execute: onWrap,
-    inputError: wrapInputError,
-  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], inputvalue)
-
+  const { wrapType } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], inputvalue)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = v2Trade
-
   const { realizedLPFee } = computeTradePriceBreakdown(trade)
+
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies[Field.OUTPUT] ?? undefined)
   const selectTokenBalance = useCurrencyBalance(account ?? undefined, currencies[Field.INPUT] ?? undefined)
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
@@ -194,6 +119,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
         [Field.INPUT]: independentField === Field.INPUT ? parsedAmount : trade?.inputAmount,
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       }
+
   const formattedAmounts = {
     [independentField]: typedValue,
     [dependentField]: showWrap
@@ -206,7 +132,6 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
       selectTokens
         .approvalCallback()
         .then((result) => {
-          console.info('result', result)
           toastSuccess(
             `${t('Approved')}!`,
             t('Your %symbol% balances have been approved for conversion', { symbol: tokenSymbol }),
@@ -218,8 +143,6 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     }
   }
 
-  const [count, setCount] = useState(0)
-
   const { state: broomState, callback: broomCallback } = useBroomSweep(
     selectTokenBalance,
     selectTokens.token.tokenObj.address,
@@ -227,10 +150,13 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   )
 
   const totalestimateJump = Number(formattedAmounts[Field.INPUT]) * Number(trade?.executionPrice.toSignificant(6))
+
   const estimateconvcost = realizedLPFee
     ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price.toFixed(2))
     : 0
+
   const tokenSymbol = selectedtoken.tokenObj.symbol
+
   const handleBroomCallback = useCallback(() => {
     if (broomState !== BroomCallbackState.INVALID) {
       broomCallback()
@@ -250,125 +176,117 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
           if (e.code === -32603) {
             toastError(t(e.message), t(e.data.message))
           }
-          // toastSuccess(t(e.message), t(e.data.message))
         })
     }
   }, [broomCallback, broomState, toastSuccess, toastError, t, onDismiss, tokenSymbol])
 
   return (
     <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
-      {step === 1 && (
-        <>
-          <Text fontSize="18px" marginBottom="30px">
-            To convert small balances, you will need to sign <br /> wallet transaction.
-          </Text>
+      <Text fontSize="18px" marginBottom="30px">
+        To convert small balances, you will need to sign <br /> wallet transaction.
+      </Text>
 
-          <Box>
-            <StyledRow>
-              <CellInner>
-                <Text> {selectTokens.approval !== ApprovalState.APPROVED ? 'Approve ETH' : 'Approved ETH'}</Text>
-              </CellInner>
+      <Box>
+        <StyledRow>
+          <CellInner>
+            <Text> {selectTokens.approval !== ApprovalState.APPROVED ? 'Approve ETH' : 'Approved ETH'}</Text>
+          </CellInner>
 
-              <CellLayout
-                label={
-                  selectTokenBalance
-                    ? `${selectTokenBalance.toSignificant(6)} ${selectTokenBalance.currency.symbol}`
-                    : '-'
-                }
-              >
-                ≈{' '}
-                {new Intl.NumberFormat('en-US', {
+          <CellLayout
+            label={
+              selectTokenBalance ? `${selectTokenBalance.toSignificant(6)} ${selectTokenBalance.currency.symbol}` : '-'
+            }
+          >
+            ≈{' '}
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              minimumFractionDigits: 6,
+            }).format(selectedtoken.volume)}
+          </CellLayout>
+        </StyledRow>
+
+        <StyledRow>
+          <CellInner>
+            <Text>Estimated conversion cost</Text>
+          </CellInner>
+          <CellLayout
+            label={realizedLPFee ? `${realizedLPFee.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
+          >
+            ≈{' '}
+            {realizedLPFee
+              ? new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'USD',
-                  minimumFractionDigits: 6,
-                }).format(selectedtoken.volume)}
-              </CellLayout>
-            </StyledRow>
+                  minimumFractionDigits: 10,
+                }).format(estimateconvcost)
+              : 0}
+          </CellLayout>
+        </StyledRow>
+        <TradePrice
+          price={trade?.executionPrice}
+          limit={limitPrice}
+          showInverted={showInverted}
+          setShowInverted={setShowInverted}
+          setLimitPrice={setLimitPrice}
+        />
+      </Box>
 
-            <StyledRow>
-              <CellInner>
-                <Text>Estimated conversion cost</Text>
-              </CellInner>
-              <CellLayout
-                label={realizedLPFee ? `${realizedLPFee.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
-              >
-                ≈{' '}
-                {realizedLPFee
-                  ? new Intl.NumberFormat('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                      minimumFractionDigits: 10,
-                    }).format(estimateconvcost)
-                  : 0}
-              </CellLayout>
-            </StyledRow>
-            <TradePrice
-              price={trade?.executionPrice}
-              limit={limitPrice}
-              showInverted={showInverted}
-              setShowInverted={setShowInverted}
-              setLimitPrice={setLimitPrice}
-              setLimitValidity={setLimitValidity}
-            />
-          </Box>
+      <Box>
+        <Text fontSize="18px" marginTop="30px">
+          Summary
+        </Text>
 
-          <Box>
-            <Text fontSize="18px" marginTop="30px">
-              Summary
-            </Text>
+        <StyledRow>
+          <CellInner>
+            <Text>You will get approximately</Text>
+          </CellInner>
 
-            <StyledRow>
-              <CellInner>
-                <Text>You will get approximately</Text>
-              </CellInner>
+          <CellLayout
+            label={
+              selectedCurrencyBalance
+                ? `${selectedCurrencyBalance.toSignificant(6)}${selectedCurrencyBalance.currency.symbol}`
+                : '-'
+            }
+          >
+            ≈ {new Intl.NumberFormat('en-US').format(totalestimateJump)}
+          </CellLayout>
+        </StyledRow>
 
-              <CellLayout
-                label={
-                  selectedCurrencyBalance
-                    ? `${selectedCurrencyBalance.toSignificant(6)}${selectedCurrencyBalance.currency.symbol}`
-                    : '-'
-                }
-              >
-                ≈ {new Intl.NumberFormat('en-US').format(totalestimateJump)}
-              </CellLayout>
-            </StyledRow>
+        <StyledRow>
+          <CellInner>
+            <IconImage src={selectedtoken.logo} alt="icon" width={40} height={40} mr="8px" />
+          </CellInner>
+          <CellInner>
+            <CellLayout label={selectedtoken.tokenObj.name}>
+              {selectedtoken.price && selectedtoken.price.toFixed(2)}
+            </CellLayout>
+          </CellInner>
+          <CellInner>
+            <CellLayout
+              label={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                selectedtoken.volume,
+              )}
+            >
+              {new Intl.NumberFormat('en-US').format(selectedtoken.amount)}
+            </CellLayout>
+          </CellInner>
+        </StyledRow>
+      </Box>
 
-            <StyledRow>
-              <CellInner>
-                <IconImage src={selectedtoken.logo} alt="icon" width={40} height={40} mr="8px" />
-              </CellInner>
-              <CellInner>
-                <CellLayout label={selectedtoken.tokenObj.name}>
-                  {selectedtoken.price && selectedtoken.price.toFixed(2)}
-                </CellLayout>
-              </CellInner>
-              <CellInner>
-                <CellLayout
-                  label={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
-                    selectedtoken.volume,
-                  )}
-                >
-                  {new Intl.NumberFormat('en-US').format(selectedtoken.amount)}
-                </CellLayout>
-              </CellInner>
-            </StyledRow>
-          </Box>
-
-          <ButtonBox>
-            {selectTokens.approval !== ApprovalState.APPROVED ? (
-              <Button onClick={onApprove}>{t('Approve')}</Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  handleBroomCallback()
-                }}
-              >
-                {t('Convert')}
-              </Button>
-            )}
-          </ButtonBox>
-        </>
-      )}
+      <ButtonBox>
+        {selectTokens.approval !== ApprovalState.APPROVED ? (
+          <Button onClick={onApprove}>{t('Approve')}</Button>
+        ) : (
+          <Button
+            onClick={() => {
+              handleBroomCallback()
+            }}
+          >
+            {t('Convert')}
+          </Button>
+        )}
+      </ButtonBox>
     </Modal>
   )
 }

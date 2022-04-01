@@ -1,25 +1,14 @@
-import { Button, Flex, Box, Text, useModal, Heading, Card } from 'uikit'
+import { Flex, Text, Heading, Card } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
 import React from 'react'
-import Page from 'components/layout/Page'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
 import { useGetTokensList } from 'hooks/moralis'
-
 import styled from 'styled-components'
-import { ChainId, Token } from '@hyperjump-defi/sdk'
-import getNetwork from 'utils/getNetwork'
-import Container from 'components/layout/Container'
 import { SubHeader } from 'uikit/components/SubHeader'
 import TokenRow from './TokenRow'
-import BroomModal from './BroomModal'
-import WalletLogin from './WalletLogin'
 import AssetRow from './AssetRow'
 
-const ButtonBox = styled(Box)`
-  text-align: center;
-  margin: 50px 0;
-`
 const NoTokenBox = styled(Card)`
   padding: 50px;
   flex-direction: column;
@@ -36,7 +25,6 @@ const NetWorthBox = styled(Card)`
   flex-direction: column;
   display: flex;
   margin-bottom: 20px;
-
   background-color: rgba(2, 5, 11, 0.7);
   border-radius: 50px;
   align-items: center;
@@ -73,7 +61,6 @@ const WalletTableContainer = styled.div`
   padding-right: 48px;
   @media (min-width: 620px) {
     padding-left: 48px;
-
     padding-right: 48px;
   }
   max-width: 1094px;
@@ -89,7 +76,6 @@ const Table = styled.div`
     column-gap: 136px;
     padding-bottom: 16px;
   }
-
   media (min-width: 620px) {
     grid-gap: 48px;
     gap: 48px;
@@ -99,17 +85,11 @@ const Table = styled.div`
   padding-top: 24px;
   padding-bottom: 24px;
   display: grid;
-
   position: relative;
 `
 
 const ColumnTable = styled.div`
-  //   border-radius: ${({ theme }) => theme.radii.card};
-  //   border: 2px solid ${({ theme }) => theme.colors.primary};
-  //   background-color: none;
-  //   border-radius: 50px;
   display: block;
-  //   padding: 50px;
 `
 
 const TableLine = styled.div`
@@ -121,7 +101,6 @@ const TableLine = styled.div`
     position: absolute;
   }
   display: block;
-
   background-color: ${({ theme }) => theme.colors.primary};
 `
 
@@ -130,22 +109,12 @@ const WalletTableHeading = styled(Heading)`
   display: flex;
   text-align: center;
   align-items: center;
-
   font-size: 30px;
 `
-
-interface TokenProps {
-  tokenObj: Token
-  logo: string
-  amount: number
-  volume: number
-  price: number
-}
 
 const WalletTable: React.FC = () => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
-  const { config } = getNetwork()
 
   const tokens = useGetTokensList(account)
 
@@ -165,7 +134,7 @@ const WalletTable: React.FC = () => {
           </NetWorthHeading>
           <Text color="primary">Net Worth</Text>
         </NetWorthBox>
-        {/* To change to subheader */}
+
         <WalletTableHeading>
           <SubHeader color="primary" ml="5px" mr="5px">
             DeFi
@@ -199,13 +168,9 @@ const WalletTable: React.FC = () => {
         </Table>
       ) : (
         <NoTokenBox>
-          <WalletTableHeading>No Available Tokens to Convert</WalletTableHeading>
+          <WalletTableHeading>{t('No Available Tokens to Convert')}</WalletTableHeading>
         </NoTokenBox>
       )}
-
-      {/* <ButtonBox>
-        <Button onClick={onConvert}>{t('Convert small balances to JUMP')}</Button>
-      </ButtonBox> */}
     </WalletTableContainer>
   )
 }

@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Image, Checkbox, Heading, Button, useModal } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount, Token } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
-import { useDefaultsFromURLSearch, useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
+import { useSwapActionHandlers } from 'state/swap/hooks'
 import { getBroomAddress } from 'utils/addressHelpers'
 import getNetwork from 'utils/getNetwork'
 import { Field } from 'state/swap/actions'
 import ConvertModal from './ConvertModal'
-import CurrencyLogo from '../../components/CurrencyLogo/index'
 
 export interface TokenRowProps {
   token: TokenProps
@@ -62,18 +61,6 @@ const ConvertRow = styled.div`
   width: 100%;
 `
 
-const StyledRowContainer = styled.div`
-  // border-radius: ${({ theme }) => theme.radii.card};
-  // border: 2px solid ${({ theme }) => theme.colors.primary};
-  // background-color: rgba(13, 29, 54, 0.4);
-  width: 100%;
-
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-`
-
 const IconImage = styled(Image)`
   width: 30px;
   height: 30px;
@@ -86,9 +73,6 @@ const IconImage = styled(Image)`
   }
 `
 
-const StyledCheckbox = styled(Checkbox)`
-  border: 1px solid #7645d9;
-`
 const StyledButton = styled(Button)`
   border-radius: 5px;
   max-height: 25px;
@@ -119,19 +103,16 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, align }) 
 
 const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { t } = useTranslation()
-  const [isSelected, setIsSelected] = useState(false)
   const { config } = getNetwork()
-
   const broomAddress = getBroomAddress()
-  // console.log(broomAddress)
-
   const { token } = props
 
   const [approval, approveCallback] = useApproveCallback(
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
     broomAddress,
   )
-  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers()
+
+  const { onCurrencySelection, onUserInput } = useSwapActionHandlers()
 
   const selectedToken = { token, approval, isSelected: true, approvalCallback: approveCallback }
 
@@ -191,7 +172,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
       </StyledRow>
       {token.volume < 10 && (
         <ConvertRow>
-          <StyledButton onClick={onConvert}>Convert</StyledButton>
+          <StyledButton onClick={onConvert}>{t('Convert')}</StyledButton>
         </ConvertRow>
       )}
     </>

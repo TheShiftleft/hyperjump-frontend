@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Image, Checkbox, Heading, Text, Button, Flex } from 'uikit'
+import { Heading } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
-import { useApproveCallback } from 'hooks/useApproveCallback'
-import { JSBI, TokenAmount } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
-
-import { getBroomAddress } from 'utils/addressHelpers'
-import { Token } from 'graphql'
-import { height } from 'styled-system'
 
 export interface AssetRowProps {
   token: TokenProps
-
   totalvolume: number
 }
 
@@ -58,42 +51,6 @@ const ProgressBarRow = styled.div`
   width: 100%;
 `
 
-const StyledRowContainer = styled.div`
-  // border-radius: ${({ theme }) => theme.radii.card};
-  // border: 2px solid ${({ theme }) => theme.colors.primary};
-  // background-color: rgba(13, 29, 54, 0.4);
-  width: 100%;
-
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-`
-
-const IconImage = styled(Image)`
-  width: 30px;
-  height: 30px;
-  position: relative;
-  margin-right: 24px;
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    width: 40px;
-    height: 40px;
-  }
-`
-
-const StyledCheckbox = styled(Checkbox)`
-  border: 1px solid #7645d9;
-`
-const StyledButton = styled(Button)`
-  border-radius: 5px;
-  max-height: 25px;
-  padding: 5px 5px !important;
-  color: black;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-`
 const ProgressParent = styled.div`
   width: 100%;
   background-color: rgba(2, 5, 11, 0.7);
