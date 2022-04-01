@@ -37,14 +37,14 @@ export default function CurrencyLogo({
 }) {
   const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
   const { config } = getNetwork()
-
   const allTokens = useAllTokens()
   const searchTokenIconName = filterTokens(Object.values(allTokens), config.networkToken?.symbol.toLowerCase())
-  const netWorkTokenIconImg = searchTokenIconName[0]?.address
+
+  const defaultTokenIcon = config.networkToken?.symbol.toLowerCase() === 'bnb' ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' : config.networkToken?.symbol.toLowerCase() === 'ftm' ? '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83' : 'token'
+  const netWorkTokenIconImg = searchTokenIconName[0]?.address === undefined ? defaultTokenIcon : searchTokenIconName[0]?.address
 
   const srcs: string[] = useMemo(() => {
     if (currency === config.baseCurrency) return []
-
     if (currency instanceof Token) {
       if (currency instanceof WrappedTokenInfo) {
         return [
@@ -61,7 +61,7 @@ export default function CurrencyLogo({
     }
     return []
   }, [config.baseCurrency, currency, uriLocations])
-
+  
   if (currency === config.baseCurrency) {
     return (
       <StyledBnbLogo src={`/images/tokens/${netWorkTokenIconImg}.png`} size={size} style={style} />
