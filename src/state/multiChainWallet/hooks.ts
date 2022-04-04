@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@hyperjump-defi/sdk'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import getNetwork from 'utils/getNetwork'
 import ERC20_INTERFACE from '../../config/abi/erc20'
 import { useAllTokens } from '../../hooks/Tokens'
@@ -65,10 +65,19 @@ export function useTokenBalancesWithLoadingIndicator(
   const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens])
   const new_balances = useMultiChainContractSingleData(multChainId, validatedTokenAddresses, ERC20_INTERFACE, (address ?? undefined ? [address] : undefined))
   const [amount, setAmount] = useState(JSBI.BigInt(0))
-  new_balances[0]?.then((b) => {
-    const v = b?.[0]
-    setAmount((v ? JSBI.BigInt(v.toString()) : undefined))
-  })
+  useEffect(() => {
+    let isMounted = true
+    new_balances[0]?.then((b) => {
+      const v = b?.[0]
+      if(isMounted){
+        setAmount((v ? JSBI.BigInt(v.toString()) : undefined))
+      }
+    })
+    return () => {
+      isMounted = false
+    }
+  }, [setAmount, new_balances])
+  
 
   return [
     useMemo(
