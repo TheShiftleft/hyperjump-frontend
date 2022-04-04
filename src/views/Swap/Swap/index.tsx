@@ -52,7 +52,6 @@ const Swap = () => {
   const { config, chainId } = getNetwork()
   const {width} = useWindowDimensions()
   const loadedUrlParams = useDefaultsFromURLSearch()
-  console.log('loadedUrlParams', loadedUrlParams)
   const TranslateString = useI18n()
   const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
   const [disableSwap, setDisableSwap] = useState(false)
@@ -319,7 +318,6 @@ const Swap = () => {
   const defaultFromCurrency = config.baseCurrency
 
   const defaultToCurrency = new Token(chainId, config.farmingToken.address[chainId], config.farmingToken.decimals, 'JUMP', 'HyperJump' )
-  console.log('currencies', currencies)
   const handleLimitInput = (limit: string) => {
     const limitValue = toNumber(limit);
     const quotePrice = toNumber(trade?.executionPrice?.toSignificant())
