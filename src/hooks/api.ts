@@ -77,3 +77,30 @@ export const useGetCirculatingSupplyStats = () => {
 
   return data
 }
+
+export const useTokenPrice = () => {
+  const [data, setData] = useState()
+  const { config } = getNetwork()
+
+  useEffect(() => {
+    let isMounted = true
+    const fetchData = async () => {
+      try{
+        const response = await fetch(`https://vaultsapi.hyperjump.app/prices`)
+        const responseData = await response.json()
+        if(isMounted) {
+          setData(responseData)
+        }
+      }catch( error ) {
+        console.error('Unable to fetch data:', error)
+      }
+    }
+
+    fetchData()
+    return () => {
+      isMounted = false
+    }
+  }, [config.network, setData])
+
+  return data
+}
