@@ -318,7 +318,6 @@ const Swap = () => {
   const defaultFromCurrency = config.baseCurrency
 
   const defaultToCurrency = new Token(chainId, config.farmingToken.address[chainId], config.farmingToken.decimals, 'JUMP', 'HyperJump' )
-
   const handleLimitInput = (limit: string) => {
     const limitValue = toNumber(limit);
     const quotePrice = toNumber(trade?.executionPrice?.toSignificant())
