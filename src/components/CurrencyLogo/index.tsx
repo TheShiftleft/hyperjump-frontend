@@ -1,4 +1,4 @@
-import { Currency, Token } from '@hyperjump-defi/sdk'
+import { Currency, Network, Token } from '@hyperjump-defi/sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import getNetwork from 'utils/getNetwork'
@@ -9,21 +9,29 @@ import { filterTokens } from '../../views/Farms/components/filtering'
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
+import BSCIcon from '../../uikit/widgets/Menu/icons/BSCNetwork'
+import BSCTestnetIcon from '../../uikit/widgets/Menu/icons/BSCNetworkTestnet'
+import FTMIcon from '../../uikit/widgets/Menu/icons/FTMNetwork'
 
 // FIXME replace this
 const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
-
-const StyledBnbLogo = styled.img<{ size: string }>`
-  width: ${({ size }) => size};
-  height: ${({ size }) => size};
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
-  border-radius: 24px;
-`
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
 `
+const networkIcon: Record<Network, any> = {
+  [Network.BSC]: BSCIcon,
+  [Network.BSC_TESTNET]: BSCTestnetIcon,
+  [Network.FANTOM]: FTMIcon
+}
+
+const networkIconStyle = {
+  borderRadius: '50%',
+  marginRight: '8px',
+  width: '24px',
+  height: '24px',
+}
 
 export default function CurrencyLogo({
   currency,
@@ -42,7 +50,7 @@ export default function CurrencyLogo({
 
   const defaultTokenIcon = config.networkToken?.symbol.toLowerCase() === 'bnb' ? '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' : config.networkToken?.symbol.toLowerCase() === 'ftm' ? '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83' : 'token'
   const netWorkTokenIconImg = searchTokenIconName[0]?.address === undefined ? defaultTokenIcon : searchTokenIconName[0]?.address
-
+  const Icon = networkIcon[config.network]
   const srcs: string[] = useMemo(() => {
     if (currency === config.baseCurrency) return []
     if (currency instanceof Token) {
@@ -64,7 +72,7 @@ export default function CurrencyLogo({
   
   if (currency === config.baseCurrency) {
     return (
-      <StyledBnbLogo src={`/images/tokens/${netWorkTokenIconImg}.png`} size={size} style={style} />
+      <Icon style={{...style, borderRadius: '24px', width: '24px', height: '24px'}} alt={`${currency?.symbol ?? 'token'} logo`}/>
     )
   }
 

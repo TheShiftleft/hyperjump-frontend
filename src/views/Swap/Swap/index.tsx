@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
+import { Currency, CurrencyAmount, JSBI, Token, Trade } from '@hyperjump-defi/sdk'
 import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { ArrowDown } from 'react-feather'
@@ -27,7 +27,7 @@ import { toNumber, round } from 'lodash'
 import useWindowDimensions from 'hooks/useWindowDimension'
 
 import { BASE_EXCHANGE_URL, INITIAL_ALLOWED_SLIPPAGE } from 'config/index'
-import { useCurrency } from 'hooks/Tokens'
+import { useCurrency, useToken } from 'hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from 'hooks/useApproveCallback'
 import { useSwapCallback } from 'hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
@@ -49,9 +49,10 @@ import getNetwork from 'utils/getNetwork'
 import AppBody from '../AppBody'
 
 const Swap = () => {
-  const { config } = getNetwork()
+  const { config, chainId } = getNetwork()
   const {width} = useWindowDimensions()
   const loadedUrlParams = useDefaultsFromURLSearch()
+  console.log('loadedUrlParams', loadedUrlParams)
   const TranslateString = useI18n()
   const [modalCountdownSecondsRemaining, setModalCountdownSecondsRemaining] = useState(5)
   const [disableSwap, setDisableSwap] = useState(false)
@@ -315,20 +316,10 @@ const Swap = () => {
     [onCurrencySelection],
   )
 
-  const defaultFromCurrency = {
-    decimals: config.baseCurrency.decimals,
-    symbol: config.baseCurrency.symbol,
-    name: config.baseCurrency.symbol,
-  }
+  const defaultFromCurrency = config.baseCurrency
 
-  const defaultToCurrency = {
-    decimals: config.farmingToken.decimals,
-    symbol: config.farmingToken.symbol,
-    name: "HyperJump",
-    chainId: config.baseCurrency.symbol === 'FTM' ? 250 : 56,
-    address: config.baseCurrency.symbol === 'FTM' ? config.farmingToken.address[250] : config.farmingToken.address[56]
-  }
-
+  const defaultToCurrency = new Token(chainId, config.farmingToken.address[chainId], config.farmingToken.decimals, 'JUMP', 'HyperJump' )
+  console.log('currencies', currencies)
   const handleLimitInput = (limit: string) => {
     const limitValue = toNumber(limit);
     const quotePrice = toNumber(trade?.executionPrice?.toSignificant())
