@@ -4,12 +4,18 @@ import BSCIcon from '../../uikit/widgets/Menu/icons/BSCNetwork'
 import FTMIcon from '../../uikit/widgets/Menu/icons/FTMNetwork'
 import ETHIcon from '../../uikit/widgets/Menu/icons/EthereumNetwork'
 import MATICIcon from '../../uikit/widgets/Menu/icons/PolygonNetwork'
+import MOONRIVERIcon from '../../uikit/widgets/Menu/icons/MoonRiverNetwork'
+import AVALANCHEIcon from '../../uikit/widgets/Menu/icons/AvalancheNetwork'
+import HARMONYIcon from '../../uikit/widgets/Menu/icons/HarmonyNetwork'
 
 const networkIcon = {
   BSC: BSCIcon,
   FTM: FTMIcon,
   ETH: ETHIcon,
-  MATIC: MATICIcon
+  MATIC: MATICIcon,
+  MOVR: MOONRIVERIcon,
+  AVAX: AVALANCHEIcon,
+  ONE: HARMONYIcon
 }
 
 const networkIconStyle = {
@@ -28,7 +34,7 @@ export default function NetworkLogo({
   size?: string
   style?: React.CSSProperties
 }) {
-
+  console.log('bridgeNetwork', bridgeNetwork.chainCurrency)
   let Icon
   switch(bridgeNetwork.chainCurrency){
     case 'FTM':
@@ -39,6 +45,15 @@ export default function NetworkLogo({
       break
     case 'MATIC':
       Icon = networkIcon.MATIC
+      break
+    case 'MOVR':
+      Icon = networkIcon.MOVR
+      break
+    case 'AVAX':
+      Icon = networkIcon.AVAX
+      break
+    case 'ONE':
+      Icon = networkIcon.ONE
       break
     default:
       Icon = networkIcon.BSC

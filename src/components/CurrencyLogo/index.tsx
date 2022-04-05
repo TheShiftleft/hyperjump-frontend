@@ -26,13 +26,6 @@ const networkIcon: Record<Network, any> = {
   [Network.FANTOM]: FTMIcon
 }
 
-const networkIconStyle = {
-  borderRadius: '50%',
-  marginRight: '8px',
-  width: '24px',
-  height: '24px',
-}
-
 export default function CurrencyLogo({
   currency,
   size = '24px',

@@ -21,9 +21,8 @@ import Loader from '../Loader'
 import { isTokenOnList } from '../../utils'
 import { BridgeNetwork } from './types'
 
-function currencyKey(currency: Currency): string {
-  const { config } = getNetwork()
-  return currency instanceof Token ? currency.address : currency.symbol
+function getItemKey(bridgeNetwork: any): string {
+  return `${bridgeNetwork.name.replaceAll(' ', '-')}-${bridgeNetwork.chainId}`
 }
 
 const StyledBalanceText = styled(Text)`
@@ -156,8 +155,7 @@ export default function NetworkList({
     [onNetworkSelect, selectedNetwork]
   )
 
-  const itemKey = useCallback((index: number, data: any) => currencyKey(data[index]), [])
-
+  const itemKey = useCallback((index: number, data: any) => getItemKey(data[index]), [])
   return (
     <FixedSizeList
       height={height}
