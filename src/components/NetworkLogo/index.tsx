@@ -34,7 +34,7 @@ export default function NetworkLogo({
   size?: string
   style?: React.CSSProperties
 }) {
-  console.log('bridgeNetwork', bridgeNetwork.chainCurrency)
+
   let Icon
   switch(bridgeNetwork.chainCurrency){
     case 'FTM':
