@@ -37,7 +37,7 @@ const Zap = () => {
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
-  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } =
+  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted, estimatedLpAmount } =
     useDerivedZapInfo()
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
@@ -268,6 +268,15 @@ const Zap = () => {
                       </Text>
                       <Text fontSize="14px">{token1?.toSignificant(6)}</Text>
                     </AutoRow>
+                    {estimatedLpAmount && (
+                      <AutoRow>
+                        <Text fontSize="14px" marginRight="10px">
+                          Estimated Price :
+                        </Text>
+                        <Text fontSize="14px">$ {estimatedLpAmount.toFixed(4)}</Text>
+                      </AutoRow>
+                    )}
+                    
                   </AutoColumn>
                 </Card>
               ) : (
