@@ -5,6 +5,8 @@ import { Heading, IconButton, Text, Flex, useModal, TuneIcon, HistoryIcon, Butto
 interface PageHeaderProps {
     title: string
     description: string
+    zapToPool: boolean
+    setZapToPool?:(value: boolean) => void,
 }
 
 const StyledPageHeader = styled.div`
@@ -17,16 +19,42 @@ const StyledPageHeader = styled.div`
 const Details = styled.div`
   flex: 1;
 `
+const TextContainer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  cursor: pointer;
+  border-bottom: 2px solid  ${({ theme }) => theme.colors.primary};
+`
 
-const PageHeader = ({ title, description } : PageHeaderProps) => {
+const PageHeader = ({ title, description, zapToPool = false, setZapToPool } : PageHeaderProps) => {
 
     return(
         <StyledPageHeader>
             <Flex alignItems="center">
                 <Details>
-                    <Heading mb="8px" color="primary">
-                    {title}
-                    </Heading>
+                    <Flex mb="8px">
+                        <TextContainer 
+                            style={ !zapToPool ? {} : {border: "none"}} 
+                            onClick={() => {
+                                setZapToPool(false)
+                            }}
+                        >
+                            <Text color="primary" bold>
+                                Zap
+                            </Text>
+                        </TextContainer>
+                        <TextContainer 
+                            style={ !zapToPool ? {border: "none"} : {}} 
+                            onClick={() => {
+                                setZapToPool(true)
+                            }}
+                        >
+                            <Text color="primary" bold>
+                                Zap Into Pools
+                            </Text>
+                        </TextContainer>
+                    </Flex>
                 {description && (
                     <Text color="textSubtle" fontSize="14px">
                     {description}

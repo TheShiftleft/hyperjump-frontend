@@ -33,6 +33,7 @@ const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/image
 
 const Zap = () => {
   const { config } = getNetwork()
+  const [zapToPool, setZapToPool] = useState(false)
   const { toastSuccess, toastError } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
@@ -206,6 +207,10 @@ const Zap = () => {
           <PageHeader
             title="Zap"
             description="Zap into our LP tokens: Please note that there is a risk of loss if zapping into a low liquidity LP"
+            zapToPool={zapToPool}
+            setZapToPool={(value: boolean) => {
+              setZapToPool(value)
+            }}
           />
           <CardBody p="12px">
             <AutoColumn gap="md">
