@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
-import { getAddress } from 'utils/addressHelpers'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -135,11 +134,11 @@ export function useDerivedZapInfo(): {
   const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
   let estimate = useEstimateZapInToken(currencyInput ?? undefined, pairToken, parsedAmount)
   const estimates = useMemo(() => {
-    return estimate && parsedAmount && (currencyInput?.symbol !== 'BNB' && currencyInput?.symbol !== 'FTM') ? [
+    return estimate && parsedAmount ? [
       new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),
       new TokenAmount(pairToken?.token1 ?? undefined, JSBI.BigInt(estimate[1] ? estimate[1].toString() : 0))
     ] : [undefined, undefined]
-  }, [estimate, pairToken, parsedAmount, currencyInput]) 
+  }, [estimate, pairToken, parsedAmount]) 
   
   const liquidityMinted = useMemo(() => {
     const [estimate0, estimate1] = estimates
