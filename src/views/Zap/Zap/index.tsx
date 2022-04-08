@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { CurrencyAmount } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, JSBI } from '@hyperjump-defi/sdk'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
@@ -20,10 +20,12 @@ import useToast from 'hooks/useToast'
 import useI18n from 'hooks/useI18n'
 import getNetwork from 'utils/getNetwork'
 import CurrencyLogo from 'components/CurrencyLogo'
+import { BIG_ZERO } from 'utils/bigNumber'
+import { MIN_ETH } from 'config'
 
 const Zap = () => {
   const { config } = getNetwork()
-  const { toastSuccess, toastError } = useToast()
+  const { toastSuccess, toastError, toastWarning } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
@@ -61,8 +63,14 @@ const Zap = () => {
         })
       })
       .catch((error) => {
-        console.error(error)
-        toastError('Zap Error', 'An error occured while processing transaction.')
+        console.info(error)
+        let msg = 'An error occured while processing transaction.'
+        let title = 'Zap Error'
+        if(error.code === 4001){
+          title = 'Transaction Cancelled'
+          msg = 'User cancelled the transaction.'
+        }
+        toastError(title, msg)
       })
   }, [zapCallback, toastSuccess, toastError])
 
@@ -121,9 +129,13 @@ const Zap = () => {
 
   const handleMaxInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, maxAmountInput.toExact())
+      if(JSBI.lessThan(maxAmountInput?.raw, MIN_ETH)){
+        toastWarning('Warning', 'Balance is below the minimum amount required!')
+      }else{
+        onUserInput(Field.INPUT, maxAmountInput.toExact())
+      }
     }
-  }, [maxAmountInput, onUserInput])
+  }, [maxAmountInput, onUserInput, toastWarning])
 
   return (
     <Container>
