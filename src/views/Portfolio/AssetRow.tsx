@@ -109,7 +109,7 @@ const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
     <>
       <StyledRow>
         <CellInner>
-          <CellLayout label={`${token.tokenObj.name} WALLET`} />
+          <CellLayout label={`${token.tokenObj.symbol} WALLET`} />
         </CellInner>
         <CellInner />
         <CellInner>

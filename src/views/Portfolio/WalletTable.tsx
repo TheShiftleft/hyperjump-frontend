@@ -1,11 +1,16 @@
 import { Flex, Text, Heading, Card } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
-import React from 'react'
+import React, { useMemo } from 'react'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
 import { useGetTokensList } from 'hooks/moralis'
 import styled from 'styled-components'
 import { SubHeader } from 'uikit/components/SubHeader'
+import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
+import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
+import { usePairs } from 'data/Reserves'
+import { Pair } from '@hyperjump-defi/sdk'
+import getNetwork from 'utils/getNetwork'
 import TokenRow from './TokenRow'
 import AssetRow from './AssetRow'
 
@@ -115,14 +120,44 @@ const WalletTableHeading = styled(Heading)`
 const WalletTable: React.FC = () => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
+  const { config } = getNetwork()
 
-  const tokens = useGetTokensList(account)
+  const usertokens = useGetTokensList(account)
+  const trackedTokenPairs = useTrackedTokenPairs()
+
+  const tokenPairsWithLiquidityTokens = useMemo(
+    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
+    [trackedTokenPairs],
+  )
+
+  const liquidityTokens = useMemo(
+    () => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken),
+    [tokenPairsWithLiquidityTokens],
+  )
+
+  const [v2PairsBalances] = useTokenBalancesWithLoadingIndicator(account ?? undefined, liquidityTokens)
+  const liquidityTokensWithBalances = useMemo(
+    () =>
+      tokenPairsWithLiquidityTokens.filter(({ liquidityToken }) =>
+        v2PairsBalances[liquidityToken.address]?.greaterThan('0'),
+      ),
+    [tokenPairsWithLiquidityTokens, v2PairsBalances],
+  )
+
+  const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
+  const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
   let totalVolume = 0
-  tokens.forEach((token) => {
+  usertokens.forEach(async (token) => {
     if (!token.tokenObj.name.includes('.')) {
       totalVolume += token.volume
     }
+
+    allV2PairsWithLiquidity.forEach((lptoken) => {
+      if (lptoken.liquidityToken.address === token.tokenObj.address) {
+        token.tokenObj.symbol = `${lptoken.token0.symbol} - ${lptoken.token1.symbol}`
+      }
+    })
   })
 
   return (
@@ -142,13 +177,13 @@ const WalletTable: React.FC = () => {
           Investments
         </WalletTableHeading>
       </PageHeader>
-      {tokens.length > 0 ? (
+      {usertokens.length > 0 ? (
         <Table>
           <ColumnTable>
             <Flex flexDirection="column" alignItems="center">
               <WalletTableHeading>Wallet</WalletTableHeading>
             </Flex>
-            {tokens
+            {usertokens
               .filter((token) => !token.tokenObj.name.includes('.'))
               .map((token) => (
                 <TokenRow key={token.tokenObj.address} token={token} />
@@ -159,7 +194,7 @@ const WalletTable: React.FC = () => {
             <Flex flexDirection="column" alignItems="center">
               <WalletTableHeading>Asset Allocation</WalletTableHeading>
             </Flex>
-            {tokens
+            {usertokens
               .filter((token) => !token.tokenObj.name.includes('.'))
               .map((token) => (
                 <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />

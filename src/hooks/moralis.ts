@@ -5,6 +5,7 @@ import Moralis from 'moralis'
 import { Token } from '@hyperjump-defi/sdk'
 import { getAddress } from '@ethersproject/address'
 import { isAddress } from 'utils'
+import getChainSupportedTokens from 'config/constants/bridgeTokens'
 
 export interface TokenProps {
   tokenObj: Token
@@ -23,7 +24,7 @@ export const useGetTokensList = (account) => {
     const fetchData = async () => {
       try {
         const network = config.name === 'BSC' ? 'bsc' : 'fantom'
-
+        const chainSupportedTokens = getChainSupportedTokens(config.id)
         const result = await Moralis.Web3API.account.getTokenBalances({ chain: network, address: account })
 
         const tokens = []
@@ -31,22 +32,35 @@ export const useGetTokensList = (account) => {
         result.forEach(async (token) => {
           if (!token.name.includes('.')) {
             const { name, logo, symbol, balance, token_address, decimals } = token
-            // const price = await Moralis.Web3API.token.getTokenPrice({
-            //   chain: network,
-            //   address: token_address,
-            // })
             const tokenAddress = isAddress(token_address)
 
             let newLogo = logo
             if (logo === null) {
-              newLogo = await getTokenLogoImage(tokenAddress)
+              chainSupportedTokens.forEach((chaintoken) => {
+                if (chaintoken.address === tokenAddress) {
+                  newLogo = chaintoken.logoURI
+                }
+              })
+              if (newLogo === null) {
+                newLogo = await getTokenLogoImage(tokenAddress)
+                if (newLogo === null) {
+                  let coinid = await searchToken(name)
+                  newLogo = await getTokenLogo(coinid)
+                }
+              }
             }
 
             const price = await getTokenPrice(tokenAddress, network)
             const amount = parseInt(balance) / 10 ** parseInt(decimals)
-            const volume = price.usdPrice * amount
+            const volume = price.usdPrice ? price.usdPrice * amount : 0
             const tokenObj = new Token(config.id, getAddress(token_address), parseInt(decimals), symbol, name)
-            const newToken: TokenProps = { tokenObj, logo: newLogo, amount, volume, price: price.usdPrice }
+            const newToken: TokenProps = {
+              tokenObj,
+              logo: newLogo,
+              amount,
+              volume,
+              price: price.usdPrice ? price.usdPrice : 0,
+            }
             tokens.push(newToken)
           }
         })
@@ -71,9 +85,8 @@ async function getTokenPrice(address, network) {
       headers: { 'X-API-Key': MORALIS_API_KEY },
     })
     const price = await response.json()
-    return price.usdPrice || 0
+    return price
   } catch (error) {
-    console.error('Unable to fetch data:', error)
     return 0
   }
 }
@@ -83,11 +96,12 @@ async function getTokenLogoImage(address) {
     const getTokenLogoURL = await fetch(`https://tokens.hyperjump.app/images/${address}.png`)
     return getTokenLogoURL.status === 200 ? getTokenLogoURL.url : null
   } catch (error) {
+    console.error('Unable to fetch data:', error)
     return null
   }
 }
 
-export async function getTokenLogo(name, network) {
+export async function getTokenLogo(name) {
   try {
     const response = await fetch(
       `https://api.coingecko.com/api/v3/coins/${name.toLowerCase().replace(' token', '').replace(/\s/g, '-')}`,
@@ -98,7 +112,13 @@ export async function getTokenLogo(name, network) {
 
     const responseData = await response.json()
 
-    return responseData.image.small ? responseData.image.small : responseData.image.large
+    return responseData.image.thumb
+      ? responseData.image.thumb
+      : responseData.image.small
+      ? responseData.image.small
+      : responseData.image.large
+      ? responseData.image.large
+      : null
   } catch (error) {
     console.error('Unable to fetch data:', error)
     return ''
@@ -117,7 +137,7 @@ export async function searchToken(name) {
     const responseData = await response.json()
     let responseId = ''
     responseData.coins.forEach((coin) => {
-      if (coin.symbol.toLowerCase() === name.toLowerCase()) {
+      if (coin.name.toLowerCase() === name.toLowerCase()) {
         responseId = coin.id
       }
     })
