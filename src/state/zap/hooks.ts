@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
-import { getAddress } from 'utils/addressHelpers'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -11,6 +10,10 @@ import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useEstimateZapInToken } from 'hooks/useZap'
 import { useTotalSupply } from 'data/TotalSupply'
 import { wrappedCurrencyAmount } from 'utils/wrappedCurrency'
+import { useGetLpPrices } from 'hooks/api'
+import BigNumber from 'bignumber.js'
+import { toNumber } from 'lodash'
+import { BIG_ZERO } from 'utils/bigNumber'
 import { AppDispatch, AppState } from '../index'
 import { useCurrency } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
@@ -103,6 +106,7 @@ export function useDerivedZapInfo(): {
   parsedAmount: CurrencyAmount | undefined,
   estimates: TokenAmount[] | undefined,
   liquidityMinted: TokenAmount
+  estimatedLpAmount: BigNumber
   } {
   const { account, chainId } = useActiveWeb3React()
   const {
@@ -130,11 +134,11 @@ export function useDerivedZapInfo(): {
   const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
   let estimate = useEstimateZapInToken(currencyInput ?? undefined, pairToken, parsedAmount)
   const estimates = useMemo(() => {
-    return estimate && parsedAmount && (currencyInput?.symbol !== 'BNB' && currencyInput?.symbol !== 'FTM') ? [
+    return estimate && parsedAmount ? [
       new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),
       new TokenAmount(pairToken?.token1 ?? undefined, JSBI.BigInt(estimate[1] ? estimate[1].toString() : 0))
     ] : [undefined, undefined]
-  }, [estimate, pairToken, parsedAmount, currencyInput]) 
+  }, [estimate, pairToken, parsedAmount]) 
   
   const liquidityMinted = useMemo(() => {
     const [estimate0, estimate1] = estimates
@@ -147,9 +151,30 @@ export function useDerivedZapInfo(): {
     }
     return undefined
   }, [ chainId, pairOutput, totalSupply, estimates])
+
+  // If in BSC network changes all WBNB symbol to BNB and FTM symbol to WFTM
+  // If in FTM network changes all WFTM symbol to FTM and BNB symbol to WBNB
+  const token0Symbol = chainId === 56 ? pairToken?.token0.symbol.toUpperCase() === 'WBNB' ? 'BNB' : pairToken?.token0.symbol.toUpperCase() === 'FTM' ? 'WFTM' : pairToken?.token0.symbol : pairToken?.token0.symbol.toUpperCase() === 'WFTM' ? 'FTM' : pairToken?.token0.symbol.toUpperCase() === 'BNB' ? 'WBNB' : pairToken?.token0.symbol
+  const token1Symbol = chainId === 56 ? pairToken?.token1.symbol.toUpperCase() === 'WBNB' ? 'BNB' : pairToken?.token1.symbol.toUpperCase() === 'FTM' ? 'WFTM' : pairToken?.token1.symbol : pairToken?.token1.symbol.toUpperCase() === 'WFTM' ? 'FTM' : pairToken?.token1.symbol.toUpperCase() === 'BNB' ? 'WBNB' : pairToken?.token1.symbol
+
+  const lpPrices: any = useGetLpPrices()
+  const lpPrice = useMemo(() => {
+    if(lpPrices){
+      const element =  Object.keys(lpPrices).filter((key) => {
+        const splitKey = key.split('-')
+        const key0 = splitKey[1]
+        const key1 = splitKey[2]
+        return (key0 === token0Symbol || key0 === token1Symbol) && (key1 === token0Symbol || key1 === token1Symbol)
+      })
+
+      return lpPrices[element[0]]
+    }
+    return 0
+  }, [lpPrices,token0Symbol,token1Symbol])
+  const estimatedLpAmount = new BigNumber(lpPrice && liquidityMinted ? lpPrice * toNumber(liquidityMinted.toFixed()) : BIG_ZERO)
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0]
   }
 
-  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted};
+  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted, estimatedLpAmount};
 }
