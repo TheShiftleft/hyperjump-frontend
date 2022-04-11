@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { Image, Heading, Button, useModal } from 'uikit'
+import { Image, Heading, Button, useModal, Skeleton } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount, Token, Pair } from '@hyperjump-defi/sdk'
@@ -13,7 +13,7 @@ import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
 import { useWeb3React } from '@web3-react/core'
-
+import { getLpContract } from 'utils/contractHelpers'
 import ConvertModal from './ConvertModal'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
@@ -185,18 +185,31 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
             <>
               {allV2PairsWithLiquidity
                 .filter((lptoken) => lptoken.liquidityToken.address === token.tokenObj.address)
-                .map((v2Pair) => (
-                  <DoubleCurrencyLogo
-                    key={v2Pair.liquidityToken.address}
-                    currency0={unwrappedToken(v2Pair.token0)}
-                    currency1={unwrappedToken(v2Pair.token1)}
-                    margin
-                    size={30}
-                  />
-                ))}
+                .map((v2Pair) =>
+                  v2Pair ? (
+                    <DoubleCurrencyLogo
+                      key={v2Pair.liquidityToken.address}
+                      currency0={unwrappedToken(v2Pair.token0)}
+                      currency1={unwrappedToken(v2Pair.token1)}
+                      margin
+                      size={30}
+                    />
+                  ) : (
+                    <Skeleton
+                      animation="pulse"
+                      variant="circle"
+                      width={30}
+                      height={30}
+                      marginLeft={16}
+                      marginRight={20}
+                    />
+                  ),
+                )}
             </>
-          ) : (
+          ) : token.logo ? (
             <IconImage src={token.logo} alt="icon" width={30} height={30} ml="16px" />
+          ) : (
+            <Skeleton animation="pulse" variant="circle" width={30} height={30} marginLeft={16} marginRight={20} />
           )}
 
           <CellLayout label={token.tokenObj.symbol} align="left">

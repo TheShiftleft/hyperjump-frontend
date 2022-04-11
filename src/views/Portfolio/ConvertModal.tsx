@@ -97,6 +97,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const [step] = useState(1)
   const { toastSuccess, toastError } = useToast()
   const [limitPrice, setLimitPrice] = useState('')
+  const [limitValidity, setLimitValidity] = useState({ valid: true, error: '' })
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const { independentField, typedValue } = useSwapState()
   const { v2Trade, parsedAmount, currencies } = useDerivedSwapInfo()
@@ -229,6 +230,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
           showInverted={showInverted}
           setShowInverted={setShowInverted}
           setLimitPrice={setLimitPrice}
+          setLimitValidity={setLimitValidity}
         />
       </Box>
 

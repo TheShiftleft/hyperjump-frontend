@@ -11,8 +11,11 @@ import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
 import { usePairs } from 'data/Reserves'
 import { Pair } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
+import { Dots } from 'components/swap/styleds'
+import { getLpContract } from 'utils/contractHelpers'
 import TokenRow from './TokenRow'
 import AssetRow from './AssetRow'
+
 
 const NoTokenBox = styled(Card)`
   padding: 50px;
@@ -112,7 +115,7 @@ const TableLine = styled.div`
 const WalletTableHeading = styled(Heading)`
   margin-bottom: 12px;
   display: flex;
-  text-align: center;
+  text-align: justify;
   align-items: center;
   font-size: 30px;
 `
@@ -122,7 +125,8 @@ const WalletTable: React.FC = () => {
   const { account } = useWeb3React()
   const { config } = getNetwork()
 
-  const usertokens = useGetTokensList(account)
+  const { data, isLoading } = useGetTokensList(account)
+  const usertokens = data
   const trackedTokenPairs = useTrackedTokenPairs()
 
   const tokenPairsWithLiquidityTokens = useMemo(
@@ -153,7 +157,7 @@ const WalletTable: React.FC = () => {
       totalVolume += token.volume
     }
 
-    allV2PairsWithLiquidity.forEach((lptoken) => {
+    allV2PairsWithLiquidity.forEach(async (lptoken) => {
       if (lptoken.liquidityToken.address === token.tokenObj.address) {
         token.tokenObj.symbol = `${lptoken.token0.symbol} - ${lptoken.token1.symbol}`
       }
@@ -177,33 +181,31 @@ const WalletTable: React.FC = () => {
           Investments
         </WalletTableHeading>
       </PageHeader>
-      {usertokens.length > 0 ? (
+      {!isLoading && usertokens?.length > 0 ? (
         <Table>
           <ColumnTable>
             <Flex flexDirection="column" alignItems="center">
               <WalletTableHeading>Wallet</WalletTableHeading>
             </Flex>
-            {usertokens
-              .filter((token) => !token.tokenObj.name.includes('.'))
-              .map((token) => (
-                <TokenRow key={token.tokenObj.address} token={token} />
-              ))}
+            {usertokens.map((token) => (
+              <TokenRow key={token.tokenObj.address} token={token} />
+            ))}
           </ColumnTable>
           <TableLine />
           <ColumnTable>
             <Flex flexDirection="column" alignItems="center">
               <WalletTableHeading>Asset Allocation</WalletTableHeading>
             </Flex>
-            {usertokens
-              .filter((token) => !token.tokenObj.name.includes('.'))
-              .map((token) => (
-                <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
-              ))}
+            {usertokens.map((token) => (
+              <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
+            ))}
           </ColumnTable>
         </Table>
       ) : (
         <NoTokenBox>
-          <WalletTableHeading>{t('No Available Tokens to Convert')}</WalletTableHeading>
+          <WalletTableHeading>
+            <Dots>{t('Loading Available Tokens')}</Dots>
+          </WalletTableHeading>
         </NoTokenBox>
       )}
     </WalletTableContainer>
