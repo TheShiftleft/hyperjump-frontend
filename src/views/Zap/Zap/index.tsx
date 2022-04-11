@@ -1,44 +1,36 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
-import { CurrencyAmount, Token } from '@hyperjump-defi/sdk'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { CurrencyAmount, JSBI } from '@hyperjump-defi/sdk'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
 import AppBody from 'components/Zap/AppBody'
-import styled from 'styled-components'
-import Logo from 'components/Logo'
 import CardNav from 'components/Zap/CardNav'
 import Card from 'components/Card'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import PageHeader from 'components/Zap/PageHeader'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Wrapper } from 'components/Zap/styled'
-import { AutoRow, RowBetween } from 'components/Row'
+import { AutoRow } from 'components/Row'
 import Loader from 'components/Loader'
 import { useApproveCallbackFromZap, ApprovalState } from 'hooks/useApproveCallback'
 import { useDerivedZapInfo, useZapActionHandlers, useZapDefaultState, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
 import { useZapInToken, ZapCallbackState } from 'hooks/useZap'
 import useToast from 'hooks/useToast'
-import { WrappedTokenInfo } from 'state/lists/hooks'
-import useHttpLocations from 'hooks/useHttpLocations'
 import useI18n from 'hooks/useI18n'
 import getNetwork from 'utils/getNetwork'
-
-const StyledLogo = styled(Logo)<{ size: string }>`
-  width: ${({ size }) => size};
-  height: ${({ size }) => size};
-`
-
-const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
+import CurrencyLogo from 'components/CurrencyLogo'
+import { BIG_ZERO } from 'utils/bigNumber'
+import { MIN_ETH } from 'config'
 
 const Zap = () => {
   const { config } = getNetwork()
   const [zapToPool, setZapToPool] = useState(false)
-  const { toastSuccess, toastError } = useToast()
+  const { toastSuccess, toastError, toastWarning } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
-  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } =
+  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted, estimatedLpAmount } =
     useDerivedZapInfo()
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
@@ -60,69 +52,6 @@ const Zap = () => {
   const token0 = estimates[0] ?? undefined
   const token1 = estimates[1] ?? undefined
 
-  const uriLocations0 = useHttpLocations(token0?.token instanceof WrappedTokenInfo ? token0?.token.logoURI : undefined)
-  const uriLocations1 = useHttpLocations(token1?.token instanceof WrappedTokenInfo ? token1?.token.logoURI : undefined)
-
-  const srcs0 = useMemo(() => {
-    if (token0?.token instanceof Token) {
-      if (token0?.token instanceof WrappedTokenInfo) {
-        return [
-          ...uriLocations0,
-          `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token0?.token?.symbol.toLowerCase() === 'ftm'
-              ? 'FTM'
-              : token0?.token?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token0?.token?.address,
-          ),
-        ]
-      }
-
-      return [
-        `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token0?.token?.symbol.toLowerCase() === 'ftm'
-            ? 'FTM'
-            : token0?.token?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token0?.token?.address,
-        ),
-      ]
-    }
-    return []
-  }, [token0, uriLocations0])
-
-  const srcs1 = useMemo(() => {
-    if (token1?.token instanceof Token) {
-      if (token1?.token instanceof WrappedTokenInfo) {
-        return [
-          ...uriLocations1,
-          `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token1?.token?.symbol.toLowerCase() === 'ftm'
-              ? 'FTM'
-              : token1?.token?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token1?.token?.address,
-          ),
-        ]
-      }
-
-      return [
-        `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token1?.token?.symbol.toLowerCase() === 'ftm'
-            ? 'FTM'
-            : token1?.token?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token1?.token?.address,
-        ),
-      ]
-    }
-    return []
-  }, [token1, uriLocations1])
-
   const handleZapCallback = useCallback(() => {
     zapCallback()
       .then((result) => {
@@ -135,8 +64,14 @@ const Zap = () => {
         })
       })
       .catch((error) => {
-        console.error(error)
-        toastError('Zap Error', 'An error occured while processing transaction.')
+        console.info(error)
+        let msg = 'An error occured while processing transaction.'
+        let title = 'Zap Error'
+        if(error.code === 4001){
+          title = 'Transaction Cancelled'
+          msg = 'User cancelled the transaction.'
+        }
+        toastError(title, msg)
       })
   }, [zapCallback, toastSuccess, toastError])
 
@@ -195,9 +130,13 @@ const Zap = () => {
 
   const handleMaxInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, maxAmountInput.toExact())
+      if(JSBI.lessThan(maxAmountInput?.raw, MIN_ETH)){
+        toastWarning('Warning', 'Balance is below the minimum amount required!')
+      }else{
+        onUserInput(Field.INPUT, maxAmountInput.toExact())
+      }
     }
-  }, [maxAmountInput, onUserInput])
+  }, [maxAmountInput, onUserInput, toastWarning])
 
   return (
     <Container>
@@ -239,7 +178,6 @@ const Zap = () => {
                 showMaxButton={false}
                 onUserInput={handleTypeOutput}
                 disabledNumericalInput
-                hideInput={currencyInput === config.baseCurrency}
                 id="zap-currency-input"
                 pairToken
               />
@@ -250,11 +188,10 @@ const Zap = () => {
                       Estimated
                     </Text>
                     <AutoRow>
-                      <StyledLogo
-                        size="25px"
-                        srcs={srcs0}
-                        alt={`${token0?.currency?.symbol ?? 'token'} logo`}
-                        style={{ borderRadius: '20px', marginRight: '10px' }}
+                      <CurrencyLogo
+                        currency={token0.currency}
+                        size="24px"
+                        style={{marginRight: '10px'}}
                       />
                       <Text fontSize="14px" marginRight="10px">
                         {token0?.currency?.symbol} Deposited :
@@ -262,17 +199,25 @@ const Zap = () => {
                       <Text fontSize="14px">{token0?.toSignificant(6)}</Text>
                     </AutoRow>
                     <AutoRow>
-                      <StyledLogo
-                        size="25px"
-                        srcs={srcs1}
-                        alt={`${token0?.currency?.symbol ?? 'token'} logo`}
-                        style={{ borderRadius: '20px', marginRight: '10px' }}
+                      <CurrencyLogo
+                        currency={token1.currency}
+                        size="24px"
+                        style={{marginRight: '10px'}}
                       />
                       <Text fontSize="14px" marginRight="10px">
                         {token1?.currency?.symbol} Deposited :
                       </Text>
                       <Text fontSize="14px">{token1?.toSignificant(6)}</Text>
                     </AutoRow>
+                    {estimatedLpAmount && (
+                      <AutoRow>
+                        <Text fontSize="14px" marginRight="10px">
+                          Estimated value:
+                        </Text>
+                        <Text fontSize="14px">$ {estimatedLpAmount.toFixed(4)}</Text>
+                      </AutoRow>
+                    )}
+                    
                   </AutoColumn>
                 </Card>
               ) : (

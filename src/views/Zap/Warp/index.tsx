@@ -54,8 +54,14 @@ const Warp = () => {
                 })
             })
             .catch(error => {
-                console.error(error)
-                toastError('Warp Error', 'An error occured while processing transaction.')
+                console.info(error)
+                let msg = 'An error occured while processing transaction.'
+                let title = 'Zap Error'
+                if(error.code === 4001){
+                title = 'Transaction Cancelled'
+                msg = 'User cancelled the transaction.'
+                }
+                toastError(title, msg)
             })
         },[zapCallback, toastSuccess, toastError]
     )
