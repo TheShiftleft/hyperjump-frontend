@@ -1,6 +1,7 @@
 import { ChainId } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
-import masterChefABI from './masterchefv2.json'
+import masterChefABI from './masterchef.json'
+import masterChef20ABI from './masterchefv2.json'
 import bscMulticallABI from './bsc-multicall.json'
 import ftmMulticallABI from './ftm-multicall.json'
 import bscPoolABI from './bsc-pool.json'
@@ -23,6 +24,8 @@ import mechABI from './mechs.json'
 import mechMigratorABI from './mechMigrator.json'
 import claimLpRewardMigratorABI from './claimLpRewards.json'
 import broomABI from './broom.json'
+import zapABI from './zap.json'
+import actionInitiatorsABI from './actionInitiators.json'
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -78,6 +81,10 @@ const broomABIs = {
   [ChainId.FTM_MAINNET]: broomABI,
 }
 
+export const getActionInitiatorsABI = () => {
+  return actionInitiatorsABI
+}
+
 export const getRewardMigratorABI = () => {
   return rewardMigratorABI
 }
@@ -95,10 +102,13 @@ export const getXJumpABI = () => {
 }
 
 export const getMasterChefABI = () => {
-  /*   const { chainId } = getNetwork()
-   */
   return masterChefABI
 }
+
+export const getMasterChef20ABI = () => {
+  return masterChef20ABI
+}
+
 
 export const getMulticallABI = () => {
   const { chainId } = getNetwork()
@@ -148,4 +158,8 @@ export const getLotteryABI = () => {
 export const getBroomABI = () => {
   const { chainId } = getNetwork()
   return broomABIs[chainId]
+}
+
+export const getZapABI = () => {
+  return zapABI
 }

@@ -3,8 +3,8 @@ import Cookies from 'js-cookie'
 import { useActiveWeb3React } from 'hooks'
 
 const initialState = {
-  profileLink: 'https://hyperjump.fi/profile',
-  noProfileLink: 'https://hyperjump.fi/profile',
+  profileLink: 'https://hyperjump.app/profile',
+  noProfileLink: 'https://hyperjump.app/profile',
 }
 
 /**

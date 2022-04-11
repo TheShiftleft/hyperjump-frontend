@@ -6,12 +6,13 @@ import ApplicationUpdater from './state/application/updater'
 import MulticallUpdater from './state/multicall/updater'
 import TransactionUpdater from './state/transactions/updater'
 import ToastListener from './components/ToastListener'
-/* import { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
-import { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
-import { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData' */
+// import { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
+// import { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
+// import { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
 import App from './App'
 
-/* function AnalyticsUpdaters() {
+/* 
+function AnalyticsUpdaters() {
   return (
     <>
       <LocalStorageContextUpdater />
@@ -19,7 +20,8 @@ import App from './App'
       <TokenDataContextUpdater />
     </>
   )
-} */
+}
+ */
 
 ReactDOM.render(
   <React.StrictMode>

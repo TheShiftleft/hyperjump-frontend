@@ -7,13 +7,23 @@ const useClaimLpRewardsCanClaim = () => {
   const { account } = useWeb3React()
 
   const fetchClaim = useCallback(async () => {
+    let isMounted = true
     const claim = await getClaim(account)
-    setCanClaim(claim)
+    if (isMounted) {
+      setCanClaim(claim)
+    }
+    return () => {
+      isMounted = false
+    }
   }, [account])
 
   useEffect(() => {
-    if (account) {
+    let isMounted = true
+    if (account && isMounted) {
       fetchClaim()
+    }
+    return () => {
+      isMounted = false
     }
   }, [account, fetchClaim])
 

@@ -199,23 +199,23 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const info = `${BASE_INFO_PAIR_URL}/${lpAddress}`
 
   // startTime multiplied by 1000 to convert in to microseconds
-  const startDate = new Date(startTime*1000).toLocaleString('en-GB', {
+  const startDate = new Date(startTime * 1000).toLocaleString('en-GB', {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true
+    hour12: true,
   })
 
   // endTime multiplied by 1000 to convert in to microseconds
-  const endDate = new Date(endTime*1000).toLocaleString('en-GB', {
+  const endDate = new Date(endTime * 1000).toLocaleString('en-GB', {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true
+    hour12: true,
   })
 
   const liquidityUrlPathParts = getLiquidityUrlPathParts({
@@ -232,25 +232,22 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
             <Flex flexDirection="column" flex="1">
               {isActive && (
                 <StakeContainer>
-                  <RedirectLink
-                    as={ReactLink}
-                    to={addLUrl}
-                  >
+                  <RedirectLink as={ReactLink} to={addLUrl}>
                     {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
                   </RedirectLink>
                 </StakeContainer>
               )}
               <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
-              <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal> 
+              <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal>
             </Flex>
             <Flex flexDirection="column" flex="1" justifyContent="space-between">
               <Flex flexDirection="column">
-                <TimeTitle >{t('Start time')}</TimeTitle>
-                <TimeContainer >{startDate}</TimeContainer>
+                <TimeTitle>{t('Start time')}</TimeTitle>
+                <TimeContainer>{startDate}</TimeContainer>
               </Flex>
               <Flex flexDirection="column">
-                <TimeTitle >{t('End time')}</TimeTitle>
-                <TimeContainer >{endDate}</TimeContainer>
+                <TimeTitle>{t('End time')}</TimeTitle>
+                <TimeContainer>{endDate}</TimeContainer>
               </Flex>
             </Flex>
           </Flex>

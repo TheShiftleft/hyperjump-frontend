@@ -3,31 +3,37 @@ import useWeb3 from 'hooks/useWeb3'
 import {
   getBep20Contract,
   getMasterchefContract,
+  getMasterchef20Contract,
   getPoolContract,
   getErc721Contract,
   getVaultContract,
   getGovTokenContract,
   getMigratorContract,
   getMechMigratorContract,
+  getFarmingTokenContract,
   getOldFarmingTokenContract,
   getXJumpContract,
+  getXJumpContract20,
   getMechContract,
   getClaimLpRewardsMigratorContract,
   getSynapseBridgeContract,
   getL2BridgeZapContract,
   getBroomContract,
+  getActionInitiatorContract,
 } from 'utils/contractHelpers'
 import {
   getLotteryAddress,
   getFarmingTokenAddress,
   getSynapseBridgeAddress,
   getBroomAddress,
+  getZapAddress
 } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
 import getMultiChainContract from 'utils/multiChainHelper'
-import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI, getBroomABI } from 'config/abi'
+import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI, getZapABI, getBroomABI } from 'config/abi'
 import { L2_BRIDGE_ZAP_ABI } from 'config/abi/L2BridgeZap'
 import { Contract } from '@ethersproject/contracts'
+import { Contract as ContractWeb3 } from 'web3-eth-contract'
 import { WRAPPED } from '@hyperjump-defi/sdk'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import getNetwork from 'utils/getNetwork'
@@ -63,9 +69,9 @@ export const useMasterchef = () => {
   return useMemo(() => getMasterchefContract(web3), [web3])
 }
 
-export const useXJump = () => {
+export const useMasterchef20 = () => {
   const web3 = useWeb3()
-  return useMemo(() => getXJumpContract(web3), [web3])
+  return useMemo(() => getMasterchef20Contract(web3), [web3])
 }
 
 export const useRewardMigrator = () => {
@@ -137,6 +143,9 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
   }, [address, ABI, library, withSignerIfPossible, account])
 }
 
+export const useZapContract = (witSignerIfPossible?: boolean) => {
+  return useContract(getZapAddress(), getZapABI(), witSignerIfPossible)
+}
 // export function useV1ExchangeContract(address?: string, withSignerIfPossible?: boolean): Contract | null {
 //   return useContract(address, V1_EXCHANGE_ABI, withSignerIfPossible)
 // }
@@ -189,10 +198,26 @@ export const useLotteryContract = (withSignerIfPossible?: boolean): Contract | n
 }
 
 export const useFarmingTokenContract = (withSignerIfPossible?: boolean) => {
-  return useContract(getFarmingTokenAddress(), getFarmingTokenABI(), withSignerIfPossible)
+  // who did this??
+  //  return useContract(getFarmingTokenAddress(), getFarmingTokenABI(), withSignerIfPossible)
 
-  // const web3 = useWeb3()
-  // return useMemo(() => getFarmingTokenContract(web3), [web3])
+  const web3 = useWeb3()
+  return useMemo(() => getFarmingTokenContract(web3), [web3])
+}
+
+export const useXJump = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getXJumpContract(web3), [web3])
+}
+
+export const useXJump20 = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getXJumpContract20(web3), [web3])
+}
+
+export const useActionInitiators = () => {
+  const web3 = useWeb3()
+  return useMemo(() => getActionInitiatorContract(web3), [web3])
 }
 
 // export const useBroomContract = () => {

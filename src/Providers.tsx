@@ -12,13 +12,13 @@ import store from 'state'
 import { ApolloProvider } from 'react-apollo'
 import { MoralisProvider } from 'react-moralis'
 import { NetworkContextName, MORALIS_APP_ID, MORALIS_SERVER_URL } from './config'
-/* import { client } from './views/Analytics/apollo/client'
-import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
-import ApplicationContextProvider from './contexts/Analytics/Application'
-import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
-import GlobalDataContextProvider from './contexts/Analytics/GlobalData'
-import PairDataContextProvider, { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
-import UserContextProvider from './contexts/Analytics/User' */
+// import { client } from './views/Analytics/apollo/client'
+// import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/Analytics/LocalStorage'
+// import ApplicationContextProvider from './contexts/Analytics/Application'
+// import TokenDataContextProvider, { Updater as TokenDataContextUpdater } from './contexts/Analytics/TokenData'
+// import GlobalDataContextProvider from './contexts/Analytics/GlobalData'
+// import PairDataContextProvider, { Updater as PairDataContextUpdater } from './contexts/Analytics/PairData'
+// import UserContextProvider from './contexts/Analytics/User' 
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 

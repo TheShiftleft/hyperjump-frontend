@@ -29,9 +29,9 @@ export default function CurrencyLogo({
   currency?: Currency
   size?: string
   style?: React.CSSProperties
+  lpUrl?: string
 }) {
   const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
-
   const { config } = getNetwork()
   const srcs: string[] = useMemo(() => {
     if (currency === config.baseCurrency) return []
@@ -40,12 +40,15 @@ export default function CurrencyLogo({
       if (currency instanceof WrappedTokenInfo) {
         return [
           ...uriLocations,
+          `/images/tokens/${currency.symbol.toLowerCase() === 'wbnb' ? 'bnb' : currency.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
           `/images/tokens/${currency?.address ?? 'token'}.png`,
-          getTokenLogoURL(currency.address),
+          getTokenLogoURL(currency.address)
         ]
       }
-
-      return [`/images/tokens/${currency?.address ?? 'token'}.png`, getTokenLogoURL(currency.address)]
+      return [
+        `/images/tokens/${currency.symbol.toLowerCase() === 'wbnb' ? 'bnb' : currency.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
+        `/images/tokens/${currency?.address ?? 'token'}.png`,
+        getTokenLogoURL(currency.address)]
     }
     return []
   }, [config.baseCurrency, currency, uriLocations])
