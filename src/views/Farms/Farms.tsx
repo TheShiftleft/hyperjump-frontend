@@ -49,7 +49,13 @@ const Farms: React.FC = () => {
 
   const [stakedOnly, setStakedOnly] = useState(!isActive)
   useEffect(() => {
-    setStakedOnly(!isActive)
+    let isMounted = true
+    if(isMounted) {
+      setStakedOnly(!isActive)
+    }
+    return () => {
+      isMounted = false
+    }
   }, [isActive])
 
   const currentDate = Date.now()
@@ -160,10 +166,13 @@ const Farms: React.FC = () => {
   ])
 
   useEffect(() => {
+    let isMounted = true
     const showMoreFarms = (entries) => {
       const [entry] = entries
       if (entry.isIntersecting) {
-        setNumberOfFarmsVisible((farmsCurrentlyVisible) => farmsCurrentlyVisible + NUMBER_OF_FARMS_VISIBLE)
+        if(isMounted){
+          setNumberOfFarmsVisible((farmsCurrentlyVisible) => farmsCurrentlyVisible + NUMBER_OF_FARMS_VISIBLE)
+        }
       }
     }
 
@@ -173,7 +182,12 @@ const Farms: React.FC = () => {
         threshold: 1,
       })
       loadMoreObserver.observe(loadMoreRef.current)
-      setObserverIsSet(true)
+      if(isMounted){
+        setObserverIsSet(true)
+      }
+    }
+    return () => {
+      isMounted = false
     }
   }, [farmsStakedMemoized, observerIsSet])
 

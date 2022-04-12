@@ -412,6 +412,7 @@ export function useDerivedBridgeInfo(): {
   inputError?: string,
 } {
   const { account } = useActiveWeb3React()
+  const { chainId } = getNetwork()
   const {
     independentField,
     typedValue,
@@ -420,7 +421,7 @@ export function useDerivedBridgeInfo(): {
     recipient,
     outputChainId,
   } = useBridgeState()
-  const inputCurrency = useCurrency(inputCurrencyId)
+  const inputCurrency = useCurrencyOnOtherChain(inputCurrencyId, chainId.toString())
   const outputCurrency = useCurrencyOnOtherChain(outputCurrencyId, outputChainId)
   const recipientLookup = useENS(recipient ?? undefined)
 
