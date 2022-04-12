@@ -7,6 +7,7 @@ interface PageHeaderProps {
     description: string
     zapToPool: boolean
     setZapToPool?:(value: boolean) => void,
+    isZap?: boolean
 }
 
 const StyledPageHeader = styled.div`
@@ -27,7 +28,7 @@ const TextContainer = styled.div`
   border-bottom: 2px solid  ${({ theme }) => theme.colors.primary};
 `
 
-const PageHeader = ({ title, description, zapToPool = false, setZapToPool } : PageHeaderProps) => {
+const PageHeader = ({ title, description, zapToPool = false, setZapToPool, isZap } : PageHeaderProps) => {
 
     return(
         <StyledPageHeader>
@@ -41,7 +42,7 @@ const PageHeader = ({ title, description, zapToPool = false, setZapToPool } : Pa
                             }}
                         >
                             <Text color="primary" bold>
-                                Zap
+                                {isZap ? 'Zap' : 'Warp'}
                             </Text>
                         </TextContainer>
                         <TextContainer 
@@ -51,7 +52,7 @@ const PageHeader = ({ title, description, zapToPool = false, setZapToPool } : Pa
                             }}
                         >
                             <Text color="primary" bold>
-                                Zap Into Pools
+                                {isZap ? 'Zap Into Pools' : 'Warp Into Pools'}
                             </Text>
                         </TextContainer>
                     </Flex>

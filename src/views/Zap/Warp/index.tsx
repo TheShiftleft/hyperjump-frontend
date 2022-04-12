@@ -20,15 +20,19 @@ import { AutoRow } from 'components/Row'
 import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionModal'
 import { PairState } from 'data/Reserves'
 import useI18n from 'hooks/useI18n'
+import useStake from 'hooks/useStake'
 import DefiSelect from './DefiSelect'
 
 const Warp = () => {
     useWarpDefaultState()
     const TranslateString = useI18n()
+    const [isLoading, setIsLoading] = useState(false)
+    const [warpToPool, setWarpToPool] = useState(false)
+    
     const {typedValue} = useWarpState()
-    const { toastSuccess, toastError } = useToast()
+    const { toastSuccess, toastError, toastInfo } = useToast()
     const [modalOpen, setModalOpen] = useState(false)
-    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP} = useDerivedWarpInfo()
+    const {lpInput, lpBalance, lpCurrency, currencyOutput, parsedAmount, selectedSwap, outputLP, farm} = useDerivedWarpInfo()
     const { onUserInput, onLPSelect, onSwapSelect } = useWarpActionHandlers()
     const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(lpBalance)
     const atMaxAmountInput = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
@@ -40,15 +44,33 @@ const Warp = () => {
         lpBalance,
         parsedAmount
     )
+    const { onStake } = useStake(farm?.pid)
 
     const handleZapCallback = useCallback(
         () => {
+            setIsLoading(true)
             zapCallback()
-            .then(result => {
-                result.wait().then(confirmation => {
+            .then(({zapAccross, amount}) => {
+                toastInfo('Warping', 'Warp in progress')
+                zapAccross.wait().then(confirmation => {
                     if(confirmation.status){
-                        toastSuccess('Warped', 'Warp transaction successful.')
+                        if(warpToPool){
+                            toastInfo('Stake', 'Staking in Progress')
+                            onStake(amount).then(() => {
+                                setIsLoading(false)
+                                toastSuccess('Success', 'Warp and Stake transaction successful.')
+                            })
+                            .catch((error) => {
+                                console.error(error)
+                                setIsLoading(false)
+                                toastError('Error', 'Something went wrong during staking transaction.')
+                            })
+                        }else{
+                            setIsLoading(false)
+                            toastSuccess('Warped', 'Warp transaction successful.')
+                        }
                     }else{
+                        setIsLoading(false)
                         toastError('Warp Error', 'Something went wrong during transaction.')
                     }
                 })
@@ -62,8 +84,9 @@ const Warp = () => {
                 msg = 'User cancelled the transaction.'
                 }
                 toastError(title, msg)
+                setIsLoading(false)
             })
-        },[zapCallback, toastSuccess, toastError]
+        },[zapCallback, toastSuccess, toastError, toastInfo, onStake, warpToPool]
     )
     const handleTypeInput = useCallback(
         (value) => {
@@ -75,7 +98,7 @@ const Warp = () => {
     const handleInputLPSelect = useCallback(
         (lp: LPToken) => {
             onLPSelect(Field.INPUT, lp)
-            onUserInput(Field.INPUT, maxAmountSpend(lp.balance).toExact())
+            onUserInput(Field.INPUT, maxAmountSpend(lp.balance)?.toExact())
         }, [onLPSelect, onUserInput],
     )
 
@@ -99,7 +122,14 @@ const Warp = () => {
             <CardNav activeIndex={1}/>
             <AppBody>
             <Wrapper id='warp-page' color='transparent'>
-                    <PageHeader title="Warp" description="Warp from other Defi LP tokens to our JUMP LP token" />
+                    <PageHeader 
+                        title="Warp" 
+                        description="Warp from other Defi LP tokens to our JUMP LP token"
+                        zapToPool={warpToPool}
+                        setZapToPool={(value: boolean) => {
+                          setWarpToPool(value)
+                        }}
+                     />
                     <CardBody p='12px'>
                         <AutoColumn gap='md'>
                             <DefiSelect 
@@ -184,11 +214,17 @@ const Warp = () => {
                                 </Button>
                             :   <Button
                                     width="100%"
-                                    disabled={!(zapState === ZapCallbackState.VALID)}
+                                    disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
                                     variant='primary'
                                     onClick={() => handleZapCallback()}
                                     >
-                                    {TranslateString(1209,'Warp')}
+                                    <AutoRow gap="6px" justify="center">
+                                    {warpToPool ? 
+                                        TranslateString(1213, 'Warp Into Pool') 
+                                    :
+                                        TranslateString(1209, 'Warp')}
+                                    {isLoading && <Loader stroke="white" />}
+                                    </AutoRow>
                                 </Button>
                             }
                         </AutoColumn>

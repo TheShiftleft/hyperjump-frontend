@@ -59,7 +59,7 @@ const Zap = () => {
     setIsLoading(true)
     zapCallback()
       .then((zapIn) => {
-        toastInfo('Zapping', 'Zapping in progress')
+        toastInfo('Zapping', 'Warp in progress')
         zapIn.wait().then((confirmation) => {
           if (confirmation.status) {
             if(zapToPool){
@@ -172,6 +172,7 @@ const Zap = () => {
             title="Zap"
             description="Zap into our LP tokens: Please note that there is a risk of loss if zapping into a low liquidity LP"
             zapToPool={zapToPool}
+            isZap
             setZapToPool={(value: boolean) => {
               setZapToPool(value)
             }}
