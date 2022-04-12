@@ -14,6 +14,8 @@ import { useGetLpPrices } from 'hooks/api'
 import BigNumber from 'bignumber.js'
 import { toNumber } from 'lodash'
 import { BIG_ZERO } from 'utils/bigNumber'
+import { FarmConfig } from 'config/constants/types'
+import { isAddress } from 'utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrency } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
@@ -107,8 +109,10 @@ export function useDerivedZapInfo(): {
   estimates: TokenAmount[] | undefined,
   liquidityMinted: TokenAmount
   estimatedLpAmount: BigNumber
+  farm: FarmConfig
   } {
   const { account, chainId } = useActiveWeb3React()
+  const { config } = getNetwork()
   const {
     field,
     typedValue,
@@ -117,6 +121,13 @@ export function useDerivedZapInfo(): {
   } = useZapState();
   const currencyInput = useCurrency(inputCurrencyId)
   const trackedTokenPairs = useTrackedTokenPairs()
+  const pairs = zapPairs[config.network]
+  const farm = useMemo(() => {
+    return Object.values(pairs).find((pair) => {
+      const pairAddress = isAddress(pair.lpAddresses[chainId])
+      return pairAddress === outputPairId
+    })
+  }, [pairs, chainId, outputPairId])
   const tokenPairsWithLiquidityTokens = useMemo(
     () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
     [trackedTokenPairs],
@@ -134,7 +145,7 @@ export function useDerivedZapInfo(): {
   const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
   let estimate = useEstimateZapInToken(currencyInput ?? undefined, pairToken, parsedAmount)
   const estimates = useMemo(() => {
-    return estimate && parsedAmount ? [
+    return estimate && parsedAmount && pairToken ? [
       new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),
       new TokenAmount(pairToken?.token1 ?? undefined, JSBI.BigInt(estimate[1] ? estimate[1].toString() : 0))
     ] : [undefined, undefined]
@@ -176,5 +187,5 @@ export function useDerivedZapInfo(): {
     [Field.INPUT]: relevantTokenBalances[0]
   }
 
-  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted, estimatedLpAmount};
+  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted, estimatedLpAmount, farm};
 }

@@ -22,16 +22,19 @@ import getNetwork from 'utils/getNetwork'
 import CurrencyLogo from 'components/CurrencyLogo'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { MIN_ETH } from 'config'
+import useStake from 'hooks/useStake'
 
 const Zap = () => {
   const { config } = getNetwork()
+  const [isLoading, setIsLoading] = useState(false)
   const [zapToPool, setZapToPool] = useState(false)
-  const { toastSuccess, toastError, toastWarning } = useToast()
+  const { toastSuccess, toastError, toastWarning, toastInfo } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
-  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted, estimatedLpAmount } =
+  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted, estimatedLpAmount, farm } =
     useDerivedZapInfo()
+  const {onStake} = useStake(farm?.pid)
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
     [Field.INPUT]: parsedAmount,
@@ -53,27 +56,49 @@ const Zap = () => {
   const token1 = estimates[1] ?? undefined
 
   const handleZapCallback = useCallback(() => {
+    setIsLoading(true)
     zapCallback()
-      .then((result) => {
-        result.wait().then((confirmation) => {
+      .then((zapIn) => {
+        toastInfo('Zapping', 'Zapping in progress')
+        zapIn.wait().then((confirmation) => {
           if (confirmation.status) {
-            toastSuccess('Zapped', 'Zap transaction successful.')
+            if(zapToPool){
+              if(liquidityMinted){
+                toastInfo('Staking', 'Staking in progress')
+                onStake(liquidityMinted.toExact()).then(() => {
+                  setIsLoading(false)
+                  toastSuccess('Success', 'Zap and Stake transaction successful.')
+                })
+                .catch((error) => {
+                  console.error(error)
+                  setIsLoading(false)
+                  toastError('Error', 'Something went wrong during staking transaction.')
+                })
+              }else{
+                toastError('Error', 'Something went wrong during staking transaction.')
+              }
+            }else{
+              setIsLoading(false)
+              toastSuccess('Zapped', 'Zap transaction successful.')
+            }
           } else {
-            toastError('Zap Error', 'Something went wrong during transaction.')
+            setIsLoading(false)
+            toastError('Zap Error', 'Something went wrong during zapping transaction.')
           }
         })
       })
       .catch((error) => {
-        console.info(error)
+        console.error(error)
         let msg = 'An error occured while processing transaction.'
         let title = 'Zap Error'
         if(error.code === 4001){
           title = 'Transaction Cancelled'
           msg = 'User cancelled the transaction.'
         }
+        setIsLoading(false)
         toastError(title, msg)
       })
-  }, [zapCallback, toastSuccess, toastError])
+  }, [zapCallback, toastSuccess, toastError, zapToPool, onStake, toastInfo, liquidityMinted])
 
   const [approval, approveCallback] = useApproveCallbackFromZap(parsedAmounts[field])
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -238,11 +263,17 @@ const Zap = () => {
               ) : (
                 <Button
                   width="100%"
-                  disabled={!(zapState === ZapCallbackState.VALID)}
+                  disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
                   variant="primary"
                   onClick={() => handleZapCallback()}
                 >
-                  {TranslateString(1211, 'Zap In')}
+                  <AutoRow gap="6px" justify="center">
+                  {zapToPool ? 
+                    TranslateString(1212, 'Zap Into Pool') 
+                  :
+                    TranslateString(1211, 'Zap In')}
+                  {isLoading && <Loader stroke="white" />}
+                  </AutoRow>
                 </Button>
               )}
             </AutoColumn>
