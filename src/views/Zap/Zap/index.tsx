@@ -23,11 +23,23 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { MIN_ETH } from 'config'
 import useStake from 'hooks/useStake'
+import { useWeb3React } from '@web3-react/core'
+import { useFarms, useFarmUser, usePollFarmsData } from 'state/hooks'
+import { useApprove } from 'hooks/useApprove'
+import { fetchFarmUserDataAsync } from 'state/farms'
+import { useAppDispatch } from 'state'
+import { getBep20Contract } from 'utils/contractHelpers'
+import useWeb3 from 'hooks/useWeb3'
 
 const Zap = () => {
   const { config } = getNetwork()
+  const { account, chainId } = useWeb3React()
+  const web3 = useWeb3()
   const [isLoading, setIsLoading] = useState(false)
   const [zapToPool, setZapToPool] = useState(false)
+  const dispatch = useAppDispatch()
+  useFarms()
+  usePollFarmsData()
   const { toastSuccess, toastError, toastWarning, toastInfo } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
@@ -35,6 +47,11 @@ const Zap = () => {
   const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted, estimatedLpAmount, farm } =
     useDerivedZapInfo()
   const {onStake} = useStake(farm?.pid)
+  // If farm is undefined set PID to JUMP-FTM temporarily
+  const { allowance } = useFarmUser(farm?.pid ?? 1)
+  const isFarmApproved = account && allowance && allowance?.isGreaterThan(0)
+  const lpContract = getBep20Contract(farm?.lpAddresses[chainId], web3)
+  const { onApprove } = useApprove(lpContract)
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
     [Field.INPUT]: parsedAmount,
@@ -59,7 +76,7 @@ const Zap = () => {
     setIsLoading(true)
     zapCallback()
       .then((zapIn) => {
-        toastInfo('Zapping', 'Warp in progress')
+        toastInfo('Zapping', 'Zap in progress')
         zapIn.wait().then((confirmation) => {
           if (confirmation.status) {
             if(zapToPool){
@@ -163,6 +180,28 @@ const Zap = () => {
     }
   }, [maxAmountInput, onUserInput, toastWarning])
 
+  const handleFarmApprove = useCallback(async () => {
+    toastInfo('Enabling', 'Enable farm staking in progress.')
+    setIsLoading(true)
+    try{
+      await onApprove()
+      setIsLoading(false)
+      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+      toastSuccess('Enabled', 'Farm staking has been enabled.')
+    }catch(error) {
+      console.error(error)
+      let msg = 'An error occured while processing transaction.'
+      let title = 'Zap Error'
+      if(error.code === 4001){
+        title = 'Transaction Cancelled'
+        msg = 'User cancelled the transaction.'
+      }
+      setIsLoading(false)
+      toastError(title, msg)
+    }
+    
+  }, [account, farm, onApprove, toastInfo, toastSuccess, toastError, dispatch])
+
   return (
     <Container>
       <CardNav />
@@ -207,7 +246,7 @@ const Zap = () => {
                 id="zap-currency-input"
                 pairToken
               />
-              {token0 && token1 ? (
+              {token0 && token1 && 
                 <Card padding=".25rem .75rem 0 .75rem" borderRadius="20px">
                   <AutoColumn justify="center" gap="5px">
                     <Text fontSize="16px" color="primary" bold>
@@ -246,10 +285,8 @@ const Zap = () => {
                     
                   </AutoColumn>
                 </Card>
-              ) : (
-                ''
-              )}
-              {showApproval ? (
+              }
+              {showApproval ? 
                 <Button width="100%" disabled={false} variant="primary" onClick={approveCallback}>
                   {approval === ApprovalState.PENDING ? (
                     <AutoRow gap="6px" justify="center">
@@ -261,7 +298,19 @@ const Zap = () => {
                     `Approve ${currencyInput?.name}`
                   )}
                 </Button>
-              ) : (
+              : zapToPool && !isFarmApproved ? 
+              <Button
+                  width="100%"
+                  disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
+                  variant="primary"
+                  onClick={() => handleFarmApprove()}
+                >
+                  <AutoRow gap="6px" justify="center">
+                    {TranslateString(1214, 'Enable Farm Staking')}
+                  {isLoading && <Loader stroke="white" />}
+                  </AutoRow>
+                </Button>
+              : 
                 <Button
                   width="100%"
                   disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
@@ -276,7 +325,7 @@ const Zap = () => {
                   {isLoading && <Loader stroke="white" />}
                   </AutoRow>
                 </Button>
-              )}
+              }
             </AutoColumn>
           </CardBody>
         </Wrapper>

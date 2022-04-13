@@ -21,6 +21,13 @@ import SwapSelectionModal, { OtherSwapConfig } from 'components/SwapSelectionMod
 import { PairState } from 'data/Reserves'
 import useI18n from 'hooks/useI18n'
 import useStake from 'hooks/useStake'
+import { useWeb3React } from '@web3-react/core'
+import useWeb3 from 'hooks/useWeb3'
+import { useFarms, useFarmUser, usePollFarmsData } from 'state/hooks'
+import { useAppDispatch } from 'state'
+import { useApprove } from 'hooks/useApprove'
+import { getBep20Contract } from 'utils/contractHelpers'
+import { fetchFarmUserDataAsync } from 'state/farms'
 import DefiSelect from './DefiSelect'
 
 const Warp = () => {
@@ -28,6 +35,11 @@ const Warp = () => {
     const TranslateString = useI18n()
     const [isLoading, setIsLoading] = useState(false)
     const [warpToPool, setWarpToPool] = useState(false)
+    const { account, chainId } = useWeb3React()
+    const web3 = useWeb3()
+    const dispatch = useAppDispatch()
+    useFarms()
+    usePollFarmsData()
     
     const {typedValue} = useWarpState()
     const { toastSuccess, toastError, toastInfo } = useToast()
@@ -45,6 +57,12 @@ const Warp = () => {
         parsedAmount
     )
     const { onStake } = useStake(farm?.pid)
+    // If farm is undefined set PID to JUMP-FTM temporarily
+    const { allowance } = useFarmUser(farm?.pid ?? 1)
+    const isFarmApproved = account && allowance && allowance?.isGreaterThan(0)
+
+    const lpContract = getBep20Contract(farm?.lpAddresses[chainId], web3)
+    const { onApprove } = useApprove(lpContract)
 
     const handleZapCallback = useCallback(
         () => {
@@ -116,6 +134,28 @@ const Warp = () => {
         (swap: OtherSwapConfig) => {
             onSwapSelect(Field.INPUT, swap)
     }, [onSwapSelect])
+
+    const handleFarmApprove = useCallback(async () => {
+        toastInfo('Enabling', 'Enable farm staking in progress.')
+        setIsLoading(true)
+        try{
+          await onApprove()
+          setIsLoading(false)
+          dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+          toastSuccess('Enabled', 'Farm staking has been enabled.')
+        }catch(error) {
+          console.error(error)
+          let msg = 'An error occured while processing transaction.'
+          let title = 'Warp Error'
+          if(error.code === 4001){
+            title = 'Transaction Cancelled'
+            msg = 'User cancelled the transaction.'
+          }
+          setIsLoading(false)
+          toastError(title, msg)
+        }
+        
+      }, [account, farm, onApprove, toastInfo, toastSuccess, toastError, dispatch])
     return(
         <>
         <Container>
@@ -194,38 +234,51 @@ const Warp = () => {
                                 )}
                             </Button>
                             : outputLP[0] !== PairState.EXISTS ? 
-                                <Button 
-                                    width="100%"
-                                    disabled
-                                    variant='text'
-                                    style={{ textAlign: 'center' }}>
-                                    {lpCurrency === undefined ? 
-                                        'Select an LP pair'
-                                    :
-                                    outputLP[0] === PairState.LOADING ?
-                                        <AutoRow gap="6px" justify="center">
-                                            Loading Pair <Loader stroke="white" />
-                                        </AutoRow>
-                                    :
-                                    outputLP[0] === PairState.NOT_EXISTS ?
-                                    'Pair does not exist in HyperJUMP LP'
-                                    :
-                                    'Invalid Pair'}
-                                </Button>
-                            :   <Button
-                                    width="100%"
-                                    disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
-                                    variant='primary'
-                                    onClick={() => handleZapCallback()}
-                                    >
+                            <Button 
+                                width="100%"
+                                disabled
+                                variant='text'
+                                style={{ textAlign: 'center' }}>
+                                {lpCurrency === undefined ? 
+                                    'Select an LP pair'
+                                :
+                                outputLP[0] === PairState.LOADING ?
                                     <AutoRow gap="6px" justify="center">
-                                    {warpToPool ? 
-                                        TranslateString(1213, 'Warp Into Pool') 
-                                    :
-                                        TranslateString(1209, 'Warp')}
-                                    {isLoading && <Loader stroke="white" />}
+                                        Loading Pair <Loader stroke="white" />
                                     </AutoRow>
-                                </Button>
+                                :
+                                outputLP[0] === PairState.NOT_EXISTS ?
+                                'Pair does not exist in HyperJUMP LP'
+                                :
+                                'Invalid Pair'}
+                            </Button>
+                            : warpToPool && !isFarmApproved ? 
+                            <Button
+                                width="100%"
+                                disabled={isLoading}
+                                variant="primary"
+                                onClick={() => handleFarmApprove()}
+                                >
+                                <AutoRow gap="6px" justify="center">
+                                    {TranslateString(1214, 'Enable Farm Staking')}
+                                {isLoading && <Loader stroke="white" />}
+                                </AutoRow>
+                            </Button>
+                            :  
+                            <Button
+                                width="100%"
+                                disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
+                                variant='primary'
+                                onClick={() => handleZapCallback()}
+                                >
+                                <AutoRow gap="6px" justify="center">
+                                {warpToPool ? 
+                                    TranslateString(1213, 'Warp Into Pool') 
+                                :
+                                    TranslateString(1209, 'Warp')}
+                                {isLoading && <Loader stroke="white" />}
+                                </AutoRow>
+                            </Button>
                             }
                         </AutoColumn>
                     </CardBody>
