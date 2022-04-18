@@ -1,6 +1,6 @@
 import { Flex, Text, Heading, Card } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
 import { useGetTokensList } from 'hooks/moralis'
@@ -15,7 +15,6 @@ import { Dots } from 'components/swap/styleds'
 import { getLpContract } from 'utils/contractHelpers'
 import TokenRow from './TokenRow'
 import AssetRow from './AssetRow'
-
 
 const NoTokenBox = styled(Card)`
   padding: 50px;
@@ -127,41 +126,13 @@ const WalletTable: React.FC = () => {
 
   const { data, isLoading } = useGetTokensList(account)
   const usertokens = data
-  const trackedTokenPairs = useTrackedTokenPairs()
-
-  const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
-    [trackedTokenPairs],
-  )
-
-  const liquidityTokens = useMemo(
-    () => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken),
-    [tokenPairsWithLiquidityTokens],
-  )
-
-  const [v2PairsBalances] = useTokenBalancesWithLoadingIndicator(account ?? undefined, liquidityTokens)
-  const liquidityTokensWithBalances = useMemo(
-    () =>
-      tokenPairsWithLiquidityTokens.filter(({ liquidityToken }) =>
-        v2PairsBalances[liquidityToken.address]?.greaterThan('0'),
-      ),
-    [tokenPairsWithLiquidityTokens, v2PairsBalances],
-  )
-
-  const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
-  const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
 
   let totalVolume = 0
+
   usertokens.forEach(async (token) => {
     if (!token.tokenObj.name.includes('.')) {
       totalVolume += token.volume
     }
-
-    allV2PairsWithLiquidity.forEach(async (lptoken) => {
-      if (lptoken.liquidityToken.address === token.tokenObj.address) {
-        token.tokenObj.symbol = `${lptoken.token0.symbol} - ${lptoken.token1.symbol}`
-      }
-    })
   })
 
   return (

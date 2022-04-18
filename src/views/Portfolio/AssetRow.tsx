@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { Heading } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { TokenProps } from 'hooks/moralis'
+import { getAddress } from '@ethersproject/address'
+import { useAllTokens } from 'hooks/Tokens'
 
 export interface AssetRowProps {
   token: TokenProps
@@ -104,12 +106,17 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label, children }) => {
 const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
   const { token, totalvolume } = props
   const assetpercentage = (token.volume / totalvolume) * 100
+  const allTokens = useAllTokens()
+  const walletname =
+    token.tokenPairs.length === 0
+      ? token.tokenObj.symbol
+      : `${allTokens[getAddress(token.tokenPairs[0])].symbol} - ${allTokens[getAddress(token.tokenPairs[1])]?.symbol} `
 
   return (
     <>
       <StyledRow>
         <CellInner>
-          <CellLayout label={`${token.tokenObj.symbol} WALLET`} />
+          <CellLayout label={`${walletname} WALLET`} />
         </CellInner>
         <CellInner />
         <CellInner>

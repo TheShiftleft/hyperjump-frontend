@@ -1,21 +1,18 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Image, Heading, Button, useModal, Skeleton } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
-import { JSBI, TokenAmount, Token, Pair } from '@hyperjump-defi/sdk'
+import { JSBI, TokenAmount, Token } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
 import { useSwapActionHandlers } from 'state/swap/hooks'
 import { getBroomAddress } from 'utils/addressHelpers'
 import getNetwork from 'utils/getNetwork'
 import { Field } from 'state/swap/actions'
-import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
-import { usePairs } from 'data/Reserves'
 import { useWeb3React } from '@web3-react/core'
-import { getLpContract } from 'utils/contractHelpers'
+import { getAddress } from '@ethersproject/address'
+import { useAllTokens } from 'hooks/Tokens'
 import ConvertModal from './ConvertModal'
-import { unwrappedToken } from '../../utils/wrappedCurrency'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
 export interface TokenRowProps {
@@ -114,33 +111,8 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { account } = useWeb3React()
   const broomAddress = getBroomAddress()
   const { token } = props
-  const trackedTokenPairs = useTrackedTokenPairs()
 
-  const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
-    [trackedTokenPairs],
-  )
-  const liquidityTokens = useMemo(
-    () => tokenPairsWithLiquidityTokens.map((tpwlt) => tpwlt.liquidityToken),
-    [tokenPairsWithLiquidityTokens],
-  )
-
-  const [v2PairsBalances] = useTokenBalancesWithLoadingIndicator(account ?? undefined, liquidityTokens)
-  const liquidityTokensWithBalances = useMemo(
-    () =>
-      tokenPairsWithLiquidityTokens.filter(({ liquidityToken }) =>
-        v2PairsBalances[liquidityToken.address]?.greaterThan('0'),
-      ),
-    [tokenPairsWithLiquidityTokens, v2PairsBalances],
-  )
-
-  const v2Pairs = usePairs(liquidityTokensWithBalances.map(({ tokens }) => tokens))
-  const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
-
-  const TokenPairs = allV2PairsWithLiquidity.find(
-    (lptoken) => lptoken.liquidityToken.address === token.tokenObj.address,
-  )
-
+  const allTokens = useAllTokens()
   const [approval, approveCallback] = useApproveCallback(
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
     broomAddress,
@@ -181,30 +153,15 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     <>
       <StyledRow>
         <CellInner>
-          {TokenPairs ? (
+          {token.tokenPairs.length > 0 ? (
             <>
-              {allV2PairsWithLiquidity
-                .filter((lptoken) => lptoken.liquidityToken.address === token.tokenObj.address)
-                .map((v2Pair) =>
-                  v2Pair ? (
-                    <DoubleCurrencyLogo
-                      key={v2Pair.liquidityToken.address}
-                      currency0={unwrappedToken(v2Pair.token0)}
-                      currency1={unwrappedToken(v2Pair.token1)}
-                      margin
-                      size={30}
-                    />
-                  ) : (
-                    <Skeleton
-                      animation="pulse"
-                      variant="circle"
-                      width={30}
-                      height={30}
-                      marginLeft={16}
-                      marginRight={20}
-                    />
-                  ),
-                )}
+              <DoubleCurrencyLogo
+                key={token.tokenObj.address}
+                currency0={allTokens[getAddress(token.tokenPairs[0])]}
+                currency1={allTokens[getAddress(token.tokenPairs[1])]}
+                margin
+                size={30}
+              />
             </>
           ) : token.logo ? (
             <IconImage src={token.logo} alt="icon" width={30} height={30} ml="16px" />
@@ -212,7 +169,16 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
             <Skeleton animation="pulse" variant="circle" width={30} height={30} marginLeft={16} marginRight={20} />
           )}
 
-          <CellLayout label={token.tokenObj.symbol} align="left">
+          <CellLayout
+            label={
+              token.tokenPairs.length > 0
+                ? `${allTokens[getAddress(token.tokenPairs[0])].symbol} - ${
+                    allTokens[getAddress(token.tokenPairs[1])]?.symbol
+                  } `
+                : token.tokenObj.symbol
+            }
+            align="left"
+          >
             {token.price
               ? new Intl.NumberFormat('en-US', {
                   style: 'currency',

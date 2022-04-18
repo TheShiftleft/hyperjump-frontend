@@ -11,9 +11,12 @@ import { useDerivedSwapInfo, useSwapState } from 'state/swap/hooks'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import TradePrice from 'components/swap/TradePrice'
 import useToast from 'hooks/useToast'
+import { useAllTokens } from 'hooks/Tokens'
+import { getAddress } from '@ethersproject/address'
 import { computeTradePriceBreakdown } from '../../utils/prices'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
+import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
 interface ConvertModalProps {
   onDismiss?: () => void
@@ -91,8 +94,8 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
 }
 
 const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens }) => {
+  const allTokens = useAllTokens()
   const { t } = useTranslation()
-
   const { account } = useActiveWeb3React()
   const [step] = useState(1)
   const { toastSuccess, toastError } = useToast()
@@ -156,7 +159,12 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price.toFixed(2))
     : 0
 
-  const tokenSymbol = selectedtoken.tokenObj.symbol
+  const tokenSymbol =
+    selectedtoken.tokenPairs.length === 0
+      ? selectedtoken.tokenObj.symbol
+      : `${allTokens[getAddress(selectedtoken.tokenPairs[0])].symbol} - ${
+          allTokens[getAddress(selectedtoken.tokenPairs[1])]?.symbol
+        } `
 
   const handleBroomCallback = useCallback(() => {
     if (broomState !== BroomCallbackState.INVALID) {
@@ -193,11 +201,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
             <Text> {selectTokens.approval !== ApprovalState.APPROVED ? 'Approve ETH' : 'Approved ETH'}</Text>
           </CellInner>
 
-          <CellLayout
-            label={
-              selectTokenBalance ? `${selectTokenBalance.toSignificant(6)} ${selectTokenBalance.currency.symbol}` : '-'
-            }
-          >
+          <CellLayout label={selectTokenBalance ? `${selectTokenBalance.toSignificant(6)} ${tokenSymbol}` : '-'}>
             ≈{' '}
             {new Intl.NumberFormat('en-US', {
               style: 'currency',
@@ -257,10 +261,28 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
         <StyledRow>
           <CellInner>
-            <IconImage src={selectedtoken.logo} alt="icon" width={40} height={40} mr="8px" />
+            {selectedtoken.tokenPairs.length !== 0 ? (
+              <DoubleCurrencyLogo
+                key={selectedtoken.tokenObj.address}
+                currency0={allTokens[getAddress(selectedtoken.tokenPairs[0])]}
+                currency1={allTokens[getAddress(selectedtoken.tokenPairs[1])]}
+                margin
+                size={30}
+              />
+            ) : (
+              <IconImage src={selectedtoken.logo} alt="icon" width={30} height={30} mr="8px" />
+            )}
           </CellInner>
           <CellInner>
-            <CellLayout label={selectedtoken.tokenObj.name}>
+            <CellLayout
+              label={
+                selectedtoken.tokenPairs.length === 0
+                  ? selectedtoken.tokenObj.name
+                  : `${allTokens[getAddress(selectedtoken.tokenPairs[0])].name} - ${
+                      allTokens[getAddress(selectedtoken.tokenPairs[1])].name
+                    } `
+              }
+            >
               {selectedtoken.price && selectedtoken.price.toFixed(2)}
             </CellLayout>
           </CellInner>
