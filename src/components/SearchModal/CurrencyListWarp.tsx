@@ -44,7 +44,7 @@ function pairKey(pair: Pair): string {
     : ''
 }
 
-const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
+const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
@@ -152,14 +152,12 @@ function CurrencyRow({
       if (token0 instanceof WrappedTokenInfo) {
         return [
           ...uriLocations0,
-          `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
           `/images/tokens/${token0?.address ?? 'token'}.png`,
           getTokenLogoURL(token0?.address)
         ]
       }
 
       return [
-        `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
         `/images/tokens/${token0?.address ?? 'token'}.png`,
         getTokenLogoURL(token0?.address)
       ]

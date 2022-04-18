@@ -62,7 +62,13 @@ const Vaults: React.FC = () => {
 
   const [stakedOnly, setStakedOnly] = useState(!isActive)
   useEffect(() => {
-    setStakedOnly(!isActive)
+    let isMounted = true
+    if(isMounted){
+      setStakedOnly(!isActive)
+    }
+    return () => {
+      isMounted = false
+    }
   }, [isActive])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,10 +165,13 @@ const Vaults: React.FC = () => {
   }
 
   useEffect(() => {
+    let isMounted = true
     const showMoreVaults = (entries) => {
       const [entry] = entries
       if (entry.isIntersecting) {
-        setNumberOfVaultsVisible((vaultsCurrentlyVisible) => vaultsCurrentlyVisible + NUMBER_OF_VAULTS_VISIBLE)
+        if(isMounted){
+          setNumberOfVaultsVisible((vaultsCurrentlyVisible) => vaultsCurrentlyVisible + NUMBER_OF_VAULTS_VISIBLE)
+        }
       }
     }
 
@@ -172,7 +181,13 @@ const Vaults: React.FC = () => {
         threshold: 1,
       })
       loadMoreObserver.observe(loadMoreRef.current)
-      setObserverIsSet(true)
+      if(isMounted){
+        setObserverIsSet(true)
+      }
+    }
+
+    return () => {
+      isMounted = false
     }
   }, [vaultsStakedMemoized, observerIsSet])
 

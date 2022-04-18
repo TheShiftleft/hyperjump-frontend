@@ -44,7 +44,9 @@ const NameCell: React.FC<NameCellProps> = ({ pool }) => {
 
   // FIXME DJ TJ use translation
   if (isMasterPool) {
-    iconFile = 'jump.png'
+    const chain_id = config.id
+    const jump_img = config.farmingToken.address[chain_id]
+    iconFile = `${jump_img}.png`
     subtitle = `${t('Stake')} ${config.farmingToken.symbol}s`
   }
 
