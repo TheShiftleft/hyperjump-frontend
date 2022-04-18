@@ -4,8 +4,8 @@ import { Text, ButtonMenu, ButtonMenuItem, Button, HelpIcon, Link } from 'uikit'
 import getNetwork from 'utils/getNetwork'
 
 const Wrapper = styled.div`
-  position: fixed;
-  bottom: 0;
+  position: relative;
+  bottom: 20px;
   left: 0;
   width: 100%;
   display: flex;
@@ -13,9 +13,6 @@ const Wrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
   padding: 16px;
-  ${({ theme }) => theme.mediaQueries.lg} {
-    padding-left: 240px;
-  }
 `
 
 const { chainId } = getNetwork()
@@ -26,7 +23,7 @@ const VersionBar = () => {
   return (
     <Wrapper>
       <Text bold mr="16px">
-       Farm Version:
+        Farm Version:
       </Text>
       <ButtonMenu variant="primary" scale="sm" activeIndex={0}>
         <ButtonMenuItem as="a" href={newFarmLink}>
