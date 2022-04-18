@@ -46,7 +46,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
   const fullBalance = getFullDisplayBalance(earnings, earningToken.decimals)
   const earningTokenBalance = getBalanceNumber(earnings, earningToken.decimals)
   const earningTokenDollarBalance = getBalanceNumber(earnings.multipliedBy(earningTokenPrice), earningToken.decimals)
-  const hasEarnings = earnings.gt(0)
+  const hasEarnings = new BigNumber(earningTokenBalance).gte(0.001)
   const isCompoundPool = sousId === 0
   const displayBalance = hasEarnings ? earningTokenBalance : 0
   const isMobile = isXs || isSm || isMd
