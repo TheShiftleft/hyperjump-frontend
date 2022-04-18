@@ -300,7 +300,7 @@ const Zap = () => {
               : zapToPool && !isFarmApproved ? 
               <Button
                   width="100%"
-                  disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
+                  disabled={isLoading}
                   variant="primary"
                   onClick={() => handleFarmApprove()}
                 >
