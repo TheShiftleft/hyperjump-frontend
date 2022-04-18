@@ -4,7 +4,6 @@ import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair, TokenAmount, JSBI }
 import getNetwork from 'utils/getNetwork'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
-import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { usePair, usePairs } from 'data/Reserves'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useEstimateZapInToken } from 'hooks/useZap'
@@ -29,13 +28,10 @@ export function useZapState(): AppState['zap'] {
 export function useZapDefaultState(): {inputCurrencyId: string | undefined, outputPairId: string | undefined} | undefined {
     const state = useZapState();
     const { config } = getNetwork()
-    const { account, chainId } = useActiveWeb3React()
+    const { chainId } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const pairs = zapPairs[config.network]
     const inputCurrencyId = config.networkToken.symbol
-    const inputCurrency = useCurrency(inputCurrencyId)
-    const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [inputCurrency ?? undefined])
-    const maxInput = maxAmountSpend(relevantTokenBalances[0])?.toExact()
     const [result, setResult ] = useState<{field: string | undefined ,typedValue: string | undefined, inputCurrencyId: string | undefined, outputPairId: string | undefined} | undefined>()
     useEffect(() => {
         if (!chainId) return
@@ -43,18 +39,18 @@ export function useZapDefaultState(): {inputCurrencyId: string | undefined, outp
         dispatch(
             replaceZapState({
             field: state.field,
-            typedValue: maxInput,
+            typedValue: '',
             inputCurrencyId,
             outputPairId: pairs[0].lpAddresses[chainId],
           })
         )
     
         setResult({ field: state.field,
-          typedValue: maxInput,
+          typedValue: '',
           inputCurrencyId,
           outputPairId: pairs[0].lpAddresses[chainId], })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [dispatch, chainId, maxInput])
+      }, [dispatch, chainId])
     
       return result
 }

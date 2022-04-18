@@ -80,18 +80,11 @@ export function useWarpDefaultState(): {
     const { chainId } = getNetwork()
     const web3 = useWeb3()
     const {field} = useWarpState()
-    const { account } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const swapList = useOtherSwapList()
     const swapId = Object.keys(swapList)[0]
     const input = useFilterLpAvailableToHyper(swapId)
     const inputLpId = web3.utils.toChecksumAddress(input[0]?.address)
-    const lpTokens = useOtherLpsCurrency(swapId)
-    const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
-    ,[lpTokens,inputLpId])
-    const lpCurrency = lpInput?.liquidityToken
-    const lpBalance = useCurrencyBalance(account ?? undefined, lpCurrency ?? undefined)
-    const maxInput = maxAmountSpend(lpBalance)?.toSignificant(6)
     const [result, setResult ] = useState<{
       field: Field | undefined,
       typedValue: string | undefined,
@@ -106,7 +99,7 @@ export function useWarpDefaultState(): {
         dispatch(
             replaceWarpState({
             field,
-            typedValue: maxInput,
+            typedValue: '',
             inputLpId,
             swapId,
             outputCurrencyId: ''
@@ -114,12 +107,12 @@ export function useWarpDefaultState(): {
         )
     
         setResult({field,
-          typedValue: maxInput,
+          typedValue: '',
           inputLpId,
           swapId,
           outputCurrencyId: ''})
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [dispatch, chainId, inputLpId, swapId, maxInput])
+      }, [dispatch, chainId, inputLpId, swapId])
     
       return result
 }

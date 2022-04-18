@@ -20,7 +20,6 @@ import useToast from 'hooks/useToast'
 import useI18n from 'hooks/useI18n'
 import getNetwork from 'utils/getNetwork'
 import CurrencyLogo from 'components/CurrencyLogo'
-import { BIG_ZERO } from 'utils/bigNumber'
 import { MIN_ETH } from 'config'
 import useStake from 'hooks/useStake'
 import { useWeb3React } from '@web3-react/core'
@@ -32,7 +31,6 @@ import { getBep20Contract } from 'utils/contractHelpers'
 import useWeb3 from 'hooks/useWeb3'
 
 const Zap = () => {
-  const { config } = getNetwork()
   const { account, chainId } = useWeb3React()
   const web3 = useWeb3()
   const [isLoading, setIsLoading] = useState(false)
@@ -239,6 +237,7 @@ const Zap = () => {
                 value={liquidityMinted ? liquidityMinted?.toSignificant(6) : '0'}
                 currency={pairCurrency}
                 pair={pairOutput}
+                farm={farm}
                 onPairSelect={handleOutputPairSelect}
                 showMaxButton={false}
                 onUserInput={handleTypeOutput}
@@ -259,7 +258,7 @@ const Zap = () => {
                         style={{marginRight: '10px'}}
                       />
                       <Text fontSize="14px" marginRight="10px">
-                        {token0?.currency?.symbol} Deposited :
+                        {token0?.currency?.symbol.toLowerCase() === 'wftm' ? 'FTM' : token0?.currency?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : token0?.currency?.symbol } Deposited :
                       </Text>
                       <Text fontSize="14px">{token0?.toSignificant(6)}</Text>
                     </AutoRow>
@@ -270,7 +269,7 @@ const Zap = () => {
                         style={{marginRight: '10px'}}
                       />
                       <Text fontSize="14px" marginRight="10px">
-                        {token1?.currency?.symbol} Deposited :
+                        {token1?.currency?.symbol.toLowerCase() === 'wftm' ? 'FTM' : token1?.currency?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : token1?.currency?.symbol} Deposited :
                       </Text>
                       <Text fontSize="14px">{token1?.toSignificant(6)}</Text>
                     </AutoRow>
