@@ -101,7 +101,12 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
       },
     ],
   },
-
+  {
+    label: 'Portfolio',
+    icon: 'PortfolioIcon',
+    href: '/portfolio',
+    target: '_self',
+  },
   {
     label: 'More',
     icon: 'MoreIcon',
