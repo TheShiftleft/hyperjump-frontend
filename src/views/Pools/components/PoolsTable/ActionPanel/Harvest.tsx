@@ -54,6 +54,16 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
   const handleCompound = async () => {
     setPendingTx(true)
     try {
+      await onReward()
+      toastSuccess(
+        `${t('Collected')}!`,
+        t('Your %symbol% earnings have been sent to your wallet!', { symbol: earningToken.symbol }),
+      )
+      setPendingTx(false)
+    } catch (e) {
+      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+      setPendingTx(false)
+    }  try {
       await onStake(fullBalance, earningToken.decimals)
       toastSuccess(
         `${t('Compounded')}!`,

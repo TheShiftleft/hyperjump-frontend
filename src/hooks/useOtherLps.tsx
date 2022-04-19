@@ -9,6 +9,7 @@ import getNetwork from 'utils/getNetwork'
 import zapPairs from 'config/constants/zap'
 import { useOtherLPComparator } from 'components/SearchModal/sortingOtherLPs'
 import { toNumber } from 'lodash'
+import { isAddress } from 'utils'
 import useWeb3 from './useWeb3'
 
 export default function useOtherLps(defiName: string) {
@@ -36,8 +37,8 @@ export function useFilterLpAvailableToHyper(defiName: string) {
     const pairs = zapPairs[config.network]
     return useMemo(() => {
         return pairs.map(pair => {
-            const pair0 = web3.utils.toChecksumAddress(pair.quoteToken.address[config.id])
-            const pair1 = web3.utils.toChecksumAddress(pair.token.address[config.id])
+            const pair0 = web3.utils.toChecksumAddress(pair.token.address[config.id])
+            const pair1 = web3.utils.toChecksumAddress(pair.quoteToken.address[config.id])
             return lps.find(lp => {
                 const lp0 = web3.utils.toChecksumAddress(lp.lp0.address)
                 const lp1 = web3.utils.toChecksumAddress(lp.lp1.address)
@@ -49,21 +50,30 @@ export function useFilterLpAvailableToHyper(defiName: string) {
 
 export function useOtherLpsCurrency(defiName: string): LPToken[] {
     const web3 = useWeb3()
+    const { config, chainId } = getNetwork()
     const filtered = useFilterLpAvailableToHyper(defiName)
+    const pairs = zapPairs[config.network]
     const tokenPairsWithLiquidityTokens = useMemo(
         () => {
             return filtered.map((lp): {liquidityToken: Token, tokens: [Token, Token]} => {
                 const dec = toNumber(lp?.decimals.toLowerCase().split('e').pop())
                 const lpAddress = web3.utils.toChecksumAddress(lp.address)
-                const symbol = `${lp?.lp0?.oracleId.toLowerCase() === 'wbnb' ? 'BNB' : lp?.lp0?.oracleId.toLowerCase() === 'wftm' ? 'FTM' : lp?.lp0?.oracleId}-
-                                ${lp?.lp1?.oracleId.toLowerCase() === 'wbnb' ? 'BNB' : lp?.lp1?.oracleId.toLowerCase() === 'wftm' ? 'FTM' : lp?.lp1?.oracleId}`
-                const tokens: [Token, Token] = [ new Token(lp?.chainId, web3.utils.toChecksumAddress(lp?.lp0?.address), toNumber(lp?.lp0?.decimals.toLowerCase().split('e').pop()), lp?.lp0?.oracleId, lp?.lp0?.oracleId),
-                                                    new Token(lp?.chainId, web3.utils.toChecksumAddress(lp?.lp1?.address), toNumber(lp?.lp1?.decimals.toLowerCase().split('e').pop()), lp?.lp1?.oracleId, lp?.lp1?.oracleId)]
-                const liquidityToken = new Token(lp.chainId, lpAddress, dec, symbol, lp.name)
+                const pairToken = Object.values(pairs).find(val => {
+                    const valAddress0 = isAddress(val.token.address[chainId])
+                    const valAddress1 = isAddress(val.quoteToken.address[chainId])
+                    const lpAddress0 = isAddress(lp?.lp0.address)
+                    const lpAddress1 = isAddress(lp?.lp1.address)
+                    return valAddress0 && valAddress1 && lpAddress0 && lpAddress1 && (valAddress0 === lpAddress0 || valAddress0 === lpAddress1) && (valAddress1 === lpAddress0 || valAddress1 === lpAddress1)
+                  })
+                const tokens: [Token, Token] = [
+                    new Token(chainId, pairToken.token.address[chainId], pairToken.token.decimals, pairToken.token.symbol, pairToken.token.symbol),
+                    new Token(chainId,pairToken.quoteToken.address[chainId], pairToken.quoteToken.decimals, pairToken.quoteToken.symbol, pairToken.quoteToken.symbol),
+                ]
+                const liquidityToken = new Token(lp.chainId, lpAddress, dec, pairToken.lpSymbol, lp.name)
                 return { liquidityToken, tokens }
             })
         },
-        [web3, filtered],
+        [web3, filtered, chainId, pairs],
     )
     const lpComparator = useOtherLPComparator(false)
     const sorted = tokenPairsWithLiquidityTokens.sort(lpComparator)

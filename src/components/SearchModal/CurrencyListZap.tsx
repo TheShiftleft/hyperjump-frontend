@@ -1,25 +1,22 @@
-import { Currency, CurrencyAmount, currencyEquals, Token, Pair, TokenAmount } from '@hyperjump-defi/sdk'
+import { Currency, CurrencyAmount, Token, Pair } from '@hyperjump-defi/sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import styled from 'styled-components'
 import { Text, Image } from 'uikit'
 import getNetwork from 'utils/getNetwork'
-import { PairConfig } from 'config/constants/types'
 import Logo from 'components/Logo'
+import zapPairs from 'config/constants/zap'
 import { useActiveWeb3React } from '../../hooks'
-import { useSelectedTokenList, WrappedTokenInfo } from '../../state/lists/hooks'
-import { useAddUserToken, useRemoveUserAddedToken } from '../../state/user/hooks'
+import { WrappedTokenInfo } from '../../state/lists/hooks'
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { LinkStyledButton } from '../Shared'
-import { useCurrency, useIsUserAddedToken, useToken } from '../../hooks/Tokens'
+import { useCurrency } from '../../hooks/Tokens'
 import Column from '../Column'
 import { RowFixed } from '../Row'
-import CurrencyLogo from '../CurrencyLogo'
 import { MouseoverTooltip } from '../Tooltip'
-import { FadedSpan, MenuItem } from './styleds'
+import { MenuItem } from './styleds'
 import Loader from '../Loader'
-import { isAddress, isTokenOnList } from '../../utils'
+import { isAddress } from '../../utils'
 
 function pairKey(pair: Pair): string {
   const { config } = getNetwork()
@@ -30,20 +27,11 @@ function pairKey(pair: Pair): string {
     : ''
 }
 
-const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${address}.png`
+const getTokenLogoURL = (address: string) => `https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/images/${isAddress(address)}.png`
 
 const StyledLogo = styled(Logo)<{ size: string }>`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
-`
-const IconImage = styled(Image)`
-  width: 30px;
-  height: 30px;
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    width: 40px;
-    height: 40px;
-  }
 `
 
 const StyledBalanceText = styled(Text)`
@@ -65,14 +53,6 @@ const Tag = styled.div`
   white-space: nowrap;
   justify-self: flex-end;
   margin-right: 4px;
-`
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  width: 80px;
-  ${({ theme }) => theme.mediaQueries.sm} {
-    width: 150px;
-  }
 `
 
 const LogoContainer = styled.div<{ size: string }>`
@@ -132,11 +112,17 @@ function CurrencyRow({
   otherSelected?: boolean
   style: CSSProperties
 }) {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const { config } = getNetwork()
-  const { token0, token1 } = pair
-  const pairSymbol = `${token0.symbol.toUpperCase() === "WFTM" ? "FTM" : token0.symbol.toUpperCase() === "WBNB" ? "BNB" : token0.symbol.toUpperCase()}-
-                      ${token1.symbol.toUpperCase() === "WFTM" ? "FTM" : token1.symbol.toUpperCase() === "WBNB" ? "BNB" : token1.symbol.toUpperCase()}`
+  const pairs = zapPairs[config.network]
+  const pairToken = Object.values(pairs).find(val => {
+    const valAddress = isAddress(val.lpAddresses[chainId])
+    const pairAddress = isAddress(pair?.liquidityToken?.address)
+    return valAddress && pairAddress && valAddress === pairAddress
+  })
+  const { token, quoteToken } = pairToken
+  const token0 = useMemo(() => new Token(chainId, token?.address[chainId], token?.decimals, token?.symbol, token?.symbol), [token, chainId]) 
+  const token1 = useMemo(() => new Token(chainId, quoteToken?.address[chainId], quoteToken?.decimals, quoteToken?.symbol, quoteToken?.symbol), [quoteToken, chainId])
   const pairCurrency = useCurrency(pair.liquidityToken.address)
   const key = pairKey(pair)
   const balance = useCurrencyBalance(account ?? undefined, pairCurrency)
@@ -150,14 +136,14 @@ function CurrencyRow({
         return [
           ...uriLocations0,
           `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
-          `/images/tokens/${token0?.address ?? 'token'}.png`,
+          `/images/tokens/${isAddress(token0?.address) ?? 'token'}.png`,
           getTokenLogoURL(token0?.address)
         ]
       }
 
       return [
         `/images/tokens/${token0.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token0.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
-        `/images/tokens/${token0?.address ?? 'token'}.png`,
+        `/images/tokens/${isAddress(token0?.address) ?? 'token'}.png`,
         getTokenLogoURL(token0?.address)
       ]
     }
@@ -171,14 +157,14 @@ function CurrencyRow({
         return [
           ...uriLocations1,
           `/images/tokens/${token1.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token1.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
-          `/images/tokens/${token1?.address ?? 'token'}.png`,
+          `/images/tokens/${isAddress(token1?.address) ?? 'token'}.png`,
           getTokenLogoURL(token1?.address)
         ]
       }
 
       return [
         `/images/tokens/${token1.symbol.toLowerCase() === 'wbnb' ? 'bnb' : token1.symbol.toLowerCase() === 'wftm' ? 'ftm' : 'token'}.png`,
-        `/images/tokens/${token1?.address ?? 'token'}.png`,
+        `/images/tokens/${isAddress(token1?.address) ?? 'token'}.png`,
         getTokenLogoURL(token1?.address)
       ]
     }
@@ -211,7 +197,7 @@ function CurrencyRow({
       </LogoContainer>
 
       <Column>
-        <Text title={`${token0.name} - ${token1.name}`}>{pairSymbol}</Text>
+        <Text title={pairToken.lpSymbol}>{pairToken.lpSymbol}</Text>
       </Column>
       <TokenTags currency={pairCurrency} />
       <RowFixed style={{ justifySelf: 'flex-end' }}>

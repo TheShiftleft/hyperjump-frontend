@@ -4,7 +4,6 @@ import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair, TokenAmount, JSBI }
 import getNetwork from 'utils/getNetwork'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
-import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { usePair, usePairs } from 'data/Reserves'
 import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
 import { useEstimateZapInToken } from 'hooks/useZap'
@@ -14,6 +13,8 @@ import { useGetLpPrices } from 'hooks/api'
 import BigNumber from 'bignumber.js'
 import { toNumber } from 'lodash'
 import { BIG_ZERO } from 'utils/bigNumber'
+import { FarmConfig } from 'config/constants/types'
+import { isAddress } from 'utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrency } from '../../hooks/Tokens'
 import { useActiveWeb3React } from '../../hooks'
@@ -27,13 +28,10 @@ export function useZapState(): AppState['zap'] {
 export function useZapDefaultState(): {inputCurrencyId: string | undefined, outputPairId: string | undefined} | undefined {
     const state = useZapState();
     const { config } = getNetwork()
-    const { account, chainId } = useActiveWeb3React()
+    const { chainId } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const pairs = zapPairs[config.network]
     const inputCurrencyId = config.networkToken.symbol
-    const inputCurrency = useCurrency(inputCurrencyId)
-    const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [inputCurrency ?? undefined])
-    const maxInput = maxAmountSpend(relevantTokenBalances[0])?.toExact()
     const [result, setResult ] = useState<{field: string | undefined ,typedValue: string | undefined, inputCurrencyId: string | undefined, outputPairId: string | undefined} | undefined>()
     useEffect(() => {
         if (!chainId) return
@@ -41,18 +39,18 @@ export function useZapDefaultState(): {inputCurrencyId: string | undefined, outp
         dispatch(
             replaceZapState({
             field: state.field,
-            typedValue: maxInput,
+            typedValue: '',
             inputCurrencyId,
             outputPairId: pairs[0].lpAddresses[chainId],
           })
         )
     
         setResult({ field: state.field,
-          typedValue: maxInput,
+          typedValue: '',
           inputCurrencyId,
           outputPairId: pairs[0].lpAddresses[chainId], })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [dispatch, chainId, maxInput])
+      }, [dispatch, chainId])
     
       return result
 }
@@ -107,8 +105,10 @@ export function useDerivedZapInfo(): {
   estimates: TokenAmount[] | undefined,
   liquidityMinted: TokenAmount
   estimatedLpAmount: BigNumber
+  farm: FarmConfig
   } {
   const { account, chainId } = useActiveWeb3React()
+  const { config } = getNetwork()
   const {
     field,
     typedValue,
@@ -117,6 +117,13 @@ export function useDerivedZapInfo(): {
   } = useZapState();
   const currencyInput = useCurrency(inputCurrencyId)
   const trackedTokenPairs = useTrackedTokenPairs()
+  const pairs = zapPairs[config.network]
+  const farm = useMemo(() => {
+    return Object.values(pairs).find((pair) => {
+      const pairAddress = isAddress(pair.lpAddresses[chainId])
+      return pairAddress === outputPairId
+    })
+  }, [pairs, chainId, outputPairId])
   const tokenPairsWithLiquidityTokens = useMemo(
     () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
     [trackedTokenPairs],
@@ -134,7 +141,7 @@ export function useDerivedZapInfo(): {
   const parsedAmount = tryParseAmount(typedValue, (currencyInput) ?? undefined)
   let estimate = useEstimateZapInToken(currencyInput ?? undefined, pairToken, parsedAmount)
   const estimates = useMemo(() => {
-    return estimate && parsedAmount ? [
+    return estimate && parsedAmount && pairToken ? [
       new TokenAmount(pairToken?.token0 ?? undefined, JSBI.BigInt(estimate[0] ? estimate[0].toString() : 0)),
       new TokenAmount(pairToken?.token1 ?? undefined, JSBI.BigInt(estimate[1] ? estimate[1].toString() : 0))
     ] : [undefined, undefined]
@@ -176,5 +183,5 @@ export function useDerivedZapInfo(): {
     [Field.INPUT]: relevantTokenBalances[0]
   }
 
-  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted, estimatedLpAmount};
+  return {currencyBalances, currencyInput, pairOutput, pairCurrency, parsedAmount, estimates, liquidityMinted, estimatedLpAmount, farm};
 }

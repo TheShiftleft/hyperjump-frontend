@@ -38,7 +38,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 3,
       lpSymbol: 'HYPR-BNB',
       lpAddresses: {
-        56: '0x3701cfe08a3f0b629dbcaeceba773a8b4f0044e3',
+        56: '0x3701cFE08a3f0b629dBcaEcebA773A8B4f0044E3',
       },
       token: tokens.hypr,
       quoteToken: tokens.wbnb,
@@ -47,7 +47,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 4,
       lpSymbol: 'BUSD-BNB',
       lpAddresses: {
-        56: '0xf2e4e3f9b58b3edac88ad11d689a23f3119a782d',
+        56: '0xf2e4E3F9B58b3eDaC88Ad11D689a23f3119a782D',
       },
       token: tokens.busd,
       quoteToken: tokens.wbnb,
@@ -59,7 +59,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 7,
       lpSymbol: 'ADA-BNB',
       lpAddresses: {
-        56: '0x700693fbfb05ac9ee4928959591f38490711539c',
+        56: '0x700693fbfb05Ac9ee4928959591f38490711539C',
       },
       token: tokens.ada,
       quoteToken: tokens.wbnb,
@@ -68,7 +68,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 8,
       lpSymbol: 'BTCB-BNB',
       lpAddresses: {
-        56: '0xdfb193940e1317f38e91568fdb05efe18ee4a3c7',
+        56: '0xdFb193940E1317f38e91568fdb05EFE18ee4A3c7',
       },
       token: tokens.btcb,
       quoteToken: tokens.wbnb,
@@ -86,7 +86,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 10,
       lpSymbol: 'ETH-BNB',
       lpAddresses: {
-        56: '0x75115c644f9661a761a333ba0a38e42b1649f143',
+        56: '0x75115C644F9661A761A333Ba0A38e42B1649f143',
       },
       token: tokens.eth,
       quoteToken: tokens.wbnb,
@@ -95,7 +95,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 11,
       lpSymbol: 'ETH-BUSD',
       lpAddresses: {
-        56: '0x6407f7a9b9e6c1e398c10a20da2fe17f89131cf0',
+        56: '0x6407f7A9B9e6c1e398c10a20Da2Fe17F89131CF0',
       },
       token: tokens.eth,
       quoteToken: tokens.busd,
@@ -160,7 +160,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 3,
       lpSymbol: 'AURORA-FTM',
       lpAddresses: {
-        250: '0x483d07bc99cdd1df66f64ae0a769a70725c46fa4',
+        250: '0x483D07BC99CdD1DF66F64aE0A769A70725C46fA4',
       },
       token: tokens.aurora,
       quoteToken: tokens.wftm,
@@ -169,7 +169,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 4,
       lpSymbol: 'USDC-FTM',
       lpAddresses: {
-        250: '0x50cc648e45b84d68405ba0707e94c507b08e593d',
+        250: '0x50Cc648E45B84D68405BA0707e94c507b08e593d',
       },
       token: tokens.usdc,
       quoteToken: tokens.wftm,
@@ -197,7 +197,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 7,
       lpSymbol: 'CRV-FTM',
       lpAddresses: {
-        250: '0x7785698f2aa354558c77a0186be0dfd2a9b2452d',
+        250: '0x7785698F2Aa354558C77a0186bE0dFD2a9B2452d',
       },
       token: tokens.curve,
       quoteToken: tokens.wftm,
@@ -215,7 +215,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 9,
       lpSymbol: 'DAI-FTM',
       lpAddresses: {
-        250: '0x6d898d98818e670c695e374ed77cd1753cf109dd',
+        250: '0x6D898d98818e670C695E374ED77cd1753cF109Dd',
       },
       token: tokens.dai,
       quoteToken: tokens.wftm,
@@ -224,7 +224,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 10,
       lpSymbol: 'ICE-FTM',
       lpAddresses: {
-        250: '0x3d7bc2ee79a21e56dc52b874de3ad5c341f6d888',
+        250: '0x3D7bC2eE79a21e56dc52B874de3aD5c341f6D888',
       },
       token: tokens.ice,
       quoteToken: tokens.wftm,
@@ -235,7 +235,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 12,
       lpSymbol: 'SUSHI-FTM',
       lpAddresses: {
-        250: '0xf9f979b0283031c4afa4d668626779363b5fe510',
+        250: '0xF9f979b0283031c4afA4d668626779363B5fE510',
       },
       token: tokens.sushi,
       quoteToken: tokens.wftm,
@@ -244,7 +244,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 13,
       lpSymbol: 'USDC-ICE',
       lpAddresses: {
-        250: '0x2e037324b04043e80ca788e0c008bfc772b5ee32',
+        250: '0x2e037324b04043e80Ca788e0c008BFC772B5Ee32',
       },
       token: tokens.ice,
       quoteToken: tokens.usdc,
@@ -253,7 +253,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 14,
       lpSymbol: 'JUMP-DAI',
       lpAddresses: {
-        250: '0x60529abad498054eacaaca1b7ffed2ce4cfcb10b',
+        250: '0x60529aBAD498054eAcaacA1b7ffeD2Ce4CfCB10b',
       },
       token: tokens.dai,
       quoteToken: tokens.jump,
@@ -262,7 +262,7 @@ const farms: Record<Network, FarmConfig[]> = {
       pid: 15,
       lpSymbol: 'MIM-FTM',
       lpAddresses: {
-        250: '0x90b28d674e53860ba1d560180cd7f561341ebc45',
+        250: '0x90B28d674E53860bA1D560180CD7f561341EBC45',
       },
       token: tokens.mim,
       quoteToken: tokens.wftm,

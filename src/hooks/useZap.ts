@@ -1,6 +1,7 @@
 import { CurrencyAmount, Currency, Pair, Token, JSBI } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { LPToken } from 'components/SearchModal/CurrencyListWarp'
+import { FarmConfig } from 'config/constants/types'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState, useEffect } from 'react'
 import { isAddress } from 'utils'
@@ -152,7 +153,7 @@ export function useZapAcross(address: LPToken, pairBalance: CurrencyAmount, amou
       state: ZapCallbackState.VALID,
       callback: async () => {
         const zapAccross = await zapContract.zapAcross(from, amountToProcess, router, account)
-        return zapAccross
+        return {zapAccross, amount: amount.toExact()}
       },
       error: null,
     }
