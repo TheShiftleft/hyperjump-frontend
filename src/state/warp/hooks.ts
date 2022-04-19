@@ -11,6 +11,9 @@ import { useFilterLpAvailableToHyper, useOtherLpsCurrency } from 'hooks/useOther
 import { OtherSwapConfig } from 'components/SwapSelectionModal'
 import useOtherSwapList from 'hooks/useOtherSwapList'
 import useWeb3 from 'hooks/useWeb3'
+import zapPairs from 'config/constants/zap'
+import { isAddress } from 'utils'
+import { FarmConfig } from 'config/constants/types'
 import { Field, replaceWarpState, typeInput, selectLP, selectCurrency, selectSwap } from './actions'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
@@ -77,18 +80,11 @@ export function useWarpDefaultState(): {
     const { chainId } = getNetwork()
     const web3 = useWeb3()
     const {field} = useWarpState()
-    const { account } = useActiveWeb3React()
     const dispatch = useDispatch<AppDispatch>()
     const swapList = useOtherSwapList()
     const swapId = Object.keys(swapList)[0]
     const input = useFilterLpAvailableToHyper(swapId)
     const inputLpId = web3.utils.toChecksumAddress(input[0]?.address)
-    const lpTokens = useOtherLpsCurrency(swapId)
-    const lpInput = useMemo(() => lpTokens.find(lp => lp.liquidityToken.address === inputLpId)
-    ,[lpTokens,inputLpId])
-    const lpCurrency = lpInput?.liquidityToken
-    const lpBalance = useCurrencyBalance(account ?? undefined, lpCurrency ?? undefined)
-    const maxInput = maxAmountSpend(lpBalance)?.toSignificant(6)
     const [result, setResult ] = useState<{
       field: Field | undefined,
       typedValue: string | undefined,
@@ -103,7 +99,7 @@ export function useWarpDefaultState(): {
         dispatch(
             replaceWarpState({
             field,
-            typedValue: maxInput,
+            typedValue: '',
             inputLpId,
             swapId,
             outputCurrencyId: ''
@@ -111,12 +107,12 @@ export function useWarpDefaultState(): {
         )
     
         setResult({field,
-          typedValue: maxInput,
+          typedValue: '',
           inputLpId,
           swapId,
           outputCurrencyId: ''})
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [dispatch, chainId, inputLpId, swapId, maxInput])
+      }, [dispatch, chainId, inputLpId, swapId])
     
       return result
 }
@@ -129,13 +125,15 @@ export function useDerivedWarpInfo(): {
   parsedAmount: CurrencyAmount,
   selectedSwap: OtherSwapConfig,
   outputLP: [PairState, Pair],
+  farm: FarmConfig
 } {
   const {
     typedValue,
     [Field.INPUT]: { lpId: inputLpId },
     selectedSwap
   } = useWarpState();
-  const { account } = useActiveWeb3React()
+  const { config } = getNetwork()
+  const { account, chainId } = useActiveWeb3React()
   const swapList = useOtherSwapList()
   const swapSelected = swapList[selectedSwap]
   const lpTokens = useOtherLpsCurrency(selectedSwap)
@@ -146,6 +144,13 @@ export function useDerivedWarpInfo(): {
   const parsedAmount = tryParseAmount(typedValue, lpCurrency ?? undefined)
   const pair = usePair(lpInput?.tokens[0], lpInput?.tokens[1])
   const currencyOutput = pair[1]?.liquidityToken
+  const pairs = zapPairs[config.network]
+  const farm = useMemo(() => {
+    return Object.values(pairs).find((farmPair) => {
+      const pairAddress = isAddress(farmPair.lpAddresses[chainId])
+      return pairAddress === currencyOutput?.address
+    })
+  }, [pairs, chainId, currencyOutput])
 
-  return {lpInput, lpCurrency, currencyOutput, lpBalance, parsedAmount, selectedSwap: swapSelected, outputLP: pair}
+  return {lpInput, lpCurrency, currencyOutput, lpBalance, parsedAmount, selectedSwap: swapSelected, outputLP: pair, farm}
 }
