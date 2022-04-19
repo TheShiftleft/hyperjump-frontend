@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { Image, Heading, Button, useModal, Skeleton } from 'uikit'
+import { Heading, Button, useModal } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount, Token } from '@hyperjump-defi/sdk'
@@ -10,8 +10,10 @@ import { getBroomAddress } from 'utils/addressHelpers'
 import getNetwork from 'utils/getNetwork'
 import { Field } from 'state/swap/actions'
 import { useWeb3React } from '@web3-react/core'
-import { getAddress } from '@ethersproject/address'
-import { useAllTokens } from 'hooks/Tokens'
+import { useCurrency } from 'hooks/Tokens'
+import { useTokenContract } from 'hooks/useContract'
+import CurrencyLogo from 'components/CurrencyLogo'
+import Logo from 'components/Logo'
 import ConvertModal from './ConvertModal'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
@@ -50,7 +52,6 @@ const ContentContainer = styled.div`
 
 const StyledRow = styled.div`
   display: flex;
-  justify-content: space-between;
 
   cursor: pointer;
   color: white;
@@ -65,16 +66,17 @@ const ConvertRow = styled.div`
   width: 100%;
 `
 
-const IconImage = styled(Image)`
-  width: 30px;
-  height: 30px;
+const StyledLogo = styled(Logo)<{ size: string }>`
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
+`
+const IconContainer = styled.div`
   position: relative;
   margin-right: 24px;
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    width: 40px;
-    height: 40px;
-  }
+  width: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 `
 
 const StyledButton = styled(Button)`
@@ -94,7 +96,6 @@ interface CellLayoutProps {
 }
 
 const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, align }) => {
-  const { t } = useTranslation()
   return (
     <div>
       {label && <Label align={align}>{label}</Label>}
@@ -112,7 +113,6 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const broomAddress = getBroomAddress()
   const { token } = props
 
-  const allTokens = useAllTokens()
   const [approval, approveCallback] = useApproveCallback(
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
     broomAddress,
@@ -149,32 +149,56 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     onUserInput(Field.INPUT, selectedToken.token.amount.toString())
   }
 
+  const tokenContract0 = useTokenContract(token.tokenPairs[0])
+  const tokenContract1 = useTokenContract(token.tokenPairs[1])
+
+  const [symbols, setSymbols] = useState([undefined, undefined])
+  useMemo(() => {
+    let isMounted = true
+    const fetchSymbols = async () => {
+      if(!tokenContract0 && !tokenContract1) return 
+      const data = await Promise.all(
+        [tokenContract0.symbol(), tokenContract1.symbol()]
+      )
+      if(isMounted){
+        setSymbols(data)
+      }
+    }
+    fetchSymbols()
+
+    return () => {
+      isMounted = false
+    }
+  },[tokenContract0, tokenContract1])
+  
+  const currency0 = useCurrency(token.tokenPairs[0])
+  const currency1 = useCurrency(token.tokenPairs[1])
+
   return (
     <>
       <StyledRow>
         <CellInner>
-          {token.tokenPairs.length > 0 ? (
-            <>
-              <DoubleCurrencyLogo
-                key={token.tokenObj.address}
-                currency0={allTokens[getAddress(token.tokenPairs[0])]}
-                currency1={allTokens[getAddress(token.tokenPairs[1])]}
-                margin
-                size={30}
-              />
-            </>
-          ) : token.logo ? (
-            <IconImage src={token.logo} alt="icon" width={30} height={30} ml="16px" />
-          ) : (
-            <Skeleton animation="pulse" variant="circle" width={30} height={30} marginLeft={16} marginRight={20} />
-          )}
-
+          <IconContainer>
+            {token.tokenPairs.length > 0 ? (
+                <DoubleCurrencyLogo
+                  key={token.tokenObj.address}
+                  currency0={currency0}
+                  currency1={currency1}
+                  size={30}
+                />
+            ) : token.logo ? (
+              <StyledLogo size='30px' srcs={[token.logo]} alt="icon" />
+            ) : (
+                <CurrencyLogo currency={token.tokenObj} size='30px' />
+            )}
+          </IconContainer>
+          
+        </CellInner>
+        <CellInner style={{flex: '1'}}>
           <CellLayout
             label={
               token.tokenPairs.length > 0
-                ? `${allTokens[getAddress(token.tokenPairs[0])].symbol} - ${
-                    allTokens[getAddress(token.tokenPairs[1])]?.symbol
-                  } `
+                ? `${symbols[0]} - ${symbols[1]} `
                 : token.tokenObj.symbol
             }
             align="left"
@@ -188,7 +212,6 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
               : '-'}
           </CellLayout>
         </CellInner>
-        <CellInner />
         <CellInner>
           <CellLayout
             align="right"

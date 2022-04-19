@@ -24,6 +24,7 @@ export const useGetTokensList = (account) => {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       try {
         setIsLoading(true)
@@ -80,16 +81,24 @@ export const useGetTokensList = (account) => {
           }
         })
 
-        setData(tokens)
+        if(isMounted){
+          setData(tokens)
+          setIsLoading(false)
+        }
 
-        setIsLoading(false)
       } catch (error) {
         console.error('Unable to fetch data:', error)
-        setIsLoading(false)
+        if(isMounted) {
+          setIsLoading(false)
+        }
       }
     }
 
     fetchData()
+
+    return () => {
+      isMounted = false
+    }
   }, [config.name, account, config.id])
 
   async function checkLpToken(address, network) {
