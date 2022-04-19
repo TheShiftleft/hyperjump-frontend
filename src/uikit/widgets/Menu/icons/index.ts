@@ -1,3 +1,4 @@
+export { default as PortfolioIcon } from './Portfolio'
 export { default as ConvertIcon } from './Convert'
 export { default as BridgeIcon } from './Bridge'
 export { default as OnrampIcon } from './Onramp'
