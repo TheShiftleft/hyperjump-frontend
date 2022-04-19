@@ -81,6 +81,17 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
     target: '_self',
   },
   {
+    label: 'Tools',
+    icon: 'CogIcon',
+    items: [
+      {
+        label: 'Unrekt',
+        href: '/unrekt',
+        target: '_self'
+      }
+    ]
+  },
+  {
     label: 'Play',
     icon: 'TrophyIcon',
     items: [
