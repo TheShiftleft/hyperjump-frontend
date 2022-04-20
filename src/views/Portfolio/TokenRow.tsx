@@ -14,6 +14,8 @@ import { useCurrency } from 'hooks/Tokens'
 import { useTokenContract } from 'hooks/useContract'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Logo from 'components/Logo'
+import { useActiveWeb3React } from 'hooks'
+import { useGetLpPrices } from 'hooks/api'
 import ConvertModal from './ConvertModal'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
@@ -111,6 +113,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { config } = getNetwork()
   const { account } = useWeb3React()
   const broomAddress = getBroomAddress()
+  const { chainId } = useActiveWeb3React()
   const { token } = props
 
   const [approval, approveCallback] = useApproveCallback(
@@ -153,14 +156,13 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const tokenContract1 = useTokenContract(token.tokenPairs[1])
 
   const [symbols, setSymbols] = useState([undefined, undefined])
+  
   useMemo(() => {
     let isMounted = true
     const fetchSymbols = async () => {
-      if(!tokenContract0 && !tokenContract1) return 
-      const data = await Promise.all(
-        [tokenContract0.symbol(), tokenContract1.symbol()]
-      )
-      if(isMounted){
+      if (!tokenContract0 && !tokenContract1) return
+      const data = await Promise.all([tokenContract0.symbol(), tokenContract1.symbol()])
+      if (isMounted) {
         setSymbols(data)
       }
     }
@@ -169,10 +171,57 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     return () => {
       isMounted = false
     }
-  },[tokenContract0, tokenContract1])
-  
+  }, [tokenContract0, tokenContract1])
+
   const currency0 = useCurrency(token.tokenPairs[0])
   const currency1 = useCurrency(token.tokenPairs[1])
+
+  const token0Symbol =
+    chainId === 56
+      ? symbols[0] === 'WBNB'
+        ? 'BNB'
+        : symbols[0] === 'FTM'
+        ? 'WFTM'
+        : symbols[0]
+      : symbols[0] === 'WFTM'
+      ? 'FTM'
+      : symbols[0] === 'BNB'
+      ? 'WBNB'
+      : symbols[0]
+  const token1Symbol =
+    chainId === 56
+      ? symbols[1] === 'WBNB'
+        ? 'BNB'
+        : symbols[1] === 'FTM'
+        ? 'WFTM'
+        : symbols[1]
+      : symbols[1] === 'WFTM'
+      ? 'FTM'
+      : symbols[1] === 'BNB'
+      ? 'WBNB'
+      : symbols[1]
+
+  const lpPrices: any = useGetLpPrices()
+  const lpPrice = useMemo(() => {
+    if (lpPrices) {
+      const element = Object.keys(lpPrices).filter((key) => {
+        const splitKey = key.split('-')
+        const key0 = splitKey[1]
+        const key1 = splitKey[2]
+        return (key0 === token0Symbol || key0 === token1Symbol) && (key1 === token0Symbol || key1 === token1Symbol)
+      })
+
+      return lpPrices[element[0]]
+    }
+    return 0
+  }, [lpPrices, token0Symbol, token1Symbol])
+
+  const tokenVolume = token.tokenPairs.length > 0 ? lpPrice * token.amount : token.volume
+  const tokenPrice = token.tokenPairs.length > 0 ? lpPrice : token.price
+
+  if (token.tokenPairs.length > 0) {
+    token.volume = tokenVolume
+  }
 
   return (
     <>
@@ -180,56 +229,40 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
         <CellInner>
           <IconContainer>
             {token.tokenPairs.length > 0 ? (
-                <DoubleCurrencyLogo
-                  key={token.tokenObj.address}
-                  currency0={currency0}
-                  currency1={currency1}
-                  size={30}
-                />
+              <DoubleCurrencyLogo key={token.tokenObj.address} currency0={currency0} currency1={currency1} size={30} />
             ) : token.logo ? (
-              <StyledLogo size='30px' srcs={[token.logo]} alt="icon" />
+              <StyledLogo size="30px" srcs={[token.logo]} alt="icon" />
             ) : (
-                <CurrencyLogo currency={token.tokenObj} size='30px' />
+              <CurrencyLogo currency={token.tokenObj} size="30px" />
             )}
           </IconContainer>
-          
         </CellInner>
-        <CellInner style={{flex: '1'}}>
+        <CellInner style={{ flex: '1' }}>
           <CellLayout
-            label={
-              token.tokenPairs.length > 0
-                ? `${symbols[0]} - ${symbols[1]} `
-                : token.tokenObj.symbol
-            }
+            label={token.tokenPairs.length > 0 ? `${symbols[0]} - ${symbols[1]} ` : token.tokenObj.symbol}
             align="left"
           >
-            {token.price
-              ? new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                  minimumFractionDigits: 4,
-                }).format(token.price)
-              : '-'}
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              minimumFractionDigits: 4,
+            }).format(tokenPrice ?? 0)}
           </CellLayout>
         </CellInner>
         <CellInner>
           <CellLayout
             align="right"
-            label={
-              token.volume
-                ? new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    minimumFractionDigits: 4,
-                  }).format(token.volume)
-                : '-'
-            }
+            label={new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              minimumFractionDigits: 6,
+            }).format(tokenVolume || 0)}
           >
-            {token.amount ? new Intl.NumberFormat('en-US', { minimumFractionDigits: 4 }).format(token.amount) : '-'}
+            {token.amount ? new Intl.NumberFormat('en-US', { minimumSignificantDigits: 4 }).format(token.amount) : '-'}
           </CellLayout>
         </CellInner>
       </StyledRow>
-      {token.volume < 10 && token.volume !== 0 && (
+      {tokenVolume > 0 && (
         <ConvertRow>
           <StyledButton onClick={onConvert}>{t('Convert')}</StyledButton>
         </ConvertRow>

@@ -128,11 +128,12 @@ const WalletTable: React.FC = () => {
   const usertokens = data
 
   let totalVolume = 0
-
+  console.log(usertokens)
   usertokens.forEach(async (token) => {
-    if (!token.tokenObj.name.includes('.')) {
-      totalVolume += token.volume
+    if (Number.isNaN(token.volume)) {
+      token.volume = 0
     }
+    totalVolume += token.volume
   })
 
   return (
@@ -140,7 +141,9 @@ const WalletTable: React.FC = () => {
       <PageHeader>
         <NetWorthBox>
           <NetWorthHeading>
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalVolume || 0)}
+            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(
+              totalVolume || 0,
+            )}
           </NetWorthHeading>
           <Text color="primary">Net Worth</Text>
         </NetWorthBox>

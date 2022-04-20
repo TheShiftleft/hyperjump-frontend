@@ -13,6 +13,7 @@ import TradePrice from 'components/swap/TradePrice'
 import useToast from 'hooks/useToast'
 import { useAllTokens } from 'hooks/Tokens'
 import { getAddress } from '@ethersproject/address'
+import CurrencyLogo from 'components/CurrencyLogo'
 import { computeTradePriceBreakdown } from '../../utils/prices'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -206,7 +207,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
             {new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: 'USD',
-              minimumFractionDigits: 6,
+              minimumFractionDigits: 18,
             }).format(selectedtoken.volume)}
           </CellLayout>
         </StyledRow>
@@ -255,7 +256,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 : '-'
             }
           >
-            ≈ {new Intl.NumberFormat('en-US').format(totalestimateJump)}
+            ≈ {totalestimateJump ? new Intl.NumberFormat('en-US').format(totalestimateJump) : 0}
           </CellLayout>
         </StyledRow>
 
@@ -270,7 +271,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 size={30}
               />
             ) : (
-              <IconImage src={selectedtoken.logo} alt="icon" width={30} height={30} mr="8px" />
+              <CurrencyLogo currency={selectedtoken.tokenObj} size="30px" />
             )}
           </CellInner>
           <CellInner>

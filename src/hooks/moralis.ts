@@ -7,6 +7,9 @@ import { getAddress } from '@ethersproject/address'
 import { getLpContract } from 'utils/contractHelpers'
 import { isAddress } from 'utils'
 import getChainSupportedTokens from 'config/constants/bridgeTokens'
+import { useCurrency } from 'hooks/Tokens'
+import { useTokenContract } from 'hooks/useContract'
+import { useTokenPrice } from './api'
 
 export interface TokenProps {
   tokenObj: Token
@@ -24,7 +27,7 @@ export const useGetTokensList = (account) => {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
     const fetchData = async () => {
       try {
         setIsLoading(true)
@@ -41,24 +44,17 @@ export const useGetTokensList = (account) => {
             const price = await getTokenPrice(tokenAddress, network)
             const lpToken = await checkLpToken(token_address, network)
             const amount = parseInt(balance) / 10 ** parseInt(decimals)
-            const volume = price.usdPrice ? price.usdPrice * amount : 0
+            const volume = price ? price.usdPrice * amount : 0
             let newLogo = logo
             let pair = []
 
             if (!lpToken) {
               if (logo === null) {
                 chainSupportedTokens.forEach((chaintoken) => {
-                  if (chaintoken.address === getAddress(token_address)) {
+                  if (chaintoken.address === tokenAddress) {
                     newLogo = chaintoken.logoURI
                   }
                 })
-                if (newLogo === null) {
-                  newLogo = await getTokenLogoImage(getAddress(token_address))
-                  if (newLogo === null) {
-                    let coinid = await searchToken(name)
-                    newLogo = await getTokenLogo(coinid)
-                  }
-                }
               }
             } else {
               newLogo = null
@@ -74,21 +70,20 @@ export const useGetTokensList = (account) => {
               logo: newLogo,
               amount,
               volume,
-              price: price.usdPrice ? price.usdPrice : 0,
+              price: price ? price.usdPrice : 0,
             }
 
             tokens.push(newToken)
           }
         })
 
-        if(isMounted){
+        if (isMounted) {
           setData(tokens)
           setIsLoading(false)
         }
-
       } catch (error) {
         console.error('Unable to fetch data:', error)
-        if(isMounted) {
+        if (isMounted) {
           setIsLoading(false)
         }
       }
