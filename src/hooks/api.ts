@@ -1,6 +1,10 @@
 import { VAULTS_API_URL } from 'config'
-import { useEffect, useState } from 'react'
+import { ERC20_ABI } from 'config/abi/erc20'
+import { useActiveWeb3React } from 'hooks'
+import { useEffect, useMemo, useState } from 'react'
+import { getContract, isAddress } from 'utils'
 import getNetwork from 'utils/getNetwork'
+import useWeb3 from './useWeb3'
 
 /* eslint-disable camelcase */
 export interface ApiResponse {
@@ -11,6 +15,26 @@ export interface CirculatingSupplyApiResponse {
   totalCirculatingSupply: number
   ftm: any
   bsc: any
+}
+
+export interface TransactionResponse {
+  blockHash: string
+  blockNumber: number
+  confirmations: number
+  contractAddress: string
+  cumulativeGasUsed: number
+  from: string
+  gas: number
+  gasPrice: number
+  gasUsed: number
+  hash: string
+  input: string
+  isError: number
+  nonce: number
+  timeStamp: string
+  to: string
+  transactionIndex: number
+  value: number
 }
 
 export const useGetBscStats = () => {
@@ -112,6 +136,58 @@ export const useGetLpPrices = () => {
       mounted = false
     }
   }, [config.network, setData])
+
+  return data
+}
+
+export const useApprovedTransaction = () => {
+  const { account, chainId, library } = useActiveWeb3React()
+  const web3 = useWeb3()
+  const query = chainId === 250 ? `https://api.ftmscan.com/api?module=account&action=txlist&address=${account}` : `https://api.bscscan.com/api?module=account&action=txlist&address=${account}`
+
+  const [data, setData] = useState()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(() => {
+    let isMounted = true
+    const fetchData = async () => {
+      const approvalHash = "0x095ea7b3";
+      const unlimitedAllowance =
+          "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+      const response = await fetch(query)
+      const responseData = await response.json()
+      if(responseData.status === '1'){
+        // setData(responseData.result)
+        const transactions = responseData.result
+        .filter((tx: TransactionResponse) => tx.input.includes(approvalHash))
+        .map((tx: TransactionResponse) => {
+            const contractAddress = web3.utils.toChecksumAddress(tx.to)
+            const approved = web3.utils.toChecksumAddress(`0x${tx.input.substring(34,74)}`)
+            const allowanceAmount = tx.input.substring(74)
+            const allowance = allowanceAmount.includes(unlimitedAllowance) ? 'Unlimited' : 'Limited'
+            if(parseInt(allowanceAmount, 16) !== 0) {
+              return {
+                contract: contractAddress,
+                approved,
+                allowance
+              }
+            }
+            return {}
+        })
+        if(isMounted){
+          setData(transactions)
+        }
+      }
+      
+    }
+    if(account){
+      fetchData()
+    }
+    return () => {
+      isMounted = false
+    }
+  }, [account, query, web3])
+  
 
   return data
 }
