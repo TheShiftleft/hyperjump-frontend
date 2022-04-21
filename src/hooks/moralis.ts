@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react'
 import getNetwork from 'utils/getNetwork'
 import { MORALIS_API_URL, MORALIS_API_KEY } from 'config'
 import Moralis from 'moralis'
-import { Token, Pair } from '@hyperjump-defi/sdk'
+import { Token } from '@hyperjump-defi/sdk'
 import { getAddress } from '@ethersproject/address'
 import { getLpContract } from 'utils/contractHelpers'
 import { isAddress } from 'utils'
 import getChainSupportedTokens from 'config/constants/bridgeTokens'
-import { useCurrency } from 'hooks/Tokens'
-import { useTokenContract } from 'hooks/useContract'
 import { useTokenPrice } from './api'
 
 export interface TokenProps {
@@ -25,9 +23,22 @@ export const useGetTokensList = (account) => {
   const [data, setData] = useState([])
   const { config } = getNetwork()
   const [isLoading, setIsLoading] = useState(false)
+  const tokenPrices: any = useTokenPrice()
 
   useEffect(() => {
     let isMounted = true
+
+    function getTokenPriceviaVault(symbol) {
+      if (tokenPrices) {
+        const element = Object.keys(tokenPrices).filter((key) => {
+          return key === symbol
+        })
+
+        return tokenPrices[element[0]]
+      }
+      return 0
+    }
+
     const fetchData = async () => {
       try {
         setIsLoading(true)
@@ -41,15 +52,25 @@ export const useGetTokensList = (account) => {
           if (!token.name.includes('.')) {
             const { name, logo, symbol, balance, token_address, decimals } = token
             const tokenAddress = isAddress(token_address)
-            const price = await getTokenPrice(tokenAddress, network)
+            let price = 0
             const lpToken = await checkLpToken(token_address, network)
             const amount = parseInt(balance) / 10 ** parseInt(decimals)
-            const volume = price ? price.usdPrice * amount : 0
+            let volume = 0
             let newLogo = logo
             let pair = []
 
             if (!lpToken) {
               if (logo === null) {
+                const tokenPrice = getTokenPriceviaVault(symbol.toUpperCase())
+                if (tokenPrice) {
+                  price = tokenPrice
+                  volume = price * amount
+                } else {
+                  const altprice = await getTokenPrice(tokenAddress, network)
+                  price = altprice.usdPrice
+                  volume = altprice.usdPrice ? altprice.usdPrice * amount : 0
+                }
+
                 chainSupportedTokens.forEach((chaintoken) => {
                   if (chaintoken.address === tokenAddress) {
                     newLogo = chaintoken.logoURI
@@ -69,8 +90,8 @@ export const useGetTokensList = (account) => {
               tokenPairs: pair,
               logo: newLogo,
               amount,
-              volume,
-              price: price ? price.usdPrice : 0,
+              volume: Number.isNaN(volume) ? 0 : volume,
+              price,
             }
 
             tokens.push(newToken)
@@ -94,7 +115,7 @@ export const useGetTokensList = (account) => {
     return () => {
       isMounted = false
     }
-  }, [config.name, account, config.id])
+  }, [config.name, account, config.id, tokenPrices])
 
   async function checkLpToken(address, network) {
     let tokenpair = []
@@ -128,60 +149,6 @@ export const useGetTokensList = (account) => {
     } catch (error) {
       console.error('Unable to fetch data:', error)
       return 0
-    }
-  }
-
-  async function getTokenLogo(name) {
-    let logoUrl = ''
-    try {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${name.toLowerCase().replace(' token', '').replace(/\s/g, '-')}`,
-        {
-          headers: { 'X-API-Key': MORALIS_API_KEY },
-        },
-      )
-
-      const responseData = await response.json()
-      if (responseData.image.small) {
-        logoUrl = responseData.image.small
-      }
-      if (responseData.image.thumb) {
-        logoUrl = responseData.image.thumb
-      }
-      if (responseData.image.large) {
-        logoUrl = responseData.image.large
-      }
-
-      return logoUrl
-    } catch (error) {
-      console.error('Unable to fetch data:', error)
-      return null
-    }
-  }
-
-  async function searchToken(name) {
-    try {
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/search?query=${name.toLowerCase().trim().replace(/-/g, ' ').split(' ')[0]}`,
-
-        {
-          headers: { 'X-API-Key': MORALIS_API_KEY },
-        },
-      )
-
-      const responseData = await response.json()
-
-      let responseId = ''
-      responseData.coins.forEach((coin) => {
-        if (coin.name.toLowerCase() === name.toLowerCase()) {
-          responseId = coin.id
-        }
-      })
-
-      return responseId
-    } catch (error) {
-      console.error('Unable to fetch data:', error)
-      return null
     }
   }
 
