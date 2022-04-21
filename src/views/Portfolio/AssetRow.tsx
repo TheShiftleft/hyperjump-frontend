@@ -3,9 +3,8 @@ import styled from 'styled-components'
 import { Heading } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
 import { TokenProps } from 'hooks/moralis'
-import { getAddress } from '@ethersproject/address'
-import { useAllTokens } from 'hooks/Tokens'
 import { useTokenContract } from 'hooks/useContract'
+import BigNumber from 'bignumber.js'
 
 export interface AssetRowProps {
   token: TokenProps
@@ -138,13 +137,7 @@ const AssetRow: React.FunctionComponent<AssetRowProps> = (props) => {
         </CellInner>
         <CellInner />
         <CellInner>
-          <CellLayout
-            label={`${
-              assetpercentage
-                ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 10 }).format(assetpercentage)
-                : ''
-            } %`}
-          />
+          <CellLayout label={`${assetpercentage ? new BigNumber(assetpercentage).decimalPlaces(4) : 0} %`} />
         </CellInner>
       </StyledRow>
       <ProgressBarRow>

@@ -1,24 +1,18 @@
 import { Flex, Text, Heading, Card } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
-import React, { useMemo, useEffect } from 'react'
+import React from 'react'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
 import { useGetTokensList } from 'hooks/moralis'
 import styled from 'styled-components'
 import { SubHeader } from 'uikit/components/SubHeader'
-import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { useTokenBalancesWithLoadingIndicator } from 'state/wallet/hooks'
-import { usePairs } from 'data/Reserves'
-import { Pair } from '@hyperjump-defi/sdk'
-import getNetwork from 'utils/getNetwork'
 import { Dots } from 'components/swap/styleds'
-import { getLpContract } from 'utils/contractHelpers'
 import TokenRow from './TokenRow'
 import AssetRow from './AssetRow'
 
 const NoTokenBox = styled(Card)`
   padding: 50px;
-  flex-direction: column;
+
   display: flex;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -70,6 +64,7 @@ const WalletTableContainer = styled.div`
     padding-left: 48px;
     padding-right: 48px;
   }
+
   max-width: 1094px;
 `
 
@@ -118,17 +113,22 @@ const WalletTableHeading = styled(Heading)`
   align-items: center;
   font-size: 30px;
 `
+const NoAvailText = styled(Text)`
+  font-size: 30px;
+  @media (max-width: 600px) {
+    font-size: 14px;
+  }
+`
 
 const WalletTable: React.FC = () => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
-  const { config } = getNetwork()
 
   const { data, isLoading } = useGetTokensList(account)
   const usertokens = data
 
   let totalVolume = 0
-  console.log(usertokens)
+
   usertokens.forEach(async (token) => {
     if (Number.isNaN(token.volume)) {
       token.volume = 0
@@ -155,6 +155,7 @@ const WalletTable: React.FC = () => {
           Investments
         </WalletTableHeading>
       </PageHeader>
+
       {!isLoading && usertokens?.length > 0 ? (
         <Table>
           <ColumnTable>
@@ -178,7 +179,9 @@ const WalletTable: React.FC = () => {
       ) : (
         <NoTokenBox>
           <WalletTableHeading>
-            <Dots>{t('Loading Available Tokens')}</Dots>
+            <NoAvailText>
+              <Dots>{t('Loading Available Tokens')}</Dots>
+            </NoAvailText>
           </WalletTableHeading>
         </NoTokenBox>
       )}

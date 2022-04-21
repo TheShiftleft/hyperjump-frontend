@@ -16,6 +16,7 @@ import CurrencyLogo from 'components/CurrencyLogo'
 import Logo from 'components/Logo'
 import { useActiveWeb3React } from 'hooks'
 import { useGetLpPrices } from 'hooks/api'
+import BigNumber from 'bignumber.js'
 import ConvertModal from './ConvertModal'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
@@ -46,10 +47,8 @@ const Label = styled(Heading)<{ align: string }>`
 const ContentContainer = styled.div`
   min-height: 20px;
   display: flex;
-
   margin-top: 5px;
   text-align: right;
-  justify-content: space-between;
 `
 
 const StyledRow = styled.div`
@@ -101,7 +100,7 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, align }) 
   return (
     <div>
       {label && <Label align={align}>{label}</Label>}
-      <ContentContainer>
+      <ContentContainer style={{ justifyContent: align }}>
         <Heading>{children}</Heading>
       </ContentContainer>
     </div>
@@ -144,19 +143,20 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const DefaultToCurrency = ToCurrency
 
   const [onPresentConvertModal] = useModal(<ConvertModal selectedtoken={token} selectTokens={selectedToken} />)
+  const inputValue = new BigNumber(selectedToken.token.amount).toString()
 
   const onConvert = () => {
     onPresentConvertModal()
     onCurrencySelection(Field.INPUT, DefaultFromCurrency)
     onCurrencySelection(Field.OUTPUT, DefaultToCurrency)
-    onUserInput(Field.INPUT, selectedToken.token.amount.toString())
+    onUserInput(Field.INPUT, inputValue)
   }
 
   const tokenContract0 = useTokenContract(token.tokenPairs[0])
   const tokenContract1 = useTokenContract(token.tokenPairs[1])
 
   const [symbols, setSymbols] = useState([undefined, undefined])
-  
+
   useMemo(() => {
     let isMounted = true
     const fetchSymbols = async () => {
@@ -221,6 +221,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
 
   if (token.tokenPairs.length > 0) {
     token.volume = tokenVolume
+    token.price = tokenPrice
   }
 
   return (
@@ -242,27 +243,16 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
             label={token.tokenPairs.length > 0 ? `${symbols[0]} - ${symbols[1]} ` : token.tokenObj.symbol}
             align="left"
           >
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              minimumFractionDigits: 4,
-            }).format(tokenPrice ?? 0)}
+            {`$${tokenPrice ? new BigNumber(tokenPrice).decimalPlaces(8) : 0}`}
           </CellLayout>
         </CellInner>
         <CellInner>
-          <CellLayout
-            align="right"
-            label={new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              minimumFractionDigits: 6,
-            }).format(tokenVolume || 0)}
-          >
-            {token.amount ? new Intl.NumberFormat('en-US', { minimumSignificantDigits: 4 }).format(token.amount) : '-'}
+          <CellLayout align="right" label={`$${tokenVolume ? new BigNumber(tokenVolume).decimalPlaces(10) : 0}`}>
+            {`${token.amount !== 0 ? new BigNumber(token.amount).decimalPlaces(10) : 0}`}
           </CellLayout>
         </CellInner>
       </StyledRow>
-      {tokenVolume > 0 && (
+      {tokenVolume < 10 && tokenVolume !== 0 && (
         <ConvertRow>
           <StyledButton onClick={onConvert}>{t('Convert')}</StyledButton>
         </ConvertRow>

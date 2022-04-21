@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
-import getNetwork from 'utils/getNetwork'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { TokenProps } from 'hooks/moralis'
 import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
@@ -14,6 +13,7 @@ import useToast from 'hooks/useToast'
 import { useAllTokens } from 'hooks/Tokens'
 import { getAddress } from '@ethersproject/address'
 import CurrencyLogo from 'components/CurrencyLogo'
+import BigNumber from 'bignumber.js'
 import { computeTradePriceBreakdown } from '../../utils/prices'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
@@ -47,21 +47,17 @@ const CellInner = styled.div`
   padding-right: 8px;
   width: 60px;
   white-space: nowrap;
+  @media (max-width: 545px) {
+    font-size: 14px;
+  }
 `
 
 const Label = styled.div`
   font-size: 12px;
   color: ${({ theme }) => theme.colors.primary};
-  text-align: left;
-`
-
-const IconImage = styled(Image)`
-  width: 30px;
-  height: 30px;
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    width: 40px;
-    height: 40px;
+  text-align: right;
+  @media (max-width: 545px) {
+    font-size: 11px;
   }
 `
 
@@ -69,6 +65,10 @@ const ContentContainer = styled.div`
   min-height: 24px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  @media (max-width: 545px) {
+    font-size: 11px;
+  }
 `
 
 const ButtonBox = styled(Flex)`
@@ -83,6 +83,7 @@ const ButtonBox = styled(Flex)`
 `
 interface CellLayoutProps {
   label?: string
+  align?: string
 }
 
 const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
@@ -157,7 +158,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const totalestimateJump = Number(formattedAmounts[Field.INPUT]) * Number(trade?.executionPrice.toSignificant(6))
 
   const estimateconvcost = realizedLPFee
-    ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price.toFixed(2))
+    ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price ? selectedtoken.price.toFixed(2) : 0)
     : 0
 
   const tokenSymbol =
@@ -199,34 +200,29 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
       <Box>
         <StyledRow>
           <CellInner>
-            <Text> {selectTokens.approval !== ApprovalState.APPROVED ? 'Approve ETH' : 'Approved ETH'}</Text>
+            <Text fontSize="14px">
+              {' '}
+              {selectTokens.approval !== ApprovalState.APPROVED ? 'Approve ETH' : 'Approved ETH'}
+            </Text>
           </CellInner>
 
-          <CellLayout label={selectTokenBalance ? `${selectTokenBalance.toSignificant(6)} ${tokenSymbol}` : '-'}>
-            ≈{' '}
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: 'USD',
-              minimumFractionDigits: 18,
-            }).format(selectedtoken.volume)}
+          <CellLayout
+            align="right"
+            label={selectTokenBalance ? `${selectTokenBalance.toSignificant(6)} ${tokenSymbol}` : '-'}
+          >
+            ≈ ${`${selectedtoken.volume ? new BigNumber(selectedtoken.volume).decimalPlaces(10) : 0}`}
           </CellLayout>
         </StyledRow>
 
         <StyledRow>
           <CellInner>
-            <Text>Estimated conversion cost</Text>
+            <Text fontSize="14px">Estimated conversion cost</Text>
           </CellInner>
           <CellLayout
+            align="right"
             label={realizedLPFee ? `${realizedLPFee.toSignificant(6)} ${trade.inputAmount.currency.symbol}` : '-'}
           >
-            ≈{' '}
-            {realizedLPFee
-              ? new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD',
-                  minimumFractionDigits: 10,
-                }).format(estimateconvcost)
-              : 0}
+            ≈ {`$${realizedLPFee ? new BigNumber(estimateconvcost).decimalPlaces(10) : 0}`}
           </CellLayout>
         </StyledRow>
         <TradePrice
@@ -240,13 +236,13 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
       </Box>
 
       <Box>
-        <Text fontSize="18px" marginTop="30px">
+        <Text fontSize="14px" marginTop="30px">
           Summary
         </Text>
 
         <StyledRow>
           <CellInner>
-            <Text>You will get approximately</Text>
+            <Text fontSize="14px">You will get approximately</Text>
           </CellInner>
 
           <CellLayout
@@ -256,7 +252,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                 : '-'
             }
           >
-            ≈ {totalestimateJump ? new Intl.NumberFormat('en-US').format(totalestimateJump) : 0}
+            ≈ {`${totalestimateJump ? new BigNumber(totalestimateJump).decimalPlaces(10) : 0}`}
           </CellLayout>
         </StyledRow>
 
@@ -279,21 +275,21 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
               label={
                 selectedtoken.tokenPairs.length === 0
                   ? selectedtoken.tokenObj.name
-                  : `${allTokens[getAddress(selectedtoken.tokenPairs[0])].name} - ${
-                      allTokens[getAddress(selectedtoken.tokenPairs[1])].name
+                  : `${allTokens[getAddress(selectedtoken.tokenPairs[0])].symbol} - ${
+                      allTokens[getAddress(selectedtoken.tokenPairs[1])].symbol
                     } `
               }
             >
-              {selectedtoken.price && selectedtoken.price.toFixed(2)}
+              {`${selectedtoken.price ? new BigNumber(selectedtoken.price).decimalPlaces(6) : 0}`}
             </CellLayout>
           </CellInner>
           <CellInner>
             <CellLayout
               label={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
-                selectedtoken.volume,
+                selectedtoken.volume || 0,
               )}
             >
-              {new Intl.NumberFormat('en-US').format(selectedtoken.amount)}
+              {new Intl.NumberFormat('en-US').format(selectedtoken.amount || 0)}
             </CellLayout>
           </CellInner>
         </StyledRow>
