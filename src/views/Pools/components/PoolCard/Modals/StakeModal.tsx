@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js'
 import { getFullDisplayBalance, formatNumber, getDecimalAmount } from 'utils/formatBalance'
 import { Pool } from 'state/types'
 import PercentageButton from './PercentageButton'
+import getNetwork from '../../../../../utils/getNetwork'
 
 interface StakeModalProps {
   pool: Pool
@@ -24,6 +25,7 @@ const StakeModal: React.FC<StakeModalProps> = ({
   isRemovingStake = false,
   onDismiss,
 }) => {
+  const { config } = getNetwork()
   const { sousId, stakingToken, userData, stakingLimit, earningToken } = pool
   const { t } = useTranslation()
   const { onStake } = useSousStake(sousId, false)
@@ -109,13 +111,16 @@ const StakeModal: React.FC<StakeModalProps> = ({
     }
   }
 
+  const chain_id = config.id
+  const stakingTokenImg = stakingToken?.address[chain_id]
+
   return (
     <Modal title={isRemovingStake ? t('Unstake') : t('Stake in Pool')} onDismiss={onDismiss}>
       <Flex alignItems="center" justifyContent="space-between" mb="8px">
         <Text bold>{isRemovingStake ? t('Unstake') : t('Stake')}:</Text>
         <Flex alignItems="center" minWidth="70px">
           <Image
-            src={`/images/tokens/${stakingToken.symbol.toLowerCase()}.png`}
+            src={`/images/tokens/${stakingTokenImg}.png`}
             width={24}
             height={24}
             alt={stakingToken.symbol}

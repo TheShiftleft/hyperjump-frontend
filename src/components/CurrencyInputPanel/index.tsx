@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react'
-import { Currency, Pair } from '@hyperjump-defi/sdk'
+import { Currency, Pair, Token } from '@hyperjump-defi/sdk'
 import { Button, ChevronDownIcon, Text } from 'uikit'
 import styled from 'styled-components'
 import { darken } from 'polished'
 import useI18n from 'hooks/useI18n'
 import { OtherSwapConfig } from 'components/SwapSelectionModal'
+import { FarmConfig } from 'config/constants/types'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import CurrencyLogo from '../CurrencyLogo'
@@ -83,6 +84,7 @@ interface CurrencyInputPanelProps {
   disableCurrencySelect?: boolean
   hideBalance?: boolean
   pair?: Pair | null
+  farm?: FarmConfig | null
   lp?: LPToken | null
   hideInput?: boolean
   otherCurrency?: Currency | null
@@ -109,6 +111,7 @@ export default function CurrencyInputPanel({
   disableCurrencySelect = false,
   hideBalance = false,
   pair = null, // used for double token logo
+  farm = null, // used for Pairs logo and
   lp = null, // used for LPs of other swap/defi
   hideInput = false,
   otherCurrency,
@@ -122,7 +125,7 @@ export default function CurrencyInputPanel({
   selectedSwap
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false)
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const TranslateString = useI18n()
   const translatedLabel = label || TranslateString(132, 'Input')
@@ -175,14 +178,19 @@ export default function CurrencyInputPanel({
           >
             <Aligner>
               {pair || lp? (
-                <DoubleCurrencyLogo lpUrl={selectedSwap?.imageUrl} currency0={pair ? pair.token0 : lp?.tokens[0]} currency1={pair ? pair.token1 : lp?.tokens[1]} size={24} margin />
+                <DoubleCurrencyLogo 
+                  lpUrl={selectedSwap?.imageUrl} 
+                  currency0={pair ? new Token(chainId, farm.token?.address[chainId], farm.token?.decimals, farm.token?.symbol, farm.token?.symbol) : lp?.tokens[0]} 
+                  currency1={pair ? new Token(chainId, farm.quoteToken?.address[chainId], farm.quoteToken?.decimals, farm.quoteToken?.symbol, farm.quoteToken?.symbol) : lp?.tokens[1]} 
+                  size={24} 
+                  margin 
+                />
               ) : currency ? (
                 <CurrencyLogo currency={currency} size="24px" style={{ marginRight: '8px' }} />
               ) : null}
               {pair ? (
                 <Text id="pair">
-                  {pair?.token0?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : pair?.token0?.symbol.toLowerCase() === 'wftm' ? 'FTM' : pair?.token0?.symbol}:
-                  {pair?.token1?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : pair?.token1?.symbol.toLowerCase() === 'wftm' ? 'FTM' : pair?.token1?.symbol}
+                  {farm.lpSymbol}
                 </Text>
               ) : lp ? (
                 <Text id="lp">

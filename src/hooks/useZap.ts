@@ -1,11 +1,13 @@
-import { CurrencyAmount, Currency, Pair, Token, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
+import { CurrencyAmount, Currency, Pair, Token, JSBI } from '@hyperjump-defi/sdk'
 import BigNumber from 'bignumber.js'
 import { LPToken } from 'components/SearchModal/CurrencyListWarp'
+import { FarmConfig } from 'config/constants/types'
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState, useEffect } from 'react'
-import { useCurrencyBalance } from 'state/wallet/hooks'
+import { isAddress } from 'utils'
 import { getRouterAddress } from 'utils/addressHelpers'
 import { BIG_TEN } from 'utils/bigNumber'
+import getNetwork from 'utils/getNetwork'
 import { useZapContract } from './useContract'
 
 export enum ZapCallbackState {
@@ -15,12 +17,13 @@ export enum ZapCallbackState {
 }
 
 export function useEstimateZapInToken(currencyInput: Currency, pairOutput: Pair, amount: CurrencyAmount) {
+  const { config } = getNetwork()
   const zapContract = useZapContract()
   const router = getRouterAddress()
   const amountToProcess = amount
     ? new BigNumber(amount?.toExact()).multipliedBy(BIG_TEN.pow(amount?.currency?.decimals)).toString()
     : undefined
-  const from = currencyInput instanceof Token ? currencyInput.address : undefined
+  const from = currencyInput instanceof Token ? currencyInput.address : currencyInput === config.baseCurrency ? isAddress(config.wrappedNetworkToken.address[config.id]) ?? undefined : undefined
   const to = pairOutput?.liquidityToken?.address
   const [estimate, setEstimate] = useState<BigNumber[]>()
   useEffect(() => {
@@ -150,7 +153,7 @@ export function useZapAcross(address: LPToken, pairBalance: CurrencyAmount, amou
       state: ZapCallbackState.VALID,
       callback: async () => {
         const zapAccross = await zapContract.zapAcross(from, amountToProcess, router, account)
-        return zapAccross
+        return {zapAccross, amount: amount.toExact()}
       },
       error: null,
     }

@@ -2,21 +2,16 @@ import { Currency, Token, Pair } from '@hyperjump-defi/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Text, CloseIcon } from 'uikit'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import useI18n from 'hooks/useI18n'
-import { toV2LiquidityToken, useTrackedTokenPairs } from 'state/user/hooks'
-import { usePair, usePairs } from 'data/Reserves'
+import { usePairs } from 'data/Reserves'
 import getNetwork from 'utils/getNetwork'
-import { getWarpTokens, getZapTokens } from 'utils/addressHelpers'
 import zapPairs from 'config/constants/zap'
-import { usePairContract, useTokenContract } from 'hooks/useContract'
-import { useOtherLpsCurrency } from 'hooks/useOtherLps'
 import { useActiveWeb3React } from '../../hooks'
 import { AppState } from '../../state'
-import { useAllTokens, useToken } from '../../hooks/Tokens'
+import { useToken } from '../../hooks/Tokens'
 import { useSelectedListInfo } from '../../state/lists/hooks'
 import { LinkStyledButton } from '../Shared'
 import { isAddress } from '../../utils'
@@ -24,11 +19,9 @@ import Card from '../Card'
 import ListLogo from '../ListLogo'
 import QuestionHelper from '../QuestionHelper'
 import Row, { RowBetween } from '../Row'
-import CommonBases from './CommonBases'
 import CurrencyListZap from './CurrencyListZap'
 import { filterPairs } from './filteringPairs'
 import SortButton from './SortButton'
-import { useTokenComparator } from './sorting'
 import { usePairComparator } from './sortingPairs'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 
@@ -68,21 +61,19 @@ export default function CurrencySearchZap({
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
-  const trackedTokenPairs = useTrackedTokenPairs()
-  const tokenPairsWithLiquidityTokens = useMemo(
-    () => trackedTokenPairs.map((tokens) => ({ liquidityToken: toV2LiquidityToken(tokens), tokens })),
-    [trackedTokenPairs],
-  )
   const pairs = zapPairs[config.network]
 
   const allPairs = useMemo(() => {
-    return tokenPairsWithLiquidityTokens.map(pair => pair).filter(v2Pair => {
-      return pairs.find((pair) => {
-        return pair.lpAddresses[chainId].toLowerCase() === v2Pair.liquidityToken.address.toLowerCase()
-      })
-    }) 
-  }, [tokenPairsWithLiquidityTokens, pairs, chainId])
-
+    return Object.values(pairs).map(pairToken => {
+      const lt = new Token(chainId, pairToken.lpAddresses[chainId], 18, pairToken.lpSymbol, pairToken.lpSymbol)
+      const tokens: [Token, Token] = [
+        new Token(chainId, pairToken.token.address[chainId], pairToken.token.decimals, pairToken.token.symbol, pairToken.token.symbol),
+        new Token(chainId,pairToken.quoteToken.address[chainId], pairToken.quoteToken.decimals, pairToken.quoteToken.symbol, pairToken.quoteToken.symbol),
+      ]
+      return {liquidityToken: lt, tokens}
+    })
+  }, [chainId, pairs])
+  
   const allv2Pairs = usePairs(allPairs.map(({ tokens }) => tokens))
   const allV2PairsWithLiquidity = useMemo(() => { return allv2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))},[allv2Pairs]) 
 

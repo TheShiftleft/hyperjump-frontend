@@ -1,44 +1,55 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from 'react'
-import { CurrencyAmount, Token } from '@hyperjump-defi/sdk'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { CurrencyAmount, JSBI } from '@hyperjump-defi/sdk'
 import { CardBody, ArrowDownIcon, Button, IconButton, Text } from 'uikit'
 import { AutoColumn } from 'components/Column'
 import Container from 'components/Container'
 import AppBody from 'components/Zap/AppBody'
-import styled from 'styled-components'
-import Logo from 'components/Logo'
 import CardNav from 'components/Zap/CardNav'
 import Card from 'components/Card'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
 import PageHeader from 'components/Zap/PageHeader'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
 import { Wrapper } from 'components/Zap/styled'
-import { AutoRow, RowBetween } from 'components/Row'
+import { AutoRow } from 'components/Row'
 import Loader from 'components/Loader'
 import { useApproveCallbackFromZap, ApprovalState } from 'hooks/useApproveCallback'
 import { useDerivedZapInfo, useZapActionHandlers, useZapDefaultState, useZapState } from 'state/zap/hooks'
 import { Field } from 'state/zap/actions'
 import { useZapInToken, ZapCallbackState } from 'hooks/useZap'
 import useToast from 'hooks/useToast'
-import { WrappedTokenInfo } from 'state/lists/hooks'
-import useHttpLocations from 'hooks/useHttpLocations'
 import useI18n from 'hooks/useI18n'
 import getNetwork from 'utils/getNetwork'
-
-const StyledLogo = styled(Logo)<{ size: string }>`
-  width: ${({ size }) => size};
-  height: ${({ size }) => size};
-`
-
-const getTokenLogoURL = (address: string) => `https://tokens.hyperjump.app/images/${address}.png`
+import CurrencyLogo from 'components/CurrencyLogo'
+import { MIN_ETH } from 'config'
+import useStake from 'hooks/useStake'
+import { useWeb3React } from '@web3-react/core'
+import { useFarms, useFarmUser, usePollFarmsData } from 'state/hooks'
+import { useApprove } from 'hooks/useApprove'
+import { fetchFarmUserDataAsync } from 'state/farms'
+import { useAppDispatch } from 'state'
+import { getBep20Contract } from 'utils/contractHelpers'
+import useWeb3 from 'hooks/useWeb3'
 
 const Zap = () => {
-  const { config } = getNetwork()
-  const { toastSuccess, toastError } = useToast()
+  const { account, chainId } = useWeb3React()
+  const web3 = useWeb3()
+  const [isLoading, setIsLoading] = useState(false)
+  const [zapToPool, setZapToPool] = useState(false)
+  const dispatch = useAppDispatch()
+  useFarms()
+  usePollFarmsData()
+  const { toastSuccess, toastError, toastWarning, toastInfo } = useToast()
   useZapDefaultState()
   const TranslateString = useI18n()
   const { field, typedValue } = useZapState()
-  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted } =
+  const { currencyBalances, currencyInput, pairOutput, parsedAmount, pairCurrency, estimates, liquidityMinted, estimatedLpAmount, farm } =
     useDerivedZapInfo()
+  const {onStake} = useStake(farm?.pid)
+  // If farm is undefined set PID to JUMP-FTM temporarily
+  const { allowance } = useFarmUser(farm?.pid ?? 1)
+  const isFarmApproved = account && allowance && allowance?.isGreaterThan(0)
+  const lpContract = getBep20Contract(farm?.lpAddresses[chainId], web3)
+  const { onApprove } = useApprove(lpContract)
   const { onUserInput, onCurrencySelect, onPairSelect } = useZapActionHandlers()
   const parsedAmounts = {
     [Field.INPUT]: parsedAmount,
@@ -59,85 +70,50 @@ const Zap = () => {
   const token0 = estimates[0] ?? undefined
   const token1 = estimates[1] ?? undefined
 
-  const uriLocations0 = useHttpLocations(token0?.token instanceof WrappedTokenInfo ? token0?.token.logoURI : undefined)
-  const uriLocations1 = useHttpLocations(token1?.token instanceof WrappedTokenInfo ? token1?.token.logoURI : undefined)
-
-  const srcs0 = useMemo(() => {
-    if (token0?.token instanceof Token) {
-      if (token0?.token instanceof WrappedTokenInfo) {
-        return [
-          ...uriLocations0,
-          `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token0?.token?.symbol.toLowerCase() === 'ftm'
-              ? 'FTM'
-              : token0?.token?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token0?.token?.address,
-          ),
-        ]
-      }
-
-      return [
-        `/images/tokens/${token0?.token?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token0?.token?.symbol.toLowerCase() === 'ftm'
-            ? 'FTM'
-            : token0?.token?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token0?.token?.address,
-        ),
-      ]
-    }
-    return []
-  }, [token0, uriLocations0])
-
-  const srcs1 = useMemo(() => {
-    if (token1?.token instanceof Token) {
-      if (token1?.token instanceof WrappedTokenInfo) {
-        return [
-          ...uriLocations1,
-          `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
-          getTokenLogoURL(
-            token1?.token?.symbol.toLowerCase() === 'ftm'
-              ? 'FTM'
-              : token1?.token?.symbol.toLowerCase() === 'bnb'
-              ? 'BNB'
-              : token1?.token?.address,
-          ),
-        ]
-      }
-
-      return [
-        `/images/tokens/${token1?.token?.address ?? 'token'}.png`,
-        getTokenLogoURL(
-          token1?.token?.symbol.toLowerCase() === 'ftm'
-            ? 'FTM'
-            : token1?.token?.symbol.toLowerCase() === 'bnb'
-            ? 'BNB'
-            : token1?.token?.address,
-        ),
-      ]
-    }
-    return []
-  }, [token1, uriLocations1])
-
   const handleZapCallback = useCallback(() => {
+    setIsLoading(true)
     zapCallback()
-      .then((result) => {
-        result.wait().then((confirmation) => {
+      .then((zapIn) => {
+        toastInfo('Zapping', 'Zap in progress')
+        zapIn.wait().then((confirmation) => {
           if (confirmation.status) {
-            toastSuccess('Zapped', 'Zap transaction successful.')
+            if(zapToPool){
+              if(liquidityMinted){
+                toastInfo('Staking', 'Staking in progress')
+                onStake(liquidityMinted.toExact()).then(() => {
+                  setIsLoading(false)
+                  toastSuccess('Success', 'Zap and Stake transaction successful.')
+                })
+                .catch((error) => {
+                  console.error(error)
+                  setIsLoading(false)
+                  toastError('Error', 'Something went wrong during staking transaction.')
+                })
+              }else{
+                toastError('Error', 'Something went wrong during staking transaction.')
+              }
+            }else{
+              setIsLoading(false)
+              toastSuccess('Zapped', 'Zap transaction successful.')
+            }
           } else {
-            toastError('Zap Error', 'Something went wrong during transaction.')
+            setIsLoading(false)
+            toastError('Zap Error', 'Something went wrong during zapping transaction.')
           }
         })
       })
       .catch((error) => {
         console.error(error)
-        toastError('Zap Error', 'An error occured while processing transaction.')
+        let msg = 'An error occured while processing transaction.'
+        let title = 'Zap Error'
+        if(error.code === 4001){
+          title = 'Transaction Cancelled'
+          msg = 'User cancelled the transaction.'
+        }
+        setIsLoading(false)
+        toastError(title, msg)
       })
-  }, [zapCallback, toastSuccess, toastError])
+  }, [zapCallback, toastSuccess, toastError, zapToPool, onStake, toastInfo, liquidityMinted])
 
   const [approval, approveCallback] = useApproveCallbackFromZap(parsedAmounts[field])
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false)
@@ -194,9 +170,35 @@ const Zap = () => {
 
   const handleMaxInput = useCallback(() => {
     if (maxAmountInput) {
-      onUserInput(Field.INPUT, maxAmountInput.toExact())
+      if(JSBI.lessThan(maxAmountInput?.raw, MIN_ETH)){
+        toastWarning('Warning', 'Balance is below the minimum amount required!')
+      }else{
+        onUserInput(Field.INPUT, maxAmountInput.toExact())
+      }
     }
-  }, [maxAmountInput, onUserInput])
+  }, [maxAmountInput, onUserInput, toastWarning])
+
+  const handleFarmApprove = useCallback(async () => {
+    toastInfo('Enabling', 'Enable farm staking in progress.')
+    setIsLoading(true)
+    try{
+      await onApprove()
+      setIsLoading(false)
+      dispatch(fetchFarmUserDataAsync({ account, pids: [farm.pid] }))
+      toastSuccess('Enabled', 'Farm staking has been enabled.')
+    }catch(error) {
+      console.error(error)
+      let msg = 'An error occured while processing transaction.'
+      let title = 'Zap Error'
+      if(error.code === 4001){
+        title = 'Transaction Cancelled'
+        msg = 'User cancelled the transaction.'
+      }
+      setIsLoading(false)
+      toastError(title, msg)
+    }
+    
+  }, [account, farm, onApprove, toastInfo, toastSuccess, toastError, dispatch])
 
   return (
     <Container>
@@ -206,6 +208,11 @@ const Zap = () => {
           <PageHeader
             title="Zap"
             description="Zap into our LP tokens: Please note that there is a risk of loss if zapping into a low liquidity LP"
+            zapToPool={zapToPool}
+            isZap
+            setZapToPool={(value: boolean) => {
+              setZapToPool(value)
+            }}
           />
           <CardBody p="12px">
             <AutoColumn gap="md">
@@ -230,50 +237,55 @@ const Zap = () => {
                 value={liquidityMinted ? liquidityMinted?.toSignificant(6) : '0'}
                 currency={pairCurrency}
                 pair={pairOutput}
+                farm={farm}
                 onPairSelect={handleOutputPairSelect}
                 showMaxButton={false}
                 onUserInput={handleTypeOutput}
                 disabledNumericalInput
-                hideInput={currencyInput === config.baseCurrency}
                 id="zap-currency-input"
                 pairToken
               />
-              {token0 && token1 ? (
+              {token0 && token1 && 
                 <Card padding=".25rem .75rem 0 .75rem" borderRadius="20px">
                   <AutoColumn justify="center" gap="5px">
                     <Text fontSize="16px" color="primary" bold>
                       Estimated
                     </Text>
                     <AutoRow>
-                      <StyledLogo
-                        size="25px"
-                        srcs={srcs0}
-                        alt={`${token0?.currency?.symbol ?? 'token'} logo`}
-                        style={{ borderRadius: '20px', marginRight: '10px' }}
+                      <CurrencyLogo
+                        currency={token0.currency}
+                        size="24px"
+                        style={{marginRight: '10px'}}
                       />
                       <Text fontSize="14px" marginRight="10px">
-                        {token0?.currency?.symbol} Deposited :
+                        {token0?.currency?.symbol.toLowerCase() === 'wftm' ? 'FTM' : token0?.currency?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : token0?.currency?.symbol } Deposited :
                       </Text>
                       <Text fontSize="14px">{token0?.toSignificant(6)}</Text>
                     </AutoRow>
                     <AutoRow>
-                      <StyledLogo
-                        size="25px"
-                        srcs={srcs1}
-                        alt={`${token0?.currency?.symbol ?? 'token'} logo`}
-                        style={{ borderRadius: '20px', marginRight: '10px' }}
+                      <CurrencyLogo
+                        currency={token1.currency}
+                        size="24px"
+                        style={{marginRight: '10px'}}
                       />
                       <Text fontSize="14px" marginRight="10px">
-                        {token1?.currency?.symbol} Deposited :
+                        {token1?.currency?.symbol.toLowerCase() === 'wftm' ? 'FTM' : token1?.currency?.symbol.toLowerCase() === 'wbnb' ? 'BNB' : token1?.currency?.symbol} Deposited :
                       </Text>
                       <Text fontSize="14px">{token1?.toSignificant(6)}</Text>
                     </AutoRow>
+                    {estimatedLpAmount && (
+                      <AutoRow>
+                        <Text fontSize="14px" marginRight="10px">
+                          Estimated value:
+                        </Text>
+                        <Text fontSize="14px">$ {estimatedLpAmount.toFixed(4)}</Text>
+                      </AutoRow>
+                    )}
+                    
                   </AutoColumn>
                 </Card>
-              ) : (
-                ''
-              )}
-              {showApproval ? (
+              }
+              {showApproval ? 
                 <Button width="100%" disabled={false} variant="primary" onClick={approveCallback}>
                   {approval === ApprovalState.PENDING ? (
                     <AutoRow gap="6px" justify="center">
@@ -285,16 +297,34 @@ const Zap = () => {
                     `Approve ${currencyInput?.name}`
                   )}
                 </Button>
-              ) : (
+              : zapToPool && !isFarmApproved ? 
+              <Button
+                  width="100%"
+                  disabled={isLoading}
+                  variant="primary"
+                  onClick={() => handleFarmApprove()}
+                >
+                  <AutoRow gap="6px" justify="center">
+                    {TranslateString(1214, 'Enable Farm Staking')}
+                  {isLoading && <Loader stroke="white" />}
+                  </AutoRow>
+                </Button>
+              : 
                 <Button
                   width="100%"
-                  disabled={!(zapState === ZapCallbackState.VALID)}
+                  disabled={!(zapState === ZapCallbackState.VALID && isLoading === false)}
                   variant="primary"
                   onClick={() => handleZapCallback()}
                 >
-                  {TranslateString(1211, 'Zap In')}
+                  <AutoRow gap="6px" justify="center">
+                  {zapToPool ? 
+                    TranslateString(1212, 'Zap Into Pool') 
+                  :
+                    TranslateString(1211, 'Zap In')}
+                  {isLoading && <Loader stroke="white" />}
+                  </AutoRow>
                 </Button>
-              )}
+              }
             </AutoColumn>
           </CardBody>
         </Wrapper>

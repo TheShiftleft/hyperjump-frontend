@@ -6,6 +6,7 @@ import styled from 'styled-components'
 const StyledCardHeader: React.FC<{
   tokenLink: string
   earningTokenSymbol: string
+  earningTokenImg: string
   stakingTokenSymbol: string
   isAutoVault?: boolean
   isFinished?: boolean
@@ -14,12 +15,13 @@ const StyledCardHeader: React.FC<{
   tokenLink,
   earningTokenSymbol,
   stakingTokenSymbol,
+  earningTokenImg,
   isFinished = false,
   isAutoVault = false,
   isStaking = false,
 }) => {
   const { t } = useTranslation()
-  const iconFile = `${earningTokenSymbol}.png`.toLocaleLowerCase()
+  const iconFile = `${earningTokenImg}`.toLocaleLowerCase()
   const background = isStaking ? 'background' : 'backgroundAlt'
 
   const getHeadingPrefix = () => {

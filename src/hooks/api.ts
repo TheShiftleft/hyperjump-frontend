@@ -88,3 +88,30 @@ export const useGetCirculatingSupplyStats = () => {
 
   return data
 }
+
+export const useGetLpPrices = () => {
+  const [data, setData] = useState()
+  const { config } = getNetwork()
+
+  useEffect(() => {
+    let mounted = true
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://vaultsapi.hyperjump.app/lps`)
+        const responseData = await response.json()
+        if(mounted){
+          setData(responseData)
+        }
+      }catch(e) {
+        console.error('Unable to fetch data:', e)
+      }
+    }
+
+    fetchData()
+    return () => {
+      mounted = false
+    }
+  }, [config.network, setData])
+
+  return data
+}
