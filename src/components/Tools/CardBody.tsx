@@ -4,14 +4,11 @@ import { space, SpaceProps } from "styled-system";
 export type CardBodyProps = SpaceProps;
 
 const CardBody = styled.div<CardBodyProps>`
+  padding: 0 12px 12px 12px;
   ${space}
   ${({ theme }) => theme.mediaQueries.sm} {
-    padding: 24px;
+    padding: 0 24px 24px 24px;
   }
 `;
-
-CardBody.defaultProps = {
-  p: "12px",
-};
 
 export default CardBody;

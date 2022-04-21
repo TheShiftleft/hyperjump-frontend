@@ -1,8 +1,6 @@
 import { VAULTS_API_URL } from 'config'
-import { ERC20_ABI } from 'config/abi/erc20'
 import { useActiveWeb3React } from 'hooks'
 import { useEffect, useMemo, useState } from 'react'
-import { getContract, isAddress } from 'utils'
 import getNetwork from 'utils/getNetwork'
 import useWeb3 from './useWeb3'
 
@@ -141,14 +139,14 @@ export const useGetLpPrices = () => {
 }
 
 export const useApprovedTransaction = () => {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const web3 = useWeb3()
   const query = chainId === 250 ? `https://api.ftmscan.com/api?module=account&action=txlist&address=${account}` : `https://api.bscscan.com/api?module=account&action=txlist&address=${account}`
 
   const [data, setData] = useState()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useMemo(() => {
+  useEffect(() => {
     let isMounted = true
     const fetchData = async () => {
       const approvalHash = "0x095ea7b3";
@@ -157,7 +155,6 @@ export const useApprovedTransaction = () => {
       const response = await fetch(query)
       const responseData = await response.json()
       if(responseData.status === '1'){
-        // setData(responseData.result)
         const transactions = responseData.result
         .filter((tx: TransactionResponse) => tx.input.includes(approvalHash))
         .map((tx: TransactionResponse) => {
@@ -178,7 +175,6 @@ export const useApprovedTransaction = () => {
           setData(transactions)
         }
       }
-      
     }
     if(account){
       fetchData()
@@ -186,8 +182,6 @@ export const useApprovedTransaction = () => {
     return () => {
       isMounted = false
     }
-  }, [account, query, web3])
-  
-
+  })
   return data
 }
