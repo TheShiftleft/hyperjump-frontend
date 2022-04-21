@@ -112,6 +112,9 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
   const { isXs, isSm, isMd } = breakpoints
   const isMechPool = sousId === 0
 
+  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
+  usePoolTimingInfo(pool)
+
   const isMetaMaskInScope = !!(window as WindowChain).ethereum?.isMetaMask
   const tokenAddress = earningToken.address ? getAddress(earningToken.address) : ''
   const imageSrc = `${NETWORK_URL}/images/tokens/${earningToken.symbol.toLowerCase()}.png`
@@ -119,6 +122,26 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
   const getTotalStakedBalance = () => {
     return getBalanceNumber(totalStaked, stakingToken.decimals)
   }
+
+  const blocksRow =
+    remaining || untilStart ? (
+      <Flex mb="8px" justifyContent="space-between">
+        <Text color="primary">{hasPoolStarted ? t('Ends in') : t('Starts in')}:</Text>
+        <Flex>
+          <Balance fontSize="16px" value={toDisplay / 60} decimals={0} color="white" />
+          <Text ml="4px" color="primary" textTransform="lowercase">
+            {t('Minutes')}
+          </Text>
+          {config.network === Network.BSC && (
+            <Link external href={getScannerBlockCountdownUrl(endBlock)}>
+              <TimerIcon ml="4px" color="primary" />
+            </Link>
+          )}
+        </Flex>
+      </Flex>
+    ) : (
+      <Skeleton width="56px" height="16px" />
+    )  
 
   const aprRow = (
     <Flex justifyContent="space-between" alignItems="center" mb="8px">
@@ -146,7 +169,7 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
         <InfoSection>
           {(isXs || isSm) && aprRow}
           {(isXs || isSm || isMd) && totalStakedRow}
-
+          {shouldShowCountdown && blocksRow}
           <Flex mb="8px" justifyContent={['flex-end', 'flex-end', 'flex-start']}>
             <LinkExternal href={`${BASE_INFO_URL}/token/${getAddress(earningToken.address)}`} bold={false}>
               {t('Info site')}
