@@ -2,6 +2,7 @@ import { VAULTS_API_URL } from 'config'
 import { useActiveWeb3React } from 'hooks'
 import { useEffect, useMemo, useState } from 'react'
 import getNetwork from 'utils/getNetwork'
+import { ApprovedTransaction } from 'views/Tools/Unrekt'
 import useWeb3 from './useWeb3'
 
 /* eslint-disable camelcase */
@@ -143,7 +144,7 @@ export const useApprovedTransaction = () => {
   const web3 = useWeb3()
   const query = chainId === 250 ? `https://api.ftmscan.com/api?module=account&action=txlist&address=${account}` : `https://api.bscscan.com/api?module=account&action=txlist&address=${account}`
 
-  const [data, setData] = useState()
+  const [data, setData] = useState<[ApprovedTransaction] | []>()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -162,18 +163,28 @@ export const useApprovedTransaction = () => {
             const approved = web3.utils.toChecksumAddress(`0x${tx.input.substring(34,74)}`)
             const allowanceAmount = tx.input.substring(74)
             const allowance = allowanceAmount.includes(unlimitedAllowance) ? 'Unlimited' : 'Limited'
-            if(parseInt(allowanceAmount, 16) !== 0) {
-              return {
-                contract: contractAddress,
-                approved,
-                allowance
-              }
+            return {
+              contract: contractAddress,
+              approved,
+              allowance,
+              allowanceAmount: parseInt(allowanceAmount, 16)
             }
-            return {}
+        })
+        .reduce((prev, current) => {
+          if(Array.isArray(prev)){
+            if(current.allowanceAmount === 0){
+              const newArray = prev.filter((element) => !(element.approved === current.approved && element.contract === current.contract))
+              return newArray
+            }
+            return [...prev, current]
+          }
+          return [prev, current]
         })
         if(isMounted){
           setData(transactions)
         }
+      }else if(responseData.result.length === 0){
+        setData([])
       }
     }
     if(account){

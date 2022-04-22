@@ -17,17 +17,20 @@ const LoaderText = styled(Text)`
   text-align: center;
   font-size: 20px;
 `
-const Table = ({data} : {data:[ApprovedTransaction]}) => {
+const Table = ({data} : {data:[ApprovedTransaction] | []}) => {
   const getKey = (row, index) => {
     return `${row.approved}-${index}`
   }
-  
+  // console.log('data', data)
   return (
     <TableContainer>
       <TableHeader />
-      {data ? data?.map((row, index) => <TableRow key={getKey(row,index)} row={row}/>) 
+      {data?.length > 0 ? 
+        data?.map((row, index) => <TableRow key={getKey(row,index)} row={row}/>) 
+      : data?.length === 0 ?
+        <LoaderText>No addresses to revoke found</LoaderText>
       :
-      <LoaderText>Loading table data... <Loader/></LoaderText>
+        <LoaderText>Loading table data... <Loader/></LoaderText>
       }     
     </TableContainer>
   )
