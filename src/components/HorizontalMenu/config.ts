@@ -81,6 +81,17 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
     target: '_self',
   },
   {
+    label: 'Tools',
+    icon: 'CogIcon',
+    items: [
+      {
+        label: 'Unrekt',
+        href: '/unrekt',
+        target: '_self'
+      }
+    ]
+  },
+  {
     label: 'Play',
     icon: 'TrophyIcon',
     items: [
@@ -137,7 +148,7 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
         target: '_blank',
       },
       {
-        label: 'UnRekt',
+        label: 'UnRekt - old external',
         href: 'https://unrekt.hyperjump.app/',
         target: '_blank',
       },

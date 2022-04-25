@@ -25,6 +25,7 @@ import mechMigratorABI from './mechMigrator.json'
 import claimLpRewardMigratorABI from './claimLpRewards.json'
 import zapABI from './zap.json'
 import actionInitiatorsABI from './actionInitiators.json'
+import approveABI from './approval.json'
 
 const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
@@ -150,4 +151,8 @@ export const getLotteryABI = () => {
 
 export const getZapABI = () => {
   return zapABI
+}
+
+export const getApproveABI = () => {
+  return approveABI
 }
