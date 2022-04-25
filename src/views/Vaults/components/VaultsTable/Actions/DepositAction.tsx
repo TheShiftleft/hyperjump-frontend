@@ -6,7 +6,6 @@ import { BigNumber } from 'bignumber.js'
 import UnlockButton from 'components/UnlockButton'
 import Balance from 'components/Balance'
 import { useWeb3React } from '@web3-react/core'
-import { useTranslation } from 'contexts/Localization'
 import { useStarVaultApprove } from 'hooks/useApprove'
 import { getBalanceAmount, getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
 import useVaultDeposit from 'hooks/useVaultDeposit'
@@ -48,7 +47,6 @@ interface DepositActionProps {
 
 const DepositAction: React.FunctionComponent<DepositActionProps> = (props) => {
   const { vault, price: priceNum, walletBalance, allowance } = props
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { onVaultDeposit } = useVaultDeposit(vault.earnContractAddress)
@@ -99,7 +97,7 @@ const DepositAction: React.FunctionComponent<DepositActionProps> = (props) => {
     return (
       <ActionContainer>
         <ActionTitles>
-          <Subtle>{t('Connect wallet').toUpperCase()}</Subtle>
+          <Subtle>{'Connect wallet'.toUpperCase()}</Subtle>
         </ActionTitles>
         <ActionContent>
           <UnlockButton width="100%" />
@@ -112,7 +110,7 @@ const DepositAction: React.FunctionComponent<DepositActionProps> = (props) => {
     return (
       <ActionContainer>
         <ActionTitles>
-          <Subtle>{t('Deposit').toUpperCase()}</Subtle>
+          <Subtle>{'Deposit'.toUpperCase()}</Subtle>
           <Title>{vault.name} </Title>
         </ActionTitles>
         <ActionContent>
@@ -146,11 +144,11 @@ const DepositAction: React.FunctionComponent<DepositActionProps> = (props) => {
   return (
     <ActionContainer>
       <ActionTitles>
-        <Subtle>{t('Enable Vault To Deposit').toUpperCase()}</Subtle>
+        <Subtle>{'Enable Vault To Deposit'.toUpperCase()}</Subtle>
       </ActionTitles>
       <ActionContent>
         <Button width="100%" disabled={requestedApproval} onClick={handleApprove} variant="secondary">
-          {t('Enable')}
+          Enable
         </Button>
       </ActionContent>
     </ActionContainer>

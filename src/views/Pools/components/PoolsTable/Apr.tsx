@@ -4,7 +4,6 @@ import { BASE_EXCHANGE_URL } from 'config'
 import ApyCalculatorModal from 'components/ApyCalculatorModal'
 import Balance from 'components/Balance'
 import { Pool } from 'state/types'
-import { useTranslation } from 'contexts/Localization'
 import getAprData from 'views/Pools/helpers'
 import { getAddress } from 'utils/addressHelpers'
 
@@ -16,18 +15,16 @@ interface AprProps extends FlexProps {
 
 const Apr: React.FC<AprProps> = ({ pool, showIcon, performanceFee = 0, ...props }) => {
   const { stakingToken, earningToken, isFinished, earningTokenPrice, apr } = pool
-  const { t } = useTranslation()
 
   const { apr: earningsPercentageToDisplay, roundingDecimals, compoundFrequency } = getAprData(pool)
   const apyModalLink =
-    stakingToken.address &&
-    `${BASE_EXCHANGE_URL}/#/swap?outputCurrency=${getAddress(stakingToken.address)}`
+    stakingToken.address && `${BASE_EXCHANGE_URL}/#/swap?outputCurrency=${getAddress(stakingToken.address)}`
 
   const [onPresentApyModal] = useModal(
     <ApyCalculatorModal
       tokenPrice={earningTokenPrice}
       apr={apr}
-      linkLabel={t('Get %symbol%', { symbol: stakingToken.symbol })}
+      linkLabel={`Get ${stakingToken.symbol}`}
       linkHref={apyModalLink || BASE_EXCHANGE_URL}
       earningTokenSymbol={earningToken.symbol}
       roundingDecimals={roundingDecimals}

@@ -4,7 +4,6 @@ import { Button, Text, Flex, Skeleton, useMatchBreakpoints } from 'uikit'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
-import { useTranslation } from 'contexts/Localization'
 import Balance from 'components/Balance'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { Pool } from 'state/types'
@@ -34,7 +33,6 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
   userDataLoaded,
   earningTokenPrice,
 }) => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const { onStake } = useSousStake(sousId, false)
   const { onReward } = useSousHarvest(sousId, false)
@@ -55,23 +53,18 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
     setPendingTx(true)
     try {
       await onReward()
-      toastSuccess(
-        `${t('Collected')}!`,
-        t('Your %symbol% earnings have been sent to your wallet!', { symbol: earningToken.symbol }),
-      )
+      toastSuccess(`${'Collected'}!`, `Your ${earningToken.symbol} earnings have been sent to your wallet!`)
       setPendingTx(false)
     } catch (e) {
-      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+      toastError('Canceled', 'Please try again and confirm the transaction.')
       setPendingTx(false)
-    }  try {
+    }
+    try {
       await onStake(fullBalance, earningToken.decimals)
-      toastSuccess(
-        `${t('Compounded')}!`,
-        t('Your %symbol% earnings have been assembled into !', { symbol: earningToken.symbol }),
-      )
+      toastSuccess('Compounded!', `Your ${earningToken.symbol} earnings have been assembled into !`)
       setPendingTx(false)
     } catch (e) {
-      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+      toastError('Canceled', 'Please try again and confirm the transaction.')
       setPendingTx(false)
     }
   }
@@ -80,13 +73,10 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
     setPendingTx(true)
     try {
       await onReward()
-      toastSuccess(
-        `${t('Collected')}!`,
-        t('Your %symbol% earnings have been sent to your wallet!', { symbol: earningToken.symbol }),
-      )
+      toastSuccess('Collected!', `Your ${earningToken.symbol} earnings have been sent to your wallet!`)
       setPendingTx(false)
     } catch (e) {
-      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+      toastError('Canceled', 'Please try again and confirm the transaction.')
       setPendingTx(false)
     }
   }
@@ -96,7 +86,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
         {earningToken.symbol}{' '}
       </Text>
       <Text fontSize="24px" bold color="textSubtle" as="span" textTransform="uppercase">
-        {t('Earned')}
+        Earned
       </Text>
     </Flex>
   )
@@ -107,7 +97,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
         <ActionTitles>{actionTitle}</ActionTitles>
         <ActionContent>
           <Balance pt="8px" lineHeight="1" bold fontSize="20px" decimals={5} value={0} />
-          <Button disabled>{isCompoundPool ? t('Collect') : t('Collect')}</Button>
+          <Button disabled>{isCompoundPool ? 'Collect' : 'Collect'}</Button>
         </ActionContent>
       </ActionContainer>
     )
@@ -159,17 +149,17 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
           onClick={handleCollect}
           mb={direction === 'column' ? '5px' : ''}
         >
-          {t('Collect')}
+          Collect
         </ActionButton>
         <ActionButton
-            className="staked-btn"
-            ml={direction === 'column' ? '' : '8px'}
-            disabled={!hasEarnings}
-            isLoading={pendingTx}
-            onClick={handleCompound}
-          >
-            {t('Compound')}
-          </ActionButton>
+          className="staked-btn"
+          ml={direction === 'column' ? '' : '8px'}
+          disabled={!hasEarnings}
+          isLoading={pendingTx}
+          onClick={handleCompound}
+        >
+          Compound
+        </ActionButton>
       </Flex>
     </HarvestContainer>
   )

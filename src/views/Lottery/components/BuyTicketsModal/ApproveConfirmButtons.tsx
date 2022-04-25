@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ChevronRightIcon, Button as UIKitButton, AutoRenewIcon, ChevronDownIcon, Box, Flex } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 
 export enum ButtonArrangement {
   ROW = 'row',
@@ -68,8 +67,7 @@ const ApproveConfirmButtons: React.FC<ApproveConfirmButtonsProps> = ({
   buttonArrangement = ButtonArrangement.ROW,
   confirmLabel,
 }) => {
-  const { t } = useTranslation()
-  const confirmButtonText = confirmLabel ?? t('Confirm')
+  const confirmButtonText = confirmLabel ?? 'Confirm'
 
   const ApproveConfirmRow = () => {
     return (
@@ -81,7 +79,7 @@ const ApproveConfirmButtons: React.FC<ApproveConfirmButtonsProps> = ({
             endIcon={isApproving ? spinnerIcon : undefined}
             isLoading={isApproving}
           >
-            {isApproving ? t('Enabling') : t('Enable')}
+            {isApproving ? 'Enabling' : 'Enable'}
           </Button>
         </Box>
         <Flex justifyContent="center">
@@ -95,7 +93,7 @@ const ApproveConfirmButtons: React.FC<ApproveConfirmButtonsProps> = ({
             isLoading={isConfirming}
             endIcon={isConfirming ? spinnerIcon : undefined}
           >
-            {isConfirming ? t('Confirming') : confirmButtonText}
+            {isConfirming ? 'Confirming' : confirmButtonText}
           </Button>
         </Box>
       </StyledApproveConfirmButtonRow>
@@ -113,13 +111,13 @@ const ApproveConfirmButtons: React.FC<ApproveConfirmButtonsProps> = ({
               isLoading={isConfirming}
               endIcon={isConfirming ? spinnerIcon : undefined}
             >
-              {isConfirming ? t('Confirming') : confirmButtonText}
+              {isConfirming ? 'Confirming' : confirmButtonText}
             </Button>
           </Box>
         ) : (
           <Box>
             <Button onClick={onApprove} endIcon={isApproving ? spinnerIcon : undefined} isLoading={isApproving}>
-              {isApproving ? t('Enabling') : t('Enable')}
+              {isApproving ? 'Enabling' : 'Enable'}
             </Button>
           </Box>
         )}

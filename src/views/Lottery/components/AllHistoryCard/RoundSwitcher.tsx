@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { IconButton, ArrowForwardIcon, ArrowBackIcon, Skeleton, Flex, Box, Heading, Input, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 import { getDrawnDate } from '../../helpers'
 
 const StyledInput = styled(Input)`
@@ -53,20 +53,17 @@ const RoundSwitcher: React.FC<RoundSwitcherProps> = ({
   handleInputChange,
   handleArrowButonPress,
 }) => {
-  const { t } = useTranslation()
   const selectedRoundIdAsInt = parseInt(selectedRoundId, 10)
 
   return (
     <Flex alignItems="center" justifyContent="space-between">
       <Flex alignItems="center">
         <StyledHeading color="#44c4e2" mr="18px">
-          {t(`Round #${selectedRoundId}`)}
+          {`Round #${selectedRoundId}`}
         </StyledHeading>
         <Box>
           {selectedLotteryInfo?.endTime ? (
-            <Text fontSize="14px">
-              {t('Drawn')} {getDrawnDate(selectedLotteryInfo.endTime)}
-            </Text>
+            <Text fontSize="14px">Drawn {getDrawnDate(selectedLotteryInfo.endTime)}</Text>
           ) : (
             <Skeleton width="185px" height="21px" />
           )}

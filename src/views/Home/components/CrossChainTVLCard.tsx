@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, CardBody, Heading, Skeleton, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useGetBscStats, useGetFtmStats } from 'hooks/api'
 
 const StyledTotalValueLockedCard = styled(Card)`
@@ -26,14 +25,13 @@ const StyledTotalValueLockedCard = styled(Card)`
 `
 
 const CrossChainTVLCard = () => {
-  const { t } = useTranslation()
   const bscTvlData = useGetBscStats()
   const crossTvl = bscTvlData ? bscTvlData.tvl : 'Available soon!'
   const crossTvlString = crossTvl ? crossTvl.toLocaleString('en-US', { maximumFractionDigits: 0 }) : 'Loading...'
   return (
     <StyledTotalValueLockedCard>
       <CardBody style={{ width: '100%' }}>
-        <Text color="primary">{t('Cross Chain TVL')}</Text>
+        <Text color="primary">Cross Chain TVL</Text>
         <Heading scale="xl">$ {crossTvlString}</Heading>
         <Text color="primary">Across all Farms, Pools, and Vaults</Text>
       </CardBody>

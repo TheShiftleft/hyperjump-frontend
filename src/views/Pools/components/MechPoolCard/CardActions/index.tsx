@@ -3,7 +3,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { Flex, Text, Box } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { PoolCategory } from 'config/constants/types'
 import { Pool } from 'state/types'
 import HarvestActions from './HarvestActions'
@@ -28,7 +27,6 @@ const StyledFlex = styled(Flex)`
 
 const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
   const { sousId, stakingToken, earningToken, harvest, userData, earningTokenPrice, poolCategory } = pool
-  const { t } = useTranslation()
   const earnings = userData?.pendingReward ? new BigNumber(userData.pendingReward) : BIG_ZERO
   const isStaked = stakedBalance.gt(0)
   const isLoading = !userData
@@ -41,7 +39,7 @@ const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
           <>
             <Box display="inline">
               <InlineText color="primary" textTransform="uppercase" bold fontSize="12px">
-                {t('Harvest rewards')}
+                Harvest rewards
               </InlineText>
             </Box>
             <HarvestActions
@@ -55,10 +53,10 @@ const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
         )}
         <Box display="inline">
           <InlineText color="primary" textTransform="uppercase" bold fontSize="12px">
-            {isStaked ? 'JUMP ' : t('Stake')}
+            {isStaked ? 'JUMP ' : 'Stake'}
           </InlineText>
           <InlineText color={isStaked ? 'textSubtle' : 'secondary'} textTransform="uppercase" bold fontSize="12px">
-            {isStaked ? t('Working') : `${stakingToken.symbol}`}
+            {isStaked ? 'Working' : `${stakingToken.symbol}`}
           </InlineText>
         </Box>
         <StakeActions

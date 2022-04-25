@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Box, Flex, Heading, Skeleton } from 'uikit'
 import { LotteryStatus } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
 import { useFetchLottery, useLottery } from 'state/lottery/hooks'
 import useGetNextLotteryEvent from '../hooks/useGetNextLotteryEvent'
 import Countdown from './Countdown'
@@ -49,7 +48,6 @@ const LotteryTicket = styled.img`
 
 const TicketCountdown = () => {
   useFetchLottery()
-  const { t } = useTranslation()
   const {
     currentRound: { status, endTime },
   } = useLottery()
@@ -64,9 +62,9 @@ const TicketCountdown = () => {
       {openBeforeEndtime && (
         <>
           <HeadingContainer>
-            <Heading scale="lg">{t('buy your ')}</Heading>
+            <Heading scale="lg">{'buy your '}</Heading>
             <Highlight>&nbsp;tickets&nbsp;</Highlight>
-            <Heading scale="lg">{t(' now !!!')}</Heading>
+            <Heading scale="lg">{' now !!!'}</Heading>
           </HeadingContainer>
 
           <LotteryTicket src="/images/lottery/lottery_ticket.png" />
@@ -88,14 +86,14 @@ const TicketCountdown = () => {
       {(status === LotteryStatus.CLOSE || openAfterEndtime) && (
         <>
           <HeadingContainer>
-            <Heading scale="lg">{t('Tickets are closed ')}</Heading>
+            <Heading scale="lg">{'Tickets are closed '}</Heading>
           </HeadingContainer>
 
           <LotteryTicket src="/images/lottery/lottery_ticket.png" />
 
           <HeadingContainer>
             <Highlight>Rewards&nbsp;</Highlight>
-            <Heading scale="lg">{t('claimable soon... ')}</Heading>
+            <Heading scale="lg">{'claimable soon... '}</Heading>
           </HeadingContainer>
         </>
       )}
@@ -103,17 +101,17 @@ const TicketCountdown = () => {
       {(status === LotteryStatus.CLAIMABLE || status === LotteryStatus.PENDING) && (
         <>
           <HeadingContainer>
-            <Heading scale="lg">{t('Claim your ')}</Heading>
+            <Heading scale="lg">{'Claim your '}</Heading>
             <Highlight>&nbsp;Rewards&nbsp;</Highlight>
-            <Heading scale="lg">{t('now !!!')}</Heading>
+            <Heading scale="lg">now !!!</Heading>
           </HeadingContainer>
 
           <LotteryTicket src="/images/lottery/lottery_ticket.png" />
 
           <HeadingContainer>
-            <Heading scale="lg">{t('Next')}</Heading>
+            <Heading scale="lg">Next</Heading>
             <Highlight>&nbsp;lottery&nbsp;</Highlight>
-            <Heading scale="lg">{t('announced soon')}</Heading>
+            <Heading scale="lg">announced soon</Heading>
           </HeadingContainer>
         </>
       )}

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { HelpIcon, Skeleton, useTooltip } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import getNetwork from 'utils/getNetwork'
 
 const ReferenceElement = styled.div`
@@ -33,14 +32,15 @@ const Container = styled.div`
 
 const Multiplier: React.FunctionComponent<MultiplierProps> = ({ multiplier }) => {
   const displayMultiplier = multiplier ? multiplier.toLowerCase() : <Skeleton width={30} />
-  const { t } = useTranslation()
+
   const { config } = getNetwork()
   const tooltipContent = (
     <div>
-      {t(`The multiplier represents the amount of ${config.farmingToken.symbol} rewards each farm gets.`)}
+      {`The multiplier represents the amount of ${config.farmingToken.symbol} rewards each farm gets.`}
       <br />
       <br />
-      {t(`For example, if a 1x farm was getting 1 ${config.farmingToken.symbol} per block, a 40x farm would be getting 40 ${config.farmingToken.symbol} per block.`)}
+      For example, if a 1x farm was getting 1 ${config.farmingToken.symbol} per block, a 40x farm would be getting 40 $
+      {config.farmingToken.symbol} per block.
     </div>
   )
   const { targetRef, tooltip, tooltipVisible } = useTooltip(tooltipContent, {

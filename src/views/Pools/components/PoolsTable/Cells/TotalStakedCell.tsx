@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { Flex, Skeleton, Text } from 'uikit'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import Balance from 'components/Balance'
 import { Pool } from 'state/types'
 import { getBalanceNumber } from 'utils/formatBalance'
@@ -16,7 +15,6 @@ const StyledCell = styled(BaseCell)`
 `
 
 const TotalStakedCell: React.FC<TotalStakedCellProps> = ({ pool }) => {
-  const { t } = useTranslation()
   const { stakingToken, totalStaked } = pool
 
   const totalStakedBalance = useMemo(() => {
@@ -27,7 +25,7 @@ const TotalStakedCell: React.FC<TotalStakedCellProps> = ({ pool }) => {
     <StyledCell role="cell">
       <CellContent>
         <Text fontSize="12px" color="textSubtle" textAlign="left">
-          {t('TOTAL STAKED')}
+          TOTAL STAKED
         </Text>
         {totalStakedBalance ? (
           <Flex height="100%" alignItems="center">

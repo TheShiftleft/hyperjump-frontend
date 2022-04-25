@@ -1,7 +1,6 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
 import { Flex, Skeleton, Heading } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import Balance from 'components/Balance'
 import { getBalanceNumber } from 'utils/formatBalance'
@@ -15,14 +14,13 @@ interface BurnDetailProps {
 }
 
 const BurnDetail: React.FC<BurnDetailProps> = ({ farmingTokenAmount }) => {
-  const { t } = useTranslation()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const priceInUsd = farmingTokenAmount.times(farmingTokenPriceUsd)
 
   return (
     <Flex flexDirection="column">
       <Heading scale="lg" bold color="#d10504">
-        {t('Burn')}
+        Burn
       </Heading>
       <>
         {priceInUsd.isNaN() ? (

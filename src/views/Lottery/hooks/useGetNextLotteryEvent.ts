@@ -1,5 +1,5 @@
 import { LotteryStatus } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
+
 import { useEffect, useState } from 'react'
 
 interface LotteryEvent {
@@ -9,7 +9,6 @@ interface LotteryEvent {
 }
 
 const useGetNextLotteryEvent = (endTime: number, status: LotteryStatus): LotteryEvent => {
-  const { t } = useTranslation()
   const vrfRequestTime = 180 // 3 mins
   const secondsBetweenRounds = 300 // 5 mins
   const transactionResolvingBuffer = 30 // Delay countdown by 30s to ensure contract transactions have been calculated and broadcast
@@ -21,14 +20,14 @@ const useGetNextLotteryEvent = (endTime: number, status: LotteryStatus): Lottery
       setNextEvent({
         nextEventTime: endTime + transactionResolvingBuffer,
         preCountdownText: null,
-        postCountdownText: t('until next draw'),
+        postCountdownText: 'until next draw',
       })
     }
     // Current lottery has finished but not yet claimable
     if (status === LotteryStatus.CLOSE) {
       setNextEvent({
         nextEventTime: endTime + transactionResolvingBuffer + vrfRequestTime,
-        preCountdownText: t('Winners announced in'),
+        preCountdownText: 'Winners announced in',
         postCountdownText: null,
       })
     }
@@ -36,11 +35,11 @@ const useGetNextLotteryEvent = (endTime: number, status: LotteryStatus): Lottery
     if (status === LotteryStatus.CLAIMABLE) {
       setNextEvent({
         nextEventTime: endTime + transactionResolvingBuffer + secondsBetweenRounds,
-        preCountdownText: t('Tickets on sale in'),
+        preCountdownText: 'Tickets on sale in',
         postCountdownText: null,
       })
     }
-  }, [status, endTime, t])
+  }, [status, endTime])
 
   return nextEvent
 }

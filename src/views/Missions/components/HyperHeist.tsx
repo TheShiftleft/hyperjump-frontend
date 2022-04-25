@@ -1,7 +1,6 @@
 import React from 'react'
 import { Card, CardBody, Heading, Text, Image } from 'uikit'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 
 const StyledHeist = styled(Card)`
   border-radius: ${({ theme }) => theme.radii.card};
@@ -24,8 +23,6 @@ const HeadingColor = styled.div`
 `
 
 const HyprStats = () => {
-  const { t } = useTranslation()
-
   return (
     <StyledHeist>
       <CardBody>

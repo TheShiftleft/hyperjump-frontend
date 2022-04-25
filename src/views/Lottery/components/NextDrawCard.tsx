@@ -16,7 +16,6 @@ import {
 } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
 import { LotteryStatus } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useLottery } from 'state/lottery/hooks'
 import getNetwork from 'utils/getNetwork'
@@ -65,7 +64,6 @@ const NextDrawWrapper = styled.div`
 `
 
 const NextDrawCard = () => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const { currentLotteryId, isTransitioning, currentRound } = useLottery()
   const { endTime, amountCollectedInFarmingToken, userTickets, status } = currentRound
@@ -84,7 +82,7 @@ const NextDrawCard = () => {
     if (status === LotteryStatus.CLOSE || status === LotteryStatus.CLAIMABLE) {
       return (
         <Heading scale="xl" textAlign={['center', null, null, 'left']}>
-          {t('Pending')}...
+          Pending...
         </Heading>
       )
     }
@@ -133,7 +131,7 @@ const NextDrawCard = () => {
 
   const getNextDrawDateTime = () => {
     if (status === LotteryStatus.OPEN) {
-      return `${t('Draw')}: ${endDate.toLocaleString(undefined, dateTimeOptions)}`
+      return `Draw: ${endDate.toLocaleString(undefined, dateTimeOptions)}`
     }
     return ''
   }
@@ -142,7 +140,7 @@ const NextDrawCard = () => {
     <StyledCard>
       <StyledCardHeader p="16px 24px">
         <Flex>
-          <Heading mr="12px">{t('Next Draw')}</Heading>
+          <Heading mr="12px">Next Draw</Heading>
           <Heading color="#44c4e2">
             {currentLotteryId && `#${getNextDrawId()}`} {Boolean(endTime) && getNextDrawDateTime()}
           </Heading>
@@ -151,7 +149,7 @@ const NextDrawCard = () => {
       <CardBody>
         <Grid>
           <Flex justifyContent={['center', null, null, 'flex-start']}>
-            <Heading>{t('Prize Pot')}</Heading>
+            <Heading>Prize Pot</Heading>
           </Flex>
           <Flex mb="18px">{getPrizeBalances()}</Flex>
         </Grid>
@@ -160,27 +158,13 @@ const NextDrawCard = () => {
             <>
               {account && (
                 <Flex justifyContent={['center', null, null, 'flex-start']}>
-                  <Text display="inline">{t('You have')} </Text>
+                  <Text display="inline">You have </Text>
                   {!userTickets.isLoading ? (
-                    <Balance
-                      value={userTicketCount}
-                      decimals={0}
-                      unit={` ${t('tickets')}`}
-                      display="inline"
-                      bold
-                      mx="4px"
-                    />
+                    <Balance value={userTicketCount} decimals={0} unit="tickets" display="inline" bold mx="4px" />
                   ) : (
-                    <Balance
-                      value={userTicketCount}
-                      decimals={0}
-                      unit={` ${t('tickets')}`}
-                      display="inline"
-                      bold
-                      mx="4px"
-                    />
+                    <Balance value={userTicketCount} decimals={0} unit="tickets" display="inline" bold mx="4px" />
                   )}
-                  <Text display="inline"> {t('this round')}</Text>
+                  <Text display="inline"> this round</Text>
                 </Flex>
               )}
               {!userTickets.isLoading && userTicketCount > 0 && (
@@ -193,7 +177,7 @@ const NextDrawCard = () => {
                   variant="text"
                   scale="sm"
                 >
-                  {t('View your tickets')}
+                  View your tickets
                 </Button>
               )}
             </>

@@ -1,6 +1,5 @@
 import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import { Link, Text, useMatchBreakpoints, Flex } from 'uikit'
 import { Link as ReactLink } from 'react-router-dom'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
@@ -191,7 +190,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   const farm = details
 
   const { isXs, isSm, isMd } = useMatchBreakpoints()
-  const { t } = useTranslation()
+
   const isActive = farm.multiplier !== '0X'
   const { quoteToken, token, startTime, endTime } = farm
   const lpAddress = getAddress(farm.lpAddresses)
@@ -233,20 +232,20 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
               {isActive && (
                 <StakeContainer>
                   <RedirectLink as={ReactLink} to={addLUrl}>
-                    {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
+                    {`Get ${farm.lpSymbol.toUpperCase()}`}
                   </RedirectLink>
                 </StakeContainer>
               )}
-              <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
-              <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal>
+              <StyledLinkExternal href={bsc}>View Contract</StyledLinkExternal>
+              <StyledLinkExternal href={info}>See Pair Info</StyledLinkExternal>
             </Flex>
             <Flex flexDirection="column" flex="1" justifyContent="space-between">
               <Flex flexDirection="column">
-                <TimeTitle>{t('Start time')}</TimeTitle>
+                <TimeTitle>Start time</TimeTitle>
                 <TimeContainer>{startDate}</TimeContainer>
               </Flex>
               <Flex flexDirection="column">
-                <TimeTitle>{t('End time')}</TimeTitle>
+                <TimeTitle>End time</TimeTitle>
                 <TimeContainer>{endDate}</TimeContainer>
               </Flex>
             </Flex>
@@ -255,15 +254,15 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         {(isXs || isSm || isMd) && (
           <ValueContainer>
             <ValueWrapper>
-              <Text>{t('APR')}</Text>
+              <Text>APR</Text>
               <Apr {...apr} />
             </ValueWrapper>
             <ValueWrapper>
-              <Text>{t('Multiplier')}</Text>
+              <Text>Multiplier</Text>
               <Multiplier {...multiplier} />
             </ValueWrapper>
             <ValueWrapper>
-              <Text>{t('Liquidity')}</Text>
+              <Text>Liquidity</Text>
               <Liquidity {...liquidity} />
             </ValueWrapper>
           </ValueContainer>

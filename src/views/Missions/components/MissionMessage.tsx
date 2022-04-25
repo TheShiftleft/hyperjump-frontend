@@ -1,7 +1,6 @@
 import React from 'react'
 import { Card, CardBody, Heading, Text } from 'uikit'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 
 const StyledAlloyStats = styled(Card)`
   background-color: ${({ theme }) => theme.card.background};
@@ -28,13 +27,11 @@ const HeadingColor = styled.div`
 `
 
 const MissionMessage = () => {
-  const { t } = useTranslation()
-
   return (
     <StyledAlloyStats>
       <CardBody>
         <Heading scale="xl" mb="24px">
-          <HeadingColor>{t('HyperHeist')}</HeadingColor>
+          <HeadingColor>HyperHeist</HeadingColor>
           <Text>COMING SOON...</Text>
         </Heading>
       </CardBody>

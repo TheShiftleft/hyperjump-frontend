@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { formatNumber, getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
 import Balance from 'components/Balance'
-import { useTranslation } from 'contexts/Localization'
 import BaseCell, { CellContent } from './BaseCell'
 import CollectModal from '../../PoolCard/Modals/CollectModal'
 
@@ -24,7 +23,6 @@ const StyledCell = styled(BaseCell)`
 `
 
 const EarningsCell: React.FC<EarningsCellProps> = ({ pool, account, userDataLoaded }) => {
-  const { t } = useTranslation()
   const { isXs, isSm } = useMatchBreakpoints()
   const { sousId, earningToken, userData, earningTokenPrice, isAutoVault } = pool
 
@@ -36,7 +34,7 @@ const EarningsCell: React.FC<EarningsCellProps> = ({ pool, account, userDataLoad
   const formattedBalance = formatNumber(earningTokenBalance, 3, 3)
   const earningsDollarValue = formatNumber(earningTokenDollarBalance)
 
-  const labelText = t('%asset% Earned', { asset: earningToken.symbol })
+  const labelText = `${earningToken.symbol} Earned`
 
   const [onPresentCollect] = useModal(
     <CollectModal

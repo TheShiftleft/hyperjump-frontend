@@ -1,5 +1,5 @@
 import { CardHeader, Flex, Image } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 import React from 'react'
 import styled from 'styled-components'
 
@@ -12,18 +12,16 @@ const StyledCardHeader: React.FC<{
   earningTokenSymbol: string
   isStaking?: boolean
 }> = ({ earningTokenSymbol }) => {
-  const { t } = useTranslation()
-
   const getHeadingPrefix = () => {
-    return t('Earn')
+    return 'Earn'
   }
 
   interface StyledTitleProps {
     isFinished?: boolean
   }
-  
+
   const CardTitle = styled.div<StyledTitleProps>`
-    color: ${({ theme }) => theme.colors.primary };
+    color: ${({ theme }) => theme.colors.primary};
     opacity: '1' };
     font-family: Oswald;
     font-weight: 600;
@@ -34,15 +32,11 @@ const StyledCardHeader: React.FC<{
 
   return (
     <Wrapper isFinished={false}>
-      <Flex alignItems="center" >
-        
+      <Flex alignItems="center">
         <Image src="/images/tokens/mech.png" alt={earningTokenSymbol} width={64} height={64} />
         <Flex flexDirection="column">
-          <CardTitle>
-            {`${getHeadingPrefix()} ${earningTokenSymbol}`}
-          </CardTitle>
+          <CardTitle>{`${getHeadingPrefix()} ${earningTokenSymbol}`}</CardTitle>
         </Flex>
-        
       </Flex>
     </Wrapper>
   )

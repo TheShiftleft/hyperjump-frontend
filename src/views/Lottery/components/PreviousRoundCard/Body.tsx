@@ -1,21 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import {
-  CardBody,
-  Heading,
-  Flex,
-  Skeleton,
-  Text,
-  Box,
-  Button,
-  useModal,
-  CardRibbon,
-  useMatchBreakpoints,
-} from 'uikit'
+import { CardBody, Heading, Flex, Skeleton, Text, Box, Button, useModal, CardRibbon, useMatchBreakpoints } from 'uikit'
 import { LotteryRound } from 'state/types'
 import { useGetUserLotteriesGraphData, useLottery } from 'state/lottery/hooks'
 import { LotteryStatus } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
 import WinningNumbers from '../WinningNumbers'
 import ViewTicketsModal from '../ViewTicketsModal'
 
@@ -51,7 +39,6 @@ const PreviousRoundCardBody: React.FC<{ lotteryData: LotteryRound; lotteryId: st
   lotteryData,
   lotteryId,
 }) => {
-  const { t } = useTranslation()
   const {
     currentLotteryId,
     currentRound: { status },
@@ -73,9 +60,9 @@ const PreviousRoundCardBody: React.FC<{ lotteryData: LotteryRound; lotteryId: st
 
   return (
     <StyledCardBody>
-      {isLatestRound && <StyedCardRibbon text={t('Latest')} />}
+      {isLatestRound && <StyedCardRibbon text="Latest" />}
       <Flex flexDirection="column" justifyContent="center" alignItems="center">
-        <Heading mb="12px">{t('Winning Numbers')}</Heading>
+        <Heading mb="12px">Winning Numbers</Heading>
         <Flex maxWidth={['370px', null, null, '100%']} justifyContent={['center', null, null, 'flex-start']}>
           {lotteryData ? (
             <WinningNumbers
@@ -96,18 +83,15 @@ const PreviousRoundCardBody: React.FC<{ lotteryData: LotteryRound; lotteryId: st
         {userDataForRound && (
           <>
             <Box display={['none', null, null, 'flex']} mt="10px">
-              <Heading>{t('Your tickets')}</Heading>
+              <Heading>Your tickets</Heading>
             </Box>
-            <Flex
-              flexDirection="column"
-              alignItems="center"
-            >
+            <Flex flexDirection="column" alignItems="center">
               <Box mt={['32px', null, null, 0]}>
-                <Text display="inline">{t('You had')} </Text>
+                <Text display="inline">You had </Text>
                 <Text display="inline" bold>
-                  {userDataForRound.totalTickets} {t('tickets')}{' '}
+                  {userDataForRound.totalTickets} {'tickets'}{' '}
                 </Text>
-                <Text display="inline">{t('this round')}</Text>
+                <Text display="inline">this round</Text>
               </Box>
               <Button
                 onClick={onPresentViewTicketsModal}
@@ -117,7 +101,7 @@ const PreviousRoundCardBody: React.FC<{ lotteryData: LotteryRound; lotteryId: st
                 variant="text"
                 scale="sm"
               >
-                {t('View your tickets')}
+                View your tickets
               </Button>
             </Flex>
           </>

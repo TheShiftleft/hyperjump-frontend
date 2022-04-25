@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import { Flex, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { Ticket, UpdateTicketAction } from './useTicketsReducer'
 
 const InputsContainer = styled.div<{ focused: boolean; isDuplicate: boolean }>`
@@ -82,8 +81,6 @@ const TicketContaier: React.FC<{
   const digit4 = useRef<HTMLInputElement>(null)
   // const digit5 = useRef<HTMLInputElement>(null)
   // const digit6 = useRef<HTMLInputElement>(null)
-
-  const { t } = useTranslation()
 
   const digitRefs = [digit1, digit2, digit3, digit4]
 
@@ -201,7 +198,7 @@ const TicketContaier: React.FC<{
           {getIdLabel(ticket.id)}
         </Text>
         <Text fontSize="12px" color="warning">
-          {duplicateWith.length !== 0 && t('Duplicate')}
+          {duplicateWith.length !== 0 && 'Duplicate'}
         </Text>
       </Flex>
       <InputsContainer

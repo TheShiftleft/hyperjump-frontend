@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Heading, ModalContainer, ModalHeader, ModalTitle, ModalBody, ModalCloseButton } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
-import { useTranslation } from 'contexts/Localization'
 import { delay } from 'lodash'
 import confetti from 'canvas-confetti'
 import { LotteryTicketClaimData } from 'config/constants/types'
@@ -54,7 +53,6 @@ interface ClaimPrizesModalModalProps {
 }
 
 const ClaimPrizesModal: React.FC<ClaimPrizesModalModalProps> = ({ onDismiss, roundsToClaim }) => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const { currentLotteryId } = useLottery()
   const dispatch = useAppDispatch()
@@ -70,7 +68,7 @@ const ClaimPrizesModal: React.FC<ClaimPrizesModalModalProps> = ({ onDismiss, rou
       </BunnyDecoration>
       <StyledModalHeader>
         <ModalTitle>
-          <Heading>{t('Collect Winnings')}</Heading>
+          <Heading>Collect Winnings</Heading>
         </ModalTitle>
         <ModalCloseButton onDismiss={onDismiss} />
       </StyledModalHeader>

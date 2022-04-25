@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Timeline } from 'react-twitter-widgets'
 
 import { Card, CardBody, Heading, Flex } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 
 const StyledCard = styled(Card)`
   flex: 4;
@@ -34,15 +33,13 @@ const TwitterLogo = styled.img`
 `
 
 const TwitterFeedCard = () => {
-  const { t } = useTranslation()
-
   return (
     <StyledCard>
       <TwitterBody>
         <Flex justifyContent="space-between" alignItems="flex-end" mb="20px" width="100%">
           <div>
             <Heading scale="xl">
-              <HeadingColor>{t('TWITTER FEED')}</HeadingColor>
+              <HeadingColor>TWITTER FEED</HeadingColor>
             </Heading>
             <Heading>NEWS FROM TWITTERVERSE</Heading>
           </div>

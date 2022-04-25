@@ -2,8 +2,6 @@ import React from 'react'
 import { Card, CardBody, Heading, Image, Text } from 'uikit'
 import styled from 'styled-components'
 
-import { useTranslation } from 'contexts/Localization'
-
 const StyledAlloyStats = styled(Card)`
   background-color: ${({ theme }) => theme.card.background};
   border-radius: ${({ theme }) => theme.radii.card};
@@ -27,13 +25,11 @@ const StyledTVL = styled.div`
   padding: 16px;
 `
 const Message = () => {
-  const { t } = useTranslation()
-
   return (
     <StyledAlloyStats>
       <CardBody>
         <Heading scale="xl" mb="24px">
-          <HeadingColor>{t('WELCOME TO HYPERJUMP!')}</HeadingColor>
+          <HeadingColor>WELCOME TO HYPERJUMP!</HeadingColor>
         </Heading>
         <StyledTVL>
           <Text>Thanks for coming to HyperJump!</Text>
@@ -41,7 +37,7 @@ const Message = () => {
           <Text> Enjoy your stay and please be careful as Thargoids are rumored to be near!</Text>
           <br />
           <Heading scale="xl">ANGRY MECH</Heading>
-          <Text color="textSubtle">{t('STATION MECH')}</Text>
+          <Text color="textSubtle">STATION MECH</Text>
         </StyledTVL>
       </CardBody>
     </StyledAlloyStats>

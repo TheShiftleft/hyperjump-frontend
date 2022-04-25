@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { Flex, Text, Skeleton } from 'uikit'
 import { Farm } from 'state/types'
 import { provider as ProviderType } from 'web3-core'
-import { useTranslation } from 'contexts/Localization'
 import { BASE_ADD_LIQUIDITY_URL, BASE_INFO_PAIR_URL } from 'config'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import getNetwork from 'utils/getNetwork'
@@ -58,7 +57,6 @@ const Container = styled.div`
 `
 
 const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, farmingTokenPriceUsd, account }) => {
-  const { t } = useTranslation()
   const { config } = getNetwork()
 
   // We assume the token name is coin pair + lp e.g. ALLOY-BNB LP, LINK-BNB LP,
@@ -97,7 +95,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, farmingTokenPriceUsd
         <Container>
           <Flex justifyContent="space-between">
             <Text fontSize="12px" color="primary" bold>
-              {t('Deposit')}:
+              Deposit:
             </Text>
             <Text fontSize="12px" bold>
               {farm.lpSymbol.toUpperCase()}
@@ -105,7 +103,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, farmingTokenPriceUsd
           </Flex>
           <Flex justifyContent="space-between">
             <Text fontSize="12px" color="primary" bold>
-              {t('Earns')}:
+              Earns:
             </Text>
             <Text fontSize="12px" bold>
               {earnLabel}
@@ -113,7 +111,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, farmingTokenPriceUsd
           </Flex>
           <Flex justifyContent="space-between">
             <Text fontSize="12px" color="primary" bold>
-              {t('Multiplier')}:
+              Multiplier:
             </Text>
             <Text fontSize="12px" bold>
               {farm.multiplier}
@@ -122,7 +120,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, farmingTokenPriceUsd
           {!removed && (
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="12px" color="primary" bold>
-                {t('APR')}:
+                APR:
               </Text>
               <Text fontSize="12px" style={{ display: 'flex', alignItems: 'center' }} bold>
                 {farm.apr ? (
@@ -157,9 +155,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, farmingTokenPriceUsd
           </Flex>
         </Flex>
         <Container style={{ marginTop: '8px' }}>
-          <StyledInternalLink to={addLiquidityUrl}>
-            {t('Get %symbol%', { symbol: farm.lpSymbol.toUpperCase() })}
-          </StyledInternalLink>
+          <StyledInternalLink to={addLiquidityUrl}>{`Get ${farm.lpSymbol.toUpperCase()}`}</StyledInternalLink>
         </Container>
       </Flex>
     </FCard>

@@ -1,6 +1,5 @@
 import { Image, Text, useMatchBreakpoints } from 'uikit'
 import BigNumber from 'bignumber.js'
-import { useTranslation } from 'contexts/Localization'
 import React from 'react'
 import { Pool } from 'state/types'
 import styled from 'styled-components'
@@ -23,7 +22,6 @@ const StyledCell = styled(BaseCell)`
 `
 
 const NameCell: React.FC<NameCellProps> = ({ pool }) => {
-  const { t } = useTranslation()
   const { isXs, isSm } = useMatchBreakpoints()
   const { sousId, stakingToken, earningToken, userData, isFinished } = pool
   const { config } = getNetwork()
@@ -38,8 +36,8 @@ const NameCell: React.FC<NameCellProps> = ({ pool }) => {
 
   const showStakedTag = isStaked
 
-  const title = `${earningTokenSymbol}${t(' Pool')} `
-  let subtitle = `${t('Stake')} ${stakingTokenSymbol}s`
+  const title = `${earningTokenSymbol}${' Pool'} `
+  let subtitle = `${'Stake'} ${stakingTokenSymbol}s`
   const showSubtitle = sousId !== 0 || (sousId === 0 && !isXs && !isSm)
 
   // FIXME DJ TJ use translation
@@ -47,7 +45,7 @@ const NameCell: React.FC<NameCellProps> = ({ pool }) => {
     const chain_id = config.id
     const jump_img = config.farmingToken.address[chain_id]
     iconFile = `${jump_img}.png`
-    subtitle = `${t('Stake')} ${config.farmingToken.symbol}s`
+    subtitle = `${'Stake'} ${config.farmingToken.symbol}s`
   }
 
   return (
@@ -56,7 +54,7 @@ const NameCell: React.FC<NameCellProps> = ({ pool }) => {
       <CellContent>
         {showStakedTag && (
           <Text fontSize="12px" bold color={isFinished ? 'failure' : 'primary'} textTransform="uppercase">
-            {t('STAKED')}
+            STAKED
           </Text>
         )}
         <Text bold={!isXs && !isSm} small={isXs || isSm}>

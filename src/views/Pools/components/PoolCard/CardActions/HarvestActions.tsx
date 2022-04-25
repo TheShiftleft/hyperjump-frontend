@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Flex, Text, Button, Heading, Skeleton } from 'uikit'
 import BigNumber from 'bignumber.js'
 import { Token } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
 import { getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
 import Balance from 'components/Balance'
 import useToast from 'hooks/useToast'
@@ -28,7 +27,6 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
   isPending = false,
   isLoading = false,
 }) => {
-  const { t } = useTranslation()
   const { onReward } = useSousHarvest(sousId, false)
   const { toastSuccess, toastError } = useToast()
 
@@ -44,13 +42,10 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
     setIsPending(true)
     try {
       await onStake(fullBalance, earningToken.decimals)
-      toastSuccess(
-        `${t('Compounded')}!`,
-        t('Your %symbol% earnings have been assembled into !', { symbol: earningToken.symbol }),
-      )
+      toastSuccess('Compounded!', `Your ${earningToken.symbol} earnings have been assembled into !`)
       setIsPending(false)
     } catch (e) {
-      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+      toastError('Canceled', 'Please try again and confirm the transaction.')
       setIsPending(false)
     }
   }
@@ -59,13 +54,10 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
     setIsPending(true)
     try {
       await onReward()
-      toastSuccess(
-        `${t('Harvested')}!`,
-        t('Your %symbol% earnings have been sent to your wallet!', { symbol: earningToken.symbol }),
-      )
+      toastSuccess('Harvested!', `Your ${earningToken.symbol} earnings have been sent to your wallet!`)
       setIsPending(false)
     } catch (e) {
-      toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+      toastError('Canceled', 'Please try again and confirm the transaction.')
       setIsPending(false)
     }
   }
@@ -105,10 +97,10 @@ const HarvestActions: React.FC<HarvestActionsProps> = ({
         </Flex>
         <Flex flexDirection="column">
           <Button disabled={!hasEarnings} className="col-staked-btn" isLoading={isPending} onClick={handleCollect}>
-            {t('Collect')}
+            Collect
           </Button>
           <Button className="col-staked-btn" disabled={!hasEarnings} isLoading={isPending} onClick={handleCompound}>
-            {t('Compound')}
+            Compound
           </Button>
         </Flex>
       </Flex>

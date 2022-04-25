@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import getNetwork from 'utils/getNetwork'
 import { BASE_FTM_SCAN_URL, BASE_BSC_SCAN_URL } from 'config'
 import useWeb3 from 'hooks/useWeb3'
-import { useTranslation } from 'contexts/Localization'
+
 import useToast from 'hooks/useToast'
 
 interface OrderRowProps {
@@ -78,7 +78,6 @@ const TokenContainer = styled.div`
 `
 
 export default function OrderRow({ order, account, chainId }: OrderRowProps) {
-  const { t } = useTranslation()
   const { toastSuccess, toastError } = useToast()
   const { config } = getNetwork()
   const web3 = useWeb3()
@@ -118,7 +117,7 @@ export default function OrderRow({ order, account, chainId }: OrderRowProps) {
             web3.eth.getTransactionReceipt(hash, (err, rec) => {
               if (rec) {
                 clearInterval(interval)
-                toastSuccess(`${t('Limit Order')}!`, t('Your Limit Order has been cancelled !', {}))
+                toastSuccess('Limit Order!', 'Your Limit Order has been cancelled !')
               }
             })
           }, 2000)

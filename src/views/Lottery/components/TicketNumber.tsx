@@ -1,7 +1,7 @@
 import React from 'react'
 import { LotteryTicket } from 'config/constants/types'
 import { Flex, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 import styled from 'styled-components'
 import _uniqueId from 'lodash/uniqueId'
 import { parseRetreivedNumber } from '../helpers'
@@ -32,7 +32,6 @@ interface TicketNumberProps extends LotteryTicket {
 }
 
 const TicketNumber: React.FC<TicketNumberProps> = ({ localId, id, number, rewardBracket }) => {
-  const { t } = useTranslation()
   const reversedNumber = parseRetreivedNumber(number)
   const numberAsArray = reversedNumber.split('')
   const numberMatches = rewardBracket + 1
@@ -43,11 +42,7 @@ const TicketNumber: React.FC<TicketNumberProps> = ({ localId, id, number, reward
         <Text fontSize="12px" color="textSubtle">
           #{localId || id}
         </Text>
-        {rewardBracket >= 0 && (
-          <Text fontSize="12px">
-            {t('Matched first')} {numberMatches}
-          </Text>
-        )}
+        {rewardBracket >= 0 && <Text fontSize="12px">Matched first {numberMatches}</Text>}
       </Flex>
       <StyledNumberWrapper>
         {rewardBracket >= 0 && <RewardHighlighter numberMatches={numberMatches} />}

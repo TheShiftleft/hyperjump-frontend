@@ -1,7 +1,6 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
 import { Flex, Skeleton, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import Balance from 'components/Balance'
 import { getBalanceNumber, getFullDisplayBalance } from 'utils/formatBalance'
@@ -25,19 +24,18 @@ const RewardBracketDetail: React.FC<RewardBracketDetailProps> = ({
   isHistoricRound,
   isBurn,
 }) => {
-  const { t } = useTranslation()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const priceInUsd = farmingTokenAmount.times(farmingTokenPriceUsd)
 
   const getRewardText = () => {
     const numberMatch = rewardBracket + 1
     if (isBurn) {
-      return t('Burn')
+      return 'Burn'
     }
     if (rewardBracket === 3) {
-      return t('Match all %numberMatch%', { numberMatch })
+      return `Match all ${numberMatch}`
     }
-    return t('Match first %numberMatch%', { numberMatch })
+    return `Match first ${numberMatch}`
   }
 
   return (
@@ -65,13 +63,10 @@ const RewardBracketDetail: React.FC<RewardBracketDetailProps> = ({
           <>
             {numberWinners !== '0' && (
               <Text fontSize="12px">
-                {getFullDisplayBalance(farmingTokenAmount.div(parseInt(numberWinners, 10)), 18, 2)} {rewardToken}{' '}
-                {t('each')}
+                {getFullDisplayBalance(farmingTokenAmount.div(parseInt(numberWinners, 10)), 18, 2)} {rewardToken} each
               </Text>
             )}
-            <Text fontSize="12px">
-              {numberWinners} {t('Winners')}
-            </Text>
+            <Text fontSize="12px">{numberWinners} Winners</Text>
           </>
         )}
       </>

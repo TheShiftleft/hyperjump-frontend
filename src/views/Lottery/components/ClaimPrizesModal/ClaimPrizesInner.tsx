@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Flex, Button, Text, AutoRenewIcon, Won } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { LotteryTicket, LotteryTicketClaimData } from 'config/constants/types'
 import getNetwork from 'utils/getNetwork'
 import { getBalanceAmount } from 'utils/formatBalance'
@@ -17,7 +16,6 @@ import { useLotteryContract } from 'hooks/useContract'
 const { config } = getNetwork()
 const rewardToken = config.farmingToken.symbol
 
-
 interface ClaimInnerProps {
   roundsToClaim: LotteryTicketClaimData[]
   onSuccess?: () => void
@@ -25,7 +23,6 @@ interface ClaimInnerProps {
 
 const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToClaim }) => {
   const { account } = useWeb3React()
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { maxNumberTicketsPerBuyOrClaim, currentLotteryId } = useLottery()
   const { toastSuccess, toastError } = useToast()
@@ -93,15 +90,15 @@ const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToCla
       const receipt = await tx.wait()
       if (receipt.status) {
         toastSuccess(
-          t('Prizes Collected!'),
-          t('Your %rewardtoken% prizes for round %lotteryId% have been sent to your wallet', { lotteryId, rewardToken }),
+          'Prizes Collected!',
+          `Your ${rewardToken} prizes for round ${lotteryId} have been sent to your wallet`,
         )
         setPendingTx(false)
         handleProgressToNextClaim()
       }
     } catch (error) {
       console.error(error)
-      toastError(t('Error'), t('%error% - Please try again.', { error: error.message }))
+      toastError('Error', `${error.message} - Please try again.`)
       setPendingTx(false)
     }
   }
@@ -131,22 +128,16 @@ const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToCla
           // More transactions are to be done within the batch. Issue toast to give user feedback.
           if (receipts.length !== transactionsToFire) {
             toastSuccess(
-              t('Prizes Collected!'),
-              t(
-                'Claim %claimNum% of %claimTotal% for round %lotteryId% was successful. Please confirm the next transation',
-                {
-                  claimNum: receipts.length,
-                  claimTotal: transactionsToFire,
-                  lotteryId,
-                },
-              ),
+              'Prizes Collected!',
+
+              `Claim ${receipts.length} of ${transactionsToFire} for round ${lotteryId} was successful. Please confirm the next transation`,
             )
           }
         }
       } catch (error) {
         console.error(error)
         setPendingTx(false)
-        toastError(t('Error'), t('%error% - Please try again.', { error: error.message }))
+        toastError('Error', `${error.message} - Please try again.`)
         break
       }
     }
@@ -155,9 +146,9 @@ const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToCla
     if (receipts.length === transactionsToFire) {
       setPendingTx(false)
       toastSuccess(
-        t('Prizes Collected!'),
-        t('Your %rewardtoken% prizes for round %lotteryId% have been sent to your wallet', { lotteryId, rewardToken }),
-        )
+        'Prizes Collected!',
+        `Your ${rewardToken} prizes for round ${lotteryId} have been sent to your wallet`,
+      )
       handleProgressToNextClaim()
     }
   }
@@ -166,7 +157,7 @@ const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToCla
     <>
       <Flex flexDirection="column">
         <Text mb="4px" textAlign={['center', null, 'left']}>
-          {t('You won')}
+          You won
         </Text>
         <Flex
           alignItems={['flex-start', null, 'center']}
@@ -197,7 +188,7 @@ const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToCla
 
       <Flex alignItems="center" justifyContent="center">
         <Text mt="8px" fontSize="12px" color="textSubtle">
-          {t('Round')} #{activeClaimData.roundId}
+          Round #{activeClaimData.roundId}
         </Text>
       </Flex>
       <Flex alignItems="center" justifyContent="center">
@@ -208,7 +199,7 @@ const ClaimInnerContainer: React.FC<ClaimInnerProps> = ({ onSuccess, roundsToCla
           width="100%"
           onClick={() => (shouldBatchRequest ? handleBatchClaim() : handleClaim())}
         >
-          {pendingTx ? t('Claiming') : t('Claim')} {pendingBatchClaims > 1 ? `(${pendingBatchClaims})` : ''}
+          {pendingTx ? 'Claiming' : 'Claim'} {pendingBatchClaims > 1 ? `(${pendingBatchClaims})` : ''}
         </Button>
       </Flex>
     </>

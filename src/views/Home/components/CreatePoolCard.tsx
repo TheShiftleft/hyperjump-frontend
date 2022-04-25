@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Heading, Card, CardBody, Button, Flex, Link } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 
 const CreatePoolCard = () => {
-  const { t } = useTranslation()
+ 
 
   return (
     <StyledFarmStakingCard>

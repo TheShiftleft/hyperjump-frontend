@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex, Skeleton, Heading, Box, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 import { LotteryRound } from 'state/types'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useGetLotteryGraphDataById } from 'state/lottery/hooks'
@@ -23,7 +23,7 @@ const PreviousRoundCardFooter: React.FC<{ lotteryData: LotteryRound; lotteryId: 
   lotteryId,
 }) => {
   // console.log('EXPANDED PROPS', lotteryData, lotteryId)
-  const { t } = useTranslation()
+
   const { amountCollectedInFarmingToken } = lotteryData
   const lotteryGraphData = useGetLotteryGraphDataById(lotteryId)
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()

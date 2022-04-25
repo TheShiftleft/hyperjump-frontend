@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex, Box, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { LotteryStatus } from 'config/constants/types'
 import { useLottery } from 'state/lottery/hooks'
 import useTheme from 'hooks/useTheme'
@@ -18,7 +17,6 @@ const ScrollBox = styled(Box)`
 `
 
 const CurrentRoundTicketsInner = () => {
-  const { t } = useTranslation()
   const { theme } = useTheme()
   const {
     isTransitioning,
@@ -30,7 +28,7 @@ const CurrentRoundTicketsInner = () => {
     <>
       <Flex flexDirection="column">
         <Text bold textTransform="uppercase" color="primary" fontSize="12px" mb="16px">
-          {t('Your tickets')}
+          Your tickets
         </Text>
         <ScrollBox>
           {userTickets.tickets.map((ticket, index) => {

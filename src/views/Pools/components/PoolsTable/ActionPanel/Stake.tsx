@@ -6,7 +6,6 @@ import UnlockButton from 'components/UnlockButton'
 import { useWeb3React } from '@web3-react/core'
 import { Pool } from 'state/types'
 import Balance from 'components/Balance'
-import { useTranslation } from 'contexts/Localization'
 import { useSousApprove } from 'hooks/useApprove'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { BIG_ZERO } from 'utils/bigNumber'
@@ -29,7 +28,6 @@ interface StackedActionProps {
 const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoaded }) => {
   const { sousId, stakingToken, earningToken, stakingLimit, isFinished, userData, stakingTokenPrice, isAutoVault } =
     pool
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const { config } = getNetwork()
   const stakingTokenContract = useERC20(stakingToken.address ? getAddress(stakingToken.address) : '')
@@ -80,7 +78,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
   }
 
   const { targetRef, tooltip, tooltipVisible } = useTooltip(
-    t("You've already staked the maximum amount you can stake in this pool!"),
+    "You've already staked the maximum amount you can stake in this pool!",
     { placement: 'bottom' },
   )
 
@@ -91,7 +89,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
       <ActionContainer>
         <ActionTitles>
           <Text fontSize="12px" bold color="textSubtle" as="span" textTransform="uppercase">
-            {t('Start staking')}
+            Start staking
           </Text>
         </ActionTitles>
         <ActionContent>
@@ -106,7 +104,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
       <ActionContainer>
         <ActionTitles>
           <Text fontSize="12px" bold color="textSubtle" as="span" textTransform="uppercase">
-            {t('Start staking')}
+            Start staking
           </Text>
         </ActionTitles>
         <ActionContent>
@@ -121,12 +119,12 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
       <ActionContainer>
         <ActionTitles>
           <Text fontSize="12px" bold color="textSubtle" as="span" textTransform="uppercase">
-            {t('Enable pool')}
+            Enable pool
           </Text>
         </ActionTitles>
         <ActionContent>
           <Button width="100%" disabled={requestedApproval} onClick={handleApprove} variant="secondary">
-            {t('Enable')}
+            Enable
           </Button>
         </ActionContent>
       </ActionContainer>
@@ -142,7 +140,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
             {config.farmingToken.symbol}
           </Text>
           <Text fontSize="24px" bold color="textSubtle" as="span" textTransform="uppercase">
-            {t('Staked')}
+            Staked
           </Text>
         </ActionTitles>
         <ActionContent>
@@ -194,7 +192,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
     <ActionContainer>
       <ActionTitles>
         <Text fontSize="12px" bold color="textSubtle" as="span" textTransform="uppercase">
-          {t('Stake')}{' '}
+          Stake
         </Text>
         <Text fontSize="12px" bold color="textSubtle" as="span" textTransform="uppercase">
           {stakingToken.symbol}
@@ -207,7 +205,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({ pool, userDataLoa
           variant="secondary"
           disabled={isFinished}
         >
-          {t('Stake')}
+          Stake
         </Button>
       </ActionContent>
     </ActionContainer>

@@ -2,7 +2,7 @@ import { Currency, Token } from '@hyperjump-defi/sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Text, CloseIcon } from 'uikit'
 import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
+
 import { FixedSizeList } from 'react-window'
 import styled, { ThemeContext } from 'styled-components'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -52,7 +52,7 @@ export function NetworkSearch({
   isOpen,
   onChangeList,
 }: NetworkSearchProps) {
-  const { t } = useTranslation()
+ 
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
   const { config } = getNetwork()
