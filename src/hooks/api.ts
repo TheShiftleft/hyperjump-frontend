@@ -3,6 +3,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useEffect, useMemo, useState } from 'react'
 import getNetwork from 'utils/getNetwork'
 import { ApprovedTransaction } from 'views/Tools/Unrekt'
+import rpcs from 'config/constants/extraRpcs.json'
 import useWeb3 from './useWeb3'
 
 /* eslint-disable camelcase */
@@ -194,5 +195,30 @@ export const useApprovedTransaction = () => {
       isMounted = false
     }
   })
+  return data
+}
+
+export const useChains = () => {
+  const [data, setData] = useState()
+  useMemo(() => {
+    let isMounted = true
+    const fetchData = async () => {
+      const chains = await fetch('https://chainid.network/chains.json');
+      const responseData = await chains.json()
+      const filtered = responseData.filter((chain) => {
+        return (Object.keys(rpcs).includes(chain.chainId.toString()))
+      })
+      if(isMounted){
+        setData(filtered)
+      }
+    }
+
+    fetchData()
+
+    return () => {
+      isMounted = false
+    }
+  },[])
+
   return data
 }
