@@ -4,6 +4,7 @@ import { baseColors } from 'uikit/theme/colors'
 import { Flex, Heading } from 'uikit'
 import Page from 'components/layout/Page'
 import OnramperWidget from '@hyperjump-defi/onramper-widget'
+import Iframe from 'react-iframe'
 
 const OnRamper: React.FC = () => {
   const wallets = {
@@ -13,35 +14,54 @@ const OnRamper: React.FC = () => {
   return (
     <Page>
       <Container>
-        <div
-          style={{
-            width: '440px',
-            height: '595px',
-          }}
-        >
-          <OnramperWidget
-            API_KEY={process.env.REACT_APP_ONRAMP_API_KEY}
-            color={baseColors.primary}
-            fontFamily="Babas Neue"
-            defaultCrypto="BNB_BEP20"
-            defaultFiat="USD"
+        <RampBox>
+          <OnRampIframe
+            title="onRamp"
+            url="https://widget.mtpelerin.com/?lang=en&type=web&primary=%23152B4E&ssc=BNB&sdc=USD&tab=buy&bsc=USD&bdc=BNB"
           />
-        </div>
+        </RampBox>
       </Container>
     </Page>
+
+    // <Page>
+    //   <Container>
+    //     <div
+    //       style={{
+    //         width: '440px',
+    //         height: '595px',
+    //       }}
+    //     >
+    //       <OnramperWidget
+    //         API_KEY={process.env.REACT_APP_ONRAMP_API_KEY}
+    //         color={baseColors.primary}
+    //         fontFamily="Babas Neue"
+    //         defaultCrypto="BNB_BEP20"
+    //         defaultFiat="USD"
+    //       />
+    //     </div>
+    //   </Container>
+    // </Page>
   )
 }
 
 export default OnRamper
 
 const Container = styled(Flex)`
-  grid-gap: 16px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-
+  // grid-gap: 16px;
+  // justify-content: space-between;
+  // flex-wrap: wrap;
   ${({ theme }) => theme.mediaQueries.xs} {
     justify-content: center;
   }
+`
+
+const OnRampIframe = styled(Iframe)`
+  width: 600px;
+  height: 600px;
+`
+
+const RampBox = styled.div`
+  background-color: #ffffff;
 `
 
 const EarnFlex = styled(Flex)`
