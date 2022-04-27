@@ -32,7 +32,7 @@ const MtPelerinWidget: React.FC<WidgetProps> = ({
     <Page>
       <Container>
         <RampBox>
-          <OnRampIframe title="onRampWidget" url={rampUrl} scrolling="no" />
+          <OnRampIframe title="onRampWidget" url={rampUrl} />
         </RampBox>
       </Container>
     </Page>
@@ -68,6 +68,6 @@ const RampBox = styled.div`
   }
   ${({ theme }) => theme.mediaQueries.lg} {
     width: 600px;
-    height: 600px;
+    height: 640px;
   }
 `
