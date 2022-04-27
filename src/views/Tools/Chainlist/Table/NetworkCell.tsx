@@ -3,9 +3,10 @@ import styled from "styled-components";
 import { Text } from 'uikit';
 import { Currency } from '@hyperjump-defi/sdk';
 import { NetworkIcon } from 'components/Tools';
+import { Chain } from '.';
 
 interface NetworkCellProps {
-  network: Currency
+  chain: Chain
   label: string
   alt: string
 }
@@ -25,10 +26,10 @@ const NetworkLabel = styled(Text)`
   }
 `
 
-const NetworkCell = ({network, label, alt}: NetworkCellProps) => {
+const NetworkCell = ({chain, label, alt}: NetworkCellProps) => {
   return (
     <NetworkCellContainer>
-      <NetworkIcon symbol={network.symbol} alt={alt}/>
+      <NetworkIcon chain={chain} size='32px' alt={alt}/>
       <NetworkLabel>{label}</NetworkLabel>
     </NetworkCellContainer>
   )

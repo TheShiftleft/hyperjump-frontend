@@ -1,4 +1,5 @@
-import React from 'react'
+import useRPCData, { RPCData } from 'hooks/useRPCData';
+import React, { useMemo } from 'react'
 import styled from "styled-components";
 
 const TableContainer = styled.table`
@@ -23,19 +24,79 @@ const RpcTableTd = styled.td<{center?: boolean}>`
   ${({center}) => center ? 'text-align: center' : ''}
 `
 
-const RpcRow = ({rpc} : {rpc: string}) => {
+const Trust = styled.div<{color?: string}>`
+  width: 15px;
+  height: 15px;
+  border-radius: 100px;
+  background-color: ${({color}) => color};
+  margin: auto;
+`
 
+const RpcRow = ({rpcs} :  {rpcs: RPCData}) => {
   return (
     <RpcTableRow>
-      <RpcTableTd>{rpc}</RpcTableTd>
-      <RpcTableTd center>14660776</RpcTableTd>
-      <RpcTableTd center>0.165s</RpcTableTd>
-      <RpcTableTd center>score</RpcTableTd>
+      <RpcTableTd>{rpcs.isLoading ? 'Loading...' : rpcs.data.url}</RpcTableTd>
+      <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : rpcs.data.height}</RpcTableTd>
+      <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : rpcs.data.latency}</RpcTableTd>
+      <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : <Trust color={rpcs.data.trust}/>}</RpcTableTd>
     </RpcTableRow>
   )
 }
 
 const RpcTable = ({rpcs, alt}: {rpcs: string[], alt: string}) => {
+  const rpcData = useRPCData(rpcs)
+  const rpcList = useMemo(() => {
+    const sortedData = rpcData?.sort((a: RPCData, b: RPCData) => {
+      if (a.isLoading)  return 1;
+
+      const h1 = a?.data?.height;
+      const h2 = b?.data?.height;
+      const l1 = a?.data?.latency;
+      const l2 = b?.data?.latency;
+
+      if (!h2) {
+        return -1;
+      }
+
+      if (h2 - h1 > 0) {
+        return 1;
+      }
+      if (h2 - h1 < 0) {
+        return -1;
+      }
+      if (h1 === h2) {
+        if (l1 - l2 < 0) {
+          return -1;
+        }
+        return 1;
+      }
+      return 1
+    })
+
+    const topRpc:RPCData = sortedData[0] ?? {};
+
+    return sortedData.map(({ data, ...rest }) => {
+      const { height = null, latency = null, url = '' } = data || {};
+
+      let trust = 'transparent';
+      let disableConnect = false;
+
+      if (!height || !latency || topRpc.data.height - height > 3 || topRpc.data.latency - latency > 5000) {
+        trust = 'red';
+      } else if (topRpc.data.height - height < 2 && topRpc.data.latency - latency > -600) {
+        trust = 'green';
+      } else {
+        trust = 'orange';
+      }
+
+      if (url.includes('wss://') || url.includes('API_KEY')) disableConnect = true;
+
+      const lat = latency ? `${(latency / 1000).toFixed(3)}s`: null;
+
+      return { ...rest, data: { ...data, height, latency: lat, trust, disableConnect } };
+    });
+  }, [rpcData]);
+
   const getKey = (index) => {
     return `${alt}-${index}`
   }
@@ -48,8 +109,8 @@ const RpcTable = ({rpcs, alt}: {rpcs: string[], alt: string}) => {
           <RpcTableTh>Latency</RpcTableTh>
           <RpcTableTh>Score</RpcTableTh>
         </RpcTableRow>
-        {rpcs && 
-          rpcs.map((rpc, index) => <RpcRow key={getKey(index)} rpc={rpc} />)
+        {rpcList && 
+          rpcList.map((rpc, index) => <RpcRow key={getKey(index)} rpcs={rpc} />)
         }
       </RpcTableTbody>
     </TableContainer>

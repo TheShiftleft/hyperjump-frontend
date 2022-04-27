@@ -49,7 +49,7 @@ const TableRow = ({chainData, login, logout, account}: TableRowProps) => {
   return (
     <StyledRowContainer >
       <InfoContainer>
-        <NetworkCell network={nativeCurrency} label={name} alt={shortName}/>
+        <NetworkCell chain={chainData} label={name} alt={shortName}/>
       </InfoContainer>
       <InfoContainer>
         <CellLayout label='Chain ID'>

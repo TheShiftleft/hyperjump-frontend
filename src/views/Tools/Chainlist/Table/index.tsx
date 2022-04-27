@@ -9,6 +9,7 @@ import TableRow from './TableRow';
 export interface Chain {
   chain: string
   chainId: number
+  chainSlug: string
   infoUrl: string
   name: string
   networkId: number

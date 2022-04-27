@@ -3,7 +3,8 @@ import { useActiveWeb3React } from 'hooks'
 import { useEffect, useMemo, useState } from 'react'
 import getNetwork from 'utils/getNetwork'
 import { ApprovedTransaction } from 'views/Tools/Unrekt'
-import rpcs from 'config/constants/extraRpcs.json'
+import allExtraRpcs from 'config/constants/extraRpcs.json'
+import chainIds from 'config/constants/chains'
 import useWeb3 from './useWeb3'
 
 /* eslint-disable camelcase */
@@ -198,16 +199,57 @@ export const useApprovedTransaction = () => {
   return data
 }
 
+function removeEndingSlash(rpc) {
+  return rpc.endsWith('/') ? rpc.substr(0, rpc.length - 1) : rpc;
+}
+
+function populateChain(chain, responseTvls) {
+
+  const extraRpcs = allExtraRpcs[chain.chainId]?.rpcs;
+  if (extraRpcs !== undefined) {
+    const rpcs = new Set(chain.rpc.map(removeEndingSlash).filter((rpc) => !rpc.includes('{INFURA_API_KEY}')));
+    extraRpcs.forEach((rpc) => rpcs.add(removeEndingSlash(rpc)));
+    chain.rpc = Array.from(rpcs);
+  }
+  const chainSlug = chainIds[chain.chainId];
+  if (chainSlug !== undefined) {
+    const defiChain = responseTvls.find((c) => c.name.toLowerCase() === chainSlug);
+    return defiChain === undefined
+      ? chain
+      : {
+          ...chain,
+          tvl: defiChain.tvl,
+          chainSlug,
+        };
+  }
+  return chain;
+
+  
+}
+
 export const useChains = () => {
   const [data, setData] = useState()
   useMemo(() => {
     let isMounted = true
     const fetchData = async () => {
       const chains = await fetch('https://chainid.network/chains.json');
+      const chainTvls = await fetch('https://api.llama.fi/chains');
+      const responseTvls = await chainTvls.json()
       const responseData = await chains.json()
-      const filtered = responseData.filter((chain) => {
-        return (Object.keys(rpcs).includes(chain.chainId.toString()))
-      })
+      const sortedChains = responseData
+        .filter((c) => c.name !== '420coin') // same chainId as ronin
+        .map((chain) => populateChain(chain, responseTvls))
+        .sort((a, b) => {
+          return (b.tvl ?? 0) - (a.tvl ?? 0);
+      });
+      const filtered = sortedChains.filter((item) => {
+          const testnet =
+            item.name?.toLowerCase().includes('test') ||
+            item.title?.toLowerCase().includes('test') ||
+            item.network?.toLowerCase().includes('test');
+          return !testnet;
+        })
+     
       if(isMounted){
         setData(filtered)
       }
