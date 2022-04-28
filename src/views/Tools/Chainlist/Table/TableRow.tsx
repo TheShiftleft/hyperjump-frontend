@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Text, ChevronDownIcon, Button, useWalletModal, Heading } from 'uikit';
 import styled from "styled-components";
 import CellLayout from 'views/Farms/components/FarmTable/CellLayout'
 import { Login } from "uikit/widgets/WalletModal/types";
+import { addToNetwork } from 'utils/wallet';
+import { useActiveWeb3React } from 'hooks';
 import NetworkCell from './NetworkCell';
 import { Chain } from '.';
 import RpcTable from './RpcTable';
@@ -46,6 +48,18 @@ const TableRow = ({chainData, login, logout, account}: TableRowProps) => {
   const { onPresentConnectModal } = useWalletModal(login, logout, account)
   const [isRpcToggled, setIsRpcToggled] = useState(false)
   const { chainId, name, nativeCurrency, shortName, rpc } = chainData
+
+  const handleAddNetwork = useCallback(
+    () => {
+      try {
+        addToNetwork(account, chainData)
+      }catch(e) {
+        console.error(e)
+      }
+    },
+    [account, chainData]
+  )
+  
   return (
     <StyledRowContainer >
       <InfoContainer>
@@ -63,7 +77,14 @@ const TableRow = ({chainData, login, logout, account}: TableRowProps) => {
       </InfoContainer>
       <InfoContainer>
         {account ? 
-          <Button scale='sm'>Add To Metamask</Button>
+          <Button 
+            scale='sm' 
+            onClick={() => {
+              handleAddNetwork(account, chainData)
+            }}
+          >
+            Add To Metamask
+          </Button>
           :
           <Button 
             scale='sm' 

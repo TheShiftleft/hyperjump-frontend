@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { QueriesResults, useQueries, UseQueryResult } from 'react-query';
+import { QueriesResults, QueryObserverIdleResult, QueryObserverResult, QueryObserverSuccessResult, useQueries, UseQueryResult } from 'react-query';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface Request extends AxiosRequestConfig {
@@ -23,15 +23,13 @@ interface Queries{
   refetchInterval: number
 }
 
-export interface RPCData {
+export interface RPCData extends QueryObserverSuccessResult {
   data: {
     url: string
     height: number
     latency: number
     trust: string
-  },
-  isLoading: boolean
-  status: string
+  }
 }
 
 export const rpcBody = JSON.stringify({

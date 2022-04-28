@@ -102,3 +102,26 @@ export const registerToken = async (
 
   return tokenAdded
 }
+
+export const addToNetwork = async (account: string, chain, rpc = null) => {
+  if(!account) return
+
+  const params = {
+    chainId: `0x${chain.chainId.toString(16)}`, // A 0x-prefixed hexadecimal string
+    chainName: chain.name,
+    nativeCurrency: {
+      name: chain.nativeCurrency.name,
+      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+      decimals: chain.nativeCurrency.decimals,
+    },
+    rpcUrls: rpc ? [rpc] : chain.rpc,
+    blockExplorerUrls: [
+      chain.explorers && chain.explorers.length > 0 && chain.explorers[0].url ? chain.explorers[0].url : chain.infoURL,
+    ],
+  }
+
+  await (window as WindowChain).ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [params, account],
+  })
+}

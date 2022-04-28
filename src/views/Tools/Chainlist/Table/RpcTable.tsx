@@ -1,5 +1,7 @@
 import useRPCData, { RPCData } from 'hooks/useRPCData';
 import React, { useMemo } from 'react'
+import { QueryResult } from 'react-apollo';
+import { QueryObserverIdleResult } from 'react-query';
 import styled from "styled-components";
 
 const TableContainer = styled.table`
@@ -37,14 +39,14 @@ const RpcRow = ({rpcs} :  {rpcs: RPCData}) => {
     <RpcTableRow>
       <RpcTableTd>{rpcs.isLoading ? 'Loading...' : rpcs.data.url}</RpcTableTd>
       <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : rpcs.data.height}</RpcTableTd>
-      <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : rpcs.data.latency}</RpcTableTd>
+      <RpcTableTd center>{!rpcs.data.latency ? 'Loading...' : `${rpcs?.data?.latency?.toFixed(3)}s`}</RpcTableTd>
       <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : <Trust color={rpcs.data.trust}/>}</RpcTableTd>
     </RpcTableRow>
   )
 }
 
 const RpcTable = ({rpcs, alt}: {rpcs: string[], alt: string}) => {
-  const rpcData = useRPCData(rpcs)
+  const rpcData: RPCData[] = useRPCData(rpcs)
   const rpcList = useMemo(() => {
     const sortedData = rpcData?.sort((a: RPCData, b: RPCData) => {
       if (a.isLoading)  return 1;
@@ -73,10 +75,10 @@ const RpcTable = ({rpcs, alt}: {rpcs: string[], alt: string}) => {
       return 1
     })
 
-    const topRpc:RPCData = sortedData[0] ?? {};
+    const topRpc = sortedData[0] ?? undefined;
 
     return sortedData.map(({ data, ...rest }) => {
-      const { height = null, latency = null, url = '' } = data || {};
+      const { height = null, latency = null, url = '' } = data || {height: null, latency: null, url: ''};
 
       let trust = 'transparent';
       let disableConnect = false;
@@ -91,7 +93,7 @@ const RpcTable = ({rpcs, alt}: {rpcs: string[], alt: string}) => {
 
       if (url.includes('wss://') || url.includes('API_KEY')) disableConnect = true;
 
-      const lat = latency ? `${(latency / 1000).toFixed(3)}s`: null;
+      const lat = latency ? latency / 1000: null;
 
       return { ...rest, data: { ...data, height, latency: lat, trust, disableConnect } };
     });
