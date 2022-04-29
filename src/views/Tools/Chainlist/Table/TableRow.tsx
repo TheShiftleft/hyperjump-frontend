@@ -5,6 +5,7 @@ import CellLayout from 'views/Farms/components/FarmTable/CellLayout'
 import { Login } from "uikit/widgets/WalletModal/types";
 import { addToNetwork } from 'utils/wallet';
 import { useActiveWeb3React } from 'hooks';
+import useToast from 'hooks/useToast';
 import NetworkCell from './NetworkCell';
 import { Chain } from '.';
 import RpcTable from './RpcTable';
@@ -45,19 +46,24 @@ const ArrowIcon = styled(ChevronDownIcon)<{ toggled: boolean }>`
 `
 
 const TableRow = ({chainData, login, logout, account}: TableRowProps) => {
+  const { toastError, toastSuccess} = useToast()
   const { onPresentConnectModal } = useWalletModal(login, logout, account)
   const [isRpcToggled, setIsRpcToggled] = useState(false)
   const { chainId, name, nativeCurrency, shortName, rpc } = chainData
 
   const handleAddNetwork = useCallback(
     () => {
-      try {
-        addToNetwork(account, chainData)
-      }catch(e) {
+      addToNetwork(account, chainData)
+      .catch((e) => {
         console.error(e)
-      }
+        let msg = 'An error occured while processing transaction.'
+        if(e.code === 4001 || e.code === -32602){
+          msg = e.message
+        }
+        toastError('Error',msg)
+      })
     },
-    [account, chainData]
+    [account, chainData, toastError]
   )
   
   return (
@@ -67,12 +73,12 @@ const TableRow = ({chainData, login, logout, account}: TableRowProps) => {
       </InfoContainer>
       <InfoContainer>
         <CellLayout label='Chain ID'>
-        <Text>{chainId}</Text>
+        <Text style={{overflow: 'hidden', width: '50px', textOverflow: 'ellipsis'}}  title={chainId?.toString()}>{chainId}</Text>
         </CellLayout>
       </InfoContainer>
       <InfoContainer>
         <CellLayout label='Currency'>
-        <Text>{nativeCurrency.symbol}</Text>
+        <Text title={chainId?.toString()}>{nativeCurrency.symbol}</Text>
         </CellLayout>
       </InfoContainer>
       <InfoContainer>
@@ -80,7 +86,7 @@ const TableRow = ({chainData, login, logout, account}: TableRowProps) => {
           <Button 
             scale='sm' 
             onClick={() => {
-              handleAddNetwork(account, chainData)
+              handleAddNetwork()
             }}
           >
             Add To Metamask

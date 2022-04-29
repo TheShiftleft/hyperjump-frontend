@@ -103,6 +103,12 @@ export const registerToken = async (
   return tokenAdded
 }
 
+/**
+ * Add selected network in to metamask
+ * @param account
+ * @param chain
+ * @param rpc
+ */
 export const addToNetwork = async (account: string, chain, rpc = null) => {
   if(!account) return
 
@@ -119,7 +125,6 @@ export const addToNetwork = async (account: string, chain, rpc = null) => {
       chain.explorers && chain.explorers.length > 0 && chain.explorers[0].url ? chain.explorers[0].url : chain.infoURL,
     ],
   }
-
   await (window as WindowChain).ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [params, account],

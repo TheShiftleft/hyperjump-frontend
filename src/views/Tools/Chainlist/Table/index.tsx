@@ -1,8 +1,7 @@
+import React from 'react'
 import { Currency } from '@hyperjump-defi/sdk';
 import { useActiveWeb3React } from 'hooks';
-import { useChains } from 'hooks/api';
 import useAuth from 'hooks/useAuth';
-import React from 'react'
 import styled from "styled-components";
 import TableRow from './TableRow';
 
@@ -49,8 +48,7 @@ const TableContainer = styled.div`
 `
 
 
-const ChainlistTable = () => {
-  const chains:Chain[] = useChains()
+const ChainlistTable = ({chains}: {chains: Chain[]}) => {
   const { account } = useActiveWeb3React()
   const { login, logout } = useAuth()
   return (

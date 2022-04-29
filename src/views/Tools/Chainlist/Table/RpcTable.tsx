@@ -1,8 +1,10 @@
 import useRPCData, { RPCData } from 'hooks/useRPCData';
-import React, { useMemo } from 'react'
+import useToast from 'hooks/useToast';
+import React, { useCallback, useMemo } from 'react'
 import { QueryResult } from 'react-apollo';
 import { QueryObserverIdleResult } from 'react-query';
 import styled from "styled-components";
+import { Text } from 'uikit';
 
 const TableContainer = styled.table`
   position: relative;
@@ -21,7 +23,6 @@ const RpcTableTh = styled.th`
 `
 
 const RpcTableTd = styled.td<{center?: boolean}>`
-  text: 2px;
   padding: 5px 0px;
   ${({center}) => center ? 'text-align: center' : ''}
 `
@@ -34,11 +35,25 @@ const Trust = styled.div<{color?: string}>`
   margin: auto;
 `
 
+const StyledText = styled(Text)`
+  cursor: pointer;
+  :hover {
+    color: ${({theme}) => theme.colors.primary};
+    text-decoration: underline;
+  }
+`
+
 const RpcRow = ({rpcs} :  {rpcs: RPCData}) => {
+  const { toastSuccess } = useToast()
+  const handleCopyToClipboard = useCallback(() => {
+    navigator.clipboard.writeText(rpcs.data.url)
+    toastSuccess('', 'RPC Url copied to clipboard.')
+  }, [rpcs.data.url, toastSuccess])
+
   return (
     <RpcTableRow>
-      <RpcTableTd>{rpcs.isLoading ? 'Loading...' : rpcs.data.url}</RpcTableTd>
-      <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : rpcs.data.height}</RpcTableTd>
+      <RpcTableTd>{rpcs.isLoading ? 'Loading...' : <StyledText title='Click to copy' onClick={() => handleCopyToClipboard()}>{rpcs.data.url}</StyledText>}</RpcTableTd>
+      <RpcTableTd center>{!rpcs.data.height ? 'Loading...' : rpcs.data.height}</RpcTableTd>
       <RpcTableTd center>{!rpcs.data.latency ? 'Loading...' : `${rpcs?.data?.latency?.toFixed(3)}s`}</RpcTableTd>
       <RpcTableTd center>{rpcs.isLoading ? 'Loading...' : <Trust color={rpcs.data.trust}/>}</RpcTableTd>
     </RpcTableRow>
