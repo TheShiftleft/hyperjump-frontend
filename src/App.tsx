@@ -30,7 +30,8 @@ const Pools = lazy(() => import('./views/Pools'))
 const NotFound = lazy(() => import('./views/NotFound'))
 const Migrations = lazy(() => import('./views/Migrations'))
 const Bridge = lazy(() => import('./views/Bridge'))
-const OnRamp = lazy(() => import('./views/OnRamp'))
+// const OnRamp = lazy(() => import('./views/OnRamp'))
+const MtPelerin = lazy(() => import('./views/MtPelerin'))
 const VortexBridge = lazy(() => import('./views/Swap/VortexBridge'))
 
 // This config is required for number formatting
@@ -68,7 +69,7 @@ const App: React.FC = () => {
             <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
             <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
             <Route path="/onramp">
-              <OnRamp />
+              <MtPelerin />
             </Route>
             <Route path="/lottery">
               <Lottery />

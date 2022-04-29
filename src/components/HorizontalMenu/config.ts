@@ -87,9 +87,9 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
       {
         label: 'Unrekt',
         href: '/unrekt',
-        target: '_self'
-      }
-    ]
+        target: '_self',
+      },
+    ],
   },
   {
     label: 'Play',

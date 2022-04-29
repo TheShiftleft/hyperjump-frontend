@@ -9,7 +9,6 @@ const OnRamper: React.FC = () => {
   const wallets = {
     BNB: { address: 'bnbAddress', memo: 'cryptoTag' },
   }
-
   return (
     <Page>
       <Container>
@@ -38,7 +37,6 @@ const Container = styled(Flex)`
   grid-gap: 16px;
   justify-content: space-between;
   flex-wrap: wrap;
-
   ${({ theme }) => theme.mediaQueries.xs} {
     justify-content: center;
   }
@@ -47,32 +45,27 @@ const Container = styled(Flex)`
 const EarnFlex = styled(Flex)`
   background-color: transparent;
 `
-
 const Column = styled(Flex)`
   flex: 1;
   flex-direction: column;
   grid-gap: 16px;
   justify-content: space-between;
-
   ${({ theme }) => theme.mediaQueries.xs} {
     max-width: 375px;
     min-width: 370px;
   }
 `
-
 const HeadingFlex = styled(Flex)`
   ${({ theme }) => theme.mediaQueries.md} {
     margin-left: 190px;
   }
 `
-
 const MainLogo = styled.img`
   width: 200px;
   ${({ theme }) => theme.mediaQueries.lg} {
     width: 400px;
   }
 `
-
 const MainHeading = styled(Heading)`
   margin: 5px 0 0 0;
   display: flex;
@@ -80,7 +73,6 @@ const MainHeading = styled(Heading)`
     margin: 10px 0;
   }
 `
-
 const ShipLogo = styled.img`
   max-height: 150px;
   align-self: flex-end;
