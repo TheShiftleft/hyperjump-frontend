@@ -26,11 +26,19 @@ import {
   getFarmingTokenAddress,
   getSynapseBridgeAddress,
   getBroomAddress,
-  getZapAddress
+  getZapAddress,
 } from 'utils/addressHelpers'
 import getBridgeConfigFactory from 'utils/bridgeConfigHelpers'
 import getMultiChainContract from 'utils/multiChainHelper'
-import { getMulticallABI, getWrappedABI, getLotteryABI, getFarmingTokenABI, getZapABI, getBroomABI } from 'config/abi'
+import {
+  getMulticallABI,
+  getWrappedABI,
+  getLotteryABI,
+  getFarmingTokenABI,
+  getZapABI,
+  getApproveABI,
+  getBroomABI,
+} from 'config/abi'
 import { L2_BRIDGE_ZAP_ABI } from 'config/abi/L2BridgeZap'
 import { Contract } from '@ethersproject/contracts'
 import { Contract as ContractWeb3 } from 'web3-eth-contract'
@@ -145,6 +153,10 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
 
 export const useZapContract = (witSignerIfPossible?: boolean) => {
   return useContract(getZapAddress(), getZapABI(), witSignerIfPossible)
+}
+
+export const useRevokeContract = (address: string, withSignerIfPossible?: boolean) => {
+  return useContract(address, getApproveABI(), withSignerIfPossible)
 }
 // export function useV1ExchangeContract(address?: string, withSignerIfPossible?: boolean): Contract | null {
 //   return useContract(address, V1_EXCHANGE_ABI, withSignerIfPossible)

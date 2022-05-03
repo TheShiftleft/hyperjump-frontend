@@ -31,7 +31,7 @@ const networks = [
     infoLink: 'https://bsc-info.hyperjump.app',
     supportedChainIds: [ChainId.BSC_MAINNET],
     vaultCompoundTime: '8 hours',
-    localEmissionRate: 1.583940258751902587,
+    localEmissionRate: 1.056993066125486216,
   },
 
   {
@@ -63,7 +63,7 @@ const networks = [
     infoLink: 'https://ftm-info.hyperjump.app',
     supportedChainIds: [ChainId.FTM_MAINNET],
     vaultCompoundTime: 'hour',
-    localEmissionRate: 1.585489599188229325,
+    localEmissionRate: 1.056993066125486216,
   },
   {
     name: 'BSC_TESTNET',

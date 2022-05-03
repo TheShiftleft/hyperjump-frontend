@@ -21,6 +21,8 @@ import Swap from './views/Swap/Swap'
 import Zap from './views/Zap/Zap'
 import Warp from './views/Zap/Warp'
 import Lottery from './views/Lottery'
+import Unrekt from './views/Tools/Unrekt'
+import Chainlist from './views/Tools/Chainlist'
 
 // Route-based code splitting
 const Farms = lazy(() => import('./views/Farms'))
@@ -31,6 +33,8 @@ const Migrations = lazy(() => import('./views/Migrations'))
 const Bridge = lazy(() => import('./views/Bridge'))
 const OnRamp = lazy(() => import('./views/OnRamp'))
 const Portfolio = lazy(() => import('./views/Portfolio'))
+// const OnRamp = lazy(() => import('./views/OnRamp'))
+const MtPelerin = lazy(() => import('./views/MtPelerin'))
 const VortexBridge = lazy(() => import('./views/Swap/VortexBridge'))
 
 // This config is required for number formatting
@@ -61,13 +65,15 @@ const App: React.FC = () => {
             <Route exact path="/bridge" component={VortexBridge} />
             <Route exact path="/pool" component={Pool} />
             <Route exact path="/add" component={AddLiquidity} />
+            <Route exact strict path="/unrekt" component={Unrekt} />
+            <Route exact strict path="/chainlist" component={Chainlist} />
             <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
             {/* Redirection: These old routes are still used in the code base */}
             <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
             <Route exact path="/add/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
             <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
             <Route path="/onramp">
-              <OnRamp />
+              <MtPelerin />
             </Route>
             <Route path="/lottery">
               <Lottery />
