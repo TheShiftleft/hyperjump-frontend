@@ -93,6 +93,11 @@ const config: (/* t: ContextApi['t'] */) => MenuEntry[] = (/* t */) => [
         label: 'Chainlist',
         href: '/chainlist',
         target: '_self'
+      },
+      {
+        label: 'Emergency Withdraw',
+        href: '/emergency',
+        target: '_self'
       }
     ]
   },

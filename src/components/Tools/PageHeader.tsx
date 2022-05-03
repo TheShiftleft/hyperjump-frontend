@@ -44,6 +44,11 @@ const PageHeader = ({type = '', title, description} : PageHeaderProps) => {
               Chainlist
           </Text>
         </TextContainer>
+        <TextContainer style={ !(type.toLowerCase() === 'emergency') ? {border: 'none'} : {}} as={ReactLink} to='/emergency'>
+          <Text color="primary" bold>
+              Emergency Withdraw
+          </Text>
+        </TextContainer>
       </Flex>
       <Flex alignItems="center">
         <Details>
