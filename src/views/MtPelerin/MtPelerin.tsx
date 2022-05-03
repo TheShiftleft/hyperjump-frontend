@@ -14,6 +14,7 @@ const MtPelerin: React.FC = () => {
   return (
     <MtPelerinWidget
       language="en"
+      success={primarycolor}
       primary={primarycolor}
       sellsourcecurrency={ssc}
       selldestinationcurrency={defaultmoney}

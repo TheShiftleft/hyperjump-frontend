@@ -22,6 +22,7 @@ import Zap from './views/Zap/Zap'
 import Warp from './views/Zap/Warp'
 import Lottery from './views/Lottery'
 import Unrekt from './views/Tools/Unrekt'
+import Chainlist from './views/Tools/Chainlist'
 
 // Route-based code splitting
 const Farms = lazy(() => import('./views/Farms'))
@@ -63,6 +64,7 @@ const App: React.FC = () => {
             <Route exact path="/pool" component={Pool} />
             <Route exact path="/add" component={AddLiquidity} />
             <Route exact strict path="/unrekt" component={Unrekt} />
+            <Route exact strict path="/chainlist" component={Chainlist} />
             <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
             {/* Redirection: These old routes are still used in the code base */}
             <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />

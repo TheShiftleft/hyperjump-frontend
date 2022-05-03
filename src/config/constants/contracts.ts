@@ -7,6 +7,7 @@ export default {
   masterChef: {
     56: '0x1985CD7aF3B410Cfe87B59EAF8A0833816729c49',
     250: '0xb0AA3a0458BD85F859345e2251C7665C5f7A9d18',
+    1088: '0x7B649F38286231755FFccBe6C82E8d7529800eD4',
   },
   masterChef20: {
     56: '0x7A0De9A006129A18AE8d3C4e609fa866EE29A5B3',
@@ -15,6 +16,7 @@ export default {
   actionInitiators: {
     56: '0x559C93cf64005DfdA3e417E7C866a7F40F52C6C6',
     250: '0xF24B855689F315037dE778C83F5bB7B25Cc4a674',
+    1088: '0xCB46BAaaB0667615F3E90c3edd4Ec7f021A5DcA1',
   },
   // distribution system
   mainDistributor: {
@@ -23,12 +25,14 @@ export default {
   localFarmTokenDistributor: {
     56: '0x2B4618996faD3eE7Bc9Ba8c98969A8eaf01B5E20',
     250: '0xD27D38694aadb487AEa67dB70fcEbB411A7Ac3ae',
+    1088: '0xA565037058DF44F336e01683E096CDDe45cFE5c2',
   },
   ftmToBscBridgeDistributor: { 250: '0x863130381c476a3dAbcd6F287Ab967fE4c3a7D13' },
   // other utility contracts
   burnContract: {
     56: '0xFD5b495D6ce1a98102a14A7443928FC1B31a200D',
     250: '0x7AfCA69dCD68a8b36764ccE35B89A76450ccA411',
+    1088: '0x3339e128FE4dF4d80f2Aa95ffDA953b983815c4e',
   },
   multiCall: {
     56: '0x1282fE78d092E6077B05FeE27f239b49b2725978',

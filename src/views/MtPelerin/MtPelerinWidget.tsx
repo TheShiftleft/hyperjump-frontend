@@ -7,6 +7,7 @@ import Iframe from 'react-iframe'
 export interface WidgetProps {
   language: string
   primary: string
+  success: string
   sellsourcecurrency: string
   selldestinationcurrency: string
   buysourcecurrency: string
@@ -19,6 +20,7 @@ export interface WidgetProps {
 const MtPelerinWidget: React.FC<WidgetProps> = ({
   language,
   primary,
+  success,
   sellsourcecurrency,
   selldestinationcurrency,
   buysourcecurrency,
@@ -27,7 +29,7 @@ const MtPelerinWidget: React.FC<WidgetProps> = ({
   network,
   viewtype,
 }) => {
-  const rampUrl = `https://widget.mtpelerin.com/?lang=${language}&type=${viewtype}&primary=${primary}&ssc=${sellsourcecurrency}&sdc=${selldestinationcurrency}&tab=${defaulttab}&bsc=${buysourcecurrency}&bdc=${buydestinationcurrency}&network=${network}`
+  const rampUrl = `https://widget.mtpelerin.com/?lang=${language}&type=${viewtype}&primary=${primary}&success=${primary}&ssc=${sellsourcecurrency}&sdc=${selldestinationcurrency}&tab=${defaulttab}&bsc=${buysourcecurrency}&bdc=${buydestinationcurrency}&network=${network}`
   return (
     <Page>
       <Container>
