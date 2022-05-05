@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import Container from 'components/Container'
 import { AppBody, PageHeader, CardBody } from 'components/Tools'
 import { Input, Flex, Button } from 'uikit'
-import useGetPools, { GetPoolsStatus } from 'hooks/useGetPools'
+import { GetPoolsStatus, useGetPools } from 'hooks/useGetPools'
 import useToast from 'hooks/useToast'
 import EmergencyTable from './Table'
 
@@ -49,7 +49,7 @@ const Unrekt = () => {
               Start
             </Button>
           </Flex>
-          <EmergencyTable data={tableData}/>
+          <EmergencyTable data={tableData} masterchefAddress={inputAddress}/>
         </CardBody>
       </AppBody>
     </Container>

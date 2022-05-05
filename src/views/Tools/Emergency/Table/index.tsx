@@ -45,7 +45,7 @@ const TdContainer = styled.td`
   justify-content: center;
 `
 
-const EmergencyTable = ({data}) => {
+const EmergencyTable = ({data, masterchefAddress}) => {
   const getKey = (address: string) => {
     return `poolrow-${address}`
   }
@@ -55,7 +55,7 @@ const EmergencyTable = ({data}) => {
         <StyledTable>
           <TableBody>
             { data ? 
-              data.map(pool => <TableRow key={getKey(pool.address)} pool={pool}/>)
+              data.map(pool => <TableRow key={getKey(pool.address)} pool={pool} masterchefAddress={masterchefAddress}/>)
               :
               <RowContainer>
                 <TdContainer>
