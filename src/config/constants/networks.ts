@@ -85,8 +85,7 @@ const networks = [
     farmMultiplierScale: 100,
     baseCurrencyAmount: CurrencyAmount.bnb,
     baseCurrency: BNB,
-    swapTokenListUrl:
-      'https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/bscTestnetTokens.json',
+    swapTokenListUrl: 'https://tokens.hyperjump.app/tokens.json',
     scannerName: 'BSC Scan',
     approvalDomainName: 'Thugswap Street LP',
     votingLink: 'https://snapshot.org/#/bsc.hyperjumpdao.eth',
