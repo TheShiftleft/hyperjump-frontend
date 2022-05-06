@@ -8,6 +8,7 @@ const currentPointInChain: Record<Network, () => number> = {
   [Network.BSC]: () => useBlock().currentBlock,
   [Network.BSC_TESTNET]: () => useBlock().currentBlock,
   [Network.FANTOM]: useSecond,
+  [Network.METIS]: useSecond,
 }
 
 const usePoolTimingInfo = (pool: Pool) => {

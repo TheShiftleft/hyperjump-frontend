@@ -39,7 +39,15 @@ const networks = [
     className: '',
     style: ftmButtonStyle,
     logo: FTMLogo
-  }
+  },
+  {
+    name: 'METIS',
+    id: 1088,
+    url: process.env.REACT_APP_METIS_BASE_URL,
+    className: 'metis',
+    style: bscButtonStyle,
+    logo: BSCLogo
+  },
 ]
 
 const NetworkModal: React.FC<Props> = ({ onDismiss = () => null }) => {

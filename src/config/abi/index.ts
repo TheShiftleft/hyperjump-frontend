@@ -14,8 +14,10 @@ import hyprABI from './hypr.json'
 import auroraABI from './aurora.json'
 import thugSwapRouterABI from './IThugswapRouter02.json'
 import hyperSwapRouterABI from './IHyperswapRouter02.json'
+import hyperSwapRouterMetisABI from './IHyperSwapRouterMetis.json'
 import wethABI from './weth.json'
 import wftmABI from './wftm.json'
+import metisABI from './metis.json'
 import bscVaultABI from './bsc-vault.json'
 import ftmVaultABI from './ftm-vault.json'
 import bscLotteryABI from './bsc-lottery.json'
@@ -31,48 +33,56 @@ const multicallABIs = {
   [ChainId.BSC_MAINNET]: bscMulticallABI,
   [ChainId.BSC_TESTNET]: bscMulticallABI,
   [ChainId.FTM_MAINNET]: ftmMulticallABI,
+  [ChainId.METIS]: ftmMulticallABI,
 }
 
 const poolABIs = {
   [ChainId.BSC_MAINNET]: bscPoolABI,
   [ChainId.BSC_TESTNET]: bscPoolABI,
   [ChainId.FTM_MAINNET]: ftmPoolABI,
+  [ChainId.METIS]: ftmPoolABI,
 }
 
 const farmTokenABIs = {
   [ChainId.BSC_MAINNET]: jumpABI,
   [ChainId.BSC_TESTNET]: jumpABI,
   [ChainId.FTM_MAINNET]: jumpABI,
+  [ChainId.METIS]: jumpABI,
 }
 
 const govTokenABIs = {
   [ChainId.BSC_MAINNET]: hyprABI,
   [ChainId.BSC_TESTNET]: hyprABI,
   [ChainId.FTM_MAINNET]: auroraABI,
+  [ChainId.METIS]: auroraABI,
 }
 
 const routerABIs = {
   [ChainId.BSC_MAINNET]: thugSwapRouterABI.abi,
   [ChainId.BSC_TESTNET]: thugSwapRouterABI.abi,
   [ChainId.FTM_MAINNET]: hyperSwapRouterABI.abi,
+  [ChainId.METIS]: hyperSwapRouterMetisABI.abi,
 }
 
 const wrappedABIs = {
   [ChainId.BSC_MAINNET]: wethABI,
   [ChainId.BSC_TESTNET]: wethABI,
   [ChainId.FTM_MAINNET]: wftmABI,
+  [ChainId.METIS]: metisABI,
 }
 
 const vaultABIs = {
   [ChainId.BSC_MAINNET]: bscVaultABI,
   [ChainId.BSC_TESTNET]: bscVaultABI,
   [ChainId.FTM_MAINNET]: ftmVaultABI,
+  [ChainId.METIS]: ftmVaultABI,
 }
 
 const lotteryABIs = {
   [ChainId.BSC_MAINNET]: bscLotteryABI,
   [ChainId.BSC_TESTNET]: bscLotteryABI,
   [ChainId.FTM_MAINNET]: bscLotteryABI,
+  [ChainId.METIS]: bscLotteryABI,
 }
 
 export const getActionInitiatorsABI = () => {
@@ -102,7 +112,6 @@ export const getMasterChefABI = () => {
 export const getMasterChef20ABI = () => {
   return masterChef20ABI
 }
-
 
 export const getMulticallABI = () => {
   const { chainId } = getNetwork()

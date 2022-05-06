@@ -1,4 +1,4 @@
-import { BNB, ChainId, CurrencyAmount, FANTOM, Network } from '@hyperjump-defi/sdk'
+import { BNB, FANTOM, METIS, ChainId, CurrencyAmount, Network } from '@hyperjump-defi/sdk'
 import tokens from 'config/constants/tokens'
 
 const networks = [
@@ -31,9 +31,8 @@ const networks = [
     infoLink: 'https://bsc-info.hyperjump.app',
     supportedChainIds: [ChainId.BSC_MAINNET],
     vaultCompoundTime: '8 hours',
-    localEmissionRate: 1.056993066125486216,
+    localEmissionRate: 1.583940258751902587,
   },
-
   {
     name: 'FTM',
     network: Network.FANTOM,
@@ -63,7 +62,7 @@ const networks = [
     infoLink: 'https://ftm-info.hyperjump.app',
     supportedChainIds: [ChainId.FTM_MAINNET],
     vaultCompoundTime: 'hour',
-    localEmissionRate: 1.056993066125486216,
+    localEmissionRate: 1.585489599188229325,
   },
   {
     name: 'BSC_TESTNET',
@@ -85,7 +84,8 @@ const networks = [
     farmMultiplierScale: 100,
     baseCurrencyAmount: CurrencyAmount.bnb,
     baseCurrency: BNB,
-    swapTokenListUrl: 'https://tokens.hyperjump.app/tokens.json',
+    swapTokenListUrl:
+      'https://gateway.pinata.cloud/ipfs/QmcUD9JjFmyTch3WkQprY48QNoseTCYkCu9XRtm5F4zUuY/bscTestnetTokens.json',
     scannerName: 'BSC Scan',
     approvalDomainName: 'Thugswap Street LP',
     votingLink: 'https://snapshot.org/#/bsc.hyperjumpdao.eth',
@@ -94,6 +94,37 @@ const networks = [
     infoLink: '/analytics',
     supportedChainIds: [ChainId.BSC_TESTNET],
     vaultCompoundTime: '8 hours',
+  },
+  {
+    name: 'METIS',
+    network: Network.METIS,
+    id: 1088,
+    url: process.env.REACT_APP_METIS_BASE_URL,
+    networkTokenUsdFarmPid: 1,
+    farmingTokenUsdFarmPid: 2,
+    farmingTokenNetworkTokenFarmPid: 3,
+    govTokenNetworkTokenFarmPid: 4,
+    wrappedFarmingTokenPid: 0,
+    coreFarms: [0, 1],
+    farmingToken: tokens.jump,
+    govToken: tokens.hypr,
+    networkToken: tokens.metis,
+    wrappedNetworkToken: tokens.wmetis,
+    wrappedFarmingToken: tokens.xjump,
+    timerScale: 1, // changed from 3 because all chains are calculated by secs
+    farmMultiplierScale: 100,
+    baseCurrencyAmount: CurrencyAmount.metis,
+    baseCurrency: METIS,
+    swapTokenListUrl: 'https://tokens.hyperjump.app/metis.json',
+    scannerName: 'Andromeda explorer',
+    approvalDomainName: 'HyperJump Street LP',
+    votingLink: 'https://snapshot.org/#/metis.hyperjumpdao.eth',
+    bridgePath: '',
+    contractsLink: 'https://github.com/HyperJump-DeFi/HyperJump-Contracts',
+    infoLink: 'https://metis-info.hyperjump.app',
+    supportedChainIds: [ChainId.METIS],
+    vaultCompoundTime: '8 hours',
+    localEmissionRate: 1.583940258751902587,
   },
 ]
 

@@ -6,10 +6,9 @@ import tokens from 'config/constants/tokens'
 import { Address } from 'config/constants/types'
 import getNetwork from './getNetwork'
 
-
 export const getAddress = (address: Address): string => {
   const { chainId } = getNetwork()
-  return address[chainId] ? address[chainId] : address[ChainId.BSC_MAINNET]
+  return address[chainId] ? address[chainId] : address[ChainId.FTM_MAINNET]
 }
 
 export const getActionInitiatorsAddress = () => {
@@ -91,18 +90,10 @@ export const getL2BridgeZapAddress = () => {
   return getAddress(addresses.l2BridgeZap)
 }
 
-const routerAddresses: Record<Network, string> = {
-  [Network.BSC]: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',
-  [Network.BSC_TESTNET]: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',
-  [Network.FANTOM]: '0x53c153a0df7E050BbEFbb70eE9632061f12795fB',
-}
-
 export const getRouterAddress = () => {
-  const { config } = getNetwork()
-  return routerAddresses[config.network]
+  return getAddress(addresses.router)
 }
 
 export const getZapAddress = () => {
-  const { config } = getNetwork()
   return getAddress(addresses.zap)
 }

@@ -2,6 +2,7 @@ import { Network } from '@hyperjump-defi/sdk'
 import { VaultConfig } from './types'
 
 const vaults: Record<Network, VaultConfig[]> = {
+  [Network.METIS]: [],
   [Network.BSC_TESTNET]: [],
   [Network.BSC]: [
     {

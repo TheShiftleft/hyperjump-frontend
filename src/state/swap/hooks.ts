@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, BNB, FANTOM, JSBI, Token, TokenAmount, Trade } from '@hyperjump-defi/sdk'
+import { Currency, CurrencyAmount, BNB, FANTOM, METIS, JSBI, Token, TokenAmount, Trade } from '@hyperjump-defi/sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -40,6 +40,8 @@ export function useSwapActionHandlers(): {
             ? 'BNB'
             : currency === FANTOM
             ? 'FTM'
+            : currency === METIS
+            ? 'METIS'
             : '',
         })
       )

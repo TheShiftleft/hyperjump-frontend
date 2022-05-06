@@ -1,7 +1,7 @@
 import { parseUnits } from '@ethersproject/units'
 import { Currency, CurrencyAmount, BNB, FANTOM, JSBI, Token, TokenAmount, Trade } from '@hyperjump-defi/sdk'
 import ChainId from 'utils/getChain'
-import  { Redirect, Route } from 'react-router'
+import { Redirect, Route } from 'react-router'
 import { useHistory } from 'react-router-dom'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -16,29 +16,32 @@ import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { Field, replaceBridgeState, selectCurrency, setRecipient, switchCurrencies, typeInput, selectNetwork, selectBridgeCurrency } from './actions'
+import {
+  Field,
+  replaceBridgeState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  selectNetwork,
+  selectBridgeCurrency,
+} from './actions'
 import { BridgeState } from './reducer'
-
 
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
 
 function assignToken(token) {
-  return new Token(
-    token.chainId,
-    token.address,
-    token.decimals,
-    token.symbol,
-    token.name
-  )
+  return new Token(token.chainId, token.address, token.decimals, token.symbol, token.name)
 }
 
-
 function findBridgeToken(bridgeNetwork: BridgeNetwork, swapType: string) {
-  return bridgeNetwork.tokens.map((t) => {
-    const bSwapType = bridgeNetwork.swappablePools[t.symbol]
-    return (bSwapType === swapType ? t : undefined)
-  }).filter((r) => (r))
+  return bridgeNetwork.tokens
+    .map((t) => {
+      const bSwapType = bridgeNetwork.swappablePools[t.symbol]
+      return bSwapType === swapType ? t : undefined
+    })
+    .filter((r) => r)
 }
 
 export function useBridgeState(): AppState['bridge'] {
@@ -50,45 +53,42 @@ export function checkCanBridgeByNetwork(fromBridgeNetwork: BridgeNetwork, toBrid
   let toCurrency: Token
   let bSymbol: string
 
-
-  if(toBridgeNetwork.chainId === ChainId.BSC_MAINNET || toBridgeNetwork.chainId === ChainId.FTM_MAINNET ){
-    bSymbol = "JUMP"
-  }else if(toBridgeNetwork.chainId === ChainId.MOONRIVER){
-    bSymbol = "SYN"
-  }else{
-    bSymbol = "USDC"
+  if (toBridgeNetwork.chainId === ChainId.BSC_MAINNET || toBridgeNetwork.chainId === ChainId.FTM_MAINNET) {
+    bSymbol = 'JUMP'
+  } else if (toBridgeNetwork.chainId === ChainId.MOONRIVER) {
+    bSymbol = 'SYN'
+  } else {
+    bSymbol = 'USDC'
   }
 
-  for(let i = 0; i < fromBridgeNetwork.tokens.length; i++){
-    if(bSymbol === fromBridgeNetwork.tokens[i].symbol){
+  for (let i = 0; i < fromBridgeNetwork.tokens.length; i++) {
+    if (bSymbol === fromBridgeNetwork.tokens[i].symbol) {
       fromCurrency = assignToken(fromBridgeNetwork.tokens[i])
       break
     }
   }
-  for(let i = 0; i < toBridgeNetwork.tokens.length; i++){
-    if(bSymbol === toBridgeNetwork.tokens[i].symbol){
+  for (let i = 0; i < toBridgeNetwork.tokens.length; i++) {
+    if (bSymbol === toBridgeNetwork.tokens[i].symbol) {
       toCurrency = assignToken(toBridgeNetwork.tokens[i])
       break
     }
   }
 
   return [fromCurrency, toCurrency]
-
 }
 
 export function useBridgeNetworkActionHandlers(): {
-  onNetworkSelection: (field: Field, bridgeNetwork: BridgeNetwork, otherBridgeNetwork: BridgeNetwork, ) => void
+  onNetworkSelection: (field: Field, bridgeNetwork: BridgeNetwork, otherBridgeNetwork: BridgeNetwork) => void
   onSwitchNetworks: () => void
 } {
-  
   const dispatch = useDispatch<AppDispatch>()
-  const history = useHistory();
+  const history = useHistory()
   const onNetworkSelection = useCallback(
     (field: Field, bridgeNetwork: BridgeNetwork, otherBridgeNetwork: BridgeNetwork) => {
       let fromBridgeNetwork: BridgeNetwork
       let toBridgeNetwork: BridgeNetwork
-      
-      if(field === Field.OUTPUT) {
+
+      if (field === Field.OUTPUT) {
         fromBridgeNetwork = otherBridgeNetwork
         toBridgeNetwork = bridgeNetwork
 
@@ -97,39 +97,31 @@ export function useBridgeNetworkActionHandlers(): {
         dispatch(
           replaceBridgeState({
             typedValue: '',
-            field: (field.toString() === Field.INPUT ? Field.INPUT : Field.OUTPUT),
-            inputCurrencyId: fromCurrency instanceof Token
-            ? fromCurrency.address
-            : undefined,
-            outputCurrencyId: toCurrency instanceof Token
-            ? toCurrency.address
-            : undefined,
+            field: field.toString() === Field.INPUT ? Field.INPUT : Field.OUTPUT,
+            inputCurrencyId: fromCurrency instanceof Token ? fromCurrency.address : undefined,
+            outputCurrencyId: toCurrency instanceof Token ? toCurrency.address : undefined,
             recipient: '',
-            outputChainId: toCurrency instanceof Token
-            ? toCurrency.chainId.toString()
-            : '56',
-          })
+            outputChainId: toCurrency instanceof Token ? toCurrency.chainId.toString() : '56',
+          }),
         )
-        history.push(`/bridge?outputChainId=${toBridgeNetwork.chainId}&inputCurrency=${fromCurrency.address}&outputCurrency=${toCurrency.address}`)
-
+        history.push(
+          `/bridge?outputChainId=${toBridgeNetwork.chainId}&inputCurrency=${fromCurrency.address}&outputCurrency=${toCurrency.address}`,
+        )
       }
 
       dispatch(
         selectNetwork({
           field,
-          chainId: bridgeNetwork.chainId
-        })
+          chainId: bridgeNetwork.chainId,
+        }),
       )
-      
     },
-    [dispatch, history]
-
+    [dispatch, history],
   )
 
   const onSwitchNetworks = useCallback(() => {
     dispatch(switchCurrencies())
   }, [dispatch])
-
 
   return {
     onSwitchNetworks,
@@ -144,106 +136,99 @@ export function checkCanBridgeByCurrency(inputCurrency: Currency, outputCurrency
   let bscBridgeNetwork: BridgeNetwork
   let ethBridgeNetwork: BridgeNetwork
 
-  if(!inputCurrency || !outputCurrency)
-    return [undefined, undefined];
+  if (!inputCurrency || !outputCurrency) return [undefined, undefined]
 
   // Put aside all network object that can be use later
-  Object.keys(bridgeNetworks)
-  .forEach(function eachKey(key) { 
-    if(inputCurrency?.chainId === bridgeNetworks[key]?.chainId )
-      fromBridgeNetwork = bridgeNetworks[key]
+  Object.keys(bridgeNetworks).forEach(function eachKey(key) {
+    if (inputCurrency?.chainId === bridgeNetworks[key]?.chainId) fromBridgeNetwork = bridgeNetworks[key]
 
-    if(outputCurrency?.chainId === bridgeNetworks[key]?.chainId )
-      toBridgeNetwork = bridgeNetworks[key]
+    if (outputCurrency?.chainId === bridgeNetworks[key]?.chainId) toBridgeNetwork = bridgeNetworks[key]
 
-    if(ChainId.FTM_MAINNET === bridgeNetworks[key]?.chainId )
-      ftmBridgeNetwork = bridgeNetworks[key]
-    
-    if(ChainId.BSC_MAINNET === bridgeNetworks[key]?.chainId )
-      bscBridgeNetwork = bridgeNetworks[key]
+    if (ChainId.FTM_MAINNET === bridgeNetworks[key]?.chainId) ftmBridgeNetwork = bridgeNetworks[key]
 
-    if(ChainId.ETH === bridgeNetworks[key]?.chainId )
-      ethBridgeNetwork = bridgeNetworks[key]
-  });
+    if (ChainId.BSC_MAINNET === bridgeNetworks[key]?.chainId) bscBridgeNetwork = bridgeNetworks[key]
 
-  if(inputCurrency.symbol === outputCurrency.symbol)
-    return [inputCurrency, outputCurrency, undefined]
+    if (ChainId.ETH === bridgeNetworks[key]?.chainId) ethBridgeNetwork = bridgeNetworks[key]
+  })
+
+  if (inputCurrency.symbol === outputCurrency.symbol) return [inputCurrency, outputCurrency, undefined]
 
   const fromSwapType = fromBridgeNetwork.swappablePools[inputCurrency.symbol]
   const toSwapType = toBridgeNetwork.swappablePools[outputCurrency.symbol]
 
-  if(fromSwapType !== toSwapType){
-    if(field === Field.OUTPUT){
+  if (fromSwapType !== toSwapType) {
+    if (field === Field.OUTPUT) {
       // On FTM, DOG and HIGH is not supported, use the default instead
-      if((toSwapType === "DOG" || toSwapType === "HIGH") && fromBridgeNetwork.chainId === ChainId.FTM_MAINNET){
+      if ((toSwapType === 'DOG' || toSwapType === 'HIGH') && fromBridgeNetwork.chainId === ChainId.FTM_MAINNET) {
         let bToken = findBridgeToken(toBridgeNetwork, fromSwapType)
         outputCurrency = assignToken(bToken[0])
         return [inputCurrency, outputCurrency, toBridgeNetwork]
       }
 
       // On BSC, ETH is not supported, use the default instead
-      if(toSwapType === "ETH" && fromBridgeNetwork.chainId === ChainId.BSC_MAINNET){
+      if (toSwapType === 'ETH' && fromBridgeNetwork.chainId === ChainId.BSC_MAINNET) {
         let bToken = findBridgeToken(toBridgeNetwork, fromSwapType)
         outputCurrency = assignToken(bToken[0])
         return [inputCurrency, outputCurrency, toBridgeNetwork]
       }
 
       let bToken = findBridgeToken(fromBridgeNetwork, toSwapType)
-      const exactToken = bToken.find(t => {return (t.symbol === outputCurrency.symbol ? t : undefined)})
-      if(exactToken){
+      const exactToken = bToken.find((t) => {
+        return t.symbol === outputCurrency.symbol ? t : undefined
+      })
+      if (exactToken) {
         inputCurrency = assignToken(exactToken)
-      }else{
+      } else {
         inputCurrency = assignToken(bToken[0])
       }
-    }else {
+    } else {
       // MOONRIVER only have 1 token available that can be bridge
-      if(toBridgeNetwork.chainId === ChainId.MOONRIVER && fromSwapType !== "SYN"){
+      if (toBridgeNetwork.chainId === ChainId.MOONRIVER && fromSwapType !== 'SYN') {
         let bToken = findBridgeToken(fromBridgeNetwork, toSwapType)
         inputCurrency = assignToken(bToken[0])
         return [inputCurrency, outputCurrency, toBridgeNetwork]
       }
       // Switch From Network base on the swap type below
-      if(fromSwapType === "DOG" || fromSwapType === "HIGH"  || fromSwapType === "ETH"){
-        if(fromBridgeNetwork.chainId === ChainId.BSC_MAINNET && toBridgeNetwork.chainId !== ChainId.ETH){
+      if (fromSwapType === 'DOG' || fromSwapType === 'HIGH' || fromSwapType === 'ETH') {
+        if (fromBridgeNetwork.chainId === ChainId.BSC_MAINNET && toBridgeNetwork.chainId !== ChainId.ETH) {
           let bToken = findBridgeToken(ethBridgeNetwork, fromSwapType)
           outputCurrency = assignToken(bToken[0])
           return [inputCurrency, outputCurrency, ethBridgeNetwork]
         }
 
-        if(fromBridgeNetwork.chainId === ChainId.FTM_MAINNET && toBridgeNetwork.chainId !== ChainId.ETH){
+        if (fromBridgeNetwork.chainId === ChainId.FTM_MAINNET && toBridgeNetwork.chainId !== ChainId.ETH) {
           let bToken = findBridgeToken(ethBridgeNetwork, fromSwapType)
           outputCurrency = assignToken(bToken[0])
           return [inputCurrency, outputCurrency, ethBridgeNetwork]
         }
       }
-      if(fromSwapType === "JUMP"){
-        if(fromBridgeNetwork.chainId === ChainId.FTM_MAINNET && toBridgeNetwork.chainId !== ChainId.BSC_MAINNET){
+      if (fromSwapType === 'JUMP') {
+        if (fromBridgeNetwork.chainId === ChainId.FTM_MAINNET && toBridgeNetwork.chainId !== ChainId.BSC_MAINNET) {
           let bToken = findBridgeToken(bscBridgeNetwork, fromSwapType)
           outputCurrency = assignToken(bToken[0])
           return [inputCurrency, outputCurrency, bscBridgeNetwork]
         }
-        
-        if(fromBridgeNetwork.chainId === ChainId.BSC_MAINNET && toBridgeNetwork.chainId !== ChainId.FTM_MAINNET){
+
+        if (fromBridgeNetwork.chainId === ChainId.BSC_MAINNET && toBridgeNetwork.chainId !== ChainId.FTM_MAINNET) {
           let bToken = findBridgeToken(ftmBridgeNetwork, fromSwapType)
           outputCurrency = assignToken(bToken[0])
           return [inputCurrency, outputCurrency, ftmBridgeNetwork]
         }
-        
       }
 
       let bToken = findBridgeToken(toBridgeNetwork, fromSwapType)
-      const exactToken = bToken.find(t => {return (t.symbol === inputCurrency.symbol ? t : undefined)})
-      if(exactToken){
+      const exactToken = bToken.find((t) => {
+        return t.symbol === inputCurrency.symbol ? t : undefined
+      })
+      if (exactToken) {
         outputCurrency = assignToken(exactToken)
-      }else{
+      } else {
         outputCurrency = assignToken(bToken[0])
       }
     }
-    
   }
- 
-  return [inputCurrency, outputCurrency, toBridgeNetwork]
 
+  return [inputCurrency, outputCurrency, toBridgeNetwork]
 }
 
 export function useBridgeActionHandlers(): {
@@ -266,77 +251,68 @@ export function useBridgeActionHandlers(): {
       [Field.OUTPUT]: outputCurrency ?? undefined,
     }
   }, [inputCurrency, outputCurrency])
-  
+
   const dispatch = useDispatch<AppDispatch>()
-  const history = useHistory();
+  const history = useHistory()
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
       let _inputCurrency: Currency
       let _outputCurrency: Currency
-      
-      if(field === Field.INPUT){
+
+      if (field === Field.INPUT) {
         _inputCurrency = currency
         _outputCurrency = currencies[Field.OUTPUT]
-      }else{
+      } else {
         _inputCurrency = currencies[Field.INPUT]
         _outputCurrency = currency
       }
 
-      const [validInputCurrency, validOutputCurrency, redirectToBridgeNetwork] = checkCanBridgeByCurrency(_inputCurrency, _outputCurrency, field)
-      
-      if(redirectToBridgeNetwork){
+      const [validInputCurrency, validOutputCurrency, redirectToBridgeNetwork] = checkCanBridgeByCurrency(
+        _inputCurrency,
+        _outputCurrency,
+        field,
+      )
+
+      if (redirectToBridgeNetwork) {
         dispatch(
           replaceBridgeState({
             typedValue: '',
-            field: (field.toString() === Field.INPUT ? Field.INPUT : Field.OUTPUT),
-            inputCurrencyId: validInputCurrency instanceof Token
-            ? validInputCurrency.address
-            : undefined,
-            outputCurrencyId: validOutputCurrency instanceof Token
-            ? validOutputCurrency.address
-            : undefined,
+            field: field.toString() === Field.INPUT ? Field.INPUT : Field.OUTPUT,
+            inputCurrencyId: validInputCurrency instanceof Token ? validInputCurrency.address : undefined,
+            outputCurrencyId: validOutputCurrency instanceof Token ? validOutputCurrency.address : undefined,
             recipient: '',
-            outputChainId: validOutputCurrency instanceof Token
-            ? validOutputCurrency.chainId.toString()
-            : '56',
-          })
+            outputChainId: validOutputCurrency instanceof Token ? validOutputCurrency.chainId.toString() : '56',
+          }),
         )
 
         dispatch(
           selectNetwork({
-            field: (field.toString() === Field.INPUT ? Field.INPUT : Field.OUTPUT),
-            chainId: redirectToBridgeNetwork.chainId
-          })
+            field: field.toString() === Field.INPUT ? Field.INPUT : Field.OUTPUT,
+            chainId: redirectToBridgeNetwork.chainId,
+          }),
         )
-        
-        history.push(`/bridge?outputChainId=${redirectToBridgeNetwork.chainId}&inputCurrency=${validInputCurrency.address}&outputCurrency=${validOutputCurrency.address}`)
+
+        history.push(
+          `/bridge?outputChainId=${redirectToBridgeNetwork.chainId}&inputCurrency=${validInputCurrency.address}&outputCurrency=${validOutputCurrency.address}`,
+        )
       }
 
       dispatch(
         selectCurrency({
           field: Field.INPUT,
-          currencyId: validInputCurrency instanceof Token
-            ? validInputCurrency.address
-            : '',
-          chainId: validInputCurrency instanceof Token
-            ? validInputCurrency.chainId.toString()
-            : '56',
-        })
+          currencyId: validInputCurrency instanceof Token ? validInputCurrency.address : '',
+          chainId: validInputCurrency instanceof Token ? validInputCurrency.chainId.toString() : '56',
+        }),
       )
       dispatch(
         selectCurrency({
           field: Field.OUTPUT,
-          currencyId: validOutputCurrency instanceof Token
-            ? validOutputCurrency.address
-            : '',
-          chainId: validOutputCurrency instanceof Token
-            ? validOutputCurrency.chainId.toString()
-            : '56',
-        })
+          currencyId: validOutputCurrency instanceof Token ? validOutputCurrency.address : '',
+          chainId: validOutputCurrency instanceof Token ? validOutputCurrency.chainId.toString() : '56',
+        }),
       )
     },
-    [dispatch, currencies, history]
-
+    [dispatch, currencies, history],
   )
 
   const onSwitchTokens = useCallback(() => {
@@ -347,14 +323,14 @@ export function useBridgeActionHandlers(): {
     (field: Field, typedValue: string) => {
       dispatch(typeInput({ field, typedValue }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       dispatch(setRecipient({ recipient }))
     },
-    [dispatch]
+    [dispatch],
   )
 
   return {
@@ -409,7 +385,7 @@ export function useDerivedBridgeInfo(): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
-  inputError?: string,
+  inputError?: string
 } {
   const { account } = useActiveWeb3React()
   const { chainId } = getNetwork()
@@ -431,7 +407,7 @@ export function useDerivedBridgeInfo(): {
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ])
-  
+
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
 
@@ -454,15 +430,12 @@ export function useDerivedBridgeInfo(): {
     inputError = inputError ?? 'Enter an amount'
   }
 
-  if (!currencies[Field.INPUT] ) {
+  if (!currencies[Field.INPUT]) {
     inputError = inputError ?? 'Select a token'
   }
 
   // compare input balance to max input based on version
-  const [balanceIn, amountIn] = [
-    currencyBalances[Field.INPUT],
-    parsedAmount
-  ]
+  const [balanceIn, amountIn] = [currencyBalances[Field.INPUT], parsedAmount]
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = `Insufficient ${amountIn.currency.symbol} balance`
@@ -512,7 +485,6 @@ function parseChainIdURLParameter(urlParam: any): string {
   return typeof urlParam === 'string' && !isNaN(parseInt(urlParam)) ? urlParam : ''
 }
 
-
 export function queryParametersToBridgeState(parsedQs: ParsedQs): BridgeState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
@@ -548,7 +520,8 @@ export function useDefaultsFromURLSearch():
   const dispatch = useDispatch<AppDispatch>()
   const parsedQs = useParsedQueryString()
   const [result, setResult] = useState<
-    { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined; outputChainId: string | undefined  } | undefined
+    | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined; outputChainId: string | undefined }
+    | undefined
   >()
 
   useEffect(() => {
@@ -563,10 +536,14 @@ export function useDefaultsFromURLSearch():
         outputCurrencyId: parsed[Field.OUTPUT].currencyId,
         recipient: parsed.recipient,
         outputChainId: parsed.outputChainId,
-      })
+      }),
     )
 
-    setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId, outputChainId: parsed.outputChainId})
+    setResult({
+      inputCurrencyId: parsed[Field.INPUT].currencyId,
+      outputCurrencyId: parsed[Field.OUTPUT].currencyId,
+      outputChainId: parsed.outputChainId,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, chainId])
 

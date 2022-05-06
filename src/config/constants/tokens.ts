@@ -1,11 +1,27 @@
 import { Token } from './types'
 
 const tokens: Record<string, Token> = {
+  metis: {
+    symbol: 'METIS',
+    address: {
+      1088: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+    },
+    decimals: 18,
+    projectLink: 'https://metis.io/',
+  },
+  wmetis: {
+    symbol: 'METIS',
+    address: {
+      1088: '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000',
+    },
+    decimals: 18,
+    projectLink: 'https://www.metis.io',
+  },
   bnb: {
     symbol: 'BNB',
-    address: { 
-      56: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', 
-      250: '0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454' 
+    address: {
+      56: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      250: '0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454',
     },
     decimals: 18,
     projectLink: 'https://www.binance.com/',
@@ -15,6 +31,7 @@ const tokens: Record<string, Token> = {
     address: {
       250: '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83',
       56: '0xAD29AbB318791D579433D831ed122aFeAf29dcfe',
+      1088: '0xa9109271abcf0c4106ab7366b4edb34405947eed',
     },
     decimals: 18,
     projectLink: 'https://www.fantom.foundation/',
@@ -23,7 +40,7 @@ const tokens: Record<string, Token> = {
     symbol: 'FTM',
     address: {
       250: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-      56: '0xAD29AbB318791D579433D831ed122aFeAf29dcfe'
+      56: '0xAD29AbB318791D579433D831ed122aFeAf29dcfe',
     },
     decimals: 18,
     projectLink: 'https://www.fantom.foundation/',
@@ -34,6 +51,7 @@ const tokens: Record<string, Token> = {
       56: '0x130025eE738A66E691E6A7a62381CB33c6d9Ae83',
       97: '0x2c9a2fA5d93c7A4CFfBB45e94f05Fd9eF58A5CE2',
       250: '0x78DE9326792ce1d6eCA0c978753c6953Cdeedd73',
+      1088: '0xE3c82A836Ec85311a433fBd9486EfAF4b1AFbF48',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -43,6 +61,7 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0x3876720eF21Cd7036B8A247a695cb82D5319e588', // for farm 2.1
       250: '0xfD44AE75b934335262654600006E93594129CAA9', // 2.1
+      1088: '0x9239CE2946E90adf4519CCE82eEAbf6Ee3dC7D49', // metis xjump
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -58,26 +77,26 @@ const tokens: Record<string, Token> = {
   },
   alloy: {
     symbol: 'ALLOY',
-    address: { 
-      56: '0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd', 
-      97: '0xC5FD6F3eB1f63082Daee9e09E17D870005962309' 
+    address: {
+      56: '0x5eF5994fA33FF4eB6c82d51ee1DC145c546065Bd',
+      97: '0xC5FD6F3eB1f63082Daee9e09E17D870005962309',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   ori: {
     symbol: 'ORI',
-    address: { 
-      250: '0x0575f8738EFdA7F512e3654F277C77e80C7d2725' 
+    address: {
+      250: '0x0575f8738EFdA7F512e3654F277C77e80C7d2725',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   hypr: {
     symbol: 'HYPR',
-    address: { 
+    address: {
       56: '0x03D6BD3d48F956D783456695698C407A46ecD54d',
-      97: '0x03D6BD3d48F956D783456695698C407A46ecD54d'
+      97: '0x03D6BD3d48F956D783456695698C407A46ecD54d',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -109,161 +128,162 @@ const tokens: Record<string, Token> = {
   },
   supra: {
     symbol: 'supra',
-    address: { 
-      56: '0x4Ae2f11Df681eEC979bD93085Dd1A05E9593c8C6' 
+    address: {
+      56: '0x4Ae2f11Df681eEC979bD93085Dd1A05E9593c8C6',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   shilling: {
     symbol: 'shilling',
-    address: { 
-      56: '0x643B6ef6306417A0b3FA2813eb5BAf30F5dd8736' 
+    address: {
+      56: '0x643B6ef6306417A0b3FA2813eb5BAf30F5dd8736',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   spg: {
     symbol: 'spg',
-    address: { 
-      56: '0x3aabCf53A1930A42E18D938C019E83Ebee50a849' 
+    address: {
+      56: '0x3aabCf53A1930A42E18D938C019E83Ebee50a849',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   dvt: {
     symbol: 'DVT',
-    address: { 
-      56: '0xA47d132bFC00bc7B1B99238E08b91f1A08CcDbF3' 
+    address: {
+      56: '0xA47d132bFC00bc7B1B99238E08b91f1A08CcDbF3',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   btd: {
     symbol: 'BTD',
-    address: { 
-      56: '0xD1102332a213E21faF78B69C03572031F3552c33' 
+    address: {
+      56: '0xD1102332a213E21faF78B69C03572031F3552c33',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   slime: {
     symbol: 'SLIME',
-    address: { 
-      56: '0x4fCfA6cC8914ab455B5b33Df916d90BFe70b6AB1' 
+    address: {
+      56: '0x4fCfA6cC8914ab455B5b33Df916d90BFe70b6AB1',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   ramen: {
     symbol: 'RAMEN',
-    address: { 
-      56: '0x4F47A0d15c1E53F3d94c069C7D16977c29F9CB6B' 
+    address: {
+      56: '0x4F47A0d15c1E53F3d94c069C7D16977c29F9CB6B',
     },
     decimals: 18,
     projectLink: 'https://ramenswap.finance/',
   },
   brew: {
     symbol: 'BREW',
-    address: { 
-      56: '0x790Be81C3cA0e53974bE2688cDb954732C9862e1' 
+    address: {
+      56: '0x790Be81C3cA0e53974bE2688cDb954732C9862e1',
     },
     decimals: 18,
     projectLink: 'https://cafeswap.finance/',
   },
   voodoo: {
     symbol: 'VOODOO',
-    address: { 
-      56: '0x68a66a7C35e037192F6E38C766D6692D54219E6D' 
+    address: {
+      56: '0x68a66a7C35e037192F6E38C766D6692D54219E6D',
     },
     decimals: 18,
     projectLink: 'https://voodoo.supra.finance/',
   },
   oil: {
     symbol: 'OIL',
-    address: { 
-      56: '0xb1b17DFf66d75b29d34f0Bf8622c406D8219B507' 
+    address: {
+      56: '0xb1b17DFf66d75b29d34f0Bf8622c406D8219B507',
     },
     decimals: 18,
     projectLink: 'https://crudeoil.finance/',
   },
   innbc: {
     symbol: 'INNBC',
-    address: { 
-      97: '0xdF1F0026374d4BCc490BE5E316963Cf6Df2FfF19', 
-      56: '0xdF1F0026374d4BCc490BE5E316963Cf6Df2FfF19' 
+    address: {
+      97: '0xdF1F0026374d4BCc490BE5E316963Cf6Df2FfF19',
+      56: '0xdF1F0026374d4BCc490BE5E316963Cf6Df2FfF19',
     },
     decimals: 18,
     projectLink: 'https://www.innovativebioresearch.com/',
   },
   soak: {
     symbol: 'SOAK',
-    address: { 
+    address: {
       97: '0x849233FF1aea15D80EF658B2871664C9Ca994063',
-      56: '0x849233FF1aea15D80EF658B2871664C9Ca994063' },
+      56: '0x849233FF1aea15D80EF658B2871664C9Ca994063',
+    },
     decimals: 18,
     projectLink: 'https://sponge.finance/',
   },
   hps: {
     symbol: 'HPS',
-    address: { 
-      56: '0xeDa21B525Ac789EaB1a08ef2404dd8505FfB973D' 
+    address: {
+      56: '0xeDa21B525Ac789EaB1a08ef2404dd8505FfB973D',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   bhc: {
     symbol: 'BHC',
-    address: { 
-      56: '0x6fd7c98458a943f469E1Cf4eA85B173f5Cd342F4' 
+    address: {
+      56: '0x6fd7c98458a943f469E1Cf4eA85B173f5Cd342F4',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   ont: {
     symbol: 'ONT',
-    address: { 
-      56: '0xFd7B3A77848f1C2D67E05E54d78d174a0C850335' 
+    address: {
+      56: '0xFd7B3A77848f1C2D67E05E54d78d174a0C850335',
     },
     decimals: 18,
     projectLink: 'https://ont.io/',
   },
   sphn: {
     symbol: 'SPHN',
-    address: { 
-      56: '0xb58a579e8f987b52564A5fE08Fe5181dc2621a9c' 
+    address: {
+      56: '0xb58a579e8f987b52564A5fE08Fe5181dc2621a9c',
     },
     decimals: 18,
     projectLink: 'https://siphon.finance/',
   },
   bfi: {
     symbol: 'BFI',
-    address: { 
-      56: '0x81859801b01764D4f0Fa5E64729f5a6C3b91435b' 
+    address: {
+      56: '0x81859801b01764D4f0Fa5E64729f5a6C3b91435b',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   sbdo: {
     symbol: 'sBDO',
-    address: { 
-      56: '0x0d9319565be7f53CeFE84Ad201Be3f40feAE2740' 
+    address: {
+      56: '0x0d9319565be7f53CeFE84Ad201Be3f40feAE2740',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   auto: {
     symbol: 'AUTO',
-    address: { 
-      56: '0xa184088a740c695E156F91f5cC086a06bb78b827' 
+    address: {
+      56: '0xa184088a740c695E156F91f5cC086a06bb78b827',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   lusd: {
     symbol: 'lUSD',
-    address: { 
-      56: '0x23e8a70534308a4AAF76fb8C32ec13d17a3BD89e' 
+    address: {
+      56: '0x23e8a70534308a4AAF76fb8C32ec13d17a3BD89e',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -279,16 +299,16 @@ const tokens: Record<string, Token> = {
   },
   rendoge: {
     symbol: 'renDOGE',
-    address: { 
-      56: '0xc3fEd6eB39178A541D274e6Fc748d48f0Ca01CC3'
+    address: {
+      56: '0xc3fEd6eB39178A541D274e6Fc748d48f0Ca01CC3',
     },
     decimals: 8,
     projectLink: 'https://hyperjump.app/',
   },
   anymtlx: {
     symbol: 'anyMTLX',
-    address: { 
-      56: '0x5921DEE8556c4593EeFCFad3CA5e2f618606483b' 
+    address: {
+      56: '0x5921DEE8556c4593EeFCFad3CA5e2f618606483b',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -304,200 +324,200 @@ const tokens: Record<string, Token> = {
   },
   tpt: {
     symbol: 'TPT',
-    address: { 
-      56: '0xECa41281c24451168a37211F0bc2b8645AF45092' 
+    address: {
+      56: '0xECa41281c24451168a37211F0bc2b8645AF45092',
     },
     decimals: 4,
     projectLink: 'https://hyperjump.app/',
   },
   bel: {
     symbol: 'BEL',
-    address: { 
-      56: '0x8443f091997f06a61670B735ED92734F5628692F' 
+    address: {
+      56: '0x8443f091997f06a61670B735ED92734F5628692F',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   dexe: {
     symbol: 'DEXE',
-    address: { 
-      56: '0x039cB485212f996A9DBb85A9a75d898F94d38dA6' 
+    address: {
+      56: '0x039cB485212f996A9DBb85A9a75d898F94d38dA6',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   ramp: {
     symbol: 'RAMP',
-    address: { 
-      56: '0x8519EA49c997f50cefFa444d240fB655e89248Aa' 
+    address: {
+      56: '0x8519EA49c997f50cefFa444d240fB655e89248Aa',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   belt: {
     symbol: 'BELT',
-    address: { 
-      56: '0xE0e514c71282b6f4e823703a39374Cf58dc3eA4f' 
+    address: {
+      56: '0xE0e514c71282b6f4e823703a39374Cf58dc3eA4f',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   bat: {
     symbol: 'BAT',
-    address: { 
-      56: '0x101d82428437127bF1608F699CD651e6Abf9766E' 
+    address: {
+      56: '0x101d82428437127bF1608F699CD651e6Abf9766E',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   bux: {
     symbol: 'BUX',
-    address: { 
-      56: '0x211FfbE424b90e25a15531ca322adF1559779E45' 
+    address: {
+      56: '0x211FfbE424b90e25a15531ca322adF1559779E45',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   for: {
     symbol: 'FOR',
-    address: { 
-      56: '0x658A109C5900BC6d2357c87549B651670E5b0539' 
+    address: {
+      56: '0x658A109C5900BC6d2357c87549B651670E5b0539',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   alice: {
     symbol: 'ALICE',
-    address: { 
-      56: '0xAC51066d7bEC65Dc4589368da368b212745d63E8' 
+    address: {
+      56: '0xAC51066d7bEC65Dc4589368da368b212745d63E8',
     },
     decimals: 6,
     projectLink: 'https://hyperjump.app/',
   },
   bunny: {
     symbol: 'BUNNY',
-    address: { 
-      56: '0xC9849E6fdB743d08fAeE3E34dd2D1bc69EA11a51' 
+    address: {
+      56: '0xC9849E6fdB743d08fAeE3E34dd2D1bc69EA11a51',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   beluga: {
     symbol: 'BELUGA',
-    address: { 
-      56: '0x181dE8C57C4F25eBA9Fd27757BBd11Cc66a55d31' 
+    address: {
+      56: '0x181dE8C57C4F25eBA9Fd27757BBd11Cc66a55d31',
     },
     decimals: 18,
     projectLink: 'https://app.beluga.fi/',
   },
   gfce: {
     symbol: 'GFCE',
-    address: { 
-      56: '0x94BaBBE728D9411612Ee41b20241a6FA251b26Ce' 
+    address: {
+      56: '0x94BaBBE728D9411612Ee41b20241a6FA251b26Ce',
     },
     decimals: 9,
     projectLink: 'https://jetfuel.finance/gforce/g-force',
   },
   treat: {
     symbol: 'TREAT',
-    address: { 
-      56: '0xac0C7d9B063eD2C0946982dDB378e03886C064E6' 
+    address: {
+      56: '0xac0C7d9B063eD2C0946982dDB378e03886C064E6',
     },
     decimals: 18,
     projectLink: 'https://treatdao.com/',
   },
   xblzd: {
     symbol: 'xBLZD',
-    address: { 
-      56: '0x9a946c3Cb16c08334b69aE249690C236Ebd5583E' 
+    address: {
+      56: '0x9a946c3Cb16c08334b69aE249690C236Ebd5583E',
     },
     decimals: 18,
     projectLink: 'https://www.blizzard.money/',
   },
   soul: {
     symbol: 'SOUL',
-    address: { 
-      56: '0x67d012F731c23F0313CEA1186d0121779c77fcFE' 
+    address: {
+      56: '0x67d012F731c23F0313CEA1186d0121779c77fcFE',
     },
     decimals: 8,
     projectLink: 'http://apoyield.com/',
   },
   brn: {
     symbol: 'BRN',
-    address: { 
-      56: '0x5749085C36A521f71AD2050Cb600B2165aabdF68' 
+    address: {
+      56: '0x5749085C36A521f71AD2050Cb600B2165aabdF68',
     },
     decimals: 8,
     projectLink: 'https://www.brainaut.net/',
   },
   banana: {
     symbol: 'BANANA',
-    address: { 
-      56: '0x603c7f932ED1fc6575303D8Fb018fDCBb0f39a95' 
+    address: {
+      56: '0x603c7f932ED1fc6575303D8Fb018fDCBb0f39a95',
     },
     decimals: 18,
     projectLink: 'https://apeswap.finance/',
   },
   pmp: {
     symbol: 'PMP',
-    address: { 
-      56: '0x8d4FBB3AC63bf33851dCE80D63613Df1A515BC00' 
+    address: {
+      56: '0x8d4FBB3AC63bf33851dCE80D63613Df1A515BC00',
     },
     decimals: 18,
     projectLink: 'https://pumpy.farm/',
   },
   milk2: {
     symbol: 'MILK2',
-    address: { 
-      56: '0x4A5a34212404f30C5aB7eB61b078fA4A55AdC5a5' 
+    address: {
+      56: '0x4A5a34212404f30C5aB7eB61b078fA4A55AdC5a5',
     },
     decimals: 18,
     projectLink: 'https://spaceswap.app/',
   },
   grand: {
     symbol: 'GRAND',
-    address: { 
-      56: '0xeE814F5B2bF700D2e843Dc56835D28d095161dd9' 
+    address: {
+      56: '0xeE814F5B2bF700D2e843Dc56835D28d095161dd9',
     },
     decimals: 18,
     projectLink: 'https://www.thegrandbanks.finance/#/',
   },
   fts: {
     symbol: 'FTS',
-    address: { 
-      56: '0x4437743ac02957068995c48E08465E0EE1769fBE' 
+    address: {
+      56: '0x4437743ac02957068995c48E08465E0EE1769fBE',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   naut: {
     symbol: 'NAUT',
-    address: { 
-      56: '0x05B339B0A346bF01f851ddE47a5d485c34FE220c' 
+    address: {
+      56: '0x05B339B0A346bF01f851ddE47a5d485c34FE220c',
     },
     decimals: 8,
     projectLink: 'https://astronaut.to/',
   },
   ccbd: {
     symbol: 'cCBD',
-    address: { 
-      56: '0x131DEd61462cb0f8034656D9294F79247f72Ad0b' 
+    address: {
+      56: '0x131DEd61462cb0f8034656D9294F79247f72Ad0b',
     },
     decimals: 18,
     projectLink: 'https://cbd-cash.io/',
   },
   scbd: {
     symbol: 'sCBD',
-    address: { 
-      56: '0x7a0fFA3db812701e711fc38eacb99675352f31be' 
+    address: {
+      56: '0x7a0fFA3db812701e711fc38eacb99675352f31be',
     },
     decimals: 18,
     projectLink: 'https://cbd-cash.io/',
   },
   shililng: {
     symbol: 'SHILILNG',
-    address: { 
-      56: '0x643B6ef6306417A0b3FA2813eb5BAf30F5dd8736' 
+    address: {
+      56: '0x643B6ef6306417A0b3FA2813eb5BAf30F5dd8736',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -507,6 +527,7 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
       97: '0xa35062141Fa33BCA92Ce69FeD37D0E8908868AAe',
+      1088: '0x445ea60f4ace3d8794369379e68fa0f76af06b02',
     },
     decimals: 18,
     projectLink: 'https://pancakeswap.finance/',
@@ -812,7 +833,9 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
       97: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
+      1088: '0x2692be44a6e38b698731fddf417d060f0d20a0cb',
     },
+
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
@@ -967,6 +990,7 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
       97: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
+      1088: '0x12d84f1cfe870ca9c9df9785f8954341d7fbb249',
     },
     decimals: 18,
     projectLink: 'https://www.paxos.com/busd/',
@@ -976,6 +1000,7 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
       250: '0x74b23882a30290451A17c44f4F05243b6b58C76d',
+      1088: '0x420000000000000000000000000000000000000a',
     },
     decimals: 18,
     projectLink: 'https://ethereum.org/en/',
@@ -1033,6 +1058,7 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
       250: '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75',
+      1088: '0xea32a96608495e54156ae48931a7c20f0dcc1a21',
     },
     decimals: 6,
     projectLink: 'https://www.centre.io/usdc',
@@ -1088,6 +1114,7 @@ const tokens: Record<string, Token> = {
       56: '0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD',
       97: '0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5',
       250: '0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8',
+      1088: '0xf5f66d5daa89c090a7afa10e6c1553b2887a9a33',
     },
     decimals: 18,
     projectLink: 'https://chain.link/',
@@ -1097,6 +1124,7 @@ const tokens: Record<string, Token> = {
     address: {
       97: '0xE02dF9e3e622DeBdD69fb838bB799E3F168902c5',
       56: '0x55d398326f99059ff775485246999027b3197955',
+      1088: '0xbb06dca3ae6887fabf931640f67cab3e3a16f4dc',
     },
     decimals: 18,
     projectLink: 'https://tether.to/',
@@ -1112,9 +1140,10 @@ const tokens: Record<string, Token> = {
   },
   btc: {
     symbol: 'BTC',
-    address: { 
-      97: '', 
-      250: '0x321162Cd933E2Be498Cd2267a90534A804051b11' 
+    address: {
+      97: '',
+      250: '0x321162Cd933E2Be498Cd2267a90534A804051b11',
+      1088: '0xa5B55ab1dAF0F8e1EFc0eB1931a957fd89B918f4',
     },
     decimals: 8,
     projectLink: 'https://hyperjump.app/',
@@ -1853,40 +1882,40 @@ const tokens: Record<string, Token> = {
   },
   ice: {
     symbol: 'ICE',
-    address: { 
-      250: '0xf16e81dce15B08F326220742020379B855B87DF9' 
+    address: {
+      250: '0xf16e81dce15B08F326220742020379B855B87DF9',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   zoo: {
     symbol: 'ZOO',
-    address: { 
-      250: '0x09e145A1D53c0045F41aEEf25D8ff982ae74dD56' 
+    address: {
+      250: '0x09e145A1D53c0045F41aEEf25D8ff982ae74dD56',
     },
     decimals: 0,
     projectLink: 'https://hyperjump.app/',
   },
   eswap: {
     symbol: 'ESWAP',
-    address: { 
-      250: '0x735aBE48e8782948a37C7765ECb76b98CdE97B0F' 
+    address: {
+      250: '0x735aBE48e8782948a37C7765ECb76b98CdE97B0F',
     },
     decimals: 8,
     projectLink: 'https://hyperjump.app/',
   },
   snx: {
     symbol: 'SNX',
-    address: { 
-      250: '0x56ee926bD8c72B2d5fa1aF4d9E4Cbb515a1E3Adc' 
+    address: {
+      250: '0x56ee926bD8c72B2d5fa1aF4d9E4Cbb515a1E3Adc',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
   },
   cztears: {
     symbol: 'CZTEARS',
-    address: { 
-      250: '0x907f1A48918Bb5DE07c12443CAB0e6EEfCC611BC' 
+    address: {
+      250: '0x907f1A48918Bb5DE07c12443CAB0e6EEfCC611BC',
     },
     decimals: 18,
     projectLink: 'https://hyperjump.app/',
@@ -1902,79 +1931,79 @@ const tokens: Record<string, Token> = {
   },
   curve: {
     symbol: 'CRV',
-    address: { 
-      97: '', 
-      250: '0x1E4F97b9f9F913c46F1632781732927B9019C68b' 
+    address: {
+      1088: '0x87DD4a7Ad23B95cD9fF9C26B5cF325905CaF8663',
+      250: '0x1E4F97b9f9F913c46F1632781732927B9019C68b',
     },
     decimals: 18,
     projectLink: 'https://curve.fi/',
   },
   hero: {
     symbol: 'HERO',
-    address: { 
-      56: '0x9B26e16377ad29A6CCC01770bcfB56DE3A36d8b2', 
-      97: '', 
-      250: '' 
+    address: {
+      56: '0x9B26e16377ad29A6CCC01770bcfB56DE3A36d8b2',
+      97: '',
+      250: '',
     },
     decimals: 18,
     projectLink: 'https://www.farmhero.io/',
   },
   boo: {
     symbol: 'BOO',
-    address: { 
-      56: '', 
-      97: '', 
-      250: '0x841FAD6EAe12c286d1Fd18d1d525DFfA75C7EFFE' 
+    address: {
+      56: '',
+      97: '',
+      250: '0x841FAD6EAe12c286d1Fd18d1d525DFfA75C7EFFE',
     },
     decimals: 18,
     projectLink: 'https://www.spookyswap.finance/',
   },
   wild: {
     symbol: 'WILD',
-    address: { 
-      56: '', 
-      97: '', 
-      250: '0xAe0C241Ec740309c2cbdc27456eB3C1a2aD74737' 
+    address: {
+      56: '',
+      97: '',
+      250: '0xAe0C241Ec740309c2cbdc27456eB3C1a2aD74737',
     },
     decimals: 18,
     projectLink: 'https://zoocoin.cash/',
   },
   krown: {
     symbol: 'KROWN',
-    address: { 
-      56: '0x1446f3CEdf4d86a9399E49f7937766E6De2A3AAB', 
-      97: '', 
-      250: '' 
+    address: {
+      56: '0x1446f3CEdf4d86a9399E49f7937766E6De2A3AAB',
+      97: '',
+      250: '',
     },
     decimals: 18,
     projectLink: 'https://kingdefi.io/',
   },
   atari: {
     symbol: 'ATARI',
-    address: { 
-      56: '', 
-      97: '', 
-      250: '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b' 
+    address: {
+      56: '',
+      97: '',
+      250: '0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b',
     },
     decimals: 0,
     projectLink: 'https://www.atarichain.com/',
   },
   scream: {
     symbol: 'SCREAM',
-    address: { 
-      56: '', 
-      97: '', 
-      250: '0xe0654C8e6fd4D733349ac7E09f6f23DA256bF475' 
+    address: {
+      56: '',
+      97: '',
+      250: '0xe0654C8e6fd4D733349ac7E09f6f23DA256bF475',
     },
     decimals: 18,
     projectLink: 'https://www.scream.sh/',
   },
   mim: {
     symbol: 'MIM',
-    address: { 
-      56: '', 
-      97: '', 
-      250: '0x82f0B8B456c1A451378467398982d4834b6829c1' 
+    address: {
+      56: '',
+      97: '',
+      250: '0x82f0B8B456c1A451378467398982d4834b6829c1',
     },
     decimals: 18,
     projectLink: 'https://abracadabra.money',
@@ -1984,6 +2013,7 @@ const tokens: Record<string, Token> = {
     address: {
       56: '0x1CE0c2827e2eF14D5C4f29a091d735A204794041',
       250: '0x511D35c52a3C244E7b8bd92c0C297755FbD89212',
+      1088: '0xe253e0cea0cdd43d9628567d097052b33f98d611',
     },
     decimals: 18,
     projectLink: '',
@@ -1995,6 +2025,14 @@ const tokens: Record<string, Token> = {
     },
     decimals: 18,
     projectLink: 'https:www.solana.com',
+  },
+  tethys: {
+    symbol: 'TETHYS',
+    address: {
+      1088: '0x69fdb77064ec5c84FA2F21072973eB28441F43F3',
+    },
+    decimals: 18,
+    projectLink: 'https:tethys.finance',
   },
 }
 

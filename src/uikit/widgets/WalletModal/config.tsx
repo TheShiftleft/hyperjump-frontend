@@ -13,6 +13,58 @@ import CloverWallet from './icons/CloverWallet'
 import { Config, ConnectorNames } from './types'
 
 const connectors: Record<Network, Config[]> = {
+  [Network.METIS]: [
+    {
+      title: 'Metamask',
+      icon: Metamask,
+      connectorId: ConnectorNames.Injected,
+    },
+    {
+      title: 'TrustWallet',
+      icon: TrustWallet,
+      connectorId: ConnectorNames.Injected,
+    },
+    {
+      title: 'CloverWallet',
+      icon: CloverWallet,
+      connectorId: ConnectorNames.Clover,
+    },
+    {
+      title: 'MathWallet',
+      icon: MathWallet,
+      connectorId: ConnectorNames.Injected,
+    },
+    {
+      title: 'WalletConnect',
+      icon: WalletConnect,
+      connectorId: ConnectorNames.WalletConnect,
+    },
+    {
+      title: 'Binance Chain Wallet',
+      icon: BinanceChain,
+      connectorId: ConnectorNames.BSC,
+    },
+    {
+      title: 'SafePal Wallet',
+      icon: SafePalWallet,
+      connectorId: ConnectorNames.Injected,
+    },
+    {
+      title: 'Coin98',
+      icon: Coin98Icon,
+      connectorId: ConnectorNames.Injected,
+    },
+    {
+      title: 'OntoWallet',
+      icon: OntoWallet,
+      connectorId: ConnectorNames.Injected,
+    },
+    {
+      title: 'TokenPocket',
+      icon: TokenPocket,
+      connectorId: ConnectorNames.Injected,
+    },
+  ],
   [Network.BSC]: [
     {
       title: 'Metamask',

@@ -3,6 +3,15 @@ import tokens from './tokens'
 import { FarmConfig } from './types'
 
 const farms: Record<Network, FarmConfig[]> = {
+  [Network.METIS]: [
+    {
+      pid: 1,
+      lpSymbol: 'JUMP-METIS',
+      lpAddresses: { 1088: '0xc33d8AE2c4f5592b1987E263B2a124cd33E1F624' },
+      token: tokens.jump,
+      quoteToken: tokens.metis,
+    },
+  ],
   [Network.BSC_TESTNET]: [
     {
       pid: 1,

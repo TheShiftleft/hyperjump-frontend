@@ -5,6 +5,7 @@ import getNetwork from 'utils/getNetwork'
 import BSC_TESTNET_SWAP_TOKEN_LIST from './constants/bsc-testnet-swap-tokens.json'
 import BSC_SWAP_TOKEN_LIST from './constants/bsc-swap-tokens.json'
 import FTM_SWAP_TOKEN_LIST from './constants/ftm-swap-tokens.json'
+import METIS_SWAP_TOKEN_LIST from './constants/metis-swap-tokens.json'
 
 BigNumber.config({
   EXPONENTIAL_AT: 1000,
@@ -14,29 +15,32 @@ BigNumber.config({
 const { chainId, config } = getNetwork()
 
 export const FARM_TOKEN_PER_BLOCK = new BigNumber(config.localEmissionRate)
-// NOT IN USE ?? export const FARM_TOKEN_POOL_PID = 1
 
 export const BSC_BLOCK_TIME = 3
 export const BSC_BLOCKS_PER_YEAR = new BigNumber((60 / BSC_BLOCK_TIME) * 60 * 24 * 365) // 10512000
 export const FTM_BLOCKS_PER_YEAR = new BigNumber(60 * 60 * 24 * 365)
+export const METIS_BLOCKS_PER_YEAR = new BigNumber((60 / 60) * 60 * 24 * 265)
 
 // TODO: move these into helper functions?
 export const FARM_TOKEN_PER_YEAR: Record<Network, BigNumber> = {
   [Network.BSC]: FARM_TOKEN_PER_BLOCK.times(FTM_BLOCKS_PER_YEAR),
   [Network.BSC_TESTNET]: FARM_TOKEN_PER_BLOCK.times(BSC_BLOCKS_PER_YEAR),
   [Network.FANTOM]: FARM_TOKEN_PER_BLOCK.times(FTM_BLOCKS_PER_YEAR),
+  [Network.METIS]: FARM_TOKEN_PER_BLOCK.times(METIS_BLOCKS_PER_YEAR),
 }
 
 export const BLOCKS_PER_YEAR: Record<Network, BigNumber> = {
   [Network.BSC]: BSC_BLOCKS_PER_YEAR,
   [Network.BSC_TESTNET]: BSC_BLOCKS_PER_YEAR,
   [Network.FANTOM]: FTM_BLOCKS_PER_YEAR,
+  [Network.METIS]: METIS_BLOCKS_PER_YEAR,
 }
 
 export const VAULTS_API_BASE: Record<Network, string> = {
   [Network.BSC_TESTNET]: 'https://vaultsapi.hyperjump.app',
   [Network.BSC]: 'https://vaultsapi.hyperjump.app',
   [Network.FANTOM]: 'https://ftmvaultsapi.hyperjump.app',
+  [Network.METIS]: 'https://ftmvaultsapi.hyperjump.app',
 }
 export const VAULTS_API_URL = 'https://vaultsapi.hyperjump.app' // VAULTS_API_BASE[config.network]
 
@@ -44,12 +48,14 @@ const BSC_NETWORK_URL = process.env.REACT_APP_BSC_NETWORK_URL
 const BSC_TESTNET_NETWORK_URL = process.env.REACT_APP_BSC_TESTNET_NETWORK_URL
 const FTM_NETWORK_URL = process.env.REACT_APP_FTM_NETWORK_URL
 const FTM_TESTNET_NETWORK_URL = process.env.REACT_APP_FTM_TESTNET_NETWORK_URL
+const METIS_NETWORK_URL = process.env.REACT_APP_METIS_NETWORK_URL
 
 const NETWORK_URLS = {
   [ChainId.BSC_MAINNET]: BSC_NETWORK_URL,
   [ChainId.BSC_TESTNET]: BSC_TESTNET_NETWORK_URL,
   [ChainId.FTM_MAINNET]: FTM_NETWORK_URL,
   [ChainId.FTM_TESTNET]: FTM_TESTNET_NETWORK_URL,
+  [ChainId.METIS]: METIS_NETWORK_URL,
 }
 export const NETWORK_URL = NETWORK_URLS[chainId]
 
@@ -71,11 +77,13 @@ export const DEFAULT_GAS_LIMIT = 200000
 
 export const DEFAULT_BSC_GAS_PRICE = 5
 export const DEFAULT_FTM_GAS_PRICE = 80
+export const DEFAULT_METIS_GAS_PRICE = 17
 
 export const DEFAULT_GAS_PRICE: Record<Network, number> = {
   [Network.BSC]: DEFAULT_BSC_GAS_PRICE,
   [Network.BSC_TESTNET]: DEFAULT_BSC_GAS_PRICE,
   [Network.FANTOM]: DEFAULT_FTM_GAS_PRICE,
+  [Network.METIS]: DEFAULT_METIS_GAS_PRICE,
 }
 
 // stuff from swap config
@@ -84,6 +92,7 @@ const SWAP_TOKEN_LISTS: Record<Network, any> = {
   [Network.BSC]: BSC_TESTNET_SWAP_TOKEN_LIST,
   [Network.BSC_TESTNET]: BSC_SWAP_TOKEN_LIST,
   [Network.FANTOM]: FTM_SWAP_TOKEN_LIST,
+  [Network.METIS]: METIS_SWAP_TOKEN_LIST,
 }
 export const DEFAULT_SWAP_TOKEN_LIST = SWAP_TOKEN_LISTS[config.network]
 
@@ -160,6 +169,7 @@ const WRAPPED_ONLY: ChainTokenList = {
   [ChainId.BSC_TESTNET]: [WRAPPED[ChainId.BSC_TESTNET]],
   [ChainId.FTM_MAINNET]: [WRAPPED[ChainId.FTM_MAINNET]],
   [ChainId.FTM_TESTNET]: [WRAPPED[ChainId.FTM_TESTNET]],
+  [ChainId.METIS]: [WRAPPED[ChainId.METIS]],
 }
 
 // used to construct intermediary pairs for trading
@@ -231,12 +241,14 @@ export const BASE_BSC_SCAN_URL = 'https://bscscan.com'
 export const BASE_FTM_SCAN_URL = 'https://ftmscan.com'
 export const BASE_BSC_TESTNET_SCAN_URL = 'https://testnet.bscscan.com'
 export const BASE_FTM_TESTNET_SCAN_URL = 'https://testnet.ftmscan.com'
+export const BASE_METIS_SCAN_URL = 'https://andromeda-explorer.metis.io'
 
 const SCANNER_URLS = {
   [ChainId.BSC_MAINNET]: BASE_BSC_SCAN_URL,
   [ChainId.BSC_TESTNET]: BASE_BSC_TESTNET_SCAN_URL,
   [ChainId.FTM_MAINNET]: BASE_FTM_SCAN_URL,
   [ChainId.FTM_TESTNET]: BASE_FTM_TESTNET_SCAN_URL,
+  [ChainId.METIS]: BASE_METIS_SCAN_URL,
 }
 
 export const SCANNER_URL = SCANNER_URLS[chainId]

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { BNB, Currency, CurrencyAmount, FANTOM, Token, Pair, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
+import { BNB, Currency, CurrencyAmount, FANTOM, METIS, Token, Pair, TokenAmount, JSBI } from '@hyperjump-defi/sdk'
 import getNetwork from 'utils/getNetwork'
 import { tryParseAmount } from 'state/swap/hooks'
 import zapPairs from 'config/constants/zap'
@@ -70,6 +70,8 @@ export function useZapActionHandlers(): {
         ? 'BNB'
         : currency === FANTOM
         ? 'FTM'
+        : currency === METIS
+        ? 'METIS'
         : ''}))
     },
     [dispatch]

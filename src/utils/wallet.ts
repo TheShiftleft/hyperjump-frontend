@@ -1,9 +1,20 @@
 // Set of helper functions to facilitate wallet setup
 
 import { ChainId } from '@hyperjump-defi/sdk'
-import { BASE_BSC_SCAN_URL } from 'config'
+import { BASE_BSC_SCAN_URL, BASE_METIS_SCAN_URL } from 'config'
 
 const chainParams: Record<ChainId, any> = {
+  [ChainId.METIS]: {
+    chainId: '0x440',
+    chainName: 'Metis Andromeda Mainnet',
+    nativeCurrency: {
+      name: 'METIS',
+      symbol: 'metis',
+      decimals: 18,
+    },
+    rpcUrls: [process.env.REACT_APP_METIS_NETWORK_URL],
+    blockExplorerUrls: [`${BASE_METIS_SCAN_URL}/`],
+  },
   [ChainId.BSC_MAINNET]: {
     chainId: '0x38',
     chainName: 'Binance Smart Chain Mainnet',
@@ -110,7 +121,7 @@ export const registerToken = async (
  * @param rpc
  */
 export const addToNetwork = async (account: string, chain, rpc = null) => {
-  if(!account) return
+  if (!account) return
 
   const params = {
     chainId: `0x${chain.chainId.toString(16)}`, // A 0x-prefixed hexadecimal string

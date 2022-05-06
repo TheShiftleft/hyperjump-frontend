@@ -614,7 +614,7 @@ const Swap = () => {
                   <PlaceOrderButton 
                     chainId={config.id}
                     account={account}
-                    sellToken={trade?.inputAmount?.currency?.symbol === "FTM" || trade?.inputAmount?.currency?.symbol === "BNB" ? config.networkToken.address[config.id] : trade?.route.path[0].address}
+                    sellToken={trade?.inputAmount?.currency?.symbol === "FTM" || trade?.inputAmount?.currency?.symbol === "BNB" || trade?.inputAmount?.currency?.symbol === "METIS" ? config.networkToken.address[config.id] : trade?.route.path[0].address}
                     sellAmount={formattedAmounts[Field.INPUT]}
                     buyToken={trade?.route.path[trade?.route.path.length -1].address}
                     buyAmount={limitOutput}

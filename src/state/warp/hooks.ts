@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import getNetwork from 'utils/getNetwork'
-import { BNB, Currency, CurrencyAmount, FANTOM, Pair, Token } from '@hyperjump-defi/sdk'
+import { BNB, Currency, CurrencyAmount, FANTOM, METIS,  Pair, Token } from '@hyperjump-defi/sdk'
 import { PairState, usePair } from 'data/Reserves'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import { tryParseAmount } from 'state/swap/hooks'
@@ -39,6 +39,8 @@ export function useWarpActionHandlers(): {
         ? 'BNB'
         : currency === FANTOM
         ? 'FTM'
+        : currency === METIS
+        ? 'METIS'
         : ''}))
     },
     [dispatch]

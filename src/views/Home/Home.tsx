@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Flex, Heading, SubHeader } from 'uikit'
+
+import { Network, ChainId, WRAPPED } from '@hyperjump-defi/sdk'
+
 import Page from 'components/layout/Page'
 import FarmingTokenStats from 'views/Home/components/FarmingTokenStats'
 import GovTokenStats from 'views/Home/components/GovTokenStats'

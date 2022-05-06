@@ -3,8 +3,18 @@ import tokens from './tokens'
 // tokens moved to the bottom, they now use the addresses from the token list
 
 export default {
-  // masterchefs 2.1 - current version
+  factory: {
+    1088: '0xAA1504c878B158906B78A471fD6bDbf328688aeB',
+  },
+  initHash: { 1088: '0x68b379a01bf77e2832a78c391e57da6365754d5b3339786b4f37f167edf6a6b7' },
+  router: {
+    56: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',
+    97: '0x3bc677674df90A9e5D741f28f6CA303357D0E4Ec',
+    250: '0x53c153a0df7E050BbEFbb70eE9632061f12795fB',
+    1088: '0xd96aeE439e6e5B4f3544bF105eb78F3b8B6CD774',
+  },
   masterChef: {
+    // masterchefs 2.1 - current version
     56: '0x1985CD7aF3B410Cfe87B59EAF8A0833816729c49',
     250: '0xb0AA3a0458BD85F859345e2251C7665C5f7A9d18',
     1088: '0x7B649F38286231755FFccBe6C82E8d7529800eD4',
@@ -38,11 +48,13 @@ export default {
     56: '0x1282fE78d092E6077B05FeE27f239b49b2725978',
     250: '0x6185A664e90754F4967B9962Fe7B1183b147fc48',
     97: '0x67ADCB4dF3931b0C5Da724058ADC2174a9844412',
+    1088: '0x0071DDb5a2e80B6b22317594a0307599836621CD', // <-- netswap, hyper --> '0x1e2339616899A3130C72C62D35DC2b2B23598949',
   },
   lottery: {
     56: '0x96f83a5A3572f38D9Bf147973B132820Ea4446f4',
     250: '0x1e8763f80E57209E26300b3002bbAEAd7CEA3Bd1', // '0x98fA02eC9Feafe8ABf3AD71693BC5D562aa38f95',
     97: '',
+    1088: '',
   },
   // TODO: rename this migrator to correctly reflect which migration
   migrator: {
@@ -52,6 +64,7 @@ export default {
   synapse: {
     56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
     250: '0x7BC05Ff03397950E8DeE098B354c37f449907c20', // 0xE910dfaa50094C6BC1bF68E3CD7B244E9eC09D57
+    1088: '',
   },
   mechmigrator: {
     56: '0x9A493874B5E1fa9EC900A48D46C2791d894be454',
@@ -68,6 +81,7 @@ export default {
   l2BridgeZap: {
     56: '0x749F37Df06A99D6A8E065dd065f8cF947ca23697',
     250: '0xB003e75f7E0B5365e814302192E99b4EE08c0DEd',
+    1088: '',
   },
   // tokens
   alloy: {
@@ -76,6 +90,7 @@ export default {
   jump: {
     56: tokens.jump.address[56],
     250: tokens.jump.address[250],
+    1088: tokens.jump.address[250],
   },
   // old xJump from farm 2.0
   xjump20: {
@@ -86,6 +101,7 @@ export default {
   xjump: {
     56: tokens.xjump.address[56],
     250: tokens.xjump.address[250],
+    1088: tokens.jump.address[250],
   },
   ori: {
     250: tokens.ori.address[250],
@@ -103,17 +119,21 @@ export default {
   usdc: {
     56: tokens.usdc.address[56],
     250: tokens.usdc.address[250],
+    1088: tokens.jump.address[250],
   },
   eth: {
     56: tokens.eth.address[56],
     250: tokens.eth.address[250],
+    1088: tokens.jump.address[250],
   },
   wbnb: {
     56: tokens.wbnb.address[56],
     250: tokens.wbnb.address[250],
+    1088: tokens.jump.address[250],
   },
   wftm: {
     56: tokens.wftm.address[56],
     250: tokens.wftm.address[250],
+    1088: tokens.jump.address[250],
   },
 }

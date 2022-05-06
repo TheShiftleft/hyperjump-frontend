@@ -76,7 +76,6 @@ export const getDefaultGasPrice = () => {
   const { config } = getNetwork()
   return DEFAULT_GAS_PRICE[config.network]
 }
-
 const getContract = (abi: any, address: string, web3?: Web3, account?: string) => {
   const _web3 = web3 ?? web3NoAccount
   return new _web3.eth.Contract(abi as unknown as AbiItem, address) // , {
@@ -84,27 +83,21 @@ const getContract = (abi: any, address: string, web3?: Web3, account?: string) =
 export const getActionInitiatorContract = (web3?: Web3) => {
   return getContract(getActionInitiatorsABI(), getActionInitiatorsAddress(), web3)
 }
-
 export const getXJumpContract = (web3?: Web3) => {
   return getContract(getXJumpABI(), getXJumpAddress(), web3)
 }
-
 export const getXJumpContract20 = (web3?: Web3) => {
   return getContract(getXJumpABI(), getXJumpAddress20(), web3)
 }
-
 export const getMigratorContract = (web3?: Web3) => {
   return getContract(getRewardMigratorABI(), getRewardMigratorAddress(), web3)
 }
-
 export const getClaimLpRewardsMigratorContract = (web3?: Web3) => {
   return getContract(getClaimLpRewardsMigratorABI(), getClaimLpRewardsMigratorAddress(), web3)
 }
-
 export const getMechMigratorContract = (web3?: Web3) => {
   return getContract(getMechMigratorABI(), getMechMigratorAddress(), web3)
 }
-
 export const getBep20Contract = (address: string, web3?: Web3) => {
   return getContract(bep20Abi, address, web3)
 }
@@ -120,7 +113,6 @@ export const getPoolContract = (pool: Pool, web3?: Web3) => {
 export const getFarmingTokenContract = (web3?: Web3) => {
   return getContract(getFarmingTokenABI(), getFarmingTokenAddress(), web3)
 }
-
 export const getOldFarmingTokenContract = (web3?: Web3) => {
   return getContract(getFarmingTokenABI(), getOldFarmingTokenAddress(), web3)
 }
@@ -148,11 +140,9 @@ export const getLotteryContract = (web3?: Web3) => {
 export const getSynapseBridgeContract = (web3?: Web3) => {
   return getContract(SYNAPSE_BRIDGE_ABI.abi, getSynapseBridgeAddress(), web3)
 }
-
 export const getZapContract = (web3?: Web3) => {
   return getContract(getZapABI(), getZapAddress(), web3)
 }
-
 export const getL2BridgeZapContract = (web3?: Web3) => {
   return getContract(L2_BRIDGE_ZAP_ABI.abi, getL2BridgeZapAddress(), web3)
 }

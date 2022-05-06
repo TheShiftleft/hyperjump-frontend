@@ -37,6 +37,7 @@ const initialState: Record<ChainId, ChainFarmsState> = {
   [ChainId.BSC_TESTNET]: { ...initialChainFarmState, data: initChainFarms(Network.BSC_TESTNET) },
   [ChainId.FTM_MAINNET]: { ...initialChainFarmState, data: initChainFarms(Network.FANTOM) },
   [ChainId.FTM_TESTNET]: { ...initialChainFarmState, data: initChainFarms(Network.FTM_TESTNET) },
+  [ChainId.METIS]: { ...initialChainFarmState, data: initChainFarms(Network.METIS) },
 }
 
 interface IFarmPublicDataResponse {

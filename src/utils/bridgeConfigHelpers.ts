@@ -12,6 +12,7 @@ const PROVIDERS = {
   [CHAINID_ETH]: new JsonRpcProvider('https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'),
   [ChainId.BSC_MAINNET]: new JsonRpcProvider('https://bsc-dataseed1.ninicoin.io'),
   [ChainId.FTM_MAINNET]: new JsonRpcProvider('https://rpc.ftm.tools/'),
+  [ChainId.METIS]: new JsonRpcProvider('https://andromeda.metis.io/?owner=1088'),
 }
 
 const getContract = (abi: any, address: string, provider: any) => {

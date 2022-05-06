@@ -3,6 +3,21 @@ import tokens from './tokens'
 import { PoolCategory, PoolConfig } from './types'
 
 const pools: Record<Network, PoolConfig[]> = {
+  [Network.METIS]: [
+    {
+      sousId: 0,
+      stakingToken: tokens.jump,
+      earningToken: tokens.jump,
+      contractAddress: {
+        1088: tokens.xjump.address[1088],
+      },
+      poolCategory: PoolCategory.CORE,
+      harvest: true,
+      tokenPerBlock: '1.05',
+      sortOrder: 1,
+      isFinished: false,
+    },
+  ],
   [Network.BSC]: [
     {
       sousId: 14,

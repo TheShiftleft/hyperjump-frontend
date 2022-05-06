@@ -39,6 +39,7 @@ const networkIcon: Record<Network, any> = {
   [Network.BSC]: BSCIcon,
   [Network.BSC_TESTNET]: BSCTestnetIcon,
   [Network.FANTOM]: FTMIcon,
+  [Network.METIS]: FTMIcon, // METIS FIX
 }
 
 const NetworkBlock: React.FC = () => {

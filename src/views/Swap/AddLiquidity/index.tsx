@@ -42,12 +42,13 @@ const routerMethods: Record<Network, string> = {
   [Network.BSC]: 'addLiquidityBNB',
   [Network.BSC_TESTNET]: 'addLiquidityBNB',
   [Network.FANTOM]: 'addLiquidityFTM',
+  [Network.METIS]: 'addLiquidityMETIs',
 }
 
 const AddLiquidity = ({
   match: {
     params: { currencyIdA, currencyIdB },
-  }
+  },
 }) => {
   const { account, library } = useWeb3React()
   const { config, chainId } = getNetwork()
