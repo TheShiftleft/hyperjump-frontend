@@ -14,7 +14,7 @@ import { useActiveWeb3React } from 'hooks';
 import { useFarmUser, usePools } from 'state/hooks';
 import { usePairContract } from 'hooks/useContract';
 import Loader from 'components/Loader';
-import { useEmergencyWithdraw, useGetLPTokens, useGetPoolBalance } from 'hooks/useGetPools';
+import { useEmergencyWithdraw, useGetLPTokens, useGetPoolBalance, useRevokePool } from 'hooks/useGetPools';
 import { getBalanceAmount, getFullDisplayBalance } from 'utils/formatBalance';
 import BigNumber from 'bignumber.js';
 import { getMasterChefABI } from 'config/abi';
@@ -56,13 +56,18 @@ const StyledButton = styled(Button)`
   color: black;
 `
 
-const TableRow = ({pool, masterchefAddress}: {pool: {pid: number, address: string}, masterchefAddress: string}) => {
+const StyledLink = styled(Link)`
+  color: white;
+`
+
+const TableRow = ({pool}: {pool: {pid: number, address: string, masterchef: string}}) => {
+  const {pid, address, masterchef} = pool
   const { toastError, toastSuccess } = useToast()
   const blockExplorer = SCANNER_URL
-  const token = useCurrency(pool.address)
+  const token = useCurrency(address)
   const name = !token?.name.includes('LP') ? token?.name : 'LP' 
-  const tokens = useGetLPTokens(name === 'LP' ? pool.address : undefined)
-  const { amount } = useGetPoolBalance(pool?.pid, masterchefAddress)
+  const tokens = useGetLPTokens(name === 'LP' ? address : undefined)
+  const { amount } = useGetPoolBalance(pid, masterchef)
 
   const displayBalance = useCallback(() => {
     const stakedBalanceBigNumber = getBalanceAmount(amount, token?.decimals)
@@ -77,8 +82,31 @@ const TableRow = ({pool, masterchefAddress}: {pool: {pid: number, address: strin
 
   const token0 = useToken(tokens[0][0])
   const token1 = useToken(tokens[1][0])
+  const emergencyWithdraw = useEmergencyWithdraw(pid, masterchef)
+  const revokePool = useRevokePool(masterchef, address)
 
-  const emergencyWithdraw = useEmergencyWithdraw(pool?.pid, masterchefAddress)
+  const handleRevokePool = useCallback(async () => {
+    try{
+      const result = await revokePool()
+      if(result) {
+        const tx = await result.wait()
+        if(tx.status) {
+          toastSuccess('Success', <Text>Pool was successfully revoled. <Link target='_blank' href={`${blockExplorer}/tx/${tx.transactionHash}`}>View transaction</Link></Text>)
+        }else{
+          toastError('Error', 'Failed to revoke pool!')
+        }
+      }
+    }catch(e) {
+      console.error(e)
+      let msg = 'Emergency withdraw was failed!'
+      let title = 'Error'
+      if(e.code === 4001){
+        msg = 'User cancelled the transaction!'
+        title = 'Transaction Cancelled'
+      }
+      toastError(title, msg)
+    }
+  }, [revokePool, toastError, toastSuccess, blockExplorer])
 
   const handleEmergencyWithdraw = useCallback(async () => {
       try{
@@ -93,7 +121,13 @@ const TableRow = ({pool, masterchefAddress}: {pool: {pid: number, address: strin
         }
       }catch(e) {
         console.error(e)
-        toastError('Error', 'Emergency withdraw was failed!')
+        let msg = 'Emergency withdraw was failed!'
+        let title = 'Error'
+        if(e.code === 4001){
+          msg = 'User cancelled the transaction!'
+          title = 'Transaction Cancelled'
+        }
+        toastError(title, msg)
       }
   }, [emergencyWithdraw, toastError, toastSuccess, blockExplorer])
 
@@ -101,7 +135,13 @@ const TableRow = ({pool, masterchefAddress}: {pool: {pid: number, address: strin
     <StyledRowContainer>
       <Container>
         <Flex flexDirection='column' justifyContent='center'>
-          <Heading>{name === 'LP' ? token0 && token1 ? `${token0?.symbol}/${token1?.symbol} LP - PID: ${pool.pid}` : '' : name !== undefined ? `${name} - PID: ${pool.pid}` : <Loader/>} </Heading>
+          <Heading>{
+            name === 'LP' && (token0 && token1) ? 
+            <StyledLink target='_blank' href={`${blockExplorer}/address/${address}`}>{`${token0?.symbol}/${token1?.symbol} LP - PID: ${pid}`}</StyledLink> 
+            : name !== undefined ? 
+            <StyledLink target='_blank' href={`${blockExplorer}/address/${address}`}>{`${name} - PID: ${pid}`}</StyledLink> 
+            : <Loader/>} 
+          </Heading>
           <TextAmount bold>{displayBalance()} {name === 'LP' ? `${token0?.symbol}/${token1?.symbol}` : name !== undefined ? `${token?.symbol}` : <Loader/>}</TextAmount>
         </Flex>
         <ButtonContainer>
@@ -111,7 +151,7 @@ const TableRow = ({pool, masterchefAddress}: {pool: {pid: number, address: strin
             Emergency Withdraw
           </StyledButton>
           <StyledButton scale='sm' color='black' onClick={() => {
-            console.log('clicked')
+            handleRevokePool()
           }}>
             Revoke
           </StyledButton>

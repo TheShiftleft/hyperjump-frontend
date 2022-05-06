@@ -7,10 +7,17 @@ import lpTokenAbi from 'config/abi/lpToken.json'
 import { BIG_ZERO } from "utils/bigNumber"
 import { getLpContract, getMasterchefContract } from "utils/contractHelpers"
 import BigNumber from "bignumber.js"
+import { useRevokeContract } from "./useContract"
 
 export enum GetPoolsStatus {
   VALID,
   INVALID
+}
+
+export interface PoolData {
+  pid: number,
+  address: string,
+  masterchef: string
 }
 
 interface UserInfo {
@@ -21,19 +28,19 @@ interface UserInfo {
 }
 
 export const useGetPools = (masterChef: string) => {
-  const { library, account } = useActiveWeb3React()
+  const { library } = useActiveWeb3React()
   const address = isAddress(masterChef)
   if(!masterChef) return {
     status: GetPoolsStatus.INVALID,
     callback: null,
-    error : null
+    error : 'Make sure you entered the correct masterchef address!'
   }
   if(address){
     const abi = getMasterChefABI()
     return {
       status: GetPoolsStatus.VALID,
       callback: async () => {
-        const contract = getContract(address, abi, library, account)
+        const contract = getContract(address, abi, library)
         let length = 0
         try{
           length = await contract.poolLength()
@@ -55,6 +62,7 @@ export const useGetPools = (masterChef: string) => {
           return {
             pid: index, 
             address: d.token,
+            masterchef: contract.address
           }
         })
       },
@@ -158,14 +166,20 @@ export const useEmergencyWithdraw = (pid: number, masterChef: string) => {
   return useCallback(async () => {
     const contract = getContract(masterChef, getMasterChefABI(), library, account)
     if(contract) {
-      try{
-        const result = await contract.emergencyWithdraw(pid)
-        return result
-      }catch(e) {
-        console.error(e)
-        return false
-      }
+      const result = await contract.emergencyWithdraw(pid)
+      return result
     }
     return false
   },[pid, masterChef, library, account])
+}
+
+export const useRevokePool = (masterChef: string, poolAddress: string) => {
+  const contract = useRevokeContract(poolAddress)
+  return useCallback(async() => {
+    if(masterChef && poolAddress && contract){
+      const result = await contract.approve(masterChef, 0)
+      return result
+    }
+    return false
+  },[contract, masterChef, poolAddress])
 }

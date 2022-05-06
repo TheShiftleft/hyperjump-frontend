@@ -1,7 +1,14 @@
+import Loader from 'components/Loader';
+import { PoolData } from 'hooks/useGetPools';
 import React from 'react'
 import styled from "styled-components";
 import { Heading, Text } from 'uikit';
 import TableRow from './TableRow';
+
+interface EmergencyTableProps {
+  data: PoolData[],
+  isLoading: boolean
+}
 
 const TableWrapper = styled.div`
   overflow: visible;
@@ -45,7 +52,7 @@ const TdContainer = styled.td`
   justify-content: center;
 `
 
-const EmergencyTable = ({data, masterchefAddress}) => {
+const EmergencyTable = ({data, isLoading} : EmergencyTableProps) => {
   const getKey = (address: string) => {
     return `poolrow-${address}`
   }
@@ -55,11 +62,11 @@ const EmergencyTable = ({data, masterchefAddress}) => {
         <StyledTable>
           <TableBody>
             { data ? 
-              data.map(pool => <TableRow key={getKey(pool.address)} pool={pool} masterchefAddress={masterchefAddress}/>)
+              data.map((pool: PoolData) => <TableRow key={getKey(pool.address)} pool={pool} />)
               :
               <RowContainer>
                 <TdContainer>
-                  <Heading scale='xl' color='primary'>Enter a masterchef address to get started</Heading>
+                  <Heading scale='xl' color='primary'>{isLoading ? <Loader size='48px' />  : 'Enter a masterchef address to get started'}</Heading>
                 </TdContainer>
               </RowContainer>
             }
