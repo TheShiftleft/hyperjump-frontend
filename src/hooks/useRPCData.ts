@@ -1,6 +1,13 @@
-import { useCallback } from 'react';
-import { QueriesResults, QueryObserverIdleResult, QueryObserverResult, QueryObserverSuccessResult, useQueries, UseQueryResult } from 'react-query';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { useCallback } from 'react'
+import {
+  QueriesResults,
+  QueryObserverIdleResult,
+  QueryObserverResult,
+  QueryObserverSuccessResult,
+  useQueries,
+  UseQueryResult,
+} from 'react-query'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 interface Request extends AxiosRequestConfig {
   requestStart: number
@@ -12,7 +19,7 @@ interface Response extends AxiosResponse {
   latency?: number
 }
 
-interface Queries{
+interface Queries {
   queryKey: string[]
   queryFn: () => void
   select: (data: any) => {
@@ -37,7 +44,7 @@ export const rpcBody = JSON.stringify({
   method: 'eth_getBlockByNumber',
   params: ['latest', false],
   id: 1,
-});
+})
 
 const fetchChain = async (baseURL) => {
   if (baseURL.includes('API_KEY')) return null
@@ -47,15 +54,15 @@ const fetchChain = async (baseURL) => {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    })
 
     API.interceptors.request.use((request: Request) => {
-      return {...request, requestStart: Date.now()}
-    });
+      return { ...request, requestStart: Date.now() }
+    })
 
     API.interceptors.response.use(
       (response: Response) => {
-        return {...response, latency: Date.now() - response.config?.requestStart}
+        return { ...response, latency: Date.now() - response.config?.requestStart }
       },
       (error) => {
         if (error.response) {
@@ -63,8 +70,8 @@ const fetchChain = async (baseURL) => {
         }
 
         return Promise.reject(error)
-      }
-    );
+      },
+    )
 
     let { data, latency }: Response = await API.post('', rpcBody)
 
@@ -72,65 +79,65 @@ const fetchChain = async (baseURL) => {
   } catch (error) {
     return null
   }
-};
+}
 
 const formatData = (url, data) => {
-  let height = data?.result?.number ?? null;
-  let latency = data?.latency ?? null;
+  let height = data?.result?.number ?? null
+  let latency = data?.latency ?? null
   if (height) {
-    const hexString = height.toString(16);
-    height = parseInt(hexString, 16);
+    const hexString = height.toString(16)
+    height = parseInt(hexString, 16)
   } else {
-    latency = null;
+    latency = null
   }
-  return { url, height, latency };
-};
+  return { url, height, latency }
+}
 
 function createPromise() {
   let resolve
   let reject
   const promise = new Promise((_resolve, _reject) => {
-    resolve = _resolve;
-    reject = _reject;
-    return {resolve: _resolve, reject: _reject}
-  });
+    resolve = _resolve
+    reject = _reject
+    return { resolve: _resolve, reject: _reject }
+  })
 
-  return {resolve, reject}
+  return { resolve, reject }
 }
 
 const fetchWssChain = async (baseURL) => {
   try {
     // small hack to wait until socket connection opens to show loading indicator on table row
-    const queryFn = createPromise();
+    const queryFn = createPromise()
 
-    const socket = new WebSocket(baseURL);
-    let requestStart;
+    const socket = new WebSocket(baseURL)
+    let requestStart
 
     socket.onopen = () => {
-      socket.send(rpcBody);
-      requestStart = Date.now();
-    };
+      socket.send(rpcBody)
+      requestStart = Date.now()
+    }
 
     socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data)
 
-      const latency = Date.now() - requestStart;
-      queryFn.resolve({ ...data, latency });
-    };
+      const latency = Date.now() - requestStart
+      queryFn.resolve({ ...data, latency })
+    }
 
     socket.onerror = (e) => {
-      queryFn.reject(e);
-    };
+      queryFn.reject(e)
+    }
 
-    return await queryFn;
+    return await queryFn
   } catch (error) {
-    return null;
+    return null
   }
-};
+}
 
-const useQuery = (url:string): Queries => {
+const useQuery = (url: string): Queries => {
   const callback = useCallback((data) => formatData(url, data), [url])
-  if(url.includes('wss://')){
+  if (url.includes('wss://')) {
     // Socket Query
     return {
       queryKey: [url],
@@ -153,4 +160,4 @@ const useRPCData = (urls) => {
   return useQueries(queries)
 }
 
-export default useRPCData;
+export default useRPCData

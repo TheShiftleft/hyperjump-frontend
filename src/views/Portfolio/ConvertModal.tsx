@@ -106,7 +106,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const { independentField, typedValue } = useSwapState()
   const { v2Trade, parsedAmount, currencies } = useDerivedSwapInfo()
-  const inputvalue = selectTokens.token.amount.toString()
+  const inputvalue = new BigNumber(selectTokens.token.amount).decimalPlaces(18).toString()
   const { wrapType } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], inputvalue)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = v2Trade
@@ -114,6 +114,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currencies[Field.OUTPUT] ?? undefined)
   const selectTokenBalance = useCurrencyBalance(account ?? undefined, currencies[Field.INPUT] ?? undefined)
+
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
 
   const parsedAmounts = showWrap
@@ -280,7 +281,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
                     } `
               }
             >
-              {`${selectedtoken.price ? new BigNumber(selectedtoken.price).decimalPlaces(6) : 0}`}
+              {`${selectedtoken.price ? new BigNumber(selectedtoken.price).decimalPlaces(12) : 0}`}
             </CellLayout>
           </CellInner>
           <CellInner>
