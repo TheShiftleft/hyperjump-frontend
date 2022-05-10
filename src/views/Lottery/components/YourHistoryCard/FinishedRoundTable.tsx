@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Text, Box, Flex } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { LotteryStatus } from 'config/constants/types'
 import { useGetUserLotteriesGraphData } from 'state/lottery/hooks'
 import FinishedRoundRow from './FinishedRoundRow'
@@ -16,7 +15,6 @@ interface FinishedRoundTableProps {
 }
 
 const FinishedRoundTable: React.FC<FinishedRoundTableProps> = ({ handleHistoryRowClick }) => {
-  const { t } = useTranslation()
   const userLotteryData = useGetUserLotteriesGraphData()
 
   const filteredForClaimable = userLotteryData?.rounds.filter((round) => {
@@ -34,10 +32,10 @@ const FinishedRoundTable: React.FC<FinishedRoundTableProps> = ({ handleHistoryRo
           #
         </Text>
         <Text bold fontSize="12px" color="primary" textTransform="uppercase">
-          {t('Date')}
+          Date
         </Text>
         <Text bold fontSize="12px" color="primary" textTransform="uppercase">
-          {t('Your Tickets')}
+          Your Tickets
         </Text>
         <Box width="20px" />
       </Grid>

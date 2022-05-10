@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { languageList } from 'config/localization/languages'
-import { useTranslation } from 'contexts/Localization'
 import useTheme from 'hooks/useTheme'
 import useAuth from 'hooks/useAuth'
 import Overlay from 'uikit/components/Overlay/Overlay'
@@ -102,8 +101,7 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
-  const { currentLanguage, setLanguage, t } = useTranslation()
-  const links = config(t)
+  const links = config()
 
   const { isXl } = useMatchBreakpoints()
   const isMobile = isXl === false
@@ -176,8 +174,8 @@ const Menu: React.FC<MenuProps> = ({ children }) => {
           isDark={isDark}
           toggleTheme={toggleTheme}
           langs={languageList}
-          setLang={setLanguage}
-          currentLang={currentLanguage.code}
+          // setLang={setLanguage}
+          // currentLang={currentLanguage.code}
           farmingTokenPriceUsd={farmingTokenPriceUsd.toNumber()}
           pushNav={setIsPushed}
           links={links}

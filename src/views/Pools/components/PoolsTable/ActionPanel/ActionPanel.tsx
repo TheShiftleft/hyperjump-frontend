@@ -4,7 +4,6 @@ import { Box, Button, Flex, Link, LinkExternal, MetamaskIcon, Skeleton, Text, Ti
 import { BASE_INFO_URL, NETWORK_URL } from 'config'
 import { getScannerBlockCountdownUrl } from 'utils/bscscan'
 import { Pool } from 'state/types'
-import { useTranslation } from 'contexts/Localization'
 import Balance from 'components/Balance'
 import { getAddress } from 'utils/addressHelpers'
 import { registerToken } from 'utils/wallet'
@@ -107,13 +106,12 @@ const InfoSection = styled(Box)`
 
 const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded, expanded, breakpoints }) => {
   const { sousId, stakingToken, earningToken, totalStaked, endBlock } = pool
-  const { t } = useTranslation()
+
   const { config } = getNetwork()
   const { isXs, isSm, isMd } = breakpoints
-  const isMechPool = sousId === 0 
+  const isMechPool = sousId === 0
 
-  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
-    usePoolTimingInfo(pool)
+  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } = usePoolTimingInfo(pool)
 
   const isMetaMaskInScope = !!(window as WindowChain).ethereum?.isMetaMask
   const tokenAddress = earningToken.address ? getAddress(earningToken.address) : ''
@@ -126,11 +124,11 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
   const blocksRow =
     remaining || untilStart ? (
       <Flex mb="8px" justifyContent="space-between">
-        <Text color="primary">{hasPoolStarted ? t('Ends in') : t('Starts in')}:</Text>
+        <Text color="primary">{hasPoolStarted ? 'Ends in' : 'Starts in'}:</Text>
         <Flex>
           <Balance fontSize="16px" value={toDisplay / 60} decimals={0} color="white" />
           <Text ml="4px" color="primary" textTransform="lowercase">
-            {t('Minutes')}
+            Minutes
           </Text>
           {config.network === Network.BSC && (
             <Link external href={getScannerBlockCountdownUrl(endBlock)}>
@@ -145,14 +143,14 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
 
   const aprRow = (
     <Flex justifyContent="space-between" alignItems="center" mb="8px">
-      <Text>{t('APR')}</Text>
+      <Text>APR</Text>
       <Apr pool={pool} showIcon performanceFee={0} />
     </Flex>
   )
 
   const totalStakedRow = (
     <Flex justifyContent="space-between" alignItems="center" mb="8px">
-      <Text maxWidth={['50px', '100%']}>{t('Total staked')}</Text>
+      <Text maxWidth={['50px', '100%']}>Total staked</Text>
       <Flex alignItems="center">
         {totalStaked ? (
           <Balance fontSize="16px" value={getTotalStakedBalance()} decimals={0} unit={` ${stakingToken.symbol}`} />
@@ -172,12 +170,12 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
           {shouldShowCountdown && blocksRow}
           <Flex mb="8px" justifyContent={['flex-end', 'flex-end', 'flex-start']}>
             <LinkExternal href={`${BASE_INFO_URL}/token/${getAddress(earningToken.address)}`} bold={false}>
-              {t('Info site')}
+              Info site
             </LinkExternal>
           </Flex>
           <Flex mb="8px" justifyContent={['flex-end', 'flex-end', 'flex-start']}>
             <LinkExternal href={earningToken.projectLink} bold={false}>
-              {t('Project site')}
+              Project site
             </LinkExternal>
           </Flex>
           {account && isMetaMaskInScope && tokenAddress && (
@@ -188,7 +186,7 @@ const ActionPanel: React.FC<ActionPanelProps> = ({ account, pool, userDataLoaded
                 height="auto"
                 onClick={() => registerToken(tokenAddress, earningToken.symbol, earningToken.decimals, imageSrc)}
               >
-                <Text color="primary">{t('Add to Metamask')}</Text>
+                <Text color="primary">Add to Metamask</Text>
                 <MetamaskIcon ml="4px" />
               </Button>
             </Flex>

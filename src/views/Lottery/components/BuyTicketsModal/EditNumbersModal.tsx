@@ -3,13 +3,11 @@ import styled from 'styled-components'
 import { Modal, Text, Flex, Button, ArrowBackIcon, AutoRenewIcon } from 'uikit'
 import useTheme from 'hooks/useTheme'
 import getNetwork from 'utils/getNetwork'
-import { useTranslation } from 'contexts/Localization'
 import TicketInput from './TicketInput'
 import { UpdateTicketAction, Ticket } from './useTicketsReducer'
 
 const { config } = getNetwork()
 const rewardToken = ` ${config.farmingToken.symbol}`
-
 
 const StyledModal = styled(Modal)`
   min-width: 280px;
@@ -39,26 +37,26 @@ const EditNumbersModal: React.FC<{
   onDismiss?: () => void
 }> = ({ totalCost, updateTicket, randomize, tickets, allComplete, onConfirm, isConfirming, onDismiss }) => {
   const { theme } = useTheme()
-  const { t } = useTranslation()
+
   return (
     <StyledModal
-      title={t('Edit numbers')}
+      title="Edit numbers"
       onDismiss={onDismiss}
       headerBackground={theme.colors.gradients.cardHeader}
       onBack={onDismiss}
     >
       <ScrollableContainer>
         <Flex justifyContent="space-between" mb="16px">
-          <Text color="textSubtle">{t('Total cost')}:</Text>
-          <Text>~{totalCost} {rewardToken}</Text>
+          <Text color="textSubtle">Total cost:</Text>
+          <Text>
+            ~{totalCost} {rewardToken}
+          </Text>
         </Flex>
         <Text fontSize="12px" color="textSubtle" mb="16px">
-          {t(
-            'Numbers are randomized, with no duplicates among your tickets. Tap a number to edit it. Available digits: 0-9',
-          )}
+          Numbers are randomized, with no duplicates among your tickets. Tap a number to edit it. Available digits: 0-9
         </Text>
         <Button disabled={isConfirming} mb="16px" variant="secondary" width="100%" height="32px" onClick={randomize}>
-          {t('Randomize')}
+          Randomize
         </Button>
         {tickets.map((ticket) => (
           <TicketInput
@@ -79,10 +77,10 @@ const EditNumbersModal: React.FC<{
             onConfirm()
           }}
         >
-          {isConfirming ? t('Confirming') : t('Confirm and buy')}
+          {isConfirming ? 'Confirming' : 'Confirm and buy'}
         </Button>
         <Button mt="8px" variant={isConfirming ? 'secondary' : 'text'} disabled={isConfirming} onClick={onDismiss}>
-          <ArrowBackIcon color={isConfirming ? 'disabled' : 'primary'} height="24px" width="24px" /> {t('Go back')}
+          <ArrowBackIcon color={isConfirming ? 'disabled' : 'primary'} height="24px" width="24px" /> Go back
         </Button>
       </Flex>
     </StyledModal>

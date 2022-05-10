@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Text } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
 import BigNumber from 'bignumber.js'
-import { useTranslation } from 'contexts/Localization'
 import useAllEarnings from 'hooks/useAllEarnings'
 import { usePriceFarmingTokenUsd, useFetchPublicPoolsData, usePools } from 'state/hooks'
 import { DEFAULT_TOKEN_DECIMAL } from 'config'
@@ -19,7 +18,7 @@ import CardValue from './CardValue'
 
 const FarmingTokenHarvestBalance = () => {
   const location = useLocation()
-  const { t } = useTranslation()
+
   const { account } = useWeb3React()
   const { pools, userDataLoaded } = usePools(account)
   const allEarnings = useAllEarnings()
@@ -73,7 +72,7 @@ const FarmingTokenHarvestBalance = () => {
   if (!account) {
     return (
       <Text color="textDisabled" style={{ lineHeight: '16px' }}>
-        {t('Locked')}
+        Locked
       </Text>
     )
   }

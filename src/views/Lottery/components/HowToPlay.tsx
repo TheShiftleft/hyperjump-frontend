@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { Box, Flex, Text, Heading, Skeleton } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useLottery } from 'state/lottery/hooks'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import getNetwork from 'utils/getNetwork'
@@ -164,7 +163,6 @@ const Highlight = styled.span`
 `
 
 const HowToPlay: React.FC = () => {
-  const { t } = useTranslation()
   const {
     currentLotteryId,
     currentRound: {
@@ -197,13 +195,13 @@ const HowToPlay: React.FC = () => {
         <Flex width="100%" alignItems="center">
           <Divider />
           <Heading mt="5px" scale="xl" color="#44c4e2">
-            {t('Details')}
+            Details
           </Heading>
           <Divider />
         </Flex>
 
         <Text textAlign="center">
-          {t('Match the winning number in the same order to share prizes. Current up for grabs:')}
+          Match the winning number in the same order to share prizes. Current up for grabs:
         </Text>
       </Flex>
 

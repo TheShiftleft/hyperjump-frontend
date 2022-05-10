@@ -1,7 +1,7 @@
 import React from 'react'
 import { Flex, Text, useMatchBreakpoints } from 'uikit'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
+
 import Balance from 'components/Balance'
 import BigNumber from 'bignumber.js'
 import BaseCell, { CellContent } from './BaseCell'
@@ -15,7 +15,6 @@ const StyledCell = styled(BaseCell)`
 `
 
 const TotalDepositedCell: React.FC<TotalStakedCellProps> = ({ tvl }) => {
-  const { t } = useTranslation()
   const { isXs, isSm } = useMatchBreakpoints()
   const fontSize = isXs || isSm ? '15px' : '20px'
 
@@ -23,7 +22,7 @@ const TotalDepositedCell: React.FC<TotalStakedCellProps> = ({ tvl }) => {
     <StyledCell role="cell">
       <CellContent>
         <Text fontSize="14px" color="textSubtle" textAlign="left">
-          {t('Vault TVL')}
+          Vault TVL
         </Text>
         <Flex height="100%" alignItems="center">
           <Balance fontSize={fontSize} value={tvl.toNumber()} decimals={0} prefix="$" />

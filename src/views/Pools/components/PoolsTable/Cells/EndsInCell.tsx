@@ -6,7 +6,6 @@ import { getScannerBlockCountdownUrl } from 'utils/bscscan'
 import { Pool } from 'state/types'
 import { useBlock } from 'state/hooks'
 import Balance from 'components/Balance'
-import { useTranslation } from 'contexts/Localization'
 import getNetwork from 'utils/getNetwork'
 import usePoolTimingInfo from 'hooks/usePoolTimingInfo'
 import BaseCell, { CellContent } from './BaseCell'
@@ -23,7 +22,6 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
   const { sousId, totalStaked, endBlock, isFinished } = pool
   const { config } = getNetwork()
   const { currentBlock } = useBlock()
-  const { t } = useTranslation()
 
   const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } = usePoolTimingInfo(pool)
 
@@ -34,7 +32,7 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
       <Flex flex="1.3">
         <Balance fontSize="16px" value={toDisplay / 60} decimals={0} />
         <Text ml="4px" textTransform="lowercase">
-          {t('MINUTES')}
+          MINUTES
         </Text>
       </Flex>
       {config.network === Network.BSC && (
@@ -59,7 +57,7 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
       {!isMasterPool ? (
         <CellContent>
           <Text fontSize="12px" color="textSubtle" textAlign="left">
-            {hasPoolStarted || !shouldShowCountdown ? t('Ends in') : t('Starts in')}
+            {hasPoolStarted || !shouldShowCountdown ? 'Ends in' : 'Starts in'}
           </Text>
           {showLoading ? <Skeleton width="80px" height="16px" /> : renderBlocks}
         </CellContent>

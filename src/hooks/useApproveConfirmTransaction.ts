@@ -3,7 +3,6 @@ import { noop } from 'lodash'
 import { useWeb3React } from '@web3-react/core'
 import { ethers } from 'ethers'
 import useToast from 'hooks/useToast'
-import { useTranslation } from 'contexts/Localization'
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'fail'
 
@@ -11,7 +10,7 @@ type Action =
   | { type: 'requires_approval' }
   | { type: 'approve_sending' }
   | { type: 'approve_receipt' }
-  | { type: 'approve_error'}
+  | { type: 'approve_error' }
   | { type: 'confirm_sending' }
   | { type: 'confirm_receipt' }
   | { type: 'confirm_error' }
@@ -88,7 +87,6 @@ const useApproveConfirmTransaction = ({
   onSuccess = noop,
   onApproveSuccess = noop,
 }: ApproveConfirmTransaction) => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const [state, dispatch] = useReducer(reducer, initialState)
   const handlePreApprove = useRef(onRequiresApproval)
@@ -121,7 +119,7 @@ const useApproveConfirmTransaction = ({
         }
       } catch (error) {
         dispatch({ type: 'approve_error' })
-        toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+        toastError('Error', 'Please try again. Confirm the transaction and make sure you are paying enough gas!')
       }
     },
     handleConfirm: async () => {
@@ -135,7 +133,7 @@ const useApproveConfirmTransaction = ({
         }
       } catch (error) {
         dispatch({ type: 'confirm_error' })
-        toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+        toastError('Error', 'Please try again. Confirm the transaction and make sure you are paying enough gas!')
       }
     },
   }

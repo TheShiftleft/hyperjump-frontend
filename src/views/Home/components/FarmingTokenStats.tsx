@@ -39,16 +39,7 @@ const FarmingTokenStats = () => {
 
   const tokenAddress = getFarmingTokenAddress()
   const imageSrc = `images/tokens/${config.farmingToken.symbol.toLowerCase()}.png`
-  const buyLink =
-    chainId === 56
-      ? '/swap?inputCurrency=BNB&outputCurrency=0x130025eE738A66E691E6A7a62381CB33c6d9Ae83'
-      : 'swap?inputCurrency=FTM&outputCurrency=0x78de9326792ce1d6eca0c978753c6953cdeedd73'
-
-  // make dynamic later, maybe add to api? -- mech
-  const tokenPerBlockBSC = 1.583940258751902587
-  const tokenPerBlockFTM = 1.585489599188229325
-
-  const localEmissionRate = chainId ? (chainId === 56 ? tokenPerBlockBSC : tokenPerBlockFTM) : 0
+  const { localEmissionRate, buyLink } = config
 
   return (
     <StyledFarmingTokenStats>

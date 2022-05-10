@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import ToggleView from 'views/Pools/components/ToggleView/ToggleView'
 import { Toggle, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 import { ViewMode } from 'views/Farms/components/types'
 import TabButtons from './TabButtons'
 import Select, { OptionProps } from './Select/Select'
@@ -61,7 +61,7 @@ const ViewControls = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  
+
   > div {
     padding: 8px 0px;
   }
@@ -100,24 +100,24 @@ const ViewControl: React.FC<ViewControlProps> = (props: ViewControlProps) => {
     handleOptionChange,
     handleSearchChange,
   } = props
-  const { t } = useTranslation()
+
   return (
     <ControlContainer>
       <ViewControls>
         {!!setViewMode && <ToggleView viewMode={viewMode} onToggle={setViewMode} />}
         <ToggleWrapper>
           <Toggle checked={stakedOnly} onChange={() => setStakedOnly(!stakedOnly)} scale="sm" />
-          <Text>{t('Staked only')}</Text>
+          <Text>Staked only</Text>
         </ToggleWrapper>
         <TabButtons rootPath={rootPath} hasStakeInFinished={hasStakeInFinished} />
       </ViewControls>
       <FilterContainer>
         <LabelWrapper>
-          <Text textTransform="uppercase">{t('Sort by')}</Text>
+          <Text textTransform="uppercase">Sort by</Text>
           <Select options={options} onChange={handleOptionChange} />
         </LabelWrapper>
         <LabelWrapper style={{ marginLeft: 16 }}>
-          <Text textTransform="uppercase">{t('Search')}</Text>
+          <Text textTransform="uppercase">Search</Text>
           <SearchInput onChange={handleSearchChange} placeholder="Search" />
         </LabelWrapper>
       </FilterContainer>

@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import React, { useCallback, useMemo, useState } from 'react'
 import { Button, Modal } from 'uikit'
 import ModalActions from 'components/ModalActions'
-import { useTranslation } from 'contexts/Localization'
 import TokenInput from '../../../components/TokenInput'
 import { getFullDisplayBalance } from '../../../utils/formatBalance'
 
@@ -17,7 +16,6 @@ interface MechsModalProps {
 const MechsModal: React.FC<MechsModalProps> = ({ max, title, onConfirm, onDismiss, tokenName }) => {
   const [val, setVal] = useState('')
   const [pendingTx, setPendingTx] = useState(false)
-  const { t } = useTranslation()
   const fullBalance = useMemo(() => {
     return getFullDisplayBalance(max)
   }, [max])
@@ -35,10 +33,16 @@ const MechsModal: React.FC<MechsModalProps> = ({ max, title, onConfirm, onDismis
 
   return (
     <Modal title={title} onDismiss={onDismiss} hideCloseButton>
-      <TokenInput value={val} onSelectMax={handleSelectMax} onChange={handleChange} max={fullBalance} symbol={tokenName} />
+      <TokenInput
+        value={val}
+        onSelectMax={handleSelectMax}
+        onChange={handleChange}
+        max={fullBalance}
+        symbol={tokenName}
+      />
       <ModalActions>
         <Button onClick={onDismiss} style={{ height: '70px', borderRadius: '20px' }}>
-          {t('Cancel')}
+          Cancel
         </Button>
         <Button
           style={{ height: '70px', borderRadius: '20px' }}
@@ -50,7 +54,7 @@ const MechsModal: React.FC<MechsModalProps> = ({ max, title, onConfirm, onDismis
             onDismiss()
           }}
         >
-          {pendingTx ? t('Pending Confirmation') : t('Confirm')}
+          {pendingTx ? 'Pending Confirmation' : 'Confirm'}
         </Button>
       </ModalActions>
     </Modal>

@@ -3,7 +3,6 @@ import styled, { keyframes, css } from 'styled-components'
 import { Vault } from 'state/types'
 import BigNumber from 'bignumber.js'
 import { Link } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import DepositAction from './DepositAction'
 import WithdrawAction from './WithdrawAction'
 
@@ -106,8 +105,6 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
   amountDeposited,
   price,
 }) => {
-  const { t } = useTranslation()
-
   return (
     <Container expanded={expanded}>
       <ActionContainer>
@@ -126,8 +123,8 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
           price={price}
         />
         <StyledLinkWrapper>
-          <StyledLink href={vault.addLiquidityUrl}>{t('Add liquity')}</StyledLink>
-          <StyledLink href={vault.buyTokenUrl}>{t('Buy tokens')}</StyledLink>
+          <StyledLink href={vault.addLiquidityUrl}>Add liquity</StyledLink>
+          <StyledLink href={vault.buyTokenUrl}>Buy tokens</StyledLink>
         </StyledLinkWrapper>
       </ActionContainer>
     </Container>

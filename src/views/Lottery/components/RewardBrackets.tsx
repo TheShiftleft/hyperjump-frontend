@@ -2,7 +2,6 @@ import React from 'react'
 import BigNumber from 'bignumber.js'
 import { Flex, Text, Heading, Skeleton } from 'uikit'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import { LotteryRound } from 'state/types'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { formatNumber, getBalanceNumber } from 'utils/formatBalance'
@@ -18,7 +17,6 @@ const rewardToken = config.farmingToken.symbol
 const Wrapper = styled(Flex)`
   width: 100%;
   flex-direction: column;
-
 `
 const RewardsInner = styled.div`
   display: grid;
@@ -41,7 +39,6 @@ interface RewardMatchesProps {
 }
 
 const RewardBrackets: React.FC<RewardMatchesProps> = ({ lotteryData, isHistoricRound, totalUsers }) => {
-  const { t } = useTranslation()
   const { treasuryFee, amountCollectedInFarmingToken, rewardsBreakdown, countWinnersPerBracket } = lotteryData
 
   const feeAsPercentage = new BigNumber(treasuryFee).div(100)
@@ -85,14 +82,12 @@ const RewardBrackets: React.FC<RewardMatchesProps> = ({ lotteryData, isHistoricR
     <Wrapper>
       <RewardsInner>
         <GridItem>
-          <Heading scale="lg">{t('Prize pot')}</Heading>
+          <Heading scale="lg">Prize pot</Heading>
           {getPrizeBalances()}
-          <Text fontSize="14px">
-            {t('Total players this round')}: {totalUsers || <Skeleton height={14} width={31} />}
-          </Text>
+          <Text fontSize="14px">Total players this round: {totalUsers || <Skeleton height={14} width={31} />}</Text>
         </GridItem>
         <GridItem>
-          <BurnDetail farmingTokenAmount={farmingTokenToBurn}/>
+          <BurnDetail farmingTokenAmount={farmingTokenToBurn} />
         </GridItem>
 
         <RewardBracketDetail

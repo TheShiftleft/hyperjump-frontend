@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { Heading, Card, CardBody, Flex, Text, Button } from 'uikit'
 import { useFetchLottery, useLottery } from 'state/lottery/hooks'
-import { useTranslation } from 'contexts/Localization'
 import { getBalanceNumber } from 'utils/formatBalance'
 import getNetwork from 'utils/getNetwork'
 import { LotteryStatus } from 'config/constants/types'
@@ -15,7 +14,6 @@ const rewardToken = ` ${config.farmingToken.symbol}`
 
 const WinCard = () => {
   useFetchLottery()
-  const { t } = useTranslation()
   const {
     currentRound: { amountCollectedInFarmingToken, status, endTime },
     isTransitioning,
@@ -33,7 +31,7 @@ const WinCard = () => {
         <Flex justifyContent="space-between" alignItems="flex-end">
           <Flex flexDirection="column">
             <Heading fontFamily="Bebas neue" color="primary" scale="xl">
-              {t('LOTTERY')}
+              LOTTERY
             </Heading>
             <Heading>GOT YOUR TICKETS YET?</Heading>
           </Flex>
@@ -58,9 +56,7 @@ const WinCard = () => {
                 <Text color="primary" mt="15px">
                   Hyper Pot this Round
                 </Text>
-                <Heading scale="lg">
-                  Next lottery starting soon...
-                </Heading>
+                <Heading scale="lg">Next lottery starting soon...</Heading>
               </Flex>
 
               <NavLink to="/lottery">

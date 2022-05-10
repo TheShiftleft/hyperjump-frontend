@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 import { Button, Flex, Heading, IconButton, AddIcon, MinusIcon, useModal } from 'uikit'
 import { useLocation } from 'react-router-dom'
 import Balance from 'components/Balance'
-import { useTranslation } from 'contexts/Localization'
+
 import { useAppDispatch } from 'state'
 import { fetchFarmUserDataAsync } from 'state/farms'
 import { useLpTokenPrice } from 'state/hooks'
@@ -37,7 +37,6 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
   pid,
   addLiquidityUrl,
 }) => {
-  const { t } = useTranslation()
   const { onStake } = useStake(pid)
   const { onUnstake } = useUnstake(pid)
   const location = useLocation()
@@ -79,7 +78,7 @@ const StakeAction: React.FC<FarmCardActionsProps> = ({
         onClick={onPresentDeposit}
         disabled={['history', 'archived'].some((item) => location.pathname.includes(item))}
       >
-        {t('Stake LP')}
+        Stake LP
       </Button>
     ) : (
       <IconButtonWrapper>

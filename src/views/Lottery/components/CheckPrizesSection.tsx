@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Button, Heading, Flex, useModal, AutoRenewIcon } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
 import { LotteryStatus } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
+
 import useAuth from 'hooks/useAuth'
 import { useGetUserLotteriesGraphData, useLottery } from 'state/lottery/hooks'
 import UserBlock from 'uikit/widgets/Menu/components/UserBlock'
@@ -47,7 +47,6 @@ const Highlight = styled.span`
 `
 
 const CheckPrizesSection = () => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
   const {
@@ -91,12 +90,12 @@ const CheckPrizesSection = () => {
         <Flex alignItems="center" justifyContent="center">
           <ClaimPrizeFlex>
             <HeadingContainer>
-              <Heading scale="xxl">{t('are you a ')}</Heading>
+              <Heading scale="xxl">{'are you a '}</Heading>
               <Highlight>&nbsp;winner &nbsp;</Highlight>
-              <Heading scale="xxl">{t('???')}</Heading>
+              <Heading scale="xxl">???</Heading>
             </HeadingContainer>
             <Heading scale="xl" textAlign="center" color="#F4EEFF" mb="24px">
-              {t('Connect your wallet to find out')}
+              Connect your wallet to find out
             </Heading>
             <UserBlock account={account} login={login} logout={logout} />
           </ClaimPrizeFlex>
@@ -108,10 +107,10 @@ const CheckPrizesSection = () => {
         <Flex alignItems="center" justifyContent="center">
           <ClaimPrizeFlex>
             <Heading scale="xxl" textAlign="center" color="#F4EEFF">
-              {t('No prizes to collect')}...
+              No prizes to collect...
             </Heading>
             <Heading textAlign="center" color="#F4EEFF">
-              {t('Better luck next time!')}
+              Better luck next time!
             </Heading>
           </ClaimPrizeFlex>
         </Flex>
@@ -121,10 +120,10 @@ const CheckPrizesSection = () => {
       return (
         <Flex alignItems="center" justifyContent="center">
           <ClaimPrizeFlex>
-            <Highlight>{t('Congratulations!')}</Highlight>
+            <Highlight>Congratulations!</Highlight>
 
             <Heading textAlign="center" color="#F4EEFF">
-              {t('Why not play again')}
+              Why not play again
             </Heading>
           </ClaimPrizeFlex>
         </Flex>
@@ -132,20 +131,20 @@ const CheckPrizesSection = () => {
     }
     const checkNowText = () => {
       if (lotteryIsNotClaimable) {
-        return `${t('Calculating rewards')}...`
+        return 'Calculating rewards...'
       }
       if (isFetchingRewards) {
-        return t('Checking')
+        return 'Checking'
       }
-      return t('Check Now')
+      return 'Check Now'
     }
     return (
       <Flex alignItems="center" justifyContent="center">
         <ClaimPrizeFlex>
           <HeadingContainer>
-            <Heading scale="xxl">{t('are you a ')}</Heading>
+            <Heading scale="xxl">{'are you a '}</Heading>
             <Highlight>&nbsp;winner&nbsp;</Highlight>
-            <Heading scale="xxl">{t('???')}</Heading>
+            <Heading scale="xxl">???</Heading>
           </HeadingContainer>
           <Button
             disabled={isCheckNowDisabled}

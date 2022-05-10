@@ -7,7 +7,6 @@ import FlexLayout from 'components/layout/Flex'
 import getNetwork from 'utils/getNetwork'
 
 import { useVaults } from 'state/hooks'
-import { useTranslation } from 'contexts/Localization'
 import ViewControls from 'components/ViewControls'
 import { useLocation } from 'react-router-dom'
 import { OptionProps } from 'components/Select/Select'
@@ -27,7 +26,7 @@ const Vaults: React.FC = () => {
   const [query, setQuery] = useState('')
   const [sortOption, setSortOption] = useState('hot')
   const { vaults, apys, prices, balances, allowances } = useVaults(account)
-  const { t } = useTranslation()
+
   const { config } = getNetwork()
 
   const vaultsState = vaults.map((vault, i) => {
@@ -63,7 +62,7 @@ const Vaults: React.FC = () => {
   const [stakedOnly, setStakedOnly] = useState(!isActive)
   useEffect(() => {
     let isMounted = true
-    if(isMounted){
+    if (isMounted) {
       setStakedOnly(!isActive)
     }
     return () => {
@@ -169,7 +168,7 @@ const Vaults: React.FC = () => {
     const showMoreVaults = (entries) => {
       const [entry] = entries
       if (entry.isIntersecting) {
-        if(isMounted){
+        if (isMounted) {
           setNumberOfVaultsVisible((vaultsCurrentlyVisible) => vaultsCurrentlyVisible + NUMBER_OF_VAULTS_VISIBLE)
         }
       }
@@ -181,7 +180,7 @@ const Vaults: React.FC = () => {
         threshold: 1,
       })
       loadMoreObserver.observe(loadMoreRef.current)
-      if(isMounted){
+      if (isMounted) {
         setObserverIsSet(true)
       }
     }
@@ -221,23 +220,23 @@ const Vaults: React.FC = () => {
           handleOptionChange={handleSortOptionChange}
           options={[
             {
-              label: t('Hot'),
+              label: 'Hot',
               value: 'hot',
             },
             {
-              label: t('APY'),
+              label: 'APY',
               value: 'apy',
             },
             {
-              label: t('Wallet balance'),
+              label: 'Wallet balance',
               value: 'walletBalance',
             },
             {
-              label: t('Deposited'),
+              label: 'Deposited',
               value: 'amountDeposited',
             },
             {
-              label: t('Liquidity'),
+              label: 'Liquidity',
               value: 'tvl',
             },
           ]}

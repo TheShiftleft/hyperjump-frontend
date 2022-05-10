@@ -1,7 +1,6 @@
 import React from 'react'
 import { Flex, Text, Button, IconButton, AddIcon, MinusIcon, useModal, Skeleton, useTooltip } from 'uikit'
 import BigNumber from 'bignumber.js'
-import { useTranslation } from 'contexts/Localization'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { Pool } from 'state/types'
 import Balance from 'components/Balance'
@@ -27,7 +26,6 @@ const StakeAction: React.FC<StakeActionsProps> = ({
   isLoading = false,
 }) => {
   const { stakingToken, stakingTokenPrice, stakingLimit, isFinished, userData } = pool
-  const { t } = useTranslation()
   const stakedTokenBalance = getBalanceNumber(stakedBalance, stakingToken.decimals)
   const stakedTokenDollarBalance = getBalanceNumber(
     stakedBalance.multipliedBy(stakingTokenPrice),
@@ -50,7 +48,7 @@ const StakeAction: React.FC<StakeActionsProps> = ({
   )
 
   const { targetRef, tooltip, tooltipVisible } = useTooltip(
-    t('You’ve already staked the maximum amount you can stake in this pool!'),
+    'You’ve already staked the maximum amount you can stake in this pool!',
     { placement: 'bottom' },
   )
 
@@ -101,7 +99,7 @@ const StakeAction: React.FC<StakeActionsProps> = ({
       </Flex>
     ) : (
       <Button disabled={isFinished} onClick={stakingTokenBalance.gt(0) ? onPresentStake : onPresentTokenRequired}>
-        {t('Stake')}
+        Stake
       </Button>
     )
   }

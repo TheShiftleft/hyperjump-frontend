@@ -1,11 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { getBalanceNumber } from 'utils/formatBalance'
-import { useTranslation } from 'contexts/Localization'
-import {
-  Flex,
-  Text,
-} from 'uikit'
+
+import { Flex, Text } from 'uikit'
 import { Pool } from 'state/types'
 import Balance from 'components/Balance'
 import usePoolTimingInfo from 'hooks/usePoolTimingInfo'
@@ -28,10 +25,7 @@ const StyledDetails = styled.div`
   justify-content: space-between;
 `
 
-
 const Footer: React.FC<FooterProps> = ({ pool }) => {
-  const { t } = useTranslation()
-
   const { totalStaked, isFinished } = pool
 
   const { shouldShowCountdown, untilStart, remaining } = usePoolTimingInfo(pool)
@@ -42,14 +36,14 @@ const Footer: React.FC<FooterProps> = ({ pool }) => {
       {shouldShowCountdown && untilStart === 0 && remaining > 0 && (
         <StyledDetails>
           <Text fontSize="12px" bold color="primary">
-            {t('MINUTES LEFT')}:
+            MINUTES LEFT:
           </Text>
           <Balance fontSize="12px" isDisabled={isFinished} value={minutesRemaining} decimals={0} />
         </StyledDetails>
       )}
       <StyledDetails>
         <Text fontSize="12px" bold color="primary">
-          {t('TOTAL JUMPS')}:
+          TOTAL JUMPS:
         </Text>
         <Balance fontSize="12px" isDisabled={isFinished} value={getBalanceNumber(totalStaked)} />
       </StyledDetails>

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { Button, Flex } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useAppDispatch } from 'state'
 import { fetchFarmUserDataAsync } from 'state/farms'
 import { useHarvest } from 'hooks/useHarvest'
@@ -23,7 +22,6 @@ const StyledButton = styled(Button)`
 
 const HarvestAction: React.FC<FarmCardActionsProps> = ({ earnings, pid }) => {
   const { account } = useWeb3React()
-  const { t } = useTranslation()
   const [pendingTx, setPendingTx] = useState(false)
   const { onReward } = useHarvest(pid)
   const dispatch = useAppDispatch()
@@ -41,7 +39,7 @@ const HarvestAction: React.FC<FarmCardActionsProps> = ({ earnings, pid }) => {
           setPendingTx(false)
         }}
       >
-        {t('Collect')}
+        Collect
       </StyledButton>
     </Flex>
   )

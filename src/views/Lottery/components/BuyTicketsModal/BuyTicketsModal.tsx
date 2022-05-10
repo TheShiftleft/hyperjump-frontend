@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { Modal, Text, Flex, HelpIcon, BalanceInput, Ticket, Skeleton, Button, ArrowForwardIcon } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useWeb3React } from '@web3-react/core'
 import { getFullDisplayBalance } from 'utils/formatBalance'
 import { getFarmingTokenAddress } from 'utils/addressHelpers'
@@ -52,7 +51,6 @@ enum BuyingStage {
 const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
-  const { t } = useTranslation()
   const { theme } = useTheme()
   const {
     maxNumberTicketsPerBuyOrClaim,
@@ -182,27 +180,25 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
         return farmingTokenContract.approve(lotteryContract.address, ethers.constants.MaxInt256)
       },
       onApproveSuccess: async () => {
-        toastSuccess(t('Contract approved - you can now purchase tickets'))
+        toastSuccess('Contract approved - you can now purchase tickets')
       },
       onConfirm: () => {
         const ticketsForPurchase = getTicketsForPurchase()
-       // console.log('Purchasing Tickets', ticketsForPurchase)
+        // console.log('Purchasing Tickets', ticketsForPurchase)
         return lotteryContract.buyTickets(currentLotteryId, ticketsForPurchase)
       },
       onSuccess: async () => {
         onDismiss()
         dispatch(fetchUserTicketsAndLotteries({ account, currentLotteryId }))
-        toastSuccess(t('Lottery tickets purchased!'))
+        toastSuccess('Lottery tickets purchased!')
       },
     })
 
- // console.log('ISAPPROVED', isApproved)
+  // console.log('ISAPPROVED', isApproved)
 
   const getErrorMessage = () => {
-    if (userNotEnoughFarmingToken) return t(`Insufficient ${rewardToken} balance`)
-    return t('The maximum number of tickets you can buy in one transaction is %maxTickets%', {
-      maxTickets: maxNumberTicketsPerBuyOrClaim.toString(),
-    })
+    if (userNotEnoughFarmingToken) return `Insufficient ${rewardToken} balance`
+    return `The maximum number of tickets you can buy in one transaction is ${maxNumberTicketsPerBuyOrClaim.toString()}`
   }
 
   const disableBuying =
@@ -229,12 +225,12 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
   }
 
   return (
-    <StyledModal title={t('Buy Tickets')} onDismiss={onDismiss} headerBackground={theme.colors.gradients.cardHeader}>
+    <StyledModal title="Buy Tickets" onDismiss={onDismiss} headerBackground={theme.colors.gradients.cardHeader}>
       <Flex alignItems="center" justifyContent="space-between" mb="8px">
-        <Text color="textSubtle">{t('Buy')}:</Text>
+        <Text color="textSubtle">Buy:</Text>
         <Flex alignItems="center" minWidth="70px">
           <Text mr="4px" bold>
-            {t('Tickets')}
+            Tickets
           </Text>
         </Flex>
       </Flex>
@@ -243,7 +239,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
         placeholder="0"
         value={ticketsToBuy}
         onUserInput={handleInputChange}
-       /*  currencyValue={
+        /*  currencyValue={
           farmingTokenPriceBusd.gt(0) &&
           `~${
             ticketsToBuy ? getFullDisplayBalance(priceTicketInFarmingToken.times(new BigNumber(ticketsToBuy))) : '0.00'
@@ -259,7 +255,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
           )}
           <Flex justifyContent="flex-end">
             <Text fontSize="12px" color="textSubtle" mr="4px">
-              {rewardToken} {t('Balance')}:
+              {rewardToken} Balance:
             </Text>
             {hasFetchedBalance ? (
               <Text fontSize="12px" color="textSubtle">
@@ -310,7 +306,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
         </Flex> */}
         <Flex borderTop={`1px solid ${theme.colors.cardBorder}`} pt="8px" mb="24px" justifyContent="space-between">
           <Text color="textSubtle" fontSize="16px">
-            {t('You pay')}
+            You pay
           </Text>
           <Text fontSize="16px" bold>
             {totalCost} {rewardToken}
@@ -327,7 +323,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
               onApprove={handleApprove}
               onConfirm={handleConfirm}
               buttonArrangement={ButtonArrangement.SEQUENTIAL}
-              confirmLabel={t('Buy Instantly')}
+              confirmLabel="Buy Instantly"
             />
             {isApproved && (
               <Button
@@ -340,7 +336,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
                 }}
               >
                 <Flex alignItems="center">
-                  {t('View/Edit Numbers')}{' '}
+                  View/Edit Numbers{' '}
                   <ArrowForwardIcon
                     mt="2px"
                     color={disableBuying || isConfirming ? 'disabled' : 'primary'}
@@ -356,9 +352,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
         )}
 
         <Text mt="24px" fontSize="12px" color="textSubtle">
-          {t(
-            '"Buy Instantly" chooses random numbers, with no duplicates among your tickets. Purchases are final.',
-          )}
+          “Buy Instantly” chooses random numbers, with no duplicates among your tickets. Purchases are final.
         </Text>
       </Flex>
     </StyledModal>

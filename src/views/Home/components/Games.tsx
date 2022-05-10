@@ -2,8 +2,6 @@ import React from 'react'
 import { Card, CardBody, Heading, Image } from 'uikit'
 import styled from 'styled-components'
 
-import { useTranslation } from 'contexts/Localization'
-
 const StyledAlloyStats = styled(Card)`
   background-color: ${({ theme }) => theme.card.background};
   border-radius: ${({ theme }) => theme.radii.card};
@@ -22,13 +20,11 @@ const LogoStyle = styled.div`
 `
 
 const Games = () => {
-  const { t } = useTranslation()
-
   return (
     <StyledAlloyStats>
       <CardBody>
         <Heading scale="xl" mb="24px">
-          <HeadingColor>{t('LATEST MISSION')}</HeadingColor>
+          <HeadingColor>LATEST MISSION</HeadingColor>
         </Heading>
         <LogoStyle>
           <Image src="images/games/hyper-heist-logo.png" width={444} height={100} />

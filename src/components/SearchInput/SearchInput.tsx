@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react'
 import { Input } from 'uikit'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
-import { useTranslation } from 'contexts/Localization'
 
 const StyledInput = styled(Input)`
   border-radius: 16px;
@@ -27,8 +26,6 @@ const SearchInput: React.FC<Props> = ({ onChange: onChangeCallback, placeholder 
   const [toggled, setToggled] = useState(false)
   const [searchText, setSearchText] = useState('')
 
-  const { t } = useTranslation()
-
   const debouncedOnChange = useMemo(
     () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onChangeCallback(e), 500),
     [onChangeCallback],
@@ -45,7 +42,7 @@ const SearchInput: React.FC<Props> = ({ onChange: onChangeCallback, placeholder 
         <StyledInput
           value={searchText}
           onChange={onChange}
-          placeholder={t(placeholder)}
+          placeholder={placeholder}
           onBlur={() => setToggled(false)}
         />
       </InputWrapper>

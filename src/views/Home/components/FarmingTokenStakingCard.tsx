@@ -7,7 +7,7 @@ import { harvest, soushHarvest } from 'utils/callHelpers'
 import { useWeb3React } from '@web3-react/core'
 import { usePools, useFetchPublicPoolsData } from 'state/hooks'
 import { BIG_ZERO } from 'utils/bigNumber'
-import { useTranslation } from 'contexts/Localization'
+
 import useFarmsWithBalance from 'hooks/useFarmsWithBalance'
 import usePoolsWithBalance from 'hooks/usePoolsWithBalance'
 import { useMasterchef, usePoolContract } from 'hooks/useContract'
@@ -24,7 +24,7 @@ const FarmingTokenStakingCard = () => {
   const [pendingTx, setPendingTx] = useState(false)
   const { account } = useWeb3React()
   const { pools, userDataLoaded } = usePools(account)
-  const { t } = useTranslation()
+
   const farmsWithBalance = useFarmsWithBalance()
   const poolsWithBalance = usePoolsWithBalance()
 
@@ -78,7 +78,7 @@ const FarmingTokenStakingCard = () => {
     <StyledFarmingTokenStakingCard>
       <CardBody>
         <Heading scale="xl" mb="24px">
-          <HeadingColor>{t('FARMS AND STAKING')}</HeadingColor>
+          <HeadingColor>FARMS AND STAKING</HeadingColor>
         </Heading>
 
         {account ? (
