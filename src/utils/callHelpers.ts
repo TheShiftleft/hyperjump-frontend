@@ -6,6 +6,7 @@ import { ethers } from 'ethers'
 import { Contract } from 'web3-eth-contract'
 import { BIG_TEN, BIG_ZERO } from './bigNumber'
 import { getMasterchef20Contract } from './contractHelpers'
+import { getWeb3NoAccount } from './web3'
 
 export const approve = async (lpContract, masterChefContract, account) => {
   return lpContract.methods
@@ -117,9 +118,11 @@ export const harvest = async (masterChefContract, pid, account) => {
 }
 
 export const soushHarvest = async (sousChefContract, account) => {
+  const web3 = getWeb3NoAccount()
+  const gas = await web3.eth.getGasPrice()
   return sousChefContract.methods
     .deposit('0')
-    .send({ from: account })
+    .send({ from: account, gasPrice: gas })
     .on('transactionHash', (tx) => {
       return tx.transactionHash
     })
