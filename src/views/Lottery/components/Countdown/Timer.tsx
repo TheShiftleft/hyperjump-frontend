@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex, Heading } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 
 export interface TimerProps {
   minutes?: number
@@ -41,16 +40,16 @@ const Highlight = styled.span`
 `
 
 const Wrapper: React.FC<TimerProps> = ({ minutes, hours, days }) => {
-  const { t } = useTranslation()
-
   return (
-    <HeadingContainer >
+    <HeadingContainer>
       {Boolean(days) && (
         <>
           <Heading color="#49ceeb" mb="-4px" scale="md">
             {days}
           </Heading>
-          <Heading color="#49ceeb" mr="8px" scale="md">{t('d')}</Heading>
+          <Heading color="#49ceeb" mr="8px" scale="md">
+            d
+          </Heading>
         </>
       )}
       {Boolean(hours) && (
@@ -58,7 +57,9 @@ const Wrapper: React.FC<TimerProps> = ({ minutes, hours, days }) => {
           <Heading color="#49ceeb" mb="-4px" scale="md">
             {hours}
           </Heading>
-          <Heading color="#49ceeb" mr="8px" scale="md">{t('h')}</Heading>
+          <Heading color="#49ceeb" mr="8px" scale="md">
+            h
+          </Heading>
         </>
       )}
       {Boolean(minutes) && (
@@ -66,7 +67,9 @@ const Wrapper: React.FC<TimerProps> = ({ minutes, hours, days }) => {
           <Heading color="#49ceeb" mb="-4px" scale="md">
             {minutes}
           </Heading>
-          <Heading color="#49ceeb" mr="8px" scale="md">{t('m')}</Heading>
+          <Heading color="#49ceeb" mr="8px" scale="md">
+            m
+          </Heading>
         </>
       )}
     </HeadingContainer>

@@ -1,7 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { useTable, Button, ChevronUpIcon, ColumnType } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 
 import Row, { RowProps } from './Row'
 
@@ -14,7 +13,6 @@ export interface ITableProps {
 
 const FarmTable: React.FC<ITableProps> = (props) => {
   const tableWrapperEl = useRef<HTMLDivElement>(null)
-  const { t } = useTranslation()
   const { data, columns, userDataReady } = props
 
   const { rows } = useTable(columns, data, { sortable: true, sortColumn: 'farm' })
@@ -39,7 +37,7 @@ const FarmTable: React.FC<ITableProps> = (props) => {
         </TableWrapper>
         <ScrollButtonContainer>
           <Button variant="text" onClick={scrollToTop}>
-            {t('To Top')}
+            To Top
             <ChevronUpIcon color="primary" />
           </Button>
         </ScrollButtonContainer>

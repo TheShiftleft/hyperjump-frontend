@@ -9,7 +9,6 @@ import { useAppDispatch } from 'state'
 import { fetchFarmUserDataAsync } from 'state/farms'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useHarvest } from 'hooks/useHarvest'
-import { useTranslation } from 'contexts/Localization'
 import { useCountUp } from 'react-countup'
 
 import getNetwork from 'utils/getNetwork'
@@ -36,7 +35,6 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
 
   const [pendingTx, setPendingTx] = useState(false)
   const { onReward } = useHarvest(pid)
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { account } = useWeb3React()
   const { countUp, update } = useCountUp({
@@ -56,7 +54,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
     <ActionContainer>
       <ActionTitles>
         <Title>{`${config.farmingToken.symbol} `} </Title>
-        <Subtle>{t('Earned').toUpperCase()}</Subtle>
+        <Subtle>{'Earned'.toUpperCase()}</Subtle>
       </ActionTitles>
       <ActionContent>
         <div>
@@ -74,7 +72,7 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({ pid, userD
           }}
           ml="4px"
         >
-          {t('Collect')}
+          Collect
         </Button>
       </ActionContent>
     </ActionContainer>

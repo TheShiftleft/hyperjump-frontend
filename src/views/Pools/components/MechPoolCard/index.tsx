@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import React from 'react'
 import { CardBody, Flex, Text, CardRibbon } from 'uikit'
 import UnlockButton from 'components/UnlockButton'
-import { useTranslation } from 'contexts/Localization'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { Pool } from 'state/types'
 import AprRow from '../PoolCard/AprRow'
@@ -12,14 +11,13 @@ import CardActions from './CardActions'
 
 const MechPoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account }) => {
   const { sousId, earningToken, isFinished, userData } = pool
-  const { t } = useTranslation()
   const stakedBalance = userData?.stakedBalance ? new BigNumber(userData.stakedBalance) : BIG_ZERO
   const accountHasStakedBalance = stakedBalance.gt(0)
 
   return (
     <StyledCard
       isFinished={isFinished && sousId !== 0}
-      ribbon={isFinished && <CardRibbon variantColor="textDisabled" text={t('Finished')} />}
+      ribbon={isFinished && <CardRibbon variantColor="textDisabled" text="Finished" />}
     >
       <StyledCardInner>
         <StyledCardHeader isStaking={accountHasStakedBalance} earningTokenSymbol={earningToken.symbol} />
@@ -31,7 +29,7 @@ const MechPoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account
             ) : (
               <>
                 <Text mb="10px" textTransform="uppercase" fontSize="12px" color="textSubtle" bold>
-                  {t('Start earning')}
+                  Start earning
                 </Text>
                 <UnlockButton />
               </>

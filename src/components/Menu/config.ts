@@ -5,31 +5,31 @@ import { getAddress } from 'utils/addressHelpers'
 
 const { config: networkConfig } = getNetwork()
 
-const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
+const config: () => MenuEntry[] = () => [
   {
-    label: t('Dashboard'),
+    label: 'Dashboard',
     icon: 'NftIcon',
     href: '/',
   },
   {
-    label: t('Trade'),
+    label: 'Trade',
     icon: 'TradeIcon',
     href: `/swap?inputCurrency=${networkConfig.baseCurrency.symbol}&outputCurrency=${getAddress(
       networkConfig.farmingToken.address,
     )}`,
   },
   {
-    label: t('Asteroid Farm'),
+    label: 'Asteroid Farm',
     icon: 'FarmIcon',
     href: '/farms',
   },
   {
-    label: t('Mech Staking'),
+    label: 'Mech Staking',
     icon: 'PoolIcon',
     href: '/pools',
   },
   {
-    label: t('Star Vaults'),
+    label: 'Star Vaults',
     icon: 'VaultIcon',
     href: '/vaults',
   },
@@ -39,46 +39,46 @@ const config: (t: ContextApi['t']) => MenuEntry[] = (t) => [
     href: '/convert',
   }, */
   {
-    label: t('Galactic Lottery'),
+    label: 'Galactic Lottery',
     icon: 'TrophyIcon',
     href: '/lottery',
   },
   {
-    label: t('HyperHeist'),
+    label: 'HyperHeist',
     icon: 'HomeIcon',
     href: 'https://hyperjump.app/hyperheist/',
   },
   {
-    label: t('Voting'),
+    label: 'Voting',
     icon: 'ProposalIcon',
     href: networkConfig.votingLink,
   },
   {
-    label: t('Analytics'),
+    label: 'Analytics',
     icon: 'InfoIcon',
     href: `${networkConfig.infoLink}/overview`,
   },
   {
-    label: t('More'),
+    label: 'More',
     icon: 'MoreIcon',
     items: [
       {
-        label: t('GitHub'),
+        label: 'GitHub',
         href: 'https://github.com/HyperJump-DeFi',
         target: '_blank',
       },
       {
-        label: t('Docs'),
+        label: 'Docs',
         href: 'https://docs.hyperjump.app/',
         target: '_blank',
       },
       {
-        label: t('Contracts'),
+        label: 'Contracts',
         href: networkConfig.contractsLink,
         target: '_blank',
       },
       {
-        label: t('UnRekt'),
+        label: 'UnRekt',
         href: 'https://unrekt.hyperjump.app/',
         target: '_blank',
       },

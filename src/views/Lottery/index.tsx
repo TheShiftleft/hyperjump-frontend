@@ -4,7 +4,6 @@ import getNetwork from 'utils/getNetwork'
 import { Box, Flex, Heading, Skeleton } from 'uikit'
 import { LotteryStatus } from 'config/constants/types'
 import PageSection from 'components/PageSection'
-import { useTranslation } from 'contexts/Localization'
 import useTheme from 'hooks/useTheme'
 import { useFetchLottery, useLottery } from 'state/lottery/hooks'
 import { TITLE_BG, GET_TICKETS_BG, TRANSPARENT_BG } from './pageSectionStyles'
@@ -60,7 +59,7 @@ const { chainId } = getNetwork()
 const Lottery = () => {
   useFetchLottery()
   useStatusTransitions()
-  const { t } = useTranslation()
+
   const { theme } = useTheme()
   const {
     currentRound: { status, endTime },
@@ -84,7 +83,7 @@ const Lottery = () => {
             <HistoryFlex width="100%" flexDirection="column" alignItems="center" justifyContent="center">
               <CheckPrizesSection />
               <Heading mt="18px" mb="12px" scale="lg">
-                {t('Finished Rounds')}
+                Finished Rounds
               </Heading>
               <Box mb="24px">
                 <HistoryTabMenu

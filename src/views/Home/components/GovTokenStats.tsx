@@ -8,7 +8,6 @@ import getNetwork from 'utils/getNetwork'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { useGovTokenBurnedBalance, useGovTokenBurnRate, useGovTokenTotalSupply } from 'hooks/useTokenBalance'
 import { usePriceGovTokenUsd } from 'state/hooks'
-import { useTranslation } from 'contexts/Localization'
 import { getGovTokenAddress } from 'utils/addressHelpers'
 import CardValue from './CardValue'
 import BurnCardValue from './BurnCardValue'
@@ -17,7 +16,6 @@ const { config } = getNetwork()
 const govToken = ` ${config.govToken.symbol}`
 
 const GovTokenStats = () => {
-  const { t } = useTranslation()
   const totalSupply = useGovTokenTotalSupply()
 
   const burnedBalance = getBalanceNumber(useGovTokenBurnedBalance(getGovTokenAddress()))
@@ -41,7 +39,7 @@ const GovTokenStats = () => {
           <Flex flexDirection="column">
             <Heading scale="xl">
               <HeadingColor>
-                {govToken} {t(' STATS')}
+                {govToken} {' STATS'}
               </HeadingColor>
             </Heading>
             <Heading scale="lg">{govToken}</Heading>

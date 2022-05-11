@@ -5,7 +5,6 @@ import { Text } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
 import { BigNumber } from 'bignumber.js'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import CardValue from './CardValue'
 import CardBusdValue from './CardBusdValue'
 
@@ -18,7 +17,6 @@ interface FarmingTokenWinningsProps {
 }
 
 const FarmingTokenWinnings: React.FC<FarmingTokenWinningsProps> = ({ claimAmount }) => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const farmingTokenAmount = getBalanceNumber(claimAmount)
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
@@ -27,7 +25,7 @@ const FarmingTokenWinnings: React.FC<FarmingTokenWinningsProps> = ({ claimAmount
   if (!account) {
     return (
       <Text color="textDisabled" style={{ lineHeight: '76px' }}>
-        {t('Locked')}
+        Locked
       </Text>
     )
   }

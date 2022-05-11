@@ -8,7 +8,6 @@ import Page from 'components/layout/Page'
 import { useFarms, usePollFarmsData, usePriceFarmingTokenUsd } from 'state/hooks'
 import usePersistState from 'hooks/usePersistState'
 import { Farm } from 'state/types'
-import { useTranslation } from 'contexts/Localization'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { getFarmApr } from 'utils/apr'
 import { orderBy } from 'lodash'
@@ -29,7 +28,6 @@ const NUMBER_OF_FARMS_VISIBLE = 12
 const Farms: React.FC = () => {
   const { path } = useRouteMatch()
   const { pathname } = useLocation()
-  const { t } = useTranslation()
   const { data, userDataLoaded } = useFarms()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const [query, setQuery] = useState('')
@@ -50,7 +48,7 @@ const Farms: React.FC = () => {
   const [stakedOnly, setStakedOnly] = useState(!isActive)
   useEffect(() => {
     let isMounted = true
-    if(isMounted) {
+    if (isMounted) {
       setStakedOnly(!isActive)
     }
     return () => {
@@ -170,7 +168,7 @@ const Farms: React.FC = () => {
     const showMoreFarms = (entries) => {
       const [entry] = entries
       if (entry.isIntersecting) {
-        if(isMounted){
+        if (isMounted) {
           setNumberOfFarmsVisible((farmsCurrentlyVisible) => farmsCurrentlyVisible + NUMBER_OF_FARMS_VISIBLE)
         }
       }
@@ -182,7 +180,7 @@ const Farms: React.FC = () => {
         threshold: 1,
       })
       loadMoreObserver.observe(loadMoreRef.current)
-      if(isMounted){
+      if (isMounted) {
         setObserverIsSet(true)
       }
     }
@@ -339,19 +337,19 @@ const Farms: React.FC = () => {
           handleOptionChange={handleSortOptionChange}
           options={[
             {
-              label: t('APR'),
+              label: 'APR',
               value: 'apr',
             },
             {
-              label: t('Multiplier'),
+              label: 'Multiplier',
               value: 'multiplier',
             },
             {
-              label: t('Earned'),
+              label: 'Earned',
               value: 'earned',
             },
             {
-              label: t('Liquidity'),
+              label: 'Liquidity',
               value: 'liquidity',
             },
           ]}

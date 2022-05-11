@@ -1,5 +1,4 @@
 import { CardHeader, Flex, Heading, Image, Text, LinkExternal, IconButton } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -20,18 +19,17 @@ const StyledCardHeader: React.FC<{
   isAutoVault = false,
   isStaking = false,
 }) => {
-  const { t } = useTranslation()
   const iconFile = `${earningTokenImg}`.toLocaleLowerCase()
   const background = isStaking ? 'background' : 'backgroundAlt'
 
   const getHeadingPrefix = () => {
     // all other pools
-    return t('') //  PCS was t('Earn') angry mech
+    return '' //  PCS was t('Earn') angry mech
   }
 
   const getHeadingPostfix = () => {
     // all other pools
-    return t('Pool')
+    return 'Pool'
   }
 
   return (

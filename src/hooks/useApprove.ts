@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { useAppDispatch } from 'state'
 import { updateUserAllowance } from 'state/actions'
 import { approve } from 'utils/callHelpers'
-import { useTranslation } from 'contexts/Localization'
+
 import { getMasterChef20Address } from 'utils/addressHelpers'
 import {
   useMasterchef,
@@ -79,7 +79,7 @@ export const useApprove20 = (lpContract: Contract) => {
 export const useSousApprove = (lpContract: Contract, sousId, earningTokenSymbol) => {
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { toastSuccess, toastError } = useToast()
-  const { t } = useTranslation()
+
   const dispatch = useAppDispatch()
   const { account } = useWeb3React()
   const sousChefContract = usePoolContract(sousId)
@@ -90,21 +90,18 @@ export const useSousApprove = (lpContract: Contract, sousId, earningTokenSymbol)
       const tx = await approve(lpContract, sousChefContract, account)
       dispatch(updateUserAllowance(sousId, account))
       if (tx) {
-        toastSuccess(
-          t('Contract Enabled'),
-          t('You can now stake in the %symbol% pool!', { symbol: earningTokenSymbol }),
-        )
+        toastSuccess('Contract Enabled', `You can now stake in the ${earningTokenSymbol} pool!`)
         setRequestedApproval(false)
       } else {
         // user rejected tx or didn't go thru
-        toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+        toastError('Error', 'Please try again. Confirm the transaction and make sure you are paying enough gas!')
         setRequestedApproval(false)
       }
     } catch (e) {
       console.error(e)
-      toastError(t('Error'), e?.message)
+      toastError('Error', e?.message)
     }
-  }, [account, dispatch, lpContract, sousChefContract, sousId, earningTokenSymbol, t, toastError, toastSuccess])
+  }, [account, dispatch, lpContract, sousChefContract, earningTokenSymbol, sousId, toastError, toastSuccess])
 
   return { handleApprove, requestedApproval }
 }
@@ -130,7 +127,6 @@ export const useApproveEthers = (lpContract: ContractEthers) => {
 export const useSousApproveEthers = (lpContract: ContractEthers, sousId, earningTokenSymbol) => {
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { toastSuccess, toastError } = useToast()
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { account } = useWeb3React()
   const sousChefContract = usePoolContract(sousId)
@@ -141,21 +137,18 @@ export const useSousApproveEthers = (lpContract: ContractEthers, sousId, earning
       const tx = await approve(lpContract, sousChefContract, account)
       dispatch(updateUserAllowance(sousId, account))
       if (tx) {
-        toastSuccess(
-          t('Contract Enabled'),
-          t('You can now stake in the %symbol% pool!', { symbol: earningTokenSymbol }),
-        )
+        toastSuccess('Contract Enabled', `You can now stake in the ${earningTokenSymbol} pool!`)
         setRequestedApproval(false)
       } else {
         // user rejected tx or didn't go thru
-        toastError(t('Error'), t('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
+        toastError('Error', 'Please try again. Confirm the transaction and make sure you are paying enough gas!')
         setRequestedApproval(false)
       }
     } catch (e) {
       console.error(e)
-      toastError(t('Error'), e?.message)
+      toastError('Error', e?.message)
     }
-  }, [account, dispatch, lpContract, sousChefContract, sousId, earningTokenSymbol, t, toastError, toastSuccess])
+  }, [account, dispatch, lpContract, sousChefContract, sousId, earningTokenSymbol, toastError, toastSuccess])
 
   return { handleApprove, requestedApproval }
 }

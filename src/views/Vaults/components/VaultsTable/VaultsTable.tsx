@@ -1,7 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 import { Button, ChevronUpIcon, ColumnType, useTable } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import VaultRow, { VaultRowProps } from './VaultRow'
 
 interface VaultsTableProps {
@@ -41,7 +40,6 @@ const TableContainer = styled.div`
 
 const VaultsTable: React.FC<VaultsTableProps> = (props) => {
   const { data, columns } = props
-  const { t } = useTranslation()
   const tableWrapperEl = useRef<HTMLDivElement>(null)
   const scrollToTop = (): void => {
     tableWrapperEl.current.scrollIntoView({
@@ -62,7 +60,7 @@ const VaultsTable: React.FC<VaultsTableProps> = (props) => {
         </TableWrapper>
         <ScrollButtonContainer>
           <Button variant="text" onClick={scrollToTop}>
-            {t('TO TOP')}
+            TO TOP
             <ChevronUpIcon color="primary" />
           </Button>
         </ScrollButtonContainer>

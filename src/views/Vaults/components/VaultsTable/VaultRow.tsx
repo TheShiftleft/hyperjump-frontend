@@ -7,7 +7,7 @@ import { VaultUserData } from 'views/Vaults/types'
 import BigNumber from 'bignumber.js'
 import { BIG_TEN } from 'utils/bigNumber'
 import calcDaily from 'utils/calcDaily'
-import { useTranslation } from 'contexts/Localization'
+
 import NameCell from './Cells/NameCell'
 import BalanceCell from './Cells/BalanceCell'
 import ApyCell from './Cells/ApyCell'
@@ -36,7 +36,7 @@ const StyledRowContainer = styled.div`
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  background-color: rgba(13,29,54,0.5);
+  background-color: rgba(13, 29, 54, 0.5);
   backdrop-filter: blur(2px);
 `
 
@@ -52,7 +52,6 @@ const VaultRow: React.FC<VaultRowProps> = (props) => {
   const { isXs, isSm, isMd, isLg, isXl } = useMatchBreakpoints()
   const [expanded, setExpanded] = useState(false)
   const shouldRenderActionPanel = useDelayedUnmount(expanded, 300)
-  const { t } = useTranslation()
 
   const toggleExpanded = () => {
     setExpanded((prev) => !prev)
@@ -76,8 +75,8 @@ const VaultRow: React.FC<VaultRowProps> = (props) => {
             />
           </UserCells>
         )}
-        <ApyCell title={t('APY')} apy={apy} />
-        <ApyCell title={t('DAILY')} apy={calcDaily(apy)} />
+        <ApyCell title="APY" apy={apy} />
+        <ApyCell title="DAILY" apy={calcDaily(apy)} />
         {(isLg || isXl) && <TotalDepositedCell tvl={tvl} />}
         <ExpandActionCell expanded={expanded} isFullLayout={isMd || isLg || isXl} />
       </StyledRow>

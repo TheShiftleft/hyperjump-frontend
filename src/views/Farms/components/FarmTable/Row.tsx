@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
 import { useMatchBreakpoints } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import useDelayedUnmount from 'hooks/useDelayedUnmount'
 import { useFarmUser } from 'state/hooks'
 
@@ -81,7 +80,6 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
   const hasStakedAmount = !!useFarmUser(details.pid).stakedBalance.toNumber()
   const [actionPanelExpanded, setActionPanelExpanded] = useState(hasStakedAmount)
   const shouldRenderChild = useDelayedUnmount(actionPanelExpanded, 300)
-  const { t } = useTranslation()
 
   const toggleActionPanel = () => {
     setActionPanelExpanded(!actionPanelExpanded)
@@ -120,7 +118,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               case 'apr':
                 return (
                   <CellInner key={key}>
-                    <CellLayout label={t('APR')}>
+                    <CellLayout label="APR">
                       <Apr {...apr} hideButton={isMobile} />
                     </CellLayout>
                   </CellInner>
@@ -128,7 +126,7 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
               default:
                 return (
                   <CellInner key={key}>
-                    <CellLayout label={t(tableSchema[columnIndex].label)}>
+                    <CellLayout label={tableSchema[columnIndex].label}>
                       {/* eslint-disable */}
                       {React.createElement(cells[key], { ...props[key], userDataReady })}
                     </CellLayout>
@@ -148,12 +146,12 @@ const Row: React.FunctionComponent<RowPropsWithLoading> = (props) => {
           </CellLayout>
         </FarmMobileCell>
         <EarnedMobileCell>
-          <CellLayout label={t('Earned')}>
+          <CellLayout label={'Earned'}>
             <Earned {...earned} userDataReady={userDataReady} />
           </CellLayout>
         </EarnedMobileCell>
         <AprMobileCell>
-          <CellLayout label={t('APR')}>
+          <CellLayout label={'APR'}>
             <Apr {...apr} hideButton={isMobile} />
           </CellLayout>
         </AprMobileCell>

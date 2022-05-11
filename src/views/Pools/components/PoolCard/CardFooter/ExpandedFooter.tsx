@@ -1,15 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
-import {
-  Flex,
-  MetamaskIcon,
-  Text,
-  LinkExternal,
-  TimerIcon,
-  Skeleton,
-  Button,
-} from 'uikit'
+import { Flex, MetamaskIcon, Text, LinkExternal, TimerIcon, Skeleton, Button } from 'uikit'
 import { SCANNER_URL, NETWORK_URL } from 'config'
 import { Pool } from 'state/types'
 import { getAddress } from 'utils/addressHelpers'
@@ -31,8 +22,6 @@ const ExpandedWrapper = styled(Flex)`
 `
 
 const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
-  const { t } = useTranslation()
-
   const { stakingToken, earningToken, totalStaked, contractAddress } = pool
 
   const tokenAddress = earningToken.address ? getAddress(earningToken.address) : ''
@@ -40,8 +29,7 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
   const imageSrc = `${NETWORK_URL}/images/tokens/${earningToken.symbol.toLowerCase()}.png`
   const isMetaMaskInScope = !!(window as WindowChain).ethereum?.isMetaMask
 
-  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } =
-    usePoolTimingInfo(pool)
+  const { shouldShowCountdown, untilStart, remaining, hasPoolStarted, toDisplay } = usePoolTimingInfo(pool)
 
   const getTotalStakedBalance = () => {
     return getBalanceNumber(totalStaked, stakingToken.decimals)
@@ -50,7 +38,7 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
   return (
     <ExpandedWrapper flexDirection="column">
       <Flex mb="2px" justifyContent="space-between" alignItems="center">
-        <Text small>{t('Total staked')}:</Text>
+        <Text small>Total staked:</Text>
         <Flex alignItems="flex-start">
           {totalStaked ? (
             <>
@@ -66,7 +54,7 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
       </Flex>
       {shouldShowCountdown && (
         <Flex mb="2px" justifyContent="space-between" alignItems="center">
-          <Text small>{hasPoolStarted ? t('End') : t('Start')}:</Text>
+          <Text small>{hasPoolStarted ? 'End' : 'Start'}:</Text>
           <Flex alignItems="center">
             {remaining || untilStart ? (
               <Balance color="primary" fontSize="14px" value={toDisplay} decimals={0} />
@@ -74,7 +62,7 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
               <Skeleton width="54px" height="21px" />
             )}
             <Text ml="4px" color="primary" small textTransform="lowercase">
-              {t('Blocks')}
+              Blocks
             </Text>
             <TimerIcon ml="4px" color="primary" />
           </Flex>
@@ -82,17 +70,13 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
       )}
       <Flex mb="2px" justifyContent="flex-end">
         <LinkExternal bold={false} small href={earningToken.projectLink}>
-          {t('View Project Site')}
+          View Project Site
         </LinkExternal>
       </Flex>
       {poolContractAddress && (
         <Flex mb="2px" justifyContent="flex-end">
-          <LinkExternal
-            bold={false}
-            small
-            href={`${SCANNER_URL}/address/${poolContractAddress}`}
-          >
-            {t('View Contract')}
+          <LinkExternal bold={false} small href={`${SCANNER_URL}/address/${poolContractAddress}`}>
+            View Contract
           </LinkExternal>
         </Flex>
       )}
@@ -105,7 +89,7 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
             onClick={() => registerToken(tokenAddress, earningToken.symbol, earningToken.decimals, imageSrc)}
           >
             <Text color="primary" fontSize="14px">
-              {t('Add to Metamask')}
+              Add to Metamask
             </Text>
             <MetamaskIcon ml="4px" />
           </Button>

@@ -9,7 +9,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useFarmUser, useLpTokenPrice } from 'state/hooks'
 import { fetchFarmUserDataAsync } from 'state/farms'
 import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
-import { useTranslation } from 'contexts/Localization'
 import { useApprove } from 'hooks/useApprove'
 import { getBep20Contract } from 'utils/contractHelpers'
 import { BASE_ADD_LIQUIDITY_URL } from 'config'
@@ -41,7 +40,6 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   token,
   userDataReady,
 }) => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { allowance, tokenBalance, stakedBalance } = useFarmUser(pid)
@@ -107,7 +105,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     return (
       <ActionContainer>
         <ActionTitles>
-          <Subtle>{t('Start Farming').toUpperCase()}</Subtle>
+          <Subtle>{'Start Farming'.toUpperCase()}</Subtle>
         </ActionTitles>
         <ActionContent>
           <UnlockButton width="100%" />
@@ -122,7 +120,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
         <ActionContainer>
           <ActionTitles>
             <Title>{lpSymbol} </Title>
-            <Subtle>{t('Staked').toUpperCase()}</Subtle>
+            <Subtle>{'Staked'.toUpperCase()}</Subtle>
           </ActionTitles>
           <ActionContent>
             <div>
@@ -158,7 +156,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     return (
       <ActionContainer>
         <ActionTitles>
-          <Subtle>{t('Stake').toUpperCase()} </Subtle>
+          <Subtle>{'Stake'.toUpperCase()} </Subtle>
           <Title>{lpSymbol}</Title>
         </ActionTitles>
         <ActionContent>
@@ -168,7 +166,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
             variant="secondary"
             disabled={['history', 'archived'].some((item) => location.pathname.includes(item))}
           >
-            {t('Stake LP')}
+            Stake LP
           </Button>
         </ActionContent>
       </ActionContainer>
@@ -179,7 +177,7 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
     return (
       <ActionContainer>
         <ActionTitles>
-          <Subtle>{t('Start Farming').toUpperCase()}</Subtle>
+          <Subtle>{'Start Farming'.toUpperCase()}</Subtle>
         </ActionTitles>
         <ActionContent>
           <Skeleton width={180} marginBottom={28} marginTop={14} />
@@ -191,11 +189,11 @@ const Staked: React.FunctionComponent<StackedActionProps> = ({
   return (
     <ActionContainer>
       <ActionTitles>
-        <Subtle>{t('Enable Farm').toUpperCase()}</Subtle>
+        <Subtle>{'Enable Farm'.toUpperCase()}</Subtle>
       </ActionTitles>
       <ActionContent>
         <Button width="100%" disabled={requestedApproval} onClick={handleApprove} variant="secondary">
-          {t('Enable')}
+          Enable
         </Button>
       </ActionContent>
     </ActionContainer>
