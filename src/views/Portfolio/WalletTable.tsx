@@ -1,9 +1,9 @@
-import { Flex, Text, Heading, Card } from 'uikit'
+import { Flex, Text, Heading, Card, Skeleton } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
-import React from 'react'
+import React, { useCallback } from 'react'
 import PageHeader from 'components/PageHeader'
 import { useTranslation } from 'contexts/Localization'
-import { useGetTokensList } from 'hooks/moralis'
+import { useGetTokensList } from 'hooks/portfolio'
 import styled from 'styled-components'
 import { SubHeader } from 'uikit/components/SubHeader'
 import { Dots } from 'components/swap/styleds'
@@ -70,7 +70,7 @@ const WalletTableContainer = styled.div`
 
 const Table = styled.div`
   margin-bottom: 30px;
-  height: 100%;
+  height: 600px;
   @media (min-width: 900px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-column-gap: 136px;
@@ -88,10 +88,12 @@ const Table = styled.div`
   padding-bottom: 24px;
   display: grid;
   position: relative;
+  overflow: scroll;
 `
 
 const ColumnTable = styled.div`
   display: block;
+  overflow: inherit;
 `
 
 const TableLine = styled.div`
@@ -136,6 +138,14 @@ const WalletTable: React.FC = () => {
     totalVolume += token.volume
   })
 
+  const RowToken = useCallback(() => {
+    return usertokens.map((token) => <TokenRow key={token.tokenObj.name} token={token} />)
+  }, [usertokens])
+
+  const RowAsset = useCallback(() => {
+    return usertokens.map((token) => <AssetRow key={token.tokenObj.name} token={token} totalvolume={totalVolume} />)
+  }, [totalVolume, usertokens])
+
   return (
     <WalletTableContainer>
       <PageHeader>
@@ -163,7 +173,7 @@ const WalletTable: React.FC = () => {
               <WalletTableHeading>Wallet</WalletTableHeading>
             </Flex>
             {usertokens.map((token) => (
-              <TokenRow key={token.tokenObj.address} token={token} />
+              <TokenRow key={token.tokenObj.name} token={token} />
             ))}
           </ColumnTable>
           <TableLine />
@@ -172,7 +182,7 @@ const WalletTable: React.FC = () => {
               <WalletTableHeading>Asset Allocation</WalletTableHeading>
             </Flex>
             {usertokens.map((token) => (
-              <AssetRow key={token.tokenObj.address} token={token} totalvolume={totalVolume} />
+              <AssetRow key={token.tokenObj.name} token={token} totalvolume={totalVolume} />
             ))}
           </ColumnTable>
         </Table>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Heading, Button, useModal } from 'uikit'
 import { useTranslation } from 'contexts/Localization'
@@ -10,15 +10,11 @@ import { getBroomAddress } from 'utils/addressHelpers'
 import getNetwork from 'utils/getNetwork'
 import { Field } from 'state/swap/actions'
 import { useWeb3React } from '@web3-react/core'
-import { useCurrency } from 'hooks/Tokens'
-import { useTokenContract } from 'hooks/useContract'
 import CurrencyLogo from 'components/CurrencyLogo'
 import Logo from 'components/Logo'
-import { useActiveWeb3React } from 'hooks'
-import { useGetLpPrices } from 'hooks/api'
 import BigNumber from 'bignumber.js'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import ConvertModal from './ConvertModal'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
 export interface TokenRowProps {
   token: TokenProps
@@ -53,7 +49,6 @@ const ContentContainer = styled.div`
 
 const StyledRow = styled.div`
   display: flex;
-
   cursor: pointer;
   color: white;
   width: 100%;
@@ -112,8 +107,16 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
   const { config } = getNetwork()
   const { account } = useWeb3React()
   const broomAddress = getBroomAddress()
-  const { chainId } = useActiveWeb3React()
   const { token } = props
+
+  const selectTokenBalance = useCurrencyBalance(account ?? undefined, token.tokenObj ?? undefined)
+
+  if (!token.amount) {
+    token.amount = selectTokenBalance ? Number(selectTokenBalance.toSignificant(6)) : 0
+  }
+  if (!token.volume) {
+    token.volume = token.price * token.amount
+  }
 
   const [approval, approveCallback] = useApproveCallback(
     new TokenAmount(token.tokenObj, JSBI.BigInt('100')),
@@ -152,86 +155,12 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
     onUserInput(Field.INPUT, inputValue)
   }
 
-  const tokenContract0 = useTokenContract(token.tokenPairs[0])
-  const tokenContract1 = useTokenContract(token.tokenPairs[1])
-
-  const [symbols, setSymbols] = useState([undefined, undefined])
-
-  useMemo(() => {
-    let isMounted = true
-    const fetchSymbols = async () => {
-      if (!tokenContract0 && !tokenContract1) return
-      const data = await Promise.all([tokenContract0.symbol(), tokenContract1.symbol()])
-      if (isMounted) {
-        setSymbols(data)
-      }
-    }
-    fetchSymbols()
-
-    return () => {
-      isMounted = false
-    }
-  }, [tokenContract0, tokenContract1])
-
-  const currency0 = useCurrency(token.tokenPairs[0])
-  const currency1 = useCurrency(token.tokenPairs[1])
-
-  const token0Symbol =
-    chainId === 56
-      ? symbols[0] === 'WBNB'
-        ? 'BNB'
-        : symbols[0] === 'FTM'
-        ? 'WFTM'
-        : symbols[0]
-      : symbols[0] === 'WFTM'
-      ? 'FTM'
-      : symbols[0] === 'BNB'
-      ? 'WBNB'
-      : symbols[0]
-  const token1Symbol =
-    chainId === 56
-      ? symbols[1] === 'WBNB'
-        ? 'BNB'
-        : symbols[1] === 'FTM'
-        ? 'WFTM'
-        : symbols[1]
-      : symbols[1] === 'WFTM'
-      ? 'FTM'
-      : symbols[1] === 'BNB'
-      ? 'WBNB'
-      : symbols[1]
-
-  const lpPrices: any = useGetLpPrices()
-  const lpPrice = useMemo(() => {
-    if (lpPrices) {
-      const element = Object.keys(lpPrices).filter((key) => {
-        const splitKey = key.split('-')
-        const key0 = splitKey[1]
-        const key1 = splitKey[2]
-        return (key0 === token0Symbol || key0 === token1Symbol) && (key1 === token0Symbol || key1 === token1Symbol)
-      })
-
-      return lpPrices[element[0]]
-    }
-    return 0
-  }, [lpPrices, token0Symbol, token1Symbol])
-
-  const tokenVolume = token.tokenPairs.length > 0 ? lpPrice * token.amount : token.volume
-  const tokenPrice = token.tokenPairs.length > 0 ? lpPrice : token.price
-
-  if (token.tokenPairs.length > 0) {
-    token.volume = tokenVolume
-    token.price = tokenPrice
-  }
-
   return (
     <>
       <StyledRow>
         <CellInner>
           <IconContainer>
-            {token.tokenPairs.length > 0 ? (
-              <DoubleCurrencyLogo key={token.tokenObj.address} currency0={currency0} currency1={currency1} size={30} />
-            ) : token.logo ? (
+            {token.logo ? (
               <StyledLogo size="30px" srcs={[token.logo]} alt="icon" />
             ) : (
               <CurrencyLogo currency={token.tokenObj} size="30px" />
@@ -239,20 +168,17 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
           </IconContainer>
         </CellInner>
         <CellInner style={{ flex: '1' }}>
-          <CellLayout
-            label={token.tokenPairs.length > 0 ? `${symbols[0]} - ${symbols[1]} ` : token.tokenObj.symbol}
-            align="left"
-          >
-            {`$${tokenPrice ? new BigNumber(tokenPrice).decimalPlaces(8) : 0}`}
+          <CellLayout label={token.tokenObj.symbol} align="left">
+            {`$${token.price ? new BigNumber(token.price).decimalPlaces(4) : 0}`}
           </CellLayout>
         </CellInner>
         <CellInner>
-          <CellLayout align="right" label={`$${tokenVolume ? new BigNumber(tokenVolume).decimalPlaces(10) : 0}`}>
-            {`${token.amount !== 0 ? new BigNumber(token.amount).decimalPlaces(10) : 0}`}
+          <CellLayout align="right" label={`$${token.volume ? new BigNumber(token.volume).decimalPlaces(18) : 0}`}>
+            {`${token.amount !== 0 ? new BigNumber(token.amount).decimalPlaces(18) : 0}`}
           </CellLayout>
         </CellInner>
       </StyledRow>
-      {tokenVolume < 10 && tokenVolume !== 0 && (
+      {token.volume < 10 && token.volume > 0 && (
         <ConvertRow>
           <StyledButton onClick={onConvert}>{t('Convert')}</StyledButton>
         </ConvertRow>

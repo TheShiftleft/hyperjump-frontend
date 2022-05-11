@@ -11,13 +11,11 @@ import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import TradePrice from 'components/swap/TradePrice'
 import useToast from 'hooks/useToast'
 import { useAllTokens } from 'hooks/Tokens'
-import { getAddress } from '@ethersproject/address'
 import CurrencyLogo from 'components/CurrencyLogo'
 import BigNumber from 'bignumber.js'
 import { computeTradePriceBreakdown } from '../../utils/prices'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import DoubleCurrencyLogo from '../../components/DoubleLogo'
 
 interface ConvertModalProps {
   onDismiss?: () => void
@@ -96,17 +94,15 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
 }
 
 const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens }) => {
-  const allTokens = useAllTokens()
   const { t } = useTranslation()
   const { account } = useActiveWeb3React()
-  const [step] = useState(1)
   const { toastSuccess, toastError } = useToast()
   const [limitPrice, setLimitPrice] = useState('')
   const [limitValidity, setLimitValidity] = useState({ valid: true, error: '' })
   const [showInverted, setShowInverted] = useState<boolean>(false)
   const { independentField, typedValue } = useSwapState()
   const { v2Trade, parsedAmount, currencies } = useDerivedSwapInfo()
-  const inputvalue = new BigNumber(selectTokens.token.amount).decimalPlaces(18).toString()
+  const inputvalue = new BigNumber(selectTokens.token.amount).toString()
   const { wrapType } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], inputvalue)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = v2Trade
@@ -162,12 +158,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     ? Number(realizedLPFee.toSignificant(6)) * Number(selectedtoken.price ? selectedtoken.price.toFixed(2) : 0)
     : 0
 
-  const tokenSymbol =
-    selectedtoken.tokenPairs.length === 0
-      ? selectedtoken.tokenObj.symbol
-      : `${allTokens[getAddress(selectedtoken.tokenPairs[0])].symbol} - ${
-          allTokens[getAddress(selectedtoken.tokenPairs[1])]?.symbol
-        } `
+  const tokenSymbol = selectedtoken.tokenObj.symbol
 
   const handleBroomCallback = useCallback(() => {
     if (broomState !== BroomCallbackState.INVALID) {
@@ -259,28 +250,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
         <StyledRow>
           <CellInner>
-            {selectedtoken.tokenPairs.length !== 0 ? (
-              <DoubleCurrencyLogo
-                key={selectedtoken.tokenObj.address}
-                currency0={allTokens[getAddress(selectedtoken.tokenPairs[0])]}
-                currency1={allTokens[getAddress(selectedtoken.tokenPairs[1])]}
-                margin
-                size={30}
-              />
-            ) : (
-              <CurrencyLogo currency={selectedtoken.tokenObj} size="30px" />
-            )}
+            <CurrencyLogo currency={selectedtoken.tokenObj} size="30px" />
+            {/* )} */}
           </CellInner>
           <CellInner>
-            <CellLayout
-              label={
-                selectedtoken.tokenPairs.length === 0
-                  ? selectedtoken.tokenObj.name
-                  : `${allTokens[getAddress(selectedtoken.tokenPairs[0])].symbol} - ${
-                      allTokens[getAddress(selectedtoken.tokenPairs[1])].symbol
-                    } `
-              }
-            >
+            <CellLayout label={selectedtoken.tokenObj.name}>
               {`${selectedtoken.price ? new BigNumber(selectedtoken.price).decimalPlaces(12) : 0}`}
             </CellLayout>
           </CellInner>
