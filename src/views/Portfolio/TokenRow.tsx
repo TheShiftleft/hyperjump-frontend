@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Heading, Button, useModal } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { JSBI, TokenAmount, Token } from '@hyperjump-defi/sdk'
 import { TokenProps } from 'hooks/moralis'
@@ -103,7 +102,6 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children, align }) 
 }
 
 const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
-  const { t } = useTranslation()
   const { config } = getNetwork()
   const { account } = useWeb3React()
   const broomAddress = getBroomAddress()
@@ -180,7 +178,7 @@ const TokenRow: React.FunctionComponent<TokenRowProps> = (props) => {
       </StyledRow>
       {token.volume < 10 && token.volume > 0 && (
         <ConvertRow>
-          <StyledButton onClick={onConvert}>{t('Convert')}</StyledButton>
+          <StyledButton onClick={onConvert}>Convert</StyledButton>
         </ConvertRow>
       )}
     </>

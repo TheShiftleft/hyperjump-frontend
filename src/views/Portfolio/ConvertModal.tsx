@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import { ApprovalState } from 'hooks/useApproveCallback'
 import { TokenProps } from 'hooks/moralis'
 import { Modal, Button, Box, Text, Flex, Image } from 'uikit'
@@ -94,7 +93,6 @@ const CellLayout: React.FC<CellLayoutProps> = ({ label = '', children }) => {
 }
 
 const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, selectTokens }) => {
-  const { t } = useTranslation()
   const { account } = useActiveWeb3React()
   const { toastSuccess, toastError } = useToast()
   const [limitPrice, setLimitPrice] = useState('')
@@ -135,13 +133,10 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
       selectTokens
         .approvalCallback()
         .then((result) => {
-          toastSuccess(
-            `${t('Approved')}!`,
-            t('Your %symbol% balances have been approved for conversion', { symbol: tokenSymbol }),
-          )
+          toastSuccess('Approve!', `Your ${tokenSymbol} balances have been approved for conversion`)
         })
         .catch((e) => {
-          toastError(t('Canceled'), t('Please try again and confirm the transaction.'))
+          toastError('Canceled', 'Please try again and confirm the transaction.')
         })
     }
   }
@@ -164,27 +159,24 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
     if (broomState !== BroomCallbackState.INVALID) {
       broomCallback()
         .then((result) => {
-          toastSuccess(
-            `${t('Converted')}!`,
-            t('Your %symbol% balances have been converted into JUMP', { symbol: tokenSymbol }),
-          )
+          toastSuccess('Converted!', `Your ${tokenSymbol} balances have been converted into JUMP`)
           console.info('result', result)
           onDismiss()
         })
         .catch((e) => {
           if (e.code === 4001) {
-            toastError(t('Rejected'), t(e.message))
+            toastError('Rejected', e.message)
           }
 
           if (e.code === -32603) {
-            toastError(t(e.message), t(e.data.message))
+            toastError(e.message, e.data.message)
           }
         })
     }
-  }, [broomCallback, broomState, toastSuccess, toastError, t, onDismiss, tokenSymbol])
+  }, [broomCallback, broomState, toastSuccess, toastError, onDismiss, tokenSymbol])
 
   return (
-    <Modal title={t('Convert small balances')} onDismiss={onDismiss}>
+    <Modal title="Convert small balances" onDismiss={onDismiss}>
       <Text fontSize="18px" marginBottom="30px">
         To convert small balances, you will need to sign <br /> wallet transaction.
       </Text>
@@ -272,14 +264,14 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onDismiss, selectedtoken, s
 
       <ButtonBox>
         {selectTokens.approval !== ApprovalState.APPROVED ? (
-          <Button onClick={onApprove}>{t('Approve')}</Button>
+          <Button onClick={onApprove}>Approve</Button>
         ) : (
           <Button
             onClick={() => {
               handleBroomCallback()
             }}
           >
-            {t('Convert')}
+            Convert
           </Button>
         )}
       </ButtonBox>

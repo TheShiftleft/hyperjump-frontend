@@ -1,6 +1,5 @@
 import React from 'react'
 import useAuth from 'hooks/useAuth'
-import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Button, Flex, Box, useWalletModal, Input, Heading, Link } from 'uikit'
 import { HelpIcon } from 'uikit/components/Svg'
@@ -69,7 +68,6 @@ const HelpLink = styled(Link)`
 `
 
 const WalletLogin = (props) => {
-  const { t } = useTranslation()
   const { login, logout } = useAuth()
   const { onPresentConnectModal } = useWalletModal(login, logout)
 
@@ -79,7 +77,7 @@ const WalletLogin = (props) => {
       <MainHeading>Welcome to Hyper Jump</MainHeading>
       <LoginHeading>Multichain portfolio manager, automated yield farming & dex aggregator</LoginHeading>
       <ConnectButton onClick={onPresentConnectModal} {...props}>
-        {t('Connect Your Wallet')}
+        Connect Your Wallet
       </ConnectButton>
 
       <HelpLink href="https://docs.hyperjump.app/get-started/connection-guide" external>

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Heading } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { TokenProps } from 'hooks/moralis'
 import BigNumber from 'bignumber.js'
 
@@ -76,8 +75,6 @@ interface ProgressBarProps {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
-  const { t } = useTranslation()
-
   return (
     <ProgressParent>
       <ProgressChild linewidth={progress.toString()}>

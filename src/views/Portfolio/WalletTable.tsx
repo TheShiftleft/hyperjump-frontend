@@ -2,7 +2,6 @@ import { Flex, Text, Heading, Card, Skeleton } from 'uikit'
 import { useWeb3React } from '@web3-react/core'
 import React, { useCallback } from 'react'
 import PageHeader from 'components/PageHeader'
-import { useTranslation } from 'contexts/Localization'
 import { useGetTokensList } from 'hooks/portfolio'
 import styled from 'styled-components'
 import { SubHeader } from 'uikit/components/SubHeader'
@@ -123,7 +122,6 @@ const NoAvailText = styled(Text)`
 `
 
 const WalletTable: React.FC = () => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
 
   const { data, isLoading } = useGetTokensList(account)
@@ -137,14 +135,6 @@ const WalletTable: React.FC = () => {
     }
     totalVolume += token.volume
   })
-
-  const RowToken = useCallback(() => {
-    return usertokens.map((token) => <TokenRow key={token.tokenObj.name} token={token} />)
-  }, [usertokens])
-
-  const RowAsset = useCallback(() => {
-    return usertokens.map((token) => <AssetRow key={token.tokenObj.name} token={token} totalvolume={totalVolume} />)
-  }, [totalVolume, usertokens])
 
   return (
     <WalletTableContainer>
@@ -190,7 +180,7 @@ const WalletTable: React.FC = () => {
         <NoTokenBox>
           <WalletTableHeading>
             <NoAvailText>
-              <Dots>{t('Loading Available Tokens')}</Dots>
+              <Dots>Loading Available Tokens</Dots>
             </NoAvailText>
           </WalletTableHeading>
         </NoTokenBox>
