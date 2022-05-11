@@ -19,9 +19,11 @@ export const isWithdrawInitiator = async (actionInitiatorsContract, withdrawInit
 }
 
 export const setWithdrawInitiator = async (actionInitiatorsContract, withdrawInitiator, account) => {
+  const web3 = getWeb3NoAccount()
+  const gas = await web3.eth.getGasPrice()
   return actionInitiatorsContract.methods
     .registerWithdrawInitiator(withdrawInitiator, true)
-    .send({ from: account })
+    .send({ from: account, gasPrice: gas })
     .on('transactionHash', (tx) => {
       return tx.transactionHash
     })
@@ -61,9 +63,11 @@ export const stake = async (masterChefContract, pid, amount, account) => {
 }
 
 export const sousStake = async (sousChefContract, amount, decimals = 18, account) => {
+  const web3 = getWeb3NoAccount()
+  const gas = await web3.eth.getGasPrice()
   return sousChefContract.methods
     .deposit(new BigNumber(amount).times(BIG_TEN.pow(decimals)).toString())
-    .send({ from: account })
+    .send({ from: account, gasPrice: gas })
     .on('transactionHash', (tx) => {
       return tx.transactionHash
     })
@@ -100,9 +104,11 @@ export const sousUnstake = async (sousChefContract, amount, decimals = 18, accou
 }
 
 export const sousEmergencyUnstake = async (sousChefContract, account) => {
+  const web3 = getWeb3NoAccount()
+  const gas = await web3.eth.getGasPrice()
   return sousChefContract.methods
     .emergencyWithdraw()
-    .send({ from: account })
+    .send({ from: account, gasPrice: gas })
     .on('transactionHash', (tx) => {
       return tx.transactionHash
     })
