@@ -64,6 +64,7 @@ const Unrekt = () => {
           setIsLoading(false)
         }else{
           setTableData(undefined)
+          setEnabledPools(undefined)
           setIsLoading(false)
           toastError('Unable to fetch masterchef', 'Make sure the address and network is correct')
         }
