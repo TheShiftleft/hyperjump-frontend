@@ -12,12 +12,12 @@ import { getContract } from 'utils';
 import { ERC20_ABI } from 'config/abi/erc20';
 import { useActiveWeb3React } from 'hooks';
 import { useFarmUser, usePools } from 'state/hooks';
-import { usePairContract } from 'hooks/useContract';
+import { usePairContract, usePoolContract, useTokenContract } from 'hooks/useContract';
 import Loader from 'components/Loader';
 import { useEmergencyWithdraw, useGetLPTokens, useGetPoolBalance, useRevokePool } from 'hooks/useGetPools';
 import { getBalanceAmount, getFullDisplayBalance } from 'utils/formatBalance';
 import BigNumber from 'bignumber.js';
-import { getMasterChefABI } from 'config/abi';
+import { getMasterChefABI, getPoolABI } from 'config/abi';
 import useToast from 'hooks/useToast';
 import { SCANNER_URL } from 'config';
 
@@ -62,6 +62,8 @@ const StyledLink = styled(Link)`
 
 const TableRow = ({pool}: {pool: {pid: number, address: string, masterchef: string}}) => {
   const {pid, address, masterchef} = pool
+  const [ isEnabled, setIsEnabled ] = useState(false)
+  const { account } = useActiveWeb3React()
   const { toastError, toastSuccess } = useToast()
   const blockExplorer = SCANNER_URL
   const token = useCurrency(address)
@@ -83,6 +85,25 @@ const TableRow = ({pool}: {pool: {pid: number, address: string, masterchef: stri
   const token0 = useToken(tokens[0][0])
   const token1 = useToken(tokens[1][0])
   const emergencyWithdraw = useEmergencyWithdraw(pid, masterchef)
+  const contract = useTokenContract(address)
+  useMemo(() => {
+    let isMounted = true
+    if(contract){
+      contract.allowance(account, masterchef)
+      .then(result => {
+        if(isMounted){
+          setIsEnabled(result.gt(0))
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+    }
+
+    return () => {
+      isMounted = false
+    }    
+  },[contract, account, masterchef])
   const revokePool = useRevokePool(masterchef, address)
 
   const handleRevokePool = useCallback(async () => {
@@ -91,14 +112,14 @@ const TableRow = ({pool}: {pool: {pid: number, address: string, masterchef: stri
       if(result) {
         const tx = await result.wait()
         if(tx.status) {
-          toastSuccess('Success', <Text>Pool was successfully revoled. <Link target='_blank' href={`${blockExplorer}/tx/${tx.transactionHash}`}>View transaction</Link></Text>)
+          toastSuccess('Success', <Text>Pool was successfully revoked. <Link target='_blank' href={`${blockExplorer}/tx/${tx.transactionHash}`}>View transaction</Link></Text>)
         }else{
           toastError('Error', 'Failed to revoke pool!')
         }
       }
     }catch(e) {
       console.error(e)
-      let msg = 'Emergency withdraw was failed!'
+      let msg = 'Failed to revoke pool!'
       let title = 'Error'
       if(e.code === 4001){
         msg = 'User cancelled the transaction!'
@@ -150,7 +171,7 @@ const TableRow = ({pool}: {pool: {pid: number, address: string, masterchef: stri
           }}>
             Emergency Withdraw
           </StyledButton>
-          <StyledButton scale='sm' color='black' onClick={() => {
+          <StyledButton scale='sm' color='black' disabled={!isEnabled} onClick={() => {
             handleRevokePool()
           }}>
             Revoke

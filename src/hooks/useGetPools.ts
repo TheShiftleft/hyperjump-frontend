@@ -1,4 +1,4 @@
-import { getMasterChefABI } from "config/abi"
+import { getFarmingTokenABI, getMasterChefABI } from "config/abi"
 import { useActiveWeb3React } from "hooks"
 import { useMemo, useState, useEffect, useCallback } from "react"
 import { getContract, isAddress } from "utils"
@@ -8,6 +8,7 @@ import { BIG_ZERO } from "utils/bigNumber"
 import { getLpContract, getMasterchefContract } from "utils/contractHelpers"
 import BigNumber from "bignumber.js"
 import { useRevokeContract } from "./useContract"
+import useWeb3 from "./useWeb3"
 
 export enum GetPoolsStatus {
   VALID,
@@ -28,7 +29,7 @@ interface UserInfo {
 }
 
 export const useGetPools = (masterChef: string) => {
-  const { library } = useActiveWeb3React()
+  const { library, account } = useActiveWeb3React()
   const address = isAddress(masterChef)
   if(!masterChef) return {
     status: GetPoolsStatus.INVALID,
@@ -174,12 +175,14 @@ export const useEmergencyWithdraw = (pid: number, masterChef: string) => {
 }
 
 export const useRevokePool = (masterChef: string, poolAddress: string) => {
-  const contract = useRevokeContract(poolAddress)
+  const web3 = useWeb3()
+  const contract = useRevokeContract(poolAddress, true)
   return useCallback(async() => {
+    const gas = await web3.eth.getGasPrice()
     if(masterChef && poolAddress && contract){
-      const result = await contract.approve(masterChef, 0)
+      const result = await contract.approve(masterChef, 0, {gasPrice: gas})
       return result
     }
     return false
-  },[contract, masterChef, poolAddress])
+  },[contract, masterChef, poolAddress, web3])
 }
