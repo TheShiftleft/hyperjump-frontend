@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { useLocation, Link, useRouteMatch } from 'react-router-dom'
 import { ButtonMenu, ButtonMenuItem, NotificationDot } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 
 interface TabButtonsProps {
   hasStakeInFinished: boolean
@@ -12,7 +11,6 @@ interface TabButtonsProps {
 const TabButtons: React.FC<TabButtonsProps> = ({ hasStakeInFinished, rootPath }) => {
   const { url } = useRouteMatch()
   const location = useLocation()
-  const { t } = useTranslation()
 
   let activeIndex
   switch (location.pathname) {
@@ -34,11 +32,11 @@ const TabButtons: React.FC<TabButtonsProps> = ({ hasStakeInFinished, rootPath })
     <Wrapper>
       <ButtonMenu activeIndex={activeIndex} scale="sm" variant="primary">
         <ButtonMenuItem as={Link} to={`${url}`}>
-          {t('Live')}
+          Live
         </ButtonMenuItem>
         <NotificationDot show={hasStakeInFinished}>
           <ButtonMenuItem as={Link} to={`${url}/history`}>
-            {t('Finished')}
+            Finished
           </ButtonMenuItem>
         </NotificationDot>
       </ButtonMenu>

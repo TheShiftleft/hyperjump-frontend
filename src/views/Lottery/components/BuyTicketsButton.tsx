@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, useModal, WaitIcon, ButtonProps } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useLottery } from 'state/lottery/hooks'
 import { LotteryStatus } from 'config/constants/types'
 import BuyTicketsModal from './BuyTicketsModal/BuyTicketsModal'
@@ -10,7 +9,6 @@ interface BuyTicketsButtonProps extends ButtonProps {
 }
 
 const BuyTicketsButton: React.FC<BuyTicketsButtonProps> = ({ disabled, ...props }) => {
-  const { t } = useTranslation()
   const [onPresentBuyTicketsModal] = useModal(<BuyTicketsModal />)
   const {
     currentRound: { status },
@@ -18,11 +16,11 @@ const BuyTicketsButton: React.FC<BuyTicketsButtonProps> = ({ disabled, ...props 
 
   const getBuyButtonText = () => {
     if (status === LotteryStatus.OPEN) {
-      return t('Buy Tickets')
+      return 'Buy Tickets'
     }
     return (
       <>
-        <WaitIcon mr="4px" color="textDisabled" /> {t('On sale soon!')}
+        <WaitIcon mr="4px" color="textDisabled" /> On sale soon!
       </>
     )
   }

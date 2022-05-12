@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, CardBody, Heading, Skeleton, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useGetBscStats, useGetFtmStats } from 'hooks/api'
 import getNetwork from 'utils/getNetwork'
 

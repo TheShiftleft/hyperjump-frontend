@@ -5,6 +5,7 @@ import getNetwork from 'utils/getNetwork'
 import useSecond from './useSecond'
 
 const currentPointInChain: Record<Network, () => number> = {
+  [Network.METIS]: () => useBlock().currentBlock,
   [Network.BSC]: () => useBlock().currentBlock,
   [Network.BSC_TESTNET]: () => useBlock().currentBlock,
   [Network.FANTOM]: useSecond,

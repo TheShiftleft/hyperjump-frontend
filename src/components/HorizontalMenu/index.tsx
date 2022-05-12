@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
-// import { languageList } from 'config/localization/languages'
-// import { useTranslation } from 'contexts/Localization'
 import throttle from 'lodash/throttle'
 import useTheme from 'hooks/useTheme'
 import useAuth from 'hooks/useAuth'
@@ -28,7 +26,7 @@ const HorizontalMenu: React.FC<MenuProps> = ({ children }) => {
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
-  // const { currentLanguage, setLanguage, t } = useTranslation()
+
   const links = menuConfig()
 
   const { isXl } = useMatchBreakpoints()

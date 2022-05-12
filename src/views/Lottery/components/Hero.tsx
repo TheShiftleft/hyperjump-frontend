@@ -4,7 +4,6 @@ import styled, { keyframes } from 'styled-components'
 import { Box, Flex, Heading, Skeleton } from 'uikit'
 import getNetwork from 'utils/getNetwork'
 import { LotteryStatus } from 'config/constants/types'
-import { useTranslation } from 'contexts/Localization'
 import { usePriceFarmingTokenUsd } from 'state/hooks'
 import { useLottery } from 'state/lottery/hooks'
 import { getBalanceNumber } from 'utils/formatBalance'
@@ -81,7 +80,6 @@ const AlloyHighlight = styled.span`
 `
 
 const Hero = () => {
-  const { t } = useTranslation()
   const {
     currentRound: { amountCollectedInFarmingToken, status },
     isTransitioning,
@@ -106,14 +104,14 @@ const Hero = () => {
 
           <AlloyHeadingContainer>
             <AlloyHighlight>{rewardToken}&nbsp;</AlloyHighlight>
-            <Heading scale="xl">{t('in the prize pool')}</Heading>
+            <Heading scale="xl">in the prize pool</Heading>
           </AlloyHeadingContainer>
         </>
       )
     }
     return (
       <Heading mb="24px" scale="xl" color="#ffffff">
-        {t('Tickets on sale soon')}
+        Tickets on sale soon
       </Heading>
     )
   }
@@ -123,7 +121,7 @@ const Hero = () => {
       <Decorations src="/images/hyperjump-full-logo.png" />
       <HeadingContainer>
         <Highlight>Galactic&nbsp;</Highlight>
-        <Heading scale="lg">{t('lottery')}</Heading>
+        <Heading scale="lg">lottery</Heading>
       </HeadingContainer>
       {getHeroHeading()}
       <StyledBuyTicketButton disabled={ticketBuyIsDisabled} />

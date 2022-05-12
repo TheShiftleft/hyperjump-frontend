@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Card, CardBody, Heading, Skeleton, Text } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useGetBscStats } from 'hooks/api'
 
 const StyledTotalValueLockedCard = styled(Card)`
@@ -24,7 +23,6 @@ const HeadingColor = styled.div`
 `
 
 const TotalValueLockedCard = () => {
-  const { t } = useTranslation()
   const data = useGetBscStats()
   // set tvl to 69 if fail
   const tvl = data && data.tvl ? data.tvl.toLocaleString('en-US', { maximumFractionDigits: 0 }) : 'Available shortly!'
@@ -32,12 +30,12 @@ const TotalValueLockedCard = () => {
     <StyledTotalValueLockedCard>
       <CardBody style={{ width: '100%' }}>
         <Heading scale="xl" mb="24px">
-          <HeadingColor>{t('TOTAL VALUE LOCKED (TVL)')}</HeadingColor>
+          <HeadingColor>TOTAL VALUE LOCKED (TVL)</HeadingColor>
         </Heading>
         {data ? (
           <StyledTVL>
             <Heading scale="xl">{`$${tvl}`}</Heading>
-            <Text color="textSubtle">{t('ACROSS ALL LPS & MECH POOLS')}</Text>
+            <Text color="textSubtle">ACROSS ALL LPS & MECH POOLS</Text>
           </StyledTVL>
         ) : (
           <Skeleton height={66} />

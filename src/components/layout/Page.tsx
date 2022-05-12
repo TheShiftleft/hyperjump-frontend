@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
 import { Helmet } from 'react-helmet-async'
 import { useLocation } from 'react-router'
 import { DEFAULT_META, getCustomMeta } from 'config/constants/meta'
@@ -24,7 +23,6 @@ const StyledPage = styled(Container)`
 `
 
 const PageMeta = () => {
-  const { t } = useTranslation()
   const { pathname } = useLocation()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const farmingTokenPriceUsdDisplay = farmingTokenPriceUsd.gt(0)
@@ -34,7 +32,7 @@ const PageMeta = () => {
       })}`
     : ''
 
-  const pageMeta = getCustomMeta(pathname, t) || {}
+  const pageMeta = getCustomMeta(pathname) || {}
   const { title, description, image } = { ...DEFAULT_META, ...pageMeta }
   const pageTitle = farmingTokenPriceUsdDisplay ? [title, farmingTokenPriceUsdDisplay].join(' - ') : title
 

@@ -6,7 +6,7 @@ import { Button } from 'uikit'
 import useWeb3 from 'hooks/useWeb3'
 import LimitOrdersApi, { Transaction } from '@unidexexchange/sdk'
 import { Price } from '@hyperjump-defi/sdk'
-import { useTranslation } from 'contexts/Localization'
+
 import useToast from 'hooks/useToast'
 
 interface PlaceOrderButtonProps {
@@ -30,7 +30,6 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({
   limitPrice,
   price,
 }: PlaceOrderButtonProps) => {
-  const { t } = useTranslation()
   const { toastSuccess, toastError } = useToast()
   const web3 = useWeb3()
   const sAmount = new BigNumber(sellAmount).multipliedBy(BIG_TEN.pow(price?.baseCurrency?.decimals)).toString()
@@ -52,7 +51,7 @@ const PlaceOrderButton: React.FC<PlaceOrderButtonProps> = ({
             web3.eth.getTransactionReceipt(hash, (err, rec) => {
               if (rec) {
                 clearInterval(interval)
-                toastSuccess(`${t('Limit Order')}!`, t('Your Limit Order has been placed !', {}))
+                toastSuccess('Limit Order!', 'Your Limit Order has been placed !')
               }
             })
           }, 2000)

@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Heading, Card, CardBody, Flex, ArrowForwardIcon, Skeleton } from 'uikit'
 import max from 'lodash/max'
 import { NavLink } from 'react-router-dom'
-import { useTranslation } from 'contexts/Localization'
 import { usePriceFarmingTokenUsd, useVaults } from 'state/hooks'
 
 const StyledVaultsCard = styled(Card)`
@@ -25,22 +24,21 @@ const CardMidContent = styled(Heading).attrs({ scale: 'xl' })`
   line-height: 44px;
 `
 const EarnVaultsCard = () => {
-  const { t } = useTranslation()
   const { apys } = useVaults()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
 
   const highestApy = useMemo(() => {
     if (farmingTokenPriceUsd.gt(0)) {
-        const maxApy = max(Object.values(apys))
-        if (maxApy) {
-            return (100 * maxApy).toLocaleString('en-US', { maximumFractionDigits: 2 })
-        }
+      const maxApy = max(Object.values(apys))
+      if (maxApy) {
+        return (100 * maxApy).toLocaleString('en-US', { maximumFractionDigits: 2 })
+      }
     }
     return null
   }, [farmingTokenPriceUsd, apys])
 
   const apyText = highestApy || '-'
-  const earnAprText = t('Earn up to %highestApy% APY in Vaults', { highestApy: apyText })
+  const earnAprText = `Earn up to ${apyText} APY in Vaults`
   const [earnUpTo, InVaults] = earnAprText.split(apyText)
 
   return (
@@ -51,11 +49,7 @@ const EarnVaultsCard = () => {
             {earnUpTo}
           </Heading>
           <CardMidContent color="#7645d9">
-            {highestApy ? (
-              `${highestApy}%`
-            ) : (
-              <Skeleton animation="pulse" variant="rect" height="44px" />
-            )}
+            {highestApy ? `${highestApy}%` : <Skeleton animation="pulse" variant="rect" height="44px" />}
           </CardMidContent>
           <Flex justifyContent="space-between">
             <Heading color="contrast" scale="lg">

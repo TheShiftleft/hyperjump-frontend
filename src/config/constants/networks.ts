@@ -29,9 +29,10 @@ const networks = [
     bridgePath: 'https://www.binance.org/en/bridge?utm_source=Hyperjump',
     contractsLink: 'https://github.com/HyperJump-DeFi/HyperJump-Contracts',
     infoLink: 'https://bsc-info.hyperjump.app',
+    buyLink: `/swap?inputCurrency=BNB&outputCurrency=${tokens.jump.address[56]}`,
     supportedChainIds: [ChainId.BSC_MAINNET],
     vaultCompoundTime: '8 hours',
-    localEmissionRate: 1.056993066125486216,
+    localEmissionRate: 1.055090478606460341,
   },
 
   {
@@ -61,6 +62,7 @@ const networks = [
     bridgePath: '',
     contractsLink: 'https://github.com/HyperJump-DeFi/HyperJump-Contracts',
     infoLink: 'https://ftm-info.hyperjump.app',
+    buyLink: `/swap?inputCurrency=FTM&outputCurrency=${tokens.jump.address[250]}`,
     supportedChainIds: [ChainId.FTM_MAINNET],
     vaultCompoundTime: 'hour',
     localEmissionRate: 1.056993066125486216,
@@ -91,6 +93,7 @@ const networks = [
     votingLink: 'https://snapshot.org/#/bsc.hyperjumpdao.eth',
     bridgePath: 'https://www.binance.org/en/bridge?utm_source=Hyperjump',
     contractsLink: 'https://github.com/HyperJump-DeFi/HyperJump-Contracts',
+    buyLink: `/swap?inputCurrency=BNB&outputCurrency=${tokens.jump.address[97]}`,
     infoLink: '/analytics',
     supportedChainIds: [ChainId.BSC_TESTNET],
     vaultCompoundTime: '8 hours',

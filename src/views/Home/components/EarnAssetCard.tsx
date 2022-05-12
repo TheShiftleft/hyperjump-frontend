@@ -6,24 +6,23 @@ import { Heading, Card, CardBody, Flex, ArrowForwardIcon, Text } from 'uikit'
 import { NavLink } from 'react-router-dom'
 import pools from 'config/constants/pools'
 import { Pool } from 'state/types'
-import { useTranslation } from 'contexts/Localization'
 import { poolsConfig } from 'config/constants'
 import getNetwork from 'utils/getNetwork'
 
 const StyledFarmStakingCard = styled(Card)`
   flex: 1;
   margin-right: 15px;
-  background-color: rgba(2,5,11,0.7);
+  background-color: rgba(2, 5, 11, 0.7);
   border-radius: ${({ theme }) => theme.radii.card};
   height: 100%;
-  
+
   ${({ theme }) => theme.mediaQueries.lg} {
     max-width: none;
   }
 
   &::after {
-    content: "";
-    background-image: url("images/dashboard/mechs-icon.png");
+    content: '';
+    background-image: url('images/dashboard/mechs-icon.png');
     background-repeat: no-repeat;
     background-size: 150px 150px;
     top: 0;
@@ -48,14 +47,15 @@ const ArrowIcon = styled.img`
 `
 
 const EarnAssetCard = () => {
-  const { t } = useTranslation()
   const { config } = getNetwork()
 
-  const activePools = poolsConfig[Network.BSC].filter(pool => !pool.isFinished && pool.earningToken !== config.farmingToken)
+  const activePools = poolsConfig[Network.BSC].filter(
+    (pool) => !pool.isFinished && pool.earningToken !== config.farmingToken,
+  )
   const latestPools: Pool[] = orderBy(activePools, ['sortOrder', 'pid'], ['desc', 'desc']).slice(0, 3)
-  const assets = [config.farmingToken.symbol, ...latestPools.map(pool => pool.earningToken.symbol)].join(', ')
+  const assets = [config.farmingToken.symbol, ...latestPools.map((pool) => pool.earningToken.symbol)].join(', ')
 
-  const assetText = t('Earn %assets% in Pools', { assets })
+  const assetText = `Earn ${assets} in Pools`
   const [earn, InPools] = assetText.split(assets)
 
   return (
@@ -67,13 +67,11 @@ const EarnAssetCard = () => {
           </Heading>
           <Heading>{assets}</Heading>
           <Flex justifyContent="space-between" marginTop="auto">
-            <Text color="primary">
-              {InPools}
-            </Text>
+            <Text color="primary">{InPools}</Text>
           </Flex>
           <Flex mt="-15px" ml="auto" alignItems="center">
             <Text>EARN</Text>
-            <ArrowIcon src="images/dashboard/arrow.png"/>
+            <ArrowIcon src="images/dashboard/arrow.png" />
           </Flex>
         </AssetCardBody>
       </NavLink>

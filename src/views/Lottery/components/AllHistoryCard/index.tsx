@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { Card, Text, Skeleton, CardHeader, Box } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { useLottery } from 'state/lottery/hooks'
 import { fetchLottery } from 'state/lottery/helpers'
 import { LotteryStatus } from 'config/constants/types'
@@ -26,7 +25,6 @@ const StyledCardHeader = styled(CardHeader)`
 `
 
 const AllHistoryCard = () => {
-  const { t } = useTranslation()
   const {
     currentLotteryId,
     currentRound: { status, isLoading },

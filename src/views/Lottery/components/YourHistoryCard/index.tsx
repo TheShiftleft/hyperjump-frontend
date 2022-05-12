@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import styled from 'styled-components'
 import { CardHeader, Card, CardBody, Text, CardFooter, ArrowBackIcon, Flex, Heading, Skeleton, Box } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
+
 import { LotteryStatus } from 'config/constants/types'
 import { useGetUserLotteriesGraphData, useLottery } from 'state/lottery/hooks'
 import { fetchLottery } from 'state/lottery/helpers'
@@ -46,7 +46,7 @@ const LotteryCardBody = styled(CardBody)`
 
 const LotteryCardFooter = styled(CardFooter)`
   background: rgba(2, 5, 11, 0.7);
-  border:none;
+  border: none;
 `
 
 const StyledHeader = styled(Text)`
@@ -60,9 +60,7 @@ const StyledHeader = styled(Text)`
   }
 `
 
-
 const YourHistoryCard = () => {
-  const { t } = useTranslation()
   const { account } = useWeb3React()
   const { login, logout } = useAuth()
   const [shouldShowRoundDetail, setShouldShowRoundDetail] = useState(false)
@@ -97,13 +95,9 @@ const YourHistoryCard = () => {
           <ArrowBackIcon cursor="pointer" onClick={() => clearState()} mr="20px" />
           <Flex flexDirection="column" alignItems="flex-start" justifyContent="center">
             <Flex alignItems="center">
-              <StyledHeader mr="18px">
-                {t('Round')} {selectedLotteryId || ''}
-              </StyledHeader>
+              <StyledHeader mr="18px">Round {selectedLotteryId || ''}</StyledHeader>
               {selectedLotteryInfo?.endTime ? (
-                <Text fontSize="14px">
-                  {t('Drawn')} {getDrawnDate(selectedLotteryInfo.endTime)}
-                </Text>
+                <Text fontSize="14px">Drawn {getDrawnDate(selectedLotteryInfo.endTime)}</Text>
               ) : (
                 <Skeleton width="185px" height="21px" />
               )}
@@ -113,7 +107,7 @@ const YourHistoryCard = () => {
       )
     }
 
-    return <StyledHeader>{t('Rounds')}</StyledHeader>
+    return <StyledHeader>Rounds</StyledHeader>
   }
 
   const getBody = () => {
@@ -129,7 +123,7 @@ const YourHistoryCard = () => {
       return (
         <StyledCardBody>
           <Text textAlign="center" color="textSubtle" mb="16px">
-            {t('Connect your wallet to check your history')}
+            Connect your wallet to check your history
           </Text>
           <UserBlock account={account} login={login} logout={logout} />
         </StyledCardBody>
@@ -139,9 +133,9 @@ const YourHistoryCard = () => {
       return (
         <StyledCardBody>
           <Box maxWidth="280px">
-            <Text textAlign="center">{t('No lottery history found')}</Text>
+            <Text textAlign="center">No lottery history found</Text>
             <Text textAlign="center" color="textSubtle" mb="16px">
-              {t('Buy tickets for the next round!')}
+              Buy tickets for the next round!
             </Text>
             <BuyTicketsButton disabled={ticketBuyIsDisabled} width="100%" />
           </Box>
@@ -155,10 +149,7 @@ const YourHistoryCard = () => {
     if (selectedLotteryInfo) {
       return <PreviousRoundCardFooter lotteryData={selectedLotteryInfo} lotteryId={selectedLotteryId} />
     }
-    return (
-      <>
-      </>
-    )
+    return <></>
   }
 
   return (

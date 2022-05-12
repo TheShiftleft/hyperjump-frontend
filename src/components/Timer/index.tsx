@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Flex, Heading, Text, Link, useTooltip } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { ContextApi } from 'contexts/Localization/types'
 import { getScannerBlockNumberUrl } from 'utils/bscscan'
 import getNetwork from 'utils/getNetwork'
@@ -25,16 +24,14 @@ const StyledTimerFlex = styled(Flex)<{ showTooltip?: boolean }>`
 `
 
 const Timer = ({ minutes, hours, days, showTooltip, HeadingTextComponent, BodyTextComponent }) => {
-  const { t } = useTranslation()
-
   return (
     <StyledTimerFlex alignItems="flex-end" showTooltip={showTooltip}>
       <HeadingTextComponent mr="2px">{days}</HeadingTextComponent>
-      <BodyTextComponent mr="16px">{t('d')}</BodyTextComponent>
+      <BodyTextComponent mr="16px">d</BodyTextComponent>
       <HeadingTextComponent mr="2px">{hours}</HeadingTextComponent>
-      <BodyTextComponent mr="16px">{t('h')}</BodyTextComponent>
+      <BodyTextComponent mr="16px">h</BodyTextComponent>
       <HeadingTextComponent mr="2px">{minutes}</HeadingTextComponent>
-      <BodyTextComponent>{t('m')}</BodyTextComponent>
+      <BodyTextComponent>m</BodyTextComponent>
     </StyledTimerFlex>
   )
 }
@@ -50,15 +47,15 @@ const DefaultBodyTextComponent = ({ children, ...props }) => (
   </Text>
 )
 
-const TooltipContent = ({ blockNumber, t }: { blockNumber: number; t: ContextApi['t'] }): JSX.Element => {
+const TooltipContent = ({ blockNumber }: { blockNumber: number }): JSX.Element => {
   const { config } = getNetwork()
   return (
     <>
       <Text color="body" mb="10px" fontWeight="600">
-        {t('Block %num%', { num: blockNumber })}
+        Block {blockNumber}
       </Text>
       <Link external href={getScannerBlockNumberUrl(blockNumber)}>
-        {t(`View on ${config.scannerName}`)}
+        View on {config.scannerName}
       </Link>
     </>
   )
@@ -74,8 +71,7 @@ const Wrapper: React.FC<TimerProps> = ({
   HeadingTextComponent = DefaultHeadingTextComponent,
   BodyTextComponent = DefaultBodyTextComponent,
 }) => {
-  const { t } = useTranslation()
-  const { targetRef, tooltip, tooltipVisible } = useTooltip(<TooltipContent blockNumber={blockNumber} t={t} />, {
+  const { targetRef, tooltip, tooltipVisible } = useTooltip(<TooltipContent blockNumber={blockNumber} />, {
     placement: 'bottom',
   })
   const shouldDisplayTooltip = showTooltip && tooltipVisible

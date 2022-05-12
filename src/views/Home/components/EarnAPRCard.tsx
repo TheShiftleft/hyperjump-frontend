@@ -4,7 +4,6 @@ import { Heading, Card, CardBody, Flex, Skeleton, Text } from 'uikit'
 import max from 'lodash/max'
 import { NavLink } from 'react-router-dom'
 import BigNumber from 'bignumber.js'
-import { useTranslation } from 'contexts/Localization'
 import { useAppDispatch } from 'state'
 import { useFarms, usePriceFarmingTokenUsd } from 'state/hooks'
 import { fetchFarmsPublicDataAsync } from 'state/farms'
@@ -51,7 +50,6 @@ const ArrowIcon = styled.img`
 // TODO DJ TJ - this all seems to fetch much more than is needed
 const EarnAPRCard = () => {
   const [isFetchingFarmData, setIsFetchingFarmData] = useState(true)
-  const { t } = useTranslation()
   const { data: farmsLP } = useFarms()
   const farmingTokenPriceUsd = usePriceFarmingTokenUsd()
   const dispatch = useAppDispatch()
@@ -96,7 +94,7 @@ const EarnAPRCard = () => {
   }, [farmingTokenPriceUsd, farmsLP])
 
   const aprText = highestApr || '-'
-  const earnAprText = t('EARN %highestApr% In Asteroid Field Farms', { highestApr: aprText })
+  const earnAprText = `EARN ${aprText} In Asteroid Field Farms`
   const [earnUpTo, InFarms] = earnAprText.split(aprText)
 
   return (

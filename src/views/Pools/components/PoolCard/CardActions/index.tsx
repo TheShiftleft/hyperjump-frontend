@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BIG_ZERO } from 'utils/bigNumber'
 import { Flex, Text, Box } from 'uikit'
-import { useTranslation } from 'contexts/Localization'
 import { Pool } from 'state/types'
 import ApprovalAction from './ApprovalAction'
 import StakeActions from './StakeActions'
@@ -27,8 +26,6 @@ interface CardActionsProps {
 
 const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
   const { sousId, stakingToken, earningToken, harvest, userData, earningTokenPrice } = pool
-
-  const { t } = useTranslation()
   const [pendingTx, setPendingTx] = useState(false)
 
   const allowance = userData?.allowance ? new BigNumber(userData.allowance) : BIG_ZERO
@@ -50,7 +47,7 @@ const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
                 {`${earningToken.symbol} `}
               </InlineText>
               <InlineText color="textSubtle" textTransform="uppercase" bold fontSize="12px">
-                {t('Earned')}
+                Earned
               </InlineText>
             </Box>
             <HarvestActions
@@ -66,10 +63,10 @@ const CardActions: React.FC<CardActionsProps> = ({ pool, stakedBalance }) => {
         )}
         <Box display="inline">
           <InlineText color={isStaked ? 'primary' : 'textSubtle'} textTransform="uppercase" bold fontSize="12px">
-            {isStaked ? `${stakingToken.symbol}s` : t('Stake')}{' '}
+            {isStaked ? `${stakingToken.symbol}s` : 'Stake'}{' '}
           </InlineText>
           <InlineText color={isStaked ? 'textSubtle' : 'primary'} textTransform="uppercase" bold fontSize="12px">
-            {isStaked ? t('Working') : `${stakingToken.symbol}`}
+            {isStaked ? 'Working' : `${stakingToken.symbol}`}
           </InlineText>
         </Box>
         {needsApproval ? (

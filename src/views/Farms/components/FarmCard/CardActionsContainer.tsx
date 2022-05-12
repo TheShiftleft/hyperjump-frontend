@@ -8,14 +8,12 @@ import { getBep20Contract } from 'utils/contractHelpers'
 import { useAppDispatch } from 'state'
 import { fetchFarmUserDataAsync } from 'state/farms'
 import { Farm } from 'state/types'
-import { useTranslation } from 'contexts/Localization'
 import useWeb3 from 'hooks/useWeb3'
 import { useApprove } from 'hooks/useApprove'
 import UnlockButton from 'components/UnlockButton'
 import StakeAction from './StakeAction'
 
-const Action = styled.div`
-`
+const Action = styled.div``
 const StyledButton = styled(Button)`
   border-radius: 20px;
 `
@@ -35,7 +33,6 @@ interface FarmCardActionsProps {
 }
 
 const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidityUrl }) => {
-  const { t } = useTranslation()
   const [requestedApproval, setRequestedApproval] = useState(false)
   const { pid, lpAddresses } = farm
   const {
@@ -79,7 +76,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
     ) : (
       <Action className="stake-widget">
         <StyledButton fullWidth disabled={requestedApproval} onClick={handleApprove}>
-          {t('Approve Contract')}
+          Approve Contract
         </StyledButton>
       </Action>
     )
@@ -91,7 +88,9 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         <Action className="stake-widget">
           <StyledUnlockButton fullWidth />
         </Action>
-      ) : renderApprovalOrStakeButton()}
+      ) : (
+        renderApprovalOrStakeButton()
+      )}
     </>
   )
 }
