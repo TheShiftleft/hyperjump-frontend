@@ -24,7 +24,7 @@ const FarmingTokenPrice: React.FC<Props> = ({ farmingTokenPriceUsd = 2 }) => {
   return farmingTokenPriceUsd ? (
     <PriceLink>
       <img src="/jump.png" alt="Hyperjump Icon" width="24px" style={{ marginRight: '8px' }} />
-      <Text color="textSubtle" bold>{`$${farmingTokenPriceUsd.toFixed(3)}`}</Text>
+      <Text color="textSubtle" bold>{`$${farmingTokenPriceUsd.toFixed(4)}`}</Text>
     </PriceLink>
   ) : (
     <Skeleton width={80} height={24} />

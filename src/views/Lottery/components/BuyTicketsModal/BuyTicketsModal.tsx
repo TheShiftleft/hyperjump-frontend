@@ -19,6 +19,7 @@ import { useFarmingTokenContract, useLotteryContract } from 'hooks/useContract'
 import useToast from 'hooks/useToast'
 import useAuth from 'hooks/useAuth'
 import UserBlock from 'uikit/widgets/Menu/components/UserBlock'
+import { getGasPriceOptions } from 'utils/callHelpers'
 import ApproveConfirmButtons, { ButtonArrangement } from './ApproveConfirmButtons'
 import NumTicketsToBuyButton from './NumTicketsToBuyButton'
 import EditNumbersModal from './EditNumbersModal'
@@ -169,7 +170,7 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
     useApproveConfirmTransaction({
       onRequiresApproval: async () => {
         try {
-          const response = await farmingTokenContract.allowance(account, lotteryContract.address)
+          const response = await farmingTokenContract.methods.allowance(account, lotteryContract.address).call()
           const currentAllowance = ethersToBigNumber(response)
           return currentAllowance.gt(0)
         } catch (error) {
@@ -177,7 +178,10 @@ const BuyTicketsModal: React.FC<BuyTicketsModalProps> = ({ onDismiss }) => {
         }
       },
       onApprove: async () => {
-        return farmingTokenContract.approve(lotteryContract.address, ethers.constants.MaxInt256)
+        const gasOptions = await getGasPriceOptions()
+        return farmingTokenContract.methods
+          .approve(lotteryContract.address, ethers.constants.MaxInt256.toString())
+          .send({ from: account, ...gasOptions })
       },
       onApproveSuccess: async () => {
         toastSuccess('Contract approved - you can now purchase tickets')

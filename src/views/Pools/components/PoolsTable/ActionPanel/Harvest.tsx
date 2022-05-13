@@ -76,7 +76,14 @@ const HarvestAction: React.FunctionComponent<HarvestActionProps> = ({
       toastSuccess('Collected!', `Your ${earningToken.symbol} earnings have been sent to your wallet!`)
       setPendingTx(false)
     } catch (e) {
-      toastError('Canceled', 'Please try again and confirm the transaction.')
+      console.error(e)
+      let msg = 'Failed to collect earnings!'
+      let title = 'Error'
+      if(e.code === 4001){
+        msg = 'Please try again and confirm the transaction.'
+        title = 'Canceled'
+      }
+      toastError(title, msg)
       setPendingTx(false)
     }
   }

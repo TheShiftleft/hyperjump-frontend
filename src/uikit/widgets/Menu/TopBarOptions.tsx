@@ -14,9 +14,10 @@ import OriIcon from './assets/OrilliumIcon.png'
 import dropdownArrow from './assets/DropdownArrow.png'
 
 const farmingTokenIcon: Record<Network, any> = {
-  [Network.BSC]: AlloyIcon,
+  [Network.BSC]: JumpIcon,
   [Network.BSC_TESTNET]: JumpIcon,
-  [Network.FANTOM]: OriIcon,
+  [Network.FANTOM]: JumpIcon,
+  [Network.METIS]: JumpIcon,
 }
 
 interface Props {
